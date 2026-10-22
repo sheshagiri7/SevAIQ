@@ -1,46 +1,81 @@
-import React, { useState } from 'react';
-import { Search, Filter, AlertCircle, FileCheck, ExternalLink, RefreshCw, Layers } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  Search,
+  Filter,
+  AlertCircle,
+  FileCheck,
+  ExternalLink,
+  RefreshCw,
+  Layers,
+  ArrowRight,
+  Info,
+  CheckCircle,
+  Calendar,
+} from 'lucide-react';
 import { Scheme } from '../types';
+import { CATEGORY_OPTIONS, matchesCategory } from '../utils/categoryMatcher';
 
 interface SchemeDiscoveryProps {
   schemes: Scheme[];
   isLoading: boolean;
   onRefreshSchemes: () => void;
   error?: string | null;
+  onSelectForEligibility?: (scheme: Scheme) => void;
+  backendSchemesCount: number;
 }
-
-const CATEGORIES = [
-  'All Sectors',
-  'Agriculture & Rural',
-  'Healthcare & Wellness',
-  'Education & Skilling',
-  'Social Security & Pensions',
-  'Housing & Infrastructure',
-];
 
 export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
   schemes,
   isLoading,
   onRefreshSchemes,
   error,
+  onSelectForEligibility,
+  backendSchemesCount,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All Sectors');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedSchemeDetail, setSelectedSchemeDetail] = useState<Scheme | null>(null);
 
-  // Filter schemes when populated
+  const modalCloseButtonRef = useRef<HTMLButtonElement | null>(null);
+
+  // Keyboard accessibility: Close modal on Escape
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && selectedSchemeDetail) {
+        setSelectedSchemeDetail(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedSchemeDetail]);
+
+  // Focus close button on modal open
+  useEffect(() => {
+    if (selectedSchemeDetail) {
+      setTimeout(() => {
+        modalCloseButtonRef.current?.focus();
+      }, 50);
+    }
+  }, [selectedSchemeDetail]);
+
+  // Filter schemes using normalized category matcher and search terms
   const filteredSchemes = schemes.filter((s) => {
+    const query = searchQuery.toLowerCase().trim();
     const matchesSearch =
-      s.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      s.short_description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      s.ministry.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory =
-      selectedCategory === 'All Sectors' || s.category.toLowerCase().includes(selectedCategory.toLowerCase());
-    return matchesSearch && matchesCategory;
+      query === '' ||
+      s.title.toLowerCase().includes(query) ||
+      s.short_description.toLowerCase().includes(query) ||
+      s.ministry.toLowerCase().includes(query) ||
+      s.category.toLowerCase().includes(query);
+
+    const matchesCat = matchesCategory(s.category, selectedCategory);
+
+    return matchesSearch && matchesCat;
   });
 
   return (
-    <section id="discover" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      {/* Section Header */}
+    <section id="discover" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+      {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-slate-200">
         <div>
           <div className="inline-flex items-center space-x-1.5 text-xs font-semibold uppercase tracking-wider text-civic-700 mb-1">
@@ -48,55 +83,88 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
             <span>Scheme Catalog</span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-bold text-slate-900">
-            Discover Government Schemes
+            Find Government Schemes
           </h2>
           <p className="text-sm text-slate-600 mt-1">
-            Search verified welfare initiatives backed by official gazette records.
+            Search verified central and state welfare initiatives backed by official gazette records.
           </p>
         </div>
 
-        <button
-          onClick={onRefreshSchemes}
-          disabled={isLoading}
-          className="inline-flex items-center space-x-2 px-3.5 py-2 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-300 rounded-lg shadow-sm transition-colors self-start md:self-auto"
-        >
-          <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
-          <span>Sync from Backend (/api/schemes)</span>
-        </button>
+        <div className="flex items-center space-x-2 self-start md:self-auto">
+          <button
+            type="button"
+            onClick={onRefreshSchemes}
+            disabled={isLoading}
+            className="inline-flex items-center space-x-2 px-3.5 py-2 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-300 rounded-xl shadow-xs transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500"
+            title="Poll backend /api/schemes for updates"
+            aria-label={`Sync schemes with backend. Currently ${backendSchemesCount} schemes from backend.`}
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
+            <span>Sync Backend ({backendSchemesCount})</span>
+          </button>
+        </div>
       </div>
 
-      {/* Search & Filter Toolbar */}
-      <div className="mt-8 space-y-4">
+      {/* Backend Synchronization Notification */}
+      <div className="p-4 rounded-2xl bg-blue-50 border border-blue-200 text-blue-900 text-xs flex items-start space-x-3">
+        <Info className="w-4 h-4 text-civic-700 shrink-0 mt-0.5" />
+        <div className="space-y-1">
+          <p className="font-semibold text-civic-900">
+            Verified Data Guarantee & Backend Status:
+          </p>
+          <p className="text-slate-700 leading-relaxed">
+            {backendSchemesCount === 0 ? (
+              <>
+                FastAPI endpoint <code className="bg-white/80 px-1 py-0.5 rounded font-mono text-slate-800">GET /api/schemes</code> currently returns <code className="bg-white/80 px-1 py-0.5 rounded font-mono text-slate-800">[]</code> as expected during initial setup.
+                SevAIQ displays official reference models from authentic portals (e.g. <em>pmkisan.gov.in</em>, <em>pmjay.gov.in</em>) so you can evaluate eligibility and document mapping.
+              </>
+            ) : (
+              <>
+                FastAPI backend has returned {backendSchemesCount} verified schemes from <code className="bg-white/80 px-1 py-0.5 rounded font-mono text-slate-800">GET /api/schemes</code>.
+              </>
+            )}
+          </p>
+        </div>
+      </div>
+
+      {/* Search and Filters */}
+      <div className="space-y-4">
         <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+          <label htmlFor="scheme-search-input" className="sr-only">
+            Search government schemes
+          </label>
+          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
             <Search className="w-5 h-5" />
           </div>
           <input
+            id="scheme-search-input"
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by scheme name, ministry, or keywords (e.g. farmer support, pension, health insurance)..."
-            className="w-full pl-11 pr-4 py-3 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-civic-500 focus:border-civic-500 shadow-sm transition-all"
+            placeholder="Search by scheme name, ministry, or keywords (e.g., farmer, health, student, vendor, housing)..."
+            className="w-full pl-11 pr-4 py-3 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-civic-500 focus:border-civic-500 shadow-xs transition-all"
           />
         </div>
 
-        {/* Category Filter Pills */}
+        {/* Sector Filter Pills */}
         <div className="flex items-center space-x-2 overflow-x-auto pb-2 scrollbar-none">
-          <span className="text-xs font-medium text-slate-500 flex items-center space-x-1 pr-1 shrink-0">
-            <Filter className="w-3.5 h-3.5" />
-            <span>Filter:</span>
+          <span className="text-xs font-semibold text-slate-700 flex items-center space-x-1 pr-1 shrink-0">
+            <Filter className="w-3.5 h-3.5 text-slate-500" />
+            <span>Sectors:</span>
           </span>
-          {CATEGORIES.map((category) => (
+          {CATEGORY_OPTIONS.map((cat) => (
             <button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors ${
-                selectedCategory === category
-                  ? 'bg-civic-700 text-white shadow-xs'
-                  : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
+              key={cat.id}
+              type="button"
+              onClick={() => setSelectedCategory(cat.id)}
+              aria-pressed={selectedCategory === cat.id}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500 ${
+                selectedCategory === cat.id
+                  ? 'bg-civic-800 text-white shadow-xs'
+                  : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
               }`}
             >
-              {category}
+              {cat.label}
             </button>
           ))}
         </div>
@@ -104,103 +172,224 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
 
       {/* Error state if backend query failed */}
       {error && (
-        <div className="mt-6 p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-sm flex items-start space-x-3">
-          <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+        <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-sm flex items-start space-x-3">
+          <AlertCircle className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
           <div>
-            <span className="font-semibold">Backend sync notification:</span> {error}
-            <p className="text-xs text-amber-700 mt-1">
-              Ensure the FastAPI backend is running locally on port 8000 (`uvicorn app.main:app --reload`).
+            <span className="font-semibold">Backend sync notice:</span> {error}
+            <p className="text-xs text-amber-800 mt-1">
+              Verify local FastAPI backend is active on port 8000. Verified reference models remain available.
             </p>
           </div>
         </div>
       )}
 
-      {/* Schemes Container */}
-      <div className="mt-8">
+      {/* Schemes Grid */}
+      <div>
         {isLoading ? (
-          <div className="py-16 text-center">
+          <div className="py-20 text-center bg-white rounded-3xl border border-slate-200">
             <RefreshCw className="w-8 h-8 text-civic-600 animate-spin mx-auto mb-3" />
-            <p className="text-sm font-medium text-slate-600">Querying backend /api/schemes...</p>
+            <p className="text-sm font-semibold text-slate-800">Connecting to Backend API...</p>
+            <p className="text-xs text-slate-600 mt-1">Querying /api/schemes</p>
           </div>
         ) : filteredSchemes.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredSchemes.map((scheme) => (
               <div
                 key={scheme.id}
-                className="p-6 bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between"
+                className="p-6 bg-white rounded-3xl border border-slate-200 shadow-xs hover:shadow-md hover:border-civic-300 transition-all flex flex-col justify-between"
               >
                 <div>
-                  <div className="flex items-center justify-between gap-2 mb-2">
-                    <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-civic-50 text-civic-700 border border-civic-200">
+                  <div className="flex items-center justify-between gap-2 mb-3">
+                    <span className="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-civic-50 text-civic-800 border border-civic-200">
                       {scheme.category}
                     </span>
-                    {scheme.verified && (
-                      <span className="inline-flex items-center space-x-1 text-[11px] font-medium text-emerald-700">
-                        <FileCheck className="w-3.5 h-3.5" />
-                        <span>Verified</span>
+                    {scheme.verified && scheme.verification_source ? (
+                      <span className="inline-flex items-center space-x-1 text-[11px] font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                        <FileCheck className="w-3.5 h-3.5 text-emerald-600" />
+                        <span>Verified Source</span>
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center space-x-1 text-[11px] font-semibold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
+                        <span>Unverified Draft</span>
                       </span>
                     )}
                   </div>
-                  <h3 className="text-base font-bold text-slate-900 mb-1.5">{scheme.title}</h3>
-                  <p className="text-xs text-slate-500 mb-3">{scheme.ministry}</p>
-                  <p className="text-sm text-slate-600 line-clamp-3">{scheme.short_description}</p>
+
+                  <h3 className="text-base font-bold text-slate-900 mb-1 leading-snug">
+                    {scheme.title}
+                  </h3>
+                  <p className="text-xs text-slate-600 mb-3 font-medium">{scheme.ministry}</p>
+                  <p className="text-xs text-slate-700 line-clamp-3 leading-relaxed mb-4">
+                    {scheme.short_description}
+                  </p>
+
+                  {scheme.benefits_summary && (
+                    <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-800 mb-4 flex items-center space-x-2">
+                      <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <span className="font-medium">{scheme.benefits_summary}</span>
+                    </div>
+                  )}
                 </div>
 
-                <div className="mt-5 pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
-                  {scheme.official_portal_url ? (
-                    <a
-                      href={scheme.official_portal_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center space-x-1 text-civic-600 font-semibold hover:underline"
+                <div className="pt-4 border-t border-slate-100 space-y-3">
+                  <div className="flex items-center justify-between text-xs">
+                    {scheme.official_portal_url ? (
+                      <a
+                        href={scheme.official_portal_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center space-x-1 text-civic-700 font-semibold hover:underline focus:outline-none focus:ring-1 focus:ring-civic-500 rounded"
+                      >
+                        <span>Official Portal</span>
+                        <ExternalLink className="w-3.5 h-3.5" />
+                      </a>
+                    ) : (
+                      <span className="text-slate-500">Portal verification pending</span>
+                    )}
+
+                    <button
+                      type="button"
+                      onClick={() => setSelectedSchemeDetail(scheme)}
+                      className="text-slate-600 hover:text-slate-900 font-semibold focus:outline-none focus:ring-1 focus:ring-civic-500 rounded px-1"
                     >
-                      <span>Official Portal</span>
-                      <ExternalLink className="w-3.5 h-3.5" />
-                    </a>
-                  ) : (
-                    <span className="text-slate-400">Portal link pending</span>
-                  )}
-                  {scheme.beneficiary_type && (
-                    <span className="text-slate-500 bg-slate-100 px-2 py-0.5 rounded">
-                      {scheme.beneficiary_type}
-                    </span>
+                      Criteria Info
+                    </button>
+                  </div>
+
+                  {onSelectForEligibility && (
+                    <button
+                      type="button"
+                      onClick={() => onSelectForEligibility(scheme)}
+                      className="w-full flex items-center justify-center space-x-2 py-2 px-3 rounded-xl bg-slate-900 hover:bg-civic-700 text-white font-semibold text-xs shadow-xs transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500"
+                    >
+                      <span>Check Eligibility For This Scheme</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
                   )}
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          /* Empty State Compliant with Zero Hallucination Principle */
-          <div className="p-8 sm:p-12 bg-white rounded-2xl border border-slate-200 shadow-sm text-center max-w-2xl mx-auto">
-            <div className="w-14 h-14 mx-auto rounded-2xl bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center mb-4">
-              <FileCheck className="w-7 h-7" />
+          <div className="p-12 bg-white rounded-3xl border border-slate-200 text-center max-w-xl mx-auto space-y-3">
+            <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-500 flex items-center justify-center mx-auto">
+              <Search className="w-6 h-6" />
             </div>
-            <h3 className="text-lg font-bold text-slate-900">
-              Government Scheme Collection Initialized (Empty State)
-            </h3>
-            <p className="text-sm text-slate-600 mt-2 leading-relaxed">
-              In accordance with our civic integrity standards for the{' '}
-              <strong className="text-slate-800">Seva First Innovation Challenge 2026</strong>,{' '}
-              we never fabricate or mock welfare schemes.
+            <h3 className="text-base font-bold text-slate-900">No schemes matched your search</h3>
+            <p className="text-xs text-slate-600">
+              Try adjusting your sector filter or search terms.
             </p>
-            <div className="mt-4 p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-left text-xs text-slate-600 space-y-1.5">
-              <div className="font-semibold text-slate-800 flex items-center space-x-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-civic-600"></span>
-                <span>Verification & Ingestion Protocol:</span>
-              </div>
-              <p>
-                1. Backend Developer will verify government schemes from official portals (e.g. <em>pmkisan.gov.in</em>, <em>india.gov.in</em>).
-              </p>
-              <p>
-                2. Records will be populated into <code className="text-slate-800 font-mono">backend/app/data/schemes.json</code>.
-              </p>
-              <p>
-                3. The endpoint <code className="text-slate-800 font-mono">GET /api/schemes</code> currently returns <code className="text-slate-800 font-mono">[]</code> as expected during initial setup.
-              </p>
-            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setSearchQuery('');
+                setSelectedCategory('all');
+              }}
+              className="px-4 py-2 text-xs font-semibold text-civic-800 bg-civic-50 rounded-xl hover:bg-civic-100 transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500"
+            >
+              Reset Filters
+            </button>
           </div>
         )}
       </div>
+
+      {/* Accessible Criteria Info Modal */}
+      {selectedSchemeDetail && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-scheme-title"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs"
+        >
+          <div className="bg-white rounded-3xl max-w-xl w-full p-6 shadow-2xl space-y-4 border border-slate-200">
+            <div className="flex items-start justify-between">
+              <div>
+                <span className="px-2.5 py-0.5 rounded text-[11px] font-semibold bg-civic-50 text-civic-800">
+                  {selectedSchemeDetail.category}
+                </span>
+                <h3 id="modal-scheme-title" className="text-lg font-bold text-slate-900 mt-1">
+                  {selectedSchemeDetail.title}
+                </h3>
+                <p className="text-xs text-slate-600 font-medium">{selectedSchemeDetail.ministry}</p>
+              </div>
+              <button
+                ref={modalCloseButtonRef}
+                type="button"
+                onClick={() => setSelectedSchemeDetail(null)}
+                aria-label="Close dialog"
+                className="p-1.5 text-slate-500 hover:text-slate-800 rounded-lg hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-civic-500"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="space-y-3 text-xs">
+              <div className="p-3 bg-slate-50 rounded-xl space-y-1">
+                <span className="font-semibold text-slate-800 block">Official Provenance & Verification:</span>
+                <p className="text-slate-700">
+                  {selectedSchemeDetail.verification_source || 'Verification citation not recorded'}
+                </p>
+                <div className="flex items-center space-x-2 text-[11px] text-slate-600 pt-1">
+                  <Calendar className="w-3.5 h-3.5" />
+                  <span>
+                    Guidelines Date:{' '}
+                    <strong>{selectedSchemeDetail.verification_date || 'Not recorded'}</strong>
+                  </span>
+                  <span>•</span>
+                  <span>
+                    Catalog Origin:{' '}
+                    <strong className="capitalize">{selectedSchemeDetail.origin || 'Reference Model'}</strong>
+                  </span>
+                </div>
+              </div>
+
+              <div className="p-3 bg-slate-50 rounded-xl">
+                <span className="font-semibold text-slate-800 block mb-1">Application Mode:</span>
+                <p className="text-slate-700">
+                  {selectedSchemeDetail.application_mode || 'Online Portal / Common Service Centre (CSC)'}
+                </p>
+              </div>
+
+              {selectedSchemeDetail.required_documents && (
+                <div className="p-3 bg-slate-50 rounded-xl">
+                  <span className="font-semibold text-slate-800 block mb-1">Required Documents:</span>
+                  <div className="flex flex-wrap gap-1.5 mt-1">
+                    {selectedSchemeDetail.required_documents.map((doc) => (
+                      <span
+                        key={doc}
+                        className="px-2 py-0.5 bg-white border border-slate-300 rounded text-slate-800 font-mono text-[11px]"
+                      >
+                        {doc}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="pt-2 flex justify-end space-x-2">
+              <button
+                type="button"
+                onClick={() => setSelectedSchemeDetail(null)}
+                className="px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-civic-500"
+              >
+                Close
+              </button>
+              {selectedSchemeDetail.official_portal_url && (
+                <a
+                  href={selectedSchemeDetail.official_portal_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center space-x-1.5 px-4 py-2 text-xs font-semibold text-white bg-civic-700 hover:bg-civic-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-civic-500"
+                >
+                  <span>Open Official Portal</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };
