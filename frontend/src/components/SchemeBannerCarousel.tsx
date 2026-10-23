@@ -1180,10 +1180,10 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                 </svg>
               </div>
 
-              {/* Main Content Layout: Left Scheme Info + Middle Floating Options + Right Phone Mockup */}
+              {/* Main Content Layout: Left Scheme Info + Right Text Information Cards */}
               <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center px-4 sm:px-8 lg:px-12 relative z-20">
                 {/* Left Column: Scheme Title, Emblems, Description, CTA */}
-                <div className="lg:col-span-5 flex flex-col justify-center text-left space-y-3 sm:space-y-4 lg:space-y-4.5 z-10">
+                <div className="lg:col-span-7 flex flex-col justify-center text-left space-y-3 sm:space-y-4 lg:space-y-4.5 z-10">
                   {/* Government Emblem & Partner Logos */}
                   <div className="flex items-center space-x-3 sm:space-x-4">
                     <div className="flex items-center space-x-2.5 text-slate-800 shrink-0">
@@ -1204,7 +1204,7 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                     </div>
                   </div>
 
-                  {/* Main Headline with LIVE badge (matching image 1) */}
+                  {/* Main Headline with LIVE badge */}
                   <div className="space-y-1 sm:space-y-1.5">
                     <h2
                       className={`text-2xl sm:text-3.5xl lg:text-[40px] xl:text-[44px] font-black tracking-tight leading-[1.12] ${slide.theme.headlineColor}`}
@@ -1256,231 +1256,100 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                   </div>
                 </div>
 
-                {/* Right Area: 4 Floating Options + S-Curve Flight Path + Smartphone Mockup + Citizen */}
-                <div className="lg:col-span-7 flex items-center justify-center lg:justify-end relative py-2 sm:py-4 gap-3 sm:gap-5">
-                  {/* The 4 Floating Options along Dotted S-Curve Flight Path + QR Code */}
-                  <div className="relative flex flex-col justify-between py-1 shrink-0 z-20">
-                    {/* Dotted S-Curve Line SVG */}
-                    <svg
-                      viewBox="0 0 160 300"
-                      className="absolute -left-6 sm:-left-8 top-0 w-36 sm:w-44 h-full pointer-events-none text-emerald-700/35 overflow-visible"
-                      fill="none"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M-20 180 C30 220 10 110 60 70 C100 40 120 95 145 20"
-                        stroke="currentColor"
-                        strokeWidth="2.2"
-                        strokeDasharray="5 5"
-                        strokeLinecap="round"
-                      />
-                    </svg>
-
-                    {/* Green Paper Airplane at apex of flight path */}
-                    <div className="absolute -top-4 right-1 z-20 pointer-events-none drop-shadow-md animate-float-subtle">
-                      <PaperAirplane className="w-7 h-7 sm:w-8 sm:h-8 rotate-12" />
+                {/* Right Area: Scheme Action Badges, Key Services & Category Links (Pure Text Information) */}
+                <div className="lg:col-span-5 flex flex-col justify-center space-y-3 sm:space-y-3.5 z-20">
+                  {/* Floating Action Badges as Clean Text Badges */}
+                  <div className="flex flex-wrap items-center gap-2.5">
+                    <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-white/95 border border-slate-200/90 shadow-xs text-slate-800 text-xs sm:text-sm font-bold animate-badge-float-1">
+                      <div className={`w-2 h-2 rounded-full ${slide.phone.floatingBadge1.color}`} />
+                      <span>{locSlide.phone.floatingBadge1.title}</span>
+                      <span className="px-1.5 py-0.5 rounded-full text-[8px] sm:text-[9px] font-black bg-emerald-100 text-emerald-800 uppercase tracking-wider">
+                        {locSlide.phone.floatingBadge1.tag}
+                      </span>
                     </div>
 
-                    {/* The 4 Floating Option Buttons */}
+                    <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-white/95 border border-slate-200/90 shadow-xs text-slate-800 text-xs sm:text-sm font-bold animate-badge-float-2">
+                      <div className={`w-2 h-2 rounded-full ${slide.phone.floatingBadge2.color}`} />
+                      <span>{locSlide.phone.floatingBadge2.title}</span>
+                      <span className="px-1.5 py-0.5 rounded-full text-[8px] sm:text-[9px] font-black bg-emerald-100 text-emerald-800 uppercase tracking-wider">
+                        {locSlide.phone.floatingBadge2.tag}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Scheme Services Text Card */}
+                  <div className="bg-white/90 backdrop-blur-md rounded-2xl p-4 sm:p-4.5 border border-slate-200/90 shadow-sm space-y-2.5">
+                    <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                      <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-slate-500">
+                        {isTamil ? 'அதிகாரப்பூர்வ சேவைகள்' : isHindi ? 'आधिकारिक सेवाएं' : 'Official Portal Services'}
+                      </span>
+                      <span className="text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">
+                        {locSlide.phone.shortCode}
+                      </span>
+                    </div>
+
+                    {/* Highlight Service Row */}
+                    <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="text-xs sm:text-[13px] font-bold text-slate-900 leading-snug">
+                          {locSlide.phone.highlightCard.title}
+                        </p>
+                        <p className="text-[10px] text-slate-500 truncate mt-0.5">{locSlide.phone.tagline}</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handlePrimaryClick(slide)}
+                        className={`px-3 py-1.5 rounded-lg ${locSlide.phone.highlightCard.btnColor} text-white font-bold text-[9px] sm:text-[10px] uppercase tracking-wider shadow-2xs hover:opacity-90 transition-opacity shrink-0 cursor-pointer`}
+                      >
+                        {locSlide.phone.highlightCard.btnText}
+                      </button>
+                    </div>
+
+                    {/* Key Services Rows */}
+                    <div className="space-y-1.5">
+                      <div className="p-2 rounded-xl bg-slate-50/70 border border-slate-200/60 flex items-center justify-between text-xs font-semibold text-slate-800">
+                        <span className="truncate">{locSlide.phone.service1}</span>
+                        <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0 ml-2" />
+                      </div>
+                      <div className="p-2 rounded-xl bg-slate-50/70 border border-slate-200/60 flex items-center justify-between text-xs font-semibold text-slate-800">
+                        <span className="truncate">{locSlide.phone.service2}</span>
+                        <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0 ml-2" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 4 Category Text Options with float animations */}
+                  <div className="space-y-1.5 pt-0.5">
+                    <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-slate-600 block pl-0.5">
+                      {isTamil ? 'துறை வாரியாக திட்டங்கள்' : isHindi ? 'श्रेणी अनुसार योजनाएं' : 'Explore by Category'}
+                    </span>
                     <div
-                      className="flex flex-col space-y-2.5 sm:space-y-3.5 relative z-20"
+                      className="grid grid-cols-2 gap-2"
                       aria-label="Floating Scheme Category Options"
                     >
-                      {FLOATING_OPTIONS.map((opt, idx) => {
+                      {FLOATING_OPTIONS.map((opt) => {
                         const title = isTamil
                           ? opt.titleTa
-                          : language === 'hi'
+                          : isHindi
                           ? opt.titleHi
                           : opt.titleEn;
-                        const offsetClass =
-                          idx === 0
-                            ? 'translate-x-0'
-                            : idx === 1
-                            ? 'translate-x-2 sm:translate-x-3'
-                            : idx === 2
-                            ? 'translate-x-4 sm:translate-x-5'
-                            : 'translate-x-1 sm:translate-x-2';
-
                         return (
-                          <div key={opt.id} className={`relative group ${offsetClass} ${opt.floatClass}`}>
+                          <div key={opt.id} className={`relative group ${opt.floatClass}`}>
                             <button
                               type="button"
                               onClick={() => handleSelectFloatingCategory(opt.categoryId)}
-                              className={`w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-white/95 backdrop-blur-sm border border-slate-200/90 shadow-lg hover:shadow-2xl hover:border-emerald-400 flex items-center justify-center transition-transform duration-200 hover:scale-115 active:scale-95 cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500 ${opt.floatClass}`}
+                              className={`w-full px-3 py-2 rounded-xl bg-white/95 hover:bg-white text-slate-800 border border-slate-200/90 hover:border-emerald-500 shadow-xs hover:shadow-md transition-all text-xs font-bold text-left flex items-center justify-between group cursor-pointer ${opt.floatClass}`}
                               title={title}
                               aria-label={`Explore ${opt.titleEn} floating option`}
                             >
-                              <div className="group-hover:scale-110 transition-transform">
-                                {opt.iconType === 'health' && <HealthcareCrossIcon className="w-6 h-6" />}
-                                {opt.iconType === 'education' && (
-                                  <GraduationCap className="w-5.5 h-5.5 sm:w-6.5 sm:h-6.5 text-[#026bc9] stroke-[2.2]" />
-                                )}
-                                {opt.iconType === 'agriculture' && (
-                                  <Tractor className="w-5.5 h-5.5 sm:w-6.5 sm:h-6.5 text-[#ea580c] stroke-[2.2]" />
-                                )}
-                                {opt.iconType === 'housing' && (
-                                  <Home className="w-5.5 h-5.5 sm:w-6.5 sm:h-6.5 text-[#0284c7] stroke-[2.2]" />
-                                )}
-                              </div>
+                              <span className="truncate">{title}</span>
+                              <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-emerald-600 group-hover:translate-x-0.5 transition-all shrink-0 ml-1" />
                             </button>
-
-                            {/* Floating Tooltip Label on hover */}
-                            <span className="absolute right-full mr-2.5 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none px-2 py-1 rounded-md bg-slate-900/95 text-white text-[10px] font-bold whitespace-nowrap z-30 shadow-md">
-                              {title}
-                            </span>
                           </div>
                         );
                       })}
                     </div>
                   </div>
-
-                  {/* Smartphone Mockup with Overlapping Badges */}
-                  <div className="relative shrink-0 flex items-center justify-center animate-float-subtle">
-                    {/* 3D Floating Graphic */}
-                    <div className="absolute -top-3 right-4 sm:right-10 z-20 pointer-events-none drop-shadow-xl">
-                      <FloatingGraphic3D type={slide.phone.floating3DIcon} />
-                    </div>
-
-                    {/* Floating Action Badge 1 (overlapping the phone) */}
-                    <div className="absolute top-16 sm:top-20 -right-2 sm:right-2 z-20 bg-white/95 backdrop-blur-md rounded-2xl p-2 sm:p-2.5 shadow-xl border border-slate-100 flex items-center space-x-2 hover:scale-105 transition-transform max-w-[190px] sm:max-w-[220px] animate-badge-float-1">
-                      <div
-                        className={`w-8 h-8 rounded-xl ${slide.phone.floatingBadge1.color} text-white flex items-center justify-center shrink-0 shadow-xs`}
-                      >
-                        <FloatingBadgeIcon type={slide.phone.floatingBadge1.icon} className="w-4 h-4" />
-                      </div>
-                      <div className="flex flex-col min-w-0">
-                        <span className="text-[11px] sm:text-xs font-bold text-slate-900 leading-snug truncate">
-                          {locSlide.phone.floatingBadge1.title}
-                        </span>
-                        <span className="mt-0.5 inline-flex items-center px-1.5 py-0.2 rounded-full text-[8px] sm:text-[9px] font-black bg-emerald-100 text-emerald-800 uppercase tracking-wider w-fit">
-                          {locSlide.phone.floatingBadge1.tag}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Floating Action Badge 2 (overlapping lower phone edge) */}
-                    <div className="absolute top-32 sm:top-36 -right-3 sm:right-0 z-20 bg-white/95 backdrop-blur-md rounded-2xl p-2 sm:p-2.5 shadow-xl border border-slate-100 flex items-center space-x-2 hover:scale-105 transition-transform max-w-[180px] sm:max-w-[210px] animate-badge-float-2">
-                      <div
-                        className={`w-8 h-8 rounded-xl ${slide.phone.floatingBadge2.color} text-white flex items-center justify-center shrink-0 shadow-xs`}
-                      >
-                        <FloatingBadgeIcon type={slide.phone.floatingBadge2.icon} className="w-4 h-4" />
-                      </div>
-                      <div className="flex flex-col min-w-0">
-                        <span className="text-[11px] sm:text-xs font-bold text-slate-900 leading-snug truncate">
-                          {locSlide.phone.floatingBadge2.title}
-                        </span>
-                        <span className="mt-0.5 inline-flex items-center px-1.5 py-0.2 rounded-full text-[8px] sm:text-[9px] font-black bg-emerald-100 text-emerald-800 uppercase tracking-wider w-fit">
-                          {locSlide.phone.floatingBadge2.tag}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Smartphone Outer Shell */}
-                    <div className={`w-[220px] sm:w-[250px] lg:w-[270px] h-[380px] sm:h-[430px] lg:h-[460px] bg-slate-950 rounded-[36px] p-2.5 shadow-2xl border-[5px] sm:border-[6px] border-slate-800/95 relative overflow-hidden flex flex-col justify-between animate-moving-image ${slide.phone.phoneAnimationClass || 'animate-moving-phone-1'}`}>
-                      {/* Dynamic Island / Speaker Pill */}
-                      <div className="absolute top-3 left-1/2 -translate-x-1/2 w-18 h-3.5 bg-slate-950 rounded-full z-30 flex items-center justify-end pr-2 space-x-1">
-                        <div className="w-1.5 h-1.5 rounded-full bg-slate-900" />
-                        <div className="w-1 h-1 rounded-full bg-blue-950/80" />
-                      </div>
-
-                      {/* Phone Screen Container */}
-                      <div className="w-full h-full bg-slate-50 rounded-[26px] overflow-hidden flex flex-col text-slate-900 relative">
-                        {/* Status Bar */}
-                        <div className="h-6 px-3.5 pt-0.5 flex items-center justify-between text-[9px] font-bold text-slate-900 bg-white shrink-0 z-20">
-                          <span>12:28</span>
-                          <div className="flex items-center space-x-1 text-slate-800">
-                            <Signal className="w-2.5 h-2.5" />
-                            <Wifi className="w-2.5 h-2.5" />
-                            <div className="flex items-center space-x-0.5">
-                              <span className="text-[8px]">89</span>
-                              <Battery className="w-3 h-3 fill-current" />
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* App Navigation Bar */}
-                        <div className="px-2.5 py-1.5 bg-white border-b border-slate-100 flex items-center justify-between shrink-0">
-                          <div className="flex items-center space-x-1 min-w-0">
-                            <ChevronLeft className="w-3.5 h-3.5 text-slate-700 shrink-0" />
-                            <span className="text-[10px] font-bold text-slate-900 truncate">
-                              {locSlide.phone.title}
-                            </span>
-                          </div>
-                          <div className="flex items-center space-x-1 text-slate-600 shrink-0">
-                            <Search className="w-3 h-3" />
-                            <div className="text-[8px] font-semibold flex items-center text-slate-700 bg-slate-100 px-1 py-0.5 rounded">
-                              <span>{isTamil ? 'தமிழ்' : isHindi ? 'हिं' : 'En'}</span>
-                              <ChevronDown className="w-2 h-2 ml-0.5" />
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Phone Inner Content */}
-                        <div className="p-2 space-y-1.5 flex-1 overflow-hidden bg-slate-50/80">
-                          {/* Scheme Header Card */}
-                          <div className="p-2 rounded-xl bg-white border border-slate-200/70 shadow-2xs flex items-center space-x-1.5">
-                            <div className="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-800 flex items-center justify-center font-bold text-[9px] shrink-0 border border-emerald-200">
-                              {locSlide.phone.shortCode}
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <p className="text-[9px] font-bold text-slate-900 truncate">
-                                {locSlide.phone.title}
-                              </p>
-                              <p className="text-[7.5px] text-slate-500 truncate">{locSlide.phone.tagline}</p>
-                            </div>
-                          </div>
-
-                          {/* Search Bar Input */}
-                          <div className="relative">
-                            <Search className="w-2.5 h-2.5 text-slate-400 absolute left-2 top-2" />
-                            <input
-                              type="text"
-                              readOnly
-                              placeholder={locSlide.phone.searchPlaceholder}
-                              className="w-full pl-5.5 pr-2 py-1 rounded-lg bg-white border border-slate-200 text-[8px] text-slate-700 placeholder-slate-400 cursor-default focus:outline-none"
-                            />
-                          </div>
-
-                          {/* Highlight Feature Card */}
-                          <div className="p-2 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-1">
-                            <span className="text-[9px] font-bold text-slate-800 block leading-tight">
-                              {locSlide.phone.highlightCard.title}
-                            </span>
-                            <button
-                              type="button"
-                              className={`w-full py-0.5 rounded-md ${locSlide.phone.highlightCard.btnColor} text-white text-[8px] font-bold shadow-2xs tracking-wider uppercase`}
-                            >
-                              {locSlide.phone.highlightCard.btnText}
-                            </button>
-                          </div>
-
-                          {/* Service Row 1 */}
-                          <div className="p-1.5 rounded-xl bg-white border border-slate-200 shadow-2xs flex items-center justify-between">
-                            <span className="text-[8px] font-semibold text-slate-800 truncate">
-                              {locSlide.phone.service1}
-                            </span>
-                            <ChevronRight className="w-2.5 h-2.5 text-slate-400 shrink-0" />
-                          </div>
-
-                          {/* Service Row 2 */}
-                          <div className="p-1.5 rounded-xl bg-white border border-slate-200 shadow-2xs flex items-center justify-between">
-                            <span className="text-[8px] font-semibold text-slate-800 truncate">
-                              {locSlide.phone.service2}
-                            </span>
-                            <ChevronRight className="w-2.5 h-2.5 text-slate-400 shrink-0" />
-                          </div>
-                        </div>
-
-                        {/* Bottom Home Indicator Bar */}
-                        <div className="h-3.5 bg-white flex items-center justify-center shrink-0">
-                          <div className="w-16 h-1 bg-slate-300 rounded-full" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Citizen Using Smartphone Illustration */}
-                  <CitizenMobileUser />
                 </div>
               </div>
             </div>
