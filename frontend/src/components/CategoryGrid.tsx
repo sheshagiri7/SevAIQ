@@ -8,7 +8,7 @@ interface CategoryGridProps {
 }
 
 export const CategoryGrid: React.FC<CategoryGridProps> = ({ onSelectCategory }) => {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const isTamil = language === 'ta';
   const isHindi = language === 'hi';
 
@@ -36,7 +36,7 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({ onSelectCategory }) 
         <div>
           <div className="inline-flex items-center space-x-1.5 text-xs font-bold uppercase tracking-wider text-civic-700 mb-1.5">
             <Sparkles className="w-3.5 h-3.5 text-civic-600" />
-            <span>#GOVERNMENTSCHEMES / #SCHEMESFORYOU</span>
+            <span>{t.dashboard.schemesTag || '#GOVERNMENTSCHEMES / #SCHEMESFORYOU'}</span>
           </div>
           <h2
             id="categories-heading"
