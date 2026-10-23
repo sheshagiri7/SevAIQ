@@ -31,7 +31,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [language, setLanguageState] = useState<AppLanguage>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved === 'ta' || saved === 'en') return saved;
+      if (saved === 'ta' || saved === 'en' || saved === 'hi') return saved;
     } catch {
       // ignore
     }
@@ -49,7 +49,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const toggleLanguage = () => {
     setLanguageState((prev: AppLanguage) => {
-      const next: AppLanguage = prev === 'en' ? 'ta' : 'en';
+      const next: AppLanguage = prev === 'en' ? 'ta' : prev === 'ta' ? 'hi' : 'en';
       try {
         localStorage.setItem(STORAGE_KEY, next);
       } catch {
@@ -62,7 +62,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   // Sync document html lang attribute
   useEffect(() => {
     if (typeof document !== 'undefined') {
-      document.documentElement.lang = language === 'ta' ? 'ta' : 'en';
+      document.documentElement.lang = language;
     }
   }, [language]);
 
@@ -72,17 +72,17 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const getLocalizedScheme = useMemo(() => {
     return (scheme: Scheme): Scheme => {
       if (language === 'en') return scheme;
-      const taMap = SCHEME_TRANSLATIONS.ta[scheme.id];
-      if (!taMap) return scheme;
+      const langMap = (SCHEME_TRANSLATIONS as Record<string, Record<string, any>>)[language]?.[scheme.id];
+      if (!langMap) return scheme;
       return {
         ...scheme,
-        title: taMap.title || scheme.title,
-        short_description: taMap.short_description || scheme.short_description,
-        category: taMap.category || scheme.category,
-        ministry: taMap.ministry || scheme.ministry,
-        beneficiary_type: taMap.beneficiary_type || scheme.beneficiary_type,
-        benefits_summary: taMap.benefits_summary || scheme.benefits_summary,
-        detailed_benefits: taMap.detailed_benefits || scheme.detailed_benefits,
+        title: langMap.title || scheme.title,
+        short_description: langMap.short_description || scheme.short_description,
+        category: langMap.category || scheme.category,
+        ministry: langMap.ministry || scheme.ministry,
+        beneficiary_type: langMap.beneficiary_type || scheme.beneficiary_type,
+        benefits_summary: langMap.benefits_summary || scheme.benefits_summary,
+        detailed_benefits: langMap.detailed_benefits || scheme.detailed_benefits,
       };
     };
   }, [language]);
@@ -91,13 +91,13 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const getLocalizedDocument = useMemo(() => {
     return (doc: DocumentRecord): DocumentRecord => {
       if (language === 'en') return doc;
-      const taMap = DOCUMENT_TRANSLATIONS.ta[doc.id];
-      if (!taMap) return doc;
+      const langMap = (DOCUMENT_TRANSLATIONS as Record<string, Record<string, any>>)[language]?.[doc.id];
+      if (!langMap) return doc;
       return {
         ...doc,
-        name: taMap.name || doc.name,
-        description: taMap.description || doc.description,
-        issuingAuthority: taMap.issuingAuthority || doc.issuingAuthority,
+        name: langMap.name || doc.name,
+        description: langMap.description || doc.description,
+        issuingAuthority: langMap.issuingAuthority || doc.issuingAuthority,
       };
     };
   }, [language]);
