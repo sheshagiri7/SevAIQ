@@ -15,6 +15,9 @@ import {
   DocumentMapperRequest,
   BackendDocumentMappingResponse,
   PassportRequest,
+  ChatRequestPayload,
+  ChatResponsePayload,
+  ProviderStatus,
 } from '../types';
 
 export const getApiBaseUrl = (): string => {
@@ -617,4 +620,133 @@ export function triggerBlobDownload(blob: Blob, filename: string): void {
       // ignore
     }
   }, 200);
+}
+
+/**
+ * Sends a conversation turn to the backend AI Chatbot (POST /api/chat).
+ * Returns the genuine AI response or structured provider error.
+ */
+export async function sendChatMessage(request: ChatRequestPayload): Promise<{
+  success: boolean;
+  data: ChatResponsePayload | null;
+  error?: string;
+  errorType?: string;
+  retryable?: boolean;
+}> {
+  const baseUrl = getApiBaseUrl();
+
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 20000);
+
+    const response = await fetch(`${baseUrl}/api/chat`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify(request),
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      let errorType = 'unknown';
+      let retryable = false;
+      let errorMessage = 'AI Chatbot service error';
+
+      try {
+        const errJson = await response.json();
+        if (errJson && errJson.detail) {
+          if (typeof errJson.detail === 'object') {
+            errorType = errJson.detail.error_type || errorType;
+            errorMessage = errJson.detail.message || errorMessage;
+            retryable = Boolean(errJson.detail.retryable);
+          } else if (typeof errJson.detail === 'string') {
+            errorMessage = errJson.detail;
+          }
+        }
+      } catch {
+        errorMessage = `HTTP error ${response.status}: ${response.statusText}`;
+      }
+
+      return {
+        success: false,
+        data: null,
+        error: errorMessage,
+        errorType,
+        retryable,
+      };
+    }
+
+    const data = await response.json();
+    return {
+      success: true,
+      data: data as ChatResponsePayload,
+    };
+  } catch (err: unknown) {
+    let message = 'Failed to connect to AI Chatbot service';
+    let errorType = 'network_error';
+    let retryable = true;
+
+    if (err instanceof DOMException && err.name === 'AbortError') {
+      message = 'Request to AI Chatbot timed out (20s)';
+      errorType = 'timeout';
+    } else if (err instanceof Error && err.message) {
+      message = err.message;
+    }
+
+    return {
+      success: false,
+      data: null,
+      error: message,
+      errorType,
+      retryable,
+    };
+  }
+}
+
+/**
+ * Fetches operational readiness status of registered AI providers (GET /api/chat/providers).
+ */
+export async function fetchChatProviders(): Promise<{
+  success: boolean;
+  data: ProviderStatus[];
+  error?: string;
+}> {
+  const baseUrl = getApiBaseUrl();
+
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+    const response = await fetch(`${baseUrl}/api/chat/providers`, {
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      return {
+        success: false,
+        data: [],
+        error: `HTTP error ${response.status}`,
+      };
+    }
+
+    const data = await response.json();
+    return {
+      success: true,
+      data: Array.isArray(data) ? (data as ProviderStatus[]) : [],
+    };
+  } catch (err: unknown) {
+    return {
+      success: false,
+      data: [],
+      error: err instanceof Error ? err.message : 'Failed to fetch AI providers',
+    };
+  }
 }

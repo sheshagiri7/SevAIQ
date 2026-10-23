@@ -24,7 +24,7 @@ def test_profile_meeting_known_criteria_farmer():
     response = client.post("/api/eligibility/check", json=payload)
     assert response.status_code == 200
     data = response.json()
-    assert data["total_schemes_evaluated"] == 8
+    assert data["total_schemes_evaluated"] == 9
 
     pm_kisan = next(s for s in data["schemes"] if s["scheme_id"] == "pm-kisan")
     assert pm_kisan["outcome"] == "meets_known_criteria"
@@ -166,11 +166,35 @@ def test_multiple_schemes_with_different_rules_evaluation():
     assert outcomes["pmay-u"] == "does_not_meet_known_criteria"
     # PM SVANidhi: Requires urban street vendor -> does_not_meet_known_criteria
     assert outcomes["pm-svanidhi"] == "does_not_meet_known_criteria"
+    # NSP Post-Matric: Requires student occupation -> does_not_meet_known_criteria
+    assert outcomes["nsp-post-matric"] == "does_not_meet_known_criteria"
 
     # Verify summary consistency
     summary = data["summary"]
     total = sum(summary.values())
-    assert total == data["total_schemes_evaluated"] == 8
+    assert total == data["total_schemes_evaluated"] == 9
+
+
+def test_profile_meeting_known_criteria_student_post_matric():
+    """Verify an eligible student profile produces 'meets_known_criteria' for NSP Post-Matric."""
+    payload = {
+        "age": 20,
+        "occupation": "student",
+        "annual_income": 150000,
+        "is_tax_payer": False,
+    }
+    response = client.post("/api/eligibility/check", json=payload)
+    assert response.status_code == 200
+    data = response.json()
+    assert data["total_schemes_evaluated"] == 9
+
+    nsp = next(s for s in data["schemes"] if s["scheme_id"] == "nsp-post-matric")
+    assert nsp["outcome"] == "meets_known_criteria"
+    assert len(nsp["criteria_matched"]) >= 4
+    assert len(nsp["criteria_not_met"]) == 0
+    assert any("student" in r.lower() for r in nsp["criteria_matched"])
+    assert any("250,000" in r or "250000" in r for r in nsp["criteria_matched"])
+    assert "scholarships.gov.in" in nsp["official_portal_url"]
 
 
 def test_empty_scheme_catalog_graceful_handling(monkeypatch):

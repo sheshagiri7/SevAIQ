@@ -365,10 +365,14 @@ export function prepareSpeechText(text: string, language: AssistantLanguage): st
     // 7. Age patterns e.g. 70+ -> 70 வயதுக்கு மேற்பட்ட
     clean = clean.replace(/([0-9]+)\s*\+/g, '$1 வயதுக்கு மேற்பட்ட');
 
-    // 8. Strip markdown characters, quotes, and brackets
+    // 8. Clean markdown links and bare URLs for natural speech reading
+    clean = clean.replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1');
+    clean = clean.replace(/https?:\/\/[^\s)]+/g, '');
+
+    // 9. Strip markdown characters, quotes, and brackets
     clean = clean.replace(/[*_#`~"“”'’[\]]/g, '');
 
-    // 9. Normalize spacing
+    // 10. Normalize spacing
     clean = clean.replace(/\s+/g, ' ').trim();
 
     return clean;
@@ -376,6 +380,8 @@ export function prepareSpeechText(text: string, language: AssistantLanguage): st
 
   // English cleanup
   let cleanEn = text;
+  cleanEn = cleanEn.replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1');
+  cleanEn = cleanEn.replace(/https?:\/\/[^\s)]+/g, '');
   cleanEn = cleanEn.replace(/₹\s*([0-9,.]+)\s*(Lakh|Crore)?/gi, (_match, num, unit) => {
     return unit ? `${num} ${unit} Rupees` : `${num} Rupees`;
   });

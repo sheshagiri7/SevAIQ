@@ -488,6 +488,7 @@ export function App() {
         isOpen={isVoiceAssistantOpen}
         onToggleOpen={() => setIsVoiceAssistantOpen((prev) => !prev)}
         onClose={() => setIsVoiceAssistantOpen(false)}
+        isKioskMode={isKioskMode}
       />
 
       {/* UX4G Universal Accessibility Options Slide-over Drawer */}

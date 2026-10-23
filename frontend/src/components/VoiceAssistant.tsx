@@ -3,26 +3,42 @@ import {
   Mic,
   MicOff,
   Volume2,
-  VolumeX,
   Send,
   Globe,
   ArrowRight,
   ShieldCheck,
   AlertCircle,
+  AlertTriangle,
   X,
   RotateCcw,
   Maximize2,
   Minimize2,
   Sparkles,
+  RefreshCw,
+  Pause,
+  Play,
+  Square,
 } from 'lucide-react';
-import { Scheme, AssistantLanguage, AssistantMessage, NavigationTab } from '../types';
+import { Scheme, AssistantLanguage, AssistantMessage, NavigationTab, ChatMessageWire } from '../types';
 import {
-  processCitizenQuery,
   SAMPLE_PROMPTS,
   prepareSpeechText,
   getBestVoice,
 } from '../utils/voiceAssistantEngine';
+import {
+  SpeechRecognitionState,
+  ClassifiedSpeechError,
+  getSpeechLocale,
+  isSpeechRecognitionSupported,
+  isSpeechSynthesisSupported,
+  classifySpeechError,
+  getSpeechPrivacyNotice,
+  sanitizeTranscript,
+  isValidTranscript,
+} from '../utils/speechUtils';
 import { useLanguage } from '../context/LanguageContext';
+import { sendChatMessage } from '../services/api';
+import { CivicMarkdown } from './CivicMarkdown';
 
 export interface VoiceAssistantProps {
   schemes: Scheme[];
@@ -31,6 +47,7 @@ export interface VoiceAssistantProps {
   isOpen?: boolean;
   onToggleOpen?: () => void;
   onClose?: () => void;
+  isKioskMode?: boolean;
 }
 
 export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
@@ -40,6 +57,7 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
   isOpen,
   onToggleOpen,
   onClose,
+  isKioskMode = false,
 }) => {
   const [internalIsOpen, setInternalIsOpen] = useState(false);
   const [isMaximized, setIsMaximized] = useState(false);
@@ -47,19 +65,33 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
 
   const { language, setLanguage, getLocalizedScheme } = useLanguage();
   const [inputText, setInputText] = useState('');
-  const [isListening, setIsListening] = useState(false);
+
+  // Speech Recognition (STT) state machine
+  const [speechState, setSpeechState] = useState<SpeechRecognitionState>('idle');
+  const [speechTranscript, setSpeechTranscript] = useState<string>('');
+  const [interimTranscript, setInterimTranscript] = useState<string>('');
   const [speechSupported, setSpeechSupported] = useState<boolean>(true);
-  const [speechError, setSpeechError] = useState<string | null>(null);
-  const [activeSpeakingId, setActiveSpeakingId] = useState<string | null>(null);
+  const [speechError, setSpeechError] = useState<ClassifiedSpeechError | null>(null);
+
+  // Text-To-Speech (TTS) playback controls state
+  const [ttsState, setTtsState] = useState<{
+    messageId: string | null;
+    status: 'idle' | 'playing' | 'paused';
+  }>({ messageId: null, status: 'idle' });
+  const [lastSpokenMessageId, setLastSpokenMessageId] = useState<string | null>(null);
+
   const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [activeVoiceLabel, setActiveVoiceLabel] = useState<string | null>(null);
   const [hasInteracted, setHasInteracted] = useState(false);
+  const [isAiLoading, setIsAiLoading] = useState(false);
 
   const recognitionRef = useRef<any>(null);
+  const isManuallyAbortingRef = useRef<boolean>(false);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const triggerButtonRef = useRef<HTMLButtonElement | null>(null);
   const prevLangRef = useRef<AssistantLanguage>(language);
+  const lastUserQueryRef = useRef<string>('');
 
   const handleToggle = () => {
     if (onToggleOpen) {
@@ -69,65 +101,81 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
     }
   };
 
+  const stopAllAudio = () => {
+    if (isSpeechSynthesisSupported()) {
+      window.speechSynthesis.cancel();
+      setTtsState({ messageId: null, status: 'idle' });
+    }
+    if (recognitionRef.current) {
+      try {
+        isManuallyAbortingRef.current = true;
+        recognitionRef.current.abort();
+      } catch {
+        // ignore
+      }
+      setSpeechState('idle');
+      setInterimTranscript('');
+    }
+  };
+
   const handleClose = () => {
     if (onClose) {
       onClose();
     } else {
       setInternalIsOpen(false);
     }
-    // Stop any speech when closed
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      setActiveSpeakingId(null);
-    }
-    if (isListening && recognitionRef.current) {
-      recognitionRef.current.stop();
-      setIsListening(false);
-    }
+    stopAllAudio();
     setTimeout(() => {
       triggerButtonRef.current?.focus();
     }, 50);
   };
 
   // Initial welcome message in selected language
+  const buildWelcomeMessage = (lang: AssistantLanguage): AssistantMessage => ({
+    id: `welcome-${Date.now()}`,
+    sender: 'assistant',
+    text:
+      lang === 'ta'
+        ? 'வணக்கம்! நான் SevAIQ குரல் மற்றும் உரை உதவியாளர். விவசாயி நிதி உதவி, இலவச மருத்துவ காப்பீடு, வீடு கட்ட மானியம், முதியோர் ஓய்வூதியம், அல்லது சிறு தொழில் கடன் குறித்து தமிழில் கேட்கலாம் அல்லது தட்டச்சு செய்யலாம்.'
+        : 'Welcome! I am the SevAIQ Voice & Text Assistant. Ask questions about farming assistance, health insurance, housing subsidies, senior pensions, or business loans in simple English.',
+    timestamp: new Date(),
+  });
+
   const [messages, setMessages] = useState<AssistantMessage[]>(() => [
-    {
-      id: 'welcome-1',
-      sender: 'assistant',
-      text:
-        language === 'ta'
-          ? 'வணக்கம்! நான் SevAIQ குரல் மற்றும் உரை உதவியாளர். விவசாயி நிதி உதவி, இலவச மருத்துவ காப்பீடு, வீடு கட்ட மானியம், முதியோர் ஓய்வூதியம், அல்லது சிறு தொழில் கடன் குறித்து தமிழில் கேட்கலாம் அல்லது தட்டச்சு செய்யலாம்.'
-          : 'Welcome! I am the SevAIQ Voice & Text Assistant. Ask questions about farming assistance, health insurance, housing subsidies, senior pensions, or business loans in simple English.',
-      timestamp: new Date(),
-    },
+    buildWelcomeMessage(language),
   ]);
 
   // Sync when language changes globally or via widget
   useEffect(() => {
     if (prevLangRef.current !== language) {
       prevLangRef.current = language;
-      // Stop any ongoing speech
-      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        setActiveSpeakingId(null);
-      }
-      if (isListening && recognitionRef.current) {
-        recognitionRef.current.stop();
-        setIsListening(false);
-      }
+      stopAllAudio();
 
       const greeting: AssistantMessage = {
         id: `lang-switch-${Date.now()}`,
         sender: 'assistant',
         text:
           language === 'ta'
-            ? 'மொழி தமிழுக்கு மாற்றப்பட்டது. உங்கள் அரசு நலத்திட்ட கேள்விகளை தமிழில் கேட்கவும் அல்லது பேசவும்.'
-            : 'Language switched to English. You can speak or type your welfare scheme questions in simple English.',
+            ? 'மொழி தமிழுக்கு (ta-IN) மாற்றப்பட்டது. உங்கள் அரசு நலத்திட்ட கேள்விகளை தமிழில் பேசவும் அல்லது தட்டச்சு செய்யவும்.'
+            : 'Language switched to English (en-IN). You can speak or type your welfare scheme questions in simple English.',
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, greeting]);
     }
-  }, [language, isListening]);
+  }, [language]);
+
+  // Kiosk Mode Reset: clear all transcripts, context, and speech states
+  useEffect(() => {
+    if (isKioskMode) {
+      stopAllAudio();
+      setSpeechTranscript('');
+      setInterimTranscript('');
+      setSpeechState('idle');
+      setSpeechError(null);
+      setInputText('');
+      setMessages([buildWelcomeMessage(language)]);
+    }
+  }, [isKioskMode, language]);
 
   // Update welcome message when language changes inside assistant
   const handleLanguageChange = (newLang: AssistantLanguage) => {
@@ -136,18 +184,12 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
 
   // Check speech recognition capability
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const SpeechRecognition =
-      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-
-    if (!SpeechRecognition) {
-      setSpeechSupported(false);
-    }
+    setSpeechSupported(isSpeechRecognitionSupported());
   }, []);
 
   // Load and monitor available browser speech synthesis voices
   useEffect(() => {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+    if (!isSpeechSynthesisSupported()) return;
 
     const updateVoices = () => {
       const voices = window.speechSynthesis.getVoices();
@@ -166,25 +208,16 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
     window.speechSynthesis.onvoiceschanged = updateVoices;
 
     return () => {
-      if ('speechSynthesis' in window) {
+      if (isSpeechSynthesisSupported()) {
         window.speechSynthesis.onvoiceschanged = null;
       }
     };
   }, [language]);
 
-  // Clean up any ongoing speech synthesis when unmounting
+  // Clean up any ongoing speech synthesis and recognition when unmounting
   useEffect(() => {
     return () => {
-      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-      }
-      if (recognitionRef.current) {
-        try {
-          recognitionRef.current.stop();
-        } catch {
-          // ignore
-        }
-      }
+      stopAllAudio();
     };
   }, []);
 
@@ -193,7 +226,7 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
     if (isWidgetOpen) {
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [messages, isWidgetOpen]);
+  }, [messages, isWidgetOpen, speechState]);
 
   // Auto-focus input when widget opens
   useEffect(() => {
@@ -215,137 +248,278 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isWidgetOpen]);
 
-  // Handle Speech Recognition toggle
-  const toggleListening = () => {
+  // -------------------------------------------------------------
+  // SPEECH-TO-TEXT (STT) RECOGNITION HANDLERS
+  // -------------------------------------------------------------
+  const startListening = () => {
     setSpeechError(null);
     setHasInteracted(true);
+    isManuallyAbortingRef.current = false;
 
-    const SpeechRecognition =
-      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-
-    if (!SpeechRecognition) {
+    if (!isSpeechRecognitionSupported()) {
       setSpeechSupported(false);
-      setSpeechError(
-        language === 'ta'
-          ? 'இந்த உலாவியில் மைக்ரோஃபோன் குரல் அறிதல் ஆதரிக்கப்படவில்லை. கீழே தட்டச்சு செய்து கேட்கலாம்.'
-          : 'Browser speech recognition is not supported in this browser. Please use the text input below.'
-      );
+      const unsupportedErr: ClassifiedSpeechError = {
+        type: 'unsupported',
+        message:
+          language === 'ta'
+            ? 'இந்த உலாவியில் மைக்ரோஃபோன் குரல் அறிதல் ஆதரிக்கப்படவில்லை (எ.கா. Firefox). கீழே உள்ள உரை பெட்டியில் தட்டச்சு செய்யலாம்.'
+            : 'Browser speech recognition is not supported in this browser (e.g. Firefox). Manual text input is fully available below.',
+        isRetryable: false,
+      };
+      setSpeechError(unsupportedErr);
+      setSpeechState('error');
       return;
     }
 
-    if (isListening) {
-      if (recognitionRef.current) {
-        recognitionRef.current.stop();
-      }
-      setIsListening(false);
-      return;
+    // Stop ongoing speech synthesis
+    if (isSpeechSynthesisSupported()) {
+      window.speechSynthesis.cancel();
+      setTtsState({ messageId: null, status: 'idle' });
     }
 
     try {
+      const SpeechRecognition =
+        (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
       const recognition = new SpeechRecognition();
       recognitionRef.current = recognition;
+
       recognition.continuous = false;
-      recognition.interimResults = false;
-      recognition.lang = language === 'ta' ? 'ta-IN' : 'en-IN';
+      recognition.interimResults = true;
+      recognition.lang = getSpeechLocale(language);
+
+      let accumulatedFinal = '';
 
       recognition.onstart = () => {
-        setIsListening(true);
+        setSpeechState('listening');
+        setInterimTranscript('');
+        setSpeechError(null);
       };
 
       recognition.onresult = (event: any) => {
-        const transcript = event.results[0][0].transcript;
-        if (transcript) {
-          setInputText(transcript);
-          handleSendQuery(transcript);
+        let interim = '';
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const item = event.results[i];
+          const text = item[0]?.transcript || '';
+          if (item.isFinal) {
+            accumulatedFinal = sanitizeTranscript(`${accumulatedFinal} ${text}`);
+          } else {
+            interim = sanitizeTranscript(`${interim} ${text}`);
+          }
         }
-        setIsListening(false);
+
+        if (accumulatedFinal) {
+          setSpeechTranscript(accumulatedFinal);
+          setSpeechState('reviewing');
+          setInterimTranscript('');
+        } else if (interim) {
+          setInterimTranscript(interim);
+        }
       };
 
       recognition.onerror = (event: any) => {
-        setIsListening(false);
-        let errorMsg =
-          language === 'ta'
-            ? 'குரல் அறிதல் தோல்வியடைந்தது. தயவுசெய்து மீண்டும் முயற்சிக்கவும் அல்லது தட்டச்சு செய்யவும்.'
-            : 'Speech recognition encountered an issue. Please try again or type your question.';
-
-        if (event.error === 'not-allowed') {
-          errorMsg =
-            language === 'ta'
-              ? 'மைக்ரோஃபோன் அனுமதி மறுக்கப்பட்டுள்ளது. உலாவியின் அமைப்பில் மைக்ரோஃபோனை அனுமதிக்கவும் அல்லது தட்டச்சு செய்யவும்.'
-              : 'Microphone permission was denied. Please allow microphone access in your browser or use text input.';
-        } else if (event.error === 'no-speech') {
-          errorMsg =
-            language === 'ta'
-              ? 'குரல் எதுவும் கேட்கவில்லை. மைக்ரோஃபோன் அருகில் பேசி முயற்சிக்கவும்.'
-              : 'No speech was detected. Please try speaking closer to the microphone.';
+        if (isManuallyAbortingRef.current || event.error === 'aborted') {
+          return;
         }
-        setSpeechError(errorMsg);
+
+        const classified = classifySpeechError(event.error, language);
+        setSpeechError(classified);
+
+        if (classified.type === 'permission_denied') {
+          setSpeechState('permission_denied');
+        } else if (classified.type === 'no_speech') {
+          if (!accumulatedFinal && !speechTranscript) {
+            setSpeechState('error');
+          }
+        } else {
+          setSpeechState('error');
+        }
       };
 
       recognition.onend = () => {
-        setIsListening(false);
+        if (isManuallyAbortingRef.current) {
+          isManuallyAbortingRef.current = false;
+          return;
+        }
+
+        if (accumulatedFinal) {
+          setSpeechTranscript(accumulatedFinal);
+          setSpeechState('reviewing');
+        } else {
+          setSpeechState((prev) => (prev === 'listening' ? 'idle' : prev));
+        }
       };
 
       recognition.start();
     } catch {
-      setIsListening(false);
-      setSpeechError(
-        language === 'ta'
-          ? 'மைக்ரோஃபோனை துவக்க முடியவில்லை. கீழே உள்ள உரை பெட்டியைப் பயன்படுத்தவும்.'
-          : 'Could not initialize speech recognition. Please use the text input.'
-      );
+      setSpeechState('error');
+      setSpeechError({
+        type: 'unknown',
+        message:
+          language === 'ta'
+            ? 'மைக்ரோஃபோனைத் துவக்க முடியவில்லை. தயவுசெய்து கீழே தட்டச்சு செய்யவும்.'
+            : 'Could not initialize speech recognition. Please use the text input below.',
+        isRetryable: true,
+      });
     }
   };
 
-  // Text-To-Speech (TTS) handler with authentic voice selection and phonetic preparation
-  const handleSpeak = (messageId: string, text: string) => {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
+  const handleStopListening = () => {
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.stop();
+      } catch {
+        // ignore
+      }
+    }
+    // If interim text was captured, promote it to reviewing
+    if (interimTranscript && !speechTranscript) {
+      setSpeechTranscript(interimTranscript);
+      setSpeechState('reviewing');
+      setInterimTranscript('');
+    }
+  };
+
+  const handleCancelSpeech = () => {
+    isManuallyAbortingRef.current = true;
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.abort();
+      } catch {
+        // ignore
+      }
+    }
+    setSpeechState('idle');
+    setSpeechTranscript('');
+    setInterimTranscript('');
+    setSpeechError(null);
+  };
+
+  const handleRetrySpeech = () => {
+    handleCancelSpeech();
+    setTimeout(() => {
+      startListening();
+    }, 150);
+  };
+
+  const handleConfirmSpeech = () => {
+    const finalQuery = speechTranscript.trim();
+    if (!finalQuery || isAiLoading) return;
+
+    // Send the user-reviewed transcript to the genuine Gemini API
+    handleSendQuery(finalQuery);
+    setSpeechTranscript('');
+    setInterimTranscript('');
+    setSpeechState('idle');
+  };
+
+  const toggleListening = () => {
+    if (speechState === 'listening') {
+      handleStopListening();
+    } else if (speechState === 'reviewing') {
+      handleRetrySpeech();
+    } else {
+      startListening();
+    }
+  };
+
+  // -------------------------------------------------------------
+  // TEXT-TO-SPEECH (TTS) PLAYBACK CONTROLS
+  // -------------------------------------------------------------
+  const startSpeaking = (messageId: string, text: string) => {
+    if (!isSpeechSynthesisSupported()) return;
+
+    // If currently paused on this same message, resume
+    if (ttsState.messageId === messageId && ttsState.status === 'paused') {
+      window.speechSynthesis.resume();
+      setTtsState({ messageId, status: 'playing' });
       return;
     }
 
-    if (activeSpeakingId === messageId) {
-      window.speechSynthesis.cancel();
-      setActiveSpeakingId(null);
-      return;
-    }
-
+    // Cancel existing utterance before starting new one
     window.speechSynthesis.cancel();
 
-    // Prepare text with phonetic Tamil expansions for symbols, currency (ரூபாய்), and acronyms
     const preparedText = prepareSpeechText(text, language);
     const utterance = new SpeechSynthesisUtterance(preparedText);
-    utterance.lang = language === 'ta' ? 'ta-IN' : 'en-IN';
-
-    // Tamil speech is most legible at 0.88 rate; English at 0.95
+    utterance.lang = getSpeechLocale(language);
     utterance.rate = language === 'ta' ? 0.88 : 0.95;
     utterance.pitch = 1.0;
 
-    // Explicitly set the best native voice (e.g. Vani, Google தமிழ்) so the browser doesn't fallback to English voice
-    const voices = availableVoices.length > 0 ? availableVoices : window.speechSynthesis.getVoices();
+    const voices =
+      availableVoices.length > 0 ? availableVoices : window.speechSynthesis.getVoices();
     const bestVoice = getBestVoice(voices, language);
     if (bestVoice) {
       utterance.voice = bestVoice;
     }
 
     utterance.onend = () => {
-      setActiveSpeakingId(null);
+      setTtsState({ messageId: null, status: 'idle' });
+      setLastSpokenMessageId(messageId);
     };
 
     utterance.onerror = (e) => {
-      console.warn('Speech synthesis event:', e);
-      setActiveSpeakingId(null);
+      console.warn('Speech synthesis playback error:', e);
+      setTtsState({ messageId: null, status: 'idle' });
     };
 
-    setActiveSpeakingId(messageId);
+    utterance.onpause = () => {
+      setTtsState((prev) => ({ ...prev, status: 'paused' }));
+    };
+
+    utterance.onresume = () => {
+      setTtsState((prev) => ({ ...prev, status: 'playing' }));
+    };
+
+    setTtsState({ messageId, status: 'playing' });
+    setLastSpokenMessageId(messageId);
     window.speechSynthesis.speak(utterance);
   };
 
-  // Send citizen query
-  const handleSendQuery = (textToSend?: string) => {
+  const pauseSpeaking = () => {
+    if (!isSpeechSynthesisSupported()) return;
+    try {
+      window.speechSynthesis.pause();
+      setTtsState((prev) => ({ ...prev, status: 'paused' }));
+    } catch {
+      // ignore
+    }
+  };
+
+  const resumeSpeaking = () => {
+    if (!isSpeechSynthesisSupported()) return;
+    try {
+      window.speechSynthesis.resume();
+      setTtsState((prev) => ({ ...prev, status: 'playing' }));
+    } catch {
+      // ignore
+    }
+  };
+
+  const stopSpeaking = () => {
+    if (!isSpeechSynthesisSupported()) return;
+    try {
+      window.speechSynthesis.cancel();
+    } catch {
+      // ignore
+    }
+    setTtsState({ messageId: null, status: 'idle' });
+  };
+
+  const replaySpeaking = (messageId: string, text: string) => {
+    stopSpeaking();
+    setTimeout(() => {
+      startSpeaking(messageId, text);
+    }, 50);
+  };
+
+  // -------------------------------------------------------------
+  // SEND QUERY TO GENUINE GEMINI BACKEND API
+  // -------------------------------------------------------------
+  const handleSendQuery = async (textToSend?: string) => {
     const query = (textToSend ?? inputText).trim();
-    if (!query) return;
+    if (!query || isAiLoading) return;
 
     setHasInteracted(true);
+    lastUserQueryRef.current = query;
 
     // 1. Citizen message
     const userMsg: AssistantMessage = {
@@ -355,45 +529,140 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
       timestamp: new Date(),
     };
 
-    // 2. Compute response from verified scheme catalog
-    const answer = processCitizenQuery(query, language, schemes);
-    const botMsg: AssistantMessage = {
-      id: `bot-${Date.now()}`,
-      sender: 'assistant',
-      text: answer.text,
-      timestamp: new Date(),
-      suggestedSchemes: answer.matchedSchemes,
-      suggestedAction: answer.suggestedAction,
-    };
-
-    setMessages((prev) => [...prev, userMsg, botMsg]);
+    setMessages((prev) => [...prev, userMsg]);
     setInputText('');
+    setIsAiLoading(true);
 
-    // Auto-speak answer if user spoke via mic (English only)
-    if (textToSend && language === 'en' && typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      setTimeout(() => {
-        handleSpeak(botMsg.id, answer.text);
-      }, 300);
+    // 2. Format multi-turn conversational context for the AI provider
+    // Skip static UI greetings and language switch banners so Gemini receives pure citizen-assistant dialogue
+    const chatHistory: ChatMessageWire[] = messages
+      .filter(
+        (m) =>
+          !m.isError &&
+          !m.id.startsWith('welcome-') &&
+          !m.id.startsWith('lang-switch-') &&
+          m.text.trim().length > 0
+      )
+      .slice(-8)
+      .map((m) => ({
+        role: (m.sender === 'citizen' ? 'user' : 'assistant') as 'user' | 'assistant',
+        content: m.text,
+      }));
+    chatHistory.push({ role: 'user', content: query });
+
+    try {
+      const res = await sendChatMessage({
+        messages: chatHistory,
+        language,
+      });
+
+      setIsAiLoading(false);
+
+      if (res.success && res.data) {
+        const replyText = res.data.reply;
+
+        // Associate verified scheme recommendation cards if mentioned by genuine AI response
+        const lowerReply = replyText.toLowerCase();
+        const matchedSchemes = schemes.filter(
+          (s) =>
+            lowerReply.includes(s.id.toLowerCase()) ||
+            lowerReply.includes(s.title.toLowerCase().split('(')[0].trim().toLowerCase())
+        );
+
+        const botMsg: AssistantMessage = {
+          id: `bot-${Date.now()}`,
+          sender: 'assistant',
+          text: replyText,
+          timestamp: new Date(),
+          provider: res.data.provider,
+          model: res.data.model,
+          latencyMs: res.data.latency_ms,
+          suggestedSchemes: matchedSchemes.length > 0 ? matchedSchemes : undefined,
+        };
+
+        setMessages((prev) => [...prev, botMsg]);
+      } else {
+        // Distinguish AI provider error categories
+        let errorNotice =
+          res.error ||
+          (language === 'ta'
+            ? 'AI மாதிரியிலிருந்து பதிலை உருவாக்க முடியவில்லை.'
+            : 'Failed to generate response from AI model.');
+
+        if (res.errorType === 'quota_exhausted' || res.errorType === 'rate_limited') {
+          errorNotice =
+            language === 'ta'
+              ? 'Google Gemini சேவை வரம்பு (Quota/Rate Limit) எட்டப்பட்டுள்ளது. தயவுசெய்து சிறிது நேரம் கழித்து மீண்டும் முயற்சிக்கவும்.'
+              : 'Google Gemini project quota or rate limit has been reached. Please wait a few moments and retry.';
+        } else if (res.errorType === 'configuration_error') {
+          errorNotice =
+            language === 'ta'
+              ? 'சேவையகத்தில் Gemini API விசை கட்டமைக்கப்படவில்லை (GEMINI_API_KEY). தயவுசெய்து backend/.env கோப்பில் விதியைச் சேர்க்கவும்.'
+              : 'Gemini API key is not configured on the backend server (GEMINI_API_KEY). Please set it in backend/.env.';
+        } else if (res.errorType === 'timeout') {
+          errorNotice =
+            language === 'ta'
+              ? 'AI பதில் நேரம் முடிந்தது (Timeout). தயவுசெய்து மீண்டும் முயற்சிக்கவும்.'
+              : 'Gemini request timed out. Please retry your question.';
+        } else if (res.errorType === 'auth_error') {
+          errorNotice =
+            language === 'ta'
+              ? 'Gemini API அங்கீகார பிழை (Invalid Key). சேவையக அமைப்புகளை சரிபார்க்கவும்.'
+              : 'Invalid or unauthorized Gemini API credentials. Please verify backend configuration.';
+        } else if (res.errorType === 'safety_blocked') {
+          errorNotice =
+            language === 'ta'
+              ? 'பாதுகாப்புக் கொள்கையின் காரணமாக இந்த கேள்விக்கு பதில் தடுக்கப்பட்டுள்ளது.'
+              : 'This response was blocked by content safety filters.';
+        }
+
+        const errorMsg: AssistantMessage = {
+          id: `bot-err-${Date.now()}`,
+          sender: 'assistant',
+          text: errorNotice,
+          timestamp: new Date(),
+          isError: true,
+          errorType: res.errorType,
+          retryable: res.retryable,
+        };
+
+        setMessages((prev) => [...prev, errorMsg]);
+      }
+    } catch {
+      setIsAiLoading(false);
+      const networkErr: AssistantMessage = {
+        id: `bot-err-${Date.now()}`,
+        sender: 'assistant',
+        text:
+          language === 'ta'
+            ? 'பிணைய பிழை: AI சேவையகத்துடன் இணைக்க முடியவில்லை. இணைய இணைப்பை சரிபார்க்கவும்.'
+            : 'Network error: could not connect to the backend AI service. Please check your connection.',
+        timestamp: new Date(),
+        isError: true,
+        errorType: 'network_error',
+        retryable: true,
+      };
+      setMessages((prev) => [...prev, networkErr]);
+    }
+  };
+
+  const handleRetryLastQuery = () => {
+    if (lastUserQueryRef.current && !isAiLoading) {
+      handleSendQuery(lastUserQueryRef.current);
     }
   };
 
   const handleResetChat = () => {
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      setActiveSpeakingId(null);
-    }
-    setMessages([
-      {
-        id: `welcome-${Date.now()}`,
-        sender: 'assistant',
-        text:
-          language === 'ta'
-            ? 'வணக்கம்! நான் SevAIQ குரல் மற்றும் உரை உதவியாளர். விவசாயி நிதி உதவி, இலவச மருத்துவ காப்பீடு, வீடு கட்ட மானியம், முதியோர் ஓய்வூதியம், அல்லது சிறு தொழில் கடன் குறித்து தமிழில் கேட்கலாம் அல்லது தட்டச்சு செய்யலாம்.'
-            : 'Welcome! I am the SevAIQ Voice & Text Assistant. Ask questions about farming assistance, health insurance, housing subsidies, senior pensions, or business loans in simple English.',
-        timestamp: new Date(),
-      },
-    ]);
+    stopAllAudio();
+    setSpeechTranscript('');
+    setInterimTranscript('');
+    setSpeechState('idle');
+    setSpeechError(null);
+    setInputText('');
+    setMessages([buildWelcomeMessage(language)]);
   };
+
+  const privacyNotice = getSpeechPrivacyNotice(language);
 
   return (
     <>
@@ -439,8 +708,8 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
                 {isWidgetOpen ? 'Close Voice' : 'Voice AI'}
               </span>
               {!isWidgetOpen && (
-                <span className="inline-flex items-center px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-white/20 text-blue-100 tracking-wide">
-                  தமிழ் / EN
+                <span className="inline-flex items-center px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-white/20 text-blue-100 tracking-wide font-mono">
+                  ta-IN / en-IN
                 </span>
               )}
             </div>
@@ -467,13 +736,13 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
           className={`fixed z-50 bg-white rounded-3xl shadow-2xl border border-slate-200/90 flex flex-col overflow-hidden transition-all duration-200 animate-in fade-in slide-in-from-bottom-4 ${
             isMaximized
               ? 'bottom-4 right-4 sm:bottom-6 sm:right-6 w-[calc(100vw-2rem)] sm:w-[640px] md:w-[700px] h-[86vh] max-h-[760px]'
-              : 'bottom-20 right-4 sm:right-6 w-[calc(100vw-2rem)] sm:w-[420px] md:w-[440px] h-[580px] sm:h-[620px] max-h-[calc(100vh-6.5rem)]'
+              : 'bottom-20 right-4 sm:right-6 w-[calc(100vw-2rem)] sm:w-[420px] md:w-[460px] h-[600px] sm:h-[640px] max-h-[calc(100vh-6.5rem)]'
           }`}
         >
           {/* Top Decorative Gradient Accent */}
           <div className="h-1 bg-gradient-to-r from-blue-700 via-civic-600 to-indigo-700 w-full shrink-0" />
 
-          {/* Window Header: Tailored for Corner Assistant */}
+          {/* Window Header */}
           <div className="p-3 sm:px-4 sm:py-3 border-b border-slate-200 flex items-center justify-between gap-2 bg-white shrink-0">
             {/* Left: Branding & Status Dot */}
             <div className="flex items-center space-x-2.5 min-w-0">
@@ -492,16 +761,20 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
                 </div>
                 <div className="text-[10px] text-slate-500 font-medium truncate leading-tight mt-0.5">
                   {language === 'ta'
-                    ? 'தமிழ் & English குரல் வழிகாட்டி'
-                    : 'Bilingual Civic Assistant'}
+                    ? 'தமிழ் (ta-IN) & English (en-IN) குரல் வழிகாட்டி'
+                    : 'Bilingual Civic Assistant (ta-IN / en-IN)'}
                 </div>
               </div>
             </div>
 
-            {/* Right: Language Toggle, Maximize & Close Controls */}
+            {/* Right: Segmented Language Selector & Window Controls */}
             <div className="flex items-center space-x-1.5 shrink-0">
-              {/* Segmented Language Selector */}
-              <div className="flex items-center bg-slate-100 p-0.5 rounded-xl border border-slate-200 text-[11px] font-bold">
+              {/* Distinct BCP 47 Language Selector */}
+              <div
+                className="flex items-center bg-slate-100 p-0.5 rounded-xl border border-slate-200 text-[10px] font-bold"
+                role="group"
+                aria-label="Speech and language selector"
+              >
                 <button
                   type="button"
                   onClick={() => handleLanguageChange('ta')}
@@ -510,22 +783,26 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
                       ? 'bg-civic-800 text-white shadow-2xs font-extrabold'
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
-                  aria-label="Switch language to Tamil"
+                  aria-label="Switch to Tamil (ta-IN)"
+                  aria-pressed={language === 'ta'}
+                  data-testid="lang-select-ta"
                 >
                   <Globe className="w-3 h-3" />
-                  <span>தமிழ்</span>
+                  <span>தமிழ் (ta-IN)</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => handleLanguageChange('en')}
-                  className={`px-2 py-1 rounded-lg transition-all ${
+                  className={`px-2 py-1 rounded-lg transition-all flex items-center space-x-1 ${
                     language === 'en'
                       ? 'bg-civic-800 text-white shadow-2xs font-extrabold'
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
-                  aria-label="Switch language to English"
+                  aria-label="Switch to English (en-IN)"
+                  aria-pressed={language === 'en'}
+                  data-testid="lang-select-en"
                 >
-                  <span>EN</span>
+                  <span>English (en-IN)</span>
                 </button>
               </div>
 
@@ -540,7 +817,7 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
                 <RotateCcw className="w-3.5 h-3.5" />
               </button>
 
-              {/* Maximize / Restore Toggle (Hidden on small mobile) */}
+              {/* Maximize / Restore Toggle */}
               <button
                 type="button"
                 onClick={() => setIsMaximized(!isMaximized)}
@@ -568,38 +845,94 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
             </div>
           </div>
 
-          {/* Privacy & Working Reassurance Strip */}
+          {/* Truthful Privacy Disclosure Strip (No false 'local on-device' claim) */}
           <div className="px-3.5 py-1.5 bg-blue-50/90 border-b border-blue-100/80 flex items-center justify-between text-[10px] text-blue-900 shrink-0">
             <div className="flex items-center space-x-1.5 truncate">
               <ShieldCheck className="w-3.5 h-3.5 text-civic-700 shrink-0" />
-              <span className="font-semibold truncate">
-                {language === 'ta'
-                  ? 'உள்ளூர் வெப் ஸ்பீச் ஏபிஐ · கிளவுட் பதிவு இல்லை'
-                  : 'Web Speech API · 100% on-device privacy'}
+              <span className="font-semibold truncate" title={privacyNotice.detailed}>
+                {privacyNotice.badge}
               </span>
             </div>
-            {language === 'en' && activeVoiceLabel && (
+            {activeVoiceLabel && (
               <span className="text-civic-800 text-[9px] font-semibold bg-blue-100 px-1.5 py-0.5 rounded shrink-0 hidden sm:inline">
                 {activeVoiceLabel.split(' ')[0]}
               </span>
             )}
           </div>
 
-          {/* Speech Error Banner if any */}
-          {speechError && (
-            <div className="p-2.5 mx-3 mt-2 bg-amber-50 border border-amber-200 text-amber-900 rounded-xl text-xs flex items-start space-x-2 shrink-0">
+          {/* Microphone Permission Denied Banner */}
+          {speechState === 'permission_denied' && (
+            <div
+              className="mx-3 mt-2 p-3 bg-amber-50 border border-amber-300 rounded-2xl flex items-start space-x-2.5 text-amber-950 shrink-0 animate-in fade-in"
+              data-testid="speech-permission-denied-banner"
+            >
+              <AlertTriangle className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
+              <div className="flex-1 min-w-0">
+                <div className="text-xs font-bold">
+                  {language === 'ta' ? 'மைக்ரோஃபோன் அனுமதி தேவை' : 'Microphone Permission Needed'}
+                </div>
+                <p className="text-[11px] text-amber-900 mt-0.5 leading-snug">
+                  {speechError?.message ||
+                    (language === 'ta'
+                      ? 'உலாவி அமைப்பில் மைக்ரோஃபோனை அனுமதிக்கவும் அல்லது கீழே உள்ள உரை பெட்டியில் தட்டச்சு செய்யவும்.'
+                      : 'Please allow microphone access in your browser or use the manual text input below.')}
+                </p>
+                <div className="flex items-center space-x-2 mt-2">
+                  <button
+                    type="button"
+                    onClick={startListening}
+                    className="px-2.5 py-1 bg-amber-700 hover:bg-amber-800 text-white rounded-lg text-[10px] font-bold transition-colors shadow-2xs"
+                  >
+                    {language === 'ta' ? 'மீண்டும் அனுமதி கேட்கவும்' : 'Retry Permission'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSpeechState('idle');
+                      setSpeechError(null);
+                    }}
+                    className="px-2 py-1 text-amber-800 hover:text-amber-950 text-[10px] font-semibold"
+                  >
+                    {language === 'ta' ? 'மூடு' : 'Dismiss'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* General Speech Error Banner (Non-permission) */}
+          {speechState === 'error' && speechError && (
+            <div
+              className="mx-3 mt-2 p-2.5 bg-amber-50 border border-amber-200 text-amber-900 rounded-xl text-xs flex items-start space-x-2 shrink-0 animate-in fade-in"
+              data-testid="speech-error-banner"
+            >
               <AlertCircle className="w-3.5 h-3.5 text-amber-700 shrink-0 mt-0.5" />
               <div className="flex-1 text-[11px] leading-tight">
-                <span className="font-semibold">Notice:</span> {speechError}
+                <span className="font-semibold">{language === 'ta' ? 'அறிவிப்பு:' : 'Notice:'}</span>{' '}
+                {speechError.message}
               </div>
-              <button
-                type="button"
-                onClick={() => setSpeechError(null)}
-                className="text-amber-700 hover:text-amber-900 p-0.5"
-                aria-label="Dismiss error"
-              >
-                <X className="w-3 h-3" />
-              </button>
+              <div className="flex items-center space-x-1 shrink-0">
+                {speechError.isRetryable && (
+                  <button
+                    type="button"
+                    onClick={startListening}
+                    className="px-2 py-0.5 bg-amber-600 hover:bg-amber-700 text-white rounded text-[10px] font-semibold transition-colors"
+                  >
+                    {language === 'ta' ? 'மீண்டும் முயற்சி' : 'Retry'}
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSpeechState('idle');
+                    setSpeechError(null);
+                  }}
+                  className="text-amber-700 hover:text-amber-900 p-0.5"
+                  aria-label="Dismiss error"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </div>
             </div>
           )}
 
@@ -607,7 +940,6 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
           <div className="flex-1 p-3.5 sm:p-4 overflow-y-auto space-y-3 bg-slate-50/60 scroll-smooth">
             {messages.map((msg) => {
               const isBot = msg.sender === 'assistant';
-              const isSpeaking = activeSpeakingId === msg.id;
 
               return (
                 <div
@@ -617,42 +949,130 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
                   <div
                     className={`max-w-[88%] sm:max-w-[82%] p-3.5 rounded-2xl text-xs sm:text-[13px] leading-relaxed ${
                       isBot
-                        ? 'bg-white text-slate-800 border border-slate-200/80 shadow-2xs rounded-tl-xs'
+                        ? msg.isError
+                          ? 'bg-amber-50/90 text-amber-950 border border-amber-300 shadow-2xs rounded-tl-xs'
+                          : 'bg-white text-slate-800 border border-slate-200/80 shadow-2xs rounded-tl-xs'
                         : 'bg-gradient-to-br from-civic-700 to-civic-800 text-white rounded-tr-xs shadow-xs font-medium'
                     }`}
                   >
-                    <p className="whitespace-pre-wrap">{msg.text}</p>
+                    {isBot ? (
+                      msg.isError ? (
+                        <p className="whitespace-pre-wrap font-medium">{msg.text}</p>
+                      ) : (
+                        <CivicMarkdown content={msg.text} />
+                      )
+                    ) : (
+                      <p className="whitespace-pre-wrap font-medium">{msg.text}</p>
+                    )}
 
-                    {/* Card Footer: Audio Speaker */}
-                    {isBot && (
-                      <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-500">
-                        <span className="font-semibold text-slate-400">
-                          {language === 'ta' ? 'சரிபார்க்கப்பட்ட வழிகாட்டுதல்' : 'Verified Guidance'}
+                    {/* Retry button for retryable provider errors */}
+                    {isBot && msg.isError && msg.retryable && (
+                      <div className="mt-2.5 pt-2 border-t border-amber-200/70 flex items-center justify-between">
+                        <span className="text-[10px] text-amber-700 font-medium">
+                          {language === 'ta' ? 'மீண்டும் முயற்சிக்கலாம்' : 'Retry available'}
                         </span>
-                        {language === 'en' && (
-                          <button
-                            type="button"
-                            onClick={() => handleSpeak(msg.id, msg.text)}
-                            className={`inline-flex items-center space-x-1 px-2 py-0.5 rounded-md font-semibold transition-colors ${
-                              isSpeaking
-                                ? 'bg-amber-100 text-amber-800 border border-amber-300'
-                                : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200'
-                            }`}
-                            aria-label={isSpeaking ? 'Stop speaking' : 'Listen to response'}
-                          >
-                            {isSpeaking ? (
-                              <>
-                                <VolumeX className="w-3 h-3 text-amber-700 animate-pulse" />
-                                <span>Stop Audio</span>
-                              </>
-                            ) : (
-                              <>
+                        <button
+                          type="button"
+                          onClick={handleRetryLastQuery}
+                          disabled={isAiLoading}
+                          className="inline-flex items-center space-x-1 px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-lg text-[10px] shadow-2xs transition-colors"
+                        >
+                          <RefreshCw className="w-2.5 h-2.5" />
+                          <span>{language === 'ta' ? 'மீண்டும் முயற்சி' : 'Retry Query'}</span>
+                        </button>
+                      </div>
+                    )}
+
+                    {/* Card Footer: AI Attribution & Audio Speaker Controls */}
+                    {isBot && !msg.isError && (
+                      <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-500">
+                        <div className="flex items-center space-x-1.5">
+                          <span className="inline-flex items-center space-x-1 font-bold text-civic-700 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-100">
+                            <Sparkles className="w-2.5 h-2.5 text-civic-600" />
+                            <span>
+                              {msg.provider ? `AI • ${msg.provider.toUpperCase()}` : 'AI • GEMINI'}
+                            </span>
+                          </span>
+                          {msg.latencyMs && (
+                            <span className="text-slate-400 font-mono text-[9px] hidden sm:inline">
+                              {msg.latencyMs}ms
+                            </span>
+                          )}
+                        </div>
+
+                        {/* TTS Audio Controls: Listen, Pause, Resume, Stop, Replay */}
+                        <div className="flex items-center space-x-1">
+                          {ttsState.messageId === msg.id && ttsState.status === 'playing' ? (
+                            <>
+                              <button
+                                type="button"
+                                onClick={pauseSpeaking}
+                                className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-md font-semibold bg-amber-100 text-amber-900 border border-amber-300 transition-colors"
+                                title="Pause audio"
+                                aria-label="Pause audio"
+                              >
+                                <Pause className="w-3 h-3 text-amber-800" />
+                                <span>{language === 'ta' ? 'இடைநிறுத்து' : 'Pause'}</span>
+                              </button>
+                              <button
+                                type="button"
+                                onClick={stopSpeaking}
+                                className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-md font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 transition-colors"
+                                title="Stop audio"
+                                aria-label="Stop audio"
+                              >
+                                <Square className="w-2.5 h-2.5 text-slate-700 fill-current" />
+                                <span>{language === 'ta' ? 'நிறுத்து' : 'Stop'}</span>
+                              </button>
+                            </>
+                          ) : ttsState.messageId === msg.id && ttsState.status === 'paused' ? (
+                            <>
+                              <button
+                                type="button"
+                                onClick={resumeSpeaking}
+                                className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-md font-semibold bg-emerald-100 text-emerald-900 border border-emerald-300 transition-colors"
+                                title="Resume audio"
+                                aria-label="Resume audio"
+                              >
+                                <Play className="w-3 h-3 text-emerald-800 fill-current" />
+                                <span>{language === 'ta' ? 'தொடர' : 'Resume'}</span>
+                              </button>
+                              <button
+                                type="button"
+                                onClick={stopSpeaking}
+                                className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-md font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 transition-colors"
+                                title="Stop audio"
+                                aria-label="Stop audio"
+                              >
+                                <Square className="w-2.5 h-2.5 text-slate-700 fill-current" />
+                                <span>{language === 'ta' ? 'நிறுத்து' : 'Stop'}</span>
+                              </button>
+                            </>
+                          ) : (
+                            <>
+                              <button
+                                type="button"
+                                onClick={() => startSpeaking(msg.id, msg.text)}
+                                className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-md font-semibold bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 transition-colors"
+                                aria-label="Listen to response"
+                              >
                                 <Volume2 className="w-3 h-3 text-civic-600" />
-                                <span>Listen</span>
-                              </>
-                            )}
-                          </button>
-                        )}
+                                <span>{language === 'ta' ? 'கேளுங்கள்' : 'Listen'}</span>
+                              </button>
+                              {lastSpokenMessageId === msg.id && (
+                                <button
+                                  type="button"
+                                  onClick={() => replaySpeaking(msg.id, msg.text)}
+                                  className="inline-flex items-center p-1 rounded-md text-slate-500 hover:text-slate-800 hover:bg-slate-100 border border-slate-200 transition-colors"
+                                  title="Replay audio"
+                                  aria-label="Replay audio"
+                                >
+                                  <RotateCcw className="w-3 h-3" />
+                                </button>
+                              )}
+                            </>
+                          )}
+                        </div>
                       </div>
                     )}
 
@@ -719,46 +1139,167 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
                 </div>
               );
             })}
+
+            {/* Genuine AI Model Thinking State Indicator */}
+            {isAiLoading && (
+              <div className="flex flex-col items-start space-y-1 animate-in fade-in">
+                <div className="p-3 bg-white text-slate-700 border border-slate-200/90 shadow-2xs rounded-2xl rounded-tl-xs flex items-center space-x-2.5 text-xs">
+                  <Sparkles className="w-4 h-4 text-civic-600 animate-spin" />
+                  <span className="font-semibold text-slate-700">
+                    {language === 'ta'
+                      ? 'Gemini AI திட்டங்களை ஆராய்கிறது...'
+                      : 'Gemini AI is analyzing schemes...'}
+                  </span>
+                  <span className="flex space-x-1">
+                    <span className="w-1.5 h-1.5 bg-civic-600 rounded-full animate-bounce" />
+                    <span className="w-1.5 h-1.5 bg-civic-600 rounded-full animate-bounce [animation-delay:0.2s]" />
+                    <span className="w-1.5 h-1.5 bg-civic-600 rounded-full animate-bounce [animation-delay:0.4s]" />
+                  </span>
+                </div>
+              </div>
+            )}
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Real-time Listening Visualizer Banner (When Mic is active) */}
-          {isListening && (
-            <div className="mx-3 my-1.5 p-2.5 bg-gradient-to-r from-rose-50 via-rose-100/50 to-amber-50 border border-rose-200 rounded-2xl flex items-center justify-between gap-3 shadow-xs shrink-0 animate-in fade-in">
+          {/* REAL-TIME LISTENING VISUALIZER BANNER */}
+          {speechState === 'listening' && (
+            <div
+              className="mx-3 my-1.5 p-2.5 bg-gradient-to-r from-rose-50 via-rose-100/50 to-amber-50 border border-rose-200 rounded-2xl flex items-center justify-between gap-3 shadow-xs shrink-0 animate-in fade-in"
+              data-testid="speech-listening-banner"
+            >
               <div className="flex items-center space-x-2.5 min-w-0">
                 <span className="relative flex h-3 w-3 shrink-0">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75" />
                   <span className="relative inline-flex rounded-full h-3 w-3 bg-rose-600" />
                 </span>
                 <div className="min-w-0">
-                  <div className="text-xs font-bold text-rose-950 truncate">
-                    {language === 'ta'
-                      ? 'கேட்கிறது... தமிழில் இப்போது பேசவும்'
-                      : 'Listening... speak clearly now'}
+                  <div className="text-xs font-bold text-rose-950 truncate flex items-center space-x-1.5">
+                    <span>
+                      {language === 'ta'
+                        ? 'கேட்கிறது... தமிழில் இப்போது பேசவும்'
+                        : 'Listening... speak clearly now'}
+                    </span>
+                    <span className="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-rose-200/70 text-rose-900">
+                      {getSpeechLocale(language)}
+                    </span>
                   </div>
-                  <div className="text-[10px] text-rose-700">
-                    {language === 'ta'
-                      ? 'பேசியதும் தானாக விடை தோன்றும்'
-                      : 'Processing voice input in real-time'}
+                  <div className="text-[10px] text-rose-700 truncate">
+                    {interimTranscript
+                      ? `"${interimTranscript}..."`
+                      : language === 'ta'
+                      ? 'பேசி முடித்ததும் சரிபார்க்கலாம்'
+                      : 'Review transcript before sending'}
                   </div>
                 </div>
               </div>
 
               {/* Animated Soundwave Equalizer Bars */}
-              <div className="flex items-center space-x-1 shrink-0 h-5 px-2">
+              <div className="flex items-center space-x-1 shrink-0 h-5 px-1">
                 <span className="w-1 bg-rose-600 rounded-full animate-voice-wave-1" />
                 <span className="w-1 bg-rose-600 rounded-full animate-voice-wave-2" />
                 <span className="w-1 bg-rose-600 rounded-full animate-voice-wave-3" />
                 <span className="w-1 bg-rose-600 rounded-full animate-voice-wave-4" />
               </div>
 
-              <button
-                type="button"
-                onClick={toggleListening}
-                className="px-2.5 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-[10px] font-bold shrink-0 transition-colors shadow-2xs"
-              >
-                Stop
-              </button>
+              <div className="flex items-center space-x-1.5 shrink-0">
+                <button
+                  type="button"
+                  onClick={handleStopListening}
+                  className="px-2.5 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-[10px] font-bold shrink-0 transition-colors shadow-2xs"
+                  aria-label="Stop recording"
+                >
+                  {language === 'ta' ? 'நிறுத்து' : 'Stop'}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCancelSpeech}
+                  className="px-2 py-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-lg text-[10px] font-bold shrink-0 transition-colors shadow-2xs"
+                  aria-label="Cancel recording"
+                >
+                  {language === 'ta' ? 'ரத்து' : 'Cancel'}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* EDITABLE TRANSCRIPT REVIEW & CONFIRMATION BOX */}
+          {speechState === 'reviewing' && (
+            <div
+              className="mx-3 my-2 p-3 bg-blue-50/90 border border-blue-200/90 rounded-2xl shadow-xs space-y-2 shrink-0 animate-in fade-in"
+              data-testid="speech-review-container"
+            >
+              <div className="flex items-center justify-between text-xs font-bold text-slate-800">
+                <div className="flex items-center space-x-1.5">
+                  <Mic className="w-3.5 h-3.5 text-civic-700" />
+                  <span>
+                    {language === 'ta' ? 'குரல் உரை சரிபார்ப்பு' : 'Review Voice Transcript'}
+                  </span>
+                  <span className="px-1.5 py-0.2 rounded-full text-[9px] font-mono font-bold bg-blue-100 text-blue-800 border border-blue-200">
+                    {getSpeechLocale(language)}
+                  </span>
+                </div>
+                <span className="text-[10px] text-slate-500 font-normal">
+                  {language === 'ta' ? 'அனுப்பும் முன் திருத்தலாம்' : 'Editable before send'}
+                </span>
+              </div>
+
+              <textarea
+                value={speechTranscript}
+                onChange={(e) => setSpeechTranscript(e.target.value)}
+                rows={2}
+                className="w-full p-2.5 text-xs sm:text-sm bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-civic-500 text-slate-900 resize-none font-medium leading-relaxed"
+                placeholder={
+                  language === 'ta'
+                    ? 'குரல் உரை இங்கே தோன்றும்... ஏதேனும் திருத்தங்கள் இருந்தால் மாற்றவும்'
+                    : 'Your voice transcript appears here. You can edit before sending...'
+                }
+                aria-label="Editable voice transcript"
+                data-testid="speech-transcript-input"
+              />
+
+              <div className="flex items-center justify-between gap-2 pt-0.5">
+                <div className="flex items-center space-x-1.5">
+                  <button
+                    type="button"
+                    onClick={handleRetrySpeech}
+                    className="px-2.5 py-1 text-[11px] font-semibold text-slate-700 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg flex items-center space-x-1 transition-colors shadow-2xs"
+                    aria-label="Speak again"
+                  >
+                    <RotateCcw className="w-3 h-3 text-slate-600" />
+                    <span>{language === 'ta' ? 'மீண்டும் பேச' : 'Retry'}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleCancelSpeech}
+                    className="px-2.5 py-1 text-[11px] font-semibold text-slate-600 hover:text-slate-800 rounded-lg transition-colors"
+                    aria-label="Discard voice transcript"
+                  >
+                    <span>{language === 'ta' ? 'ரத்து' : 'Cancel'}</span>
+                  </button>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleConfirmSpeech}
+                  disabled={!isValidTranscript(speechTranscript) || isAiLoading}
+                  className="px-3.5 py-1.5 text-xs font-bold text-white bg-civic-700 hover:bg-civic-800 disabled:bg-slate-200 disabled:text-slate-400 rounded-xl flex items-center space-x-1.5 shadow-2xs transition-all active:scale-95"
+                  aria-label="Confirm and send transcript to Gemini"
+                  data-testid="speech-confirm-send-button"
+                >
+                  <Send className="w-3 h-3" />
+                  <span>
+                    {language === 'ta'
+                      ? 'உறுதிசெய்து Gemini-க்கு அனுப்பு'
+                      : 'Confirm & Send to Gemini'}
+                  </span>
+                </button>
+              </div>
+
+              <p className="text-[9px] text-slate-500 leading-tight">
+                {language === 'ta'
+                  ? 'தனியுரிமை: உறுதிசெய்த உரை மட்டுமே Gemini AI-க்கு அனுப்பப்படும். ஆடியோ பதிவு செய்யப்படாது.'
+                  : 'Privacy: Only this confirmed text is sent to Gemini AI. No voice audio is stored by SevAIQ.'}
+              </p>
             </div>
           )}
 
@@ -795,28 +1336,35 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
                 type="button"
                 onClick={toggleListening}
                 className={`w-10 h-10 sm:w-11 sm:h-11 rounded-2xl transition-all flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-civic-500 shrink-0 ${
-                  isListening
+                  speechState === 'listening'
                     ? 'bg-rose-600 text-white animate-pulse shadow-md shadow-rose-500/40 ring-2 ring-rose-400'
+                    : speechState === 'reviewing'
+                    ? 'bg-blue-600 text-white shadow-md shadow-blue-500/30 ring-2 ring-blue-300'
                     : speechSupported
                     ? 'bg-civic-50 hover:bg-civic-100 text-civic-700 border border-civic-200/80 shadow-2xs active:scale-95'
                     : 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200'
                 }`}
                 title={
                   !speechSupported
-                    ? 'Speech recognition not supported in this browser'
-                    : isListening
+                    ? 'Speech recognition not supported in this browser (Firefox). Text input is available.'
+                    : speechState === 'listening'
                     ? 'Stop listening'
+                    : speechState === 'reviewing'
+                    ? 'Speak again (Retry)'
                     : language === 'ta'
-                    ? 'குரல் மூலம் பேச மைக் அழுத்தவும்'
-                    : 'Click microphone to speak'
+                    ? 'குரல் மூலம் பேச மைக் அழுத்தவும் (ta-IN)'
+                    : 'Click microphone to speak (en-IN)'
                 }
                 aria-label={
-                  isListening
+                  speechState === 'listening'
                     ? 'Stop microphone recording'
+                    : speechState === 'reviewing'
+                    ? 'Retry microphone recording'
                     : 'Start microphone speech recognition'
                 }
+                data-testid="microphone-toggle-button"
               >
-                {isListening ? (
+                {speechState === 'listening' ? (
                   <MicOff className="w-5 h-5" />
                 ) : (
                   <Mic className="w-5 h-5 text-civic-700" />
@@ -836,8 +1384,13 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
                       handleSendQuery();
                     }
                   }}
+                  disabled={isAiLoading}
                   placeholder={
-                    isListening
+                    isAiLoading
+                      ? language === 'ta'
+                        ? 'Gemini AI பதிலளிக்கிறது...'
+                        : 'Gemini AI is generating response...'
+                      : speechState === 'listening'
                       ? language === 'ta'
                         ? 'கேட்கிறது... தமிழில் பேசவும்...'
                         : 'Listening... speak now...'
@@ -846,10 +1399,10 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
                       : 'Ask welfare questions in English or Tamil...'
                   }
                   className={`w-full px-3.5 py-2 sm:py-2.5 text-xs sm:text-sm bg-slate-50 border border-slate-300 rounded-2xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-civic-500 text-slate-900 placeholder-slate-400 transition-colors ${
-                    isListening ? 'border-rose-400 bg-rose-50/30' : ''
-                  }`}
+                    speechState === 'listening' ? 'border-rose-400 bg-rose-50/30' : ''
+                  } ${isAiLoading ? 'opacity-70 cursor-wait' : ''}`}
                 />
-                {inputText && (
+                {inputText && !isAiLoading && (
                   <button
                     type="button"
                     onClick={() => setInputText('')}
@@ -865,11 +1418,15 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
               <button
                 type="button"
                 onClick={() => handleSendQuery()}
-                disabled={!inputText.trim()}
+                disabled={!inputText.trim() || isAiLoading}
                 className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-civic-700 hover:bg-civic-800 disabled:bg-slate-100 disabled:text-slate-400 text-white flex items-center justify-center transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 shrink-0 shadow-2xs active:scale-95"
                 aria-label="Send query"
               >
-                <Send className="w-4 h-4" />
+                {isAiLoading ? (
+                  <Sparkles className="w-4 h-4 animate-spin text-civic-300" />
+                ) : (
+                  <Send className="w-4 h-4" />
+                )}
               </button>
             </div>
 
@@ -877,7 +1434,7 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
             <div className="text-[10px] text-slate-400 text-center mt-1.5 flex items-center justify-center gap-1.5">
               <span>Press Enter to send</span>
               <span>•</span>
-              <span>Speak in தமிழ் or English</span>
+              <span>Speak in தமிழ் (ta-IN) or English (en-IN)</span>
             </div>
           </div>
         </section>

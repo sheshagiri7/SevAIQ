@@ -739,6 +739,50 @@ HTTP Status Codes:
 - **Header**: `Content-Disposition: attachment; filename="SevAIQ_Scheme_Passport.pdf"`
 - Generates a branded, printable Scheme Passport PDF summarizing the citizen's eligible schemes, document checklist, and step-by-step application guidance.
 
+#### E. `/api/chat` (POST)
+- **Purpose**: Civic-grounded AI Chatbot powered by Google Gemini (with modular multi-provider routing).
+- **Request Body (`ChatRequest`)**:
+```json
+{
+  "messages": [
+    { "role": "user", "content": "How much financial assistance does PM-KISAN offer?" }
+  ],
+  "language": "en",
+  "context_scheme_id": null
+}
+```
+- **Response (`200 OK`, `ChatResponseSchema`)**:
+```json
+{
+  "reply": "Under PM-KISAN, eligible small and marginal farmer families receive income support of ₹6,000 per year...",
+  "provider": "gemini",
+  "model": "gemini-2.5-flash",
+  "status": "success",
+  "latency_ms": 320.5,
+  "suggested_schemes": ["pm-kisan"]
+}
+```
+- **Error Responses**:
+  - `401 Unauthorized`: Invalid or unauthorized Gemini API credentials (`auth_error`).
+  - `429 Too Many Requests`: Gemini rate limit or project quota reached (`quota_exhausted`).
+  - `503 Service Unavailable`: Unconfigured server or transient failure (`configuration_error`, `transient_error`).
+  - `504 Gateway Timeout`: Upstream AI request timed out (`timeout`).
+
+#### F. `/api/chat/providers` (GET)
+- **Purpose**: List registered AI providers and their operational readiness status.
+- **Response (`200 OK`)**:
+```json
+[
+  {
+    "provider_id": "gemini",
+    "display_name": "Google Gemini",
+    "configured": true,
+    "status": "ready",
+    "message": "Gemini provider configured using model gemini-2.5-flash."
+  }
+]
+```
+
 ---
 
 ## 6. Data Verification Guidelines for Developer 2
