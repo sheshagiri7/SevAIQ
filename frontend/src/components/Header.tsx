@@ -48,6 +48,7 @@ export const Header: React.FC<HeaderProps> = ({
   onClearSession,
 }) => {
   const { language, setLanguage, t } = useLanguage();
+  const { settings, toggleInvertColors } = useAccessibility();
   const isIndic = language === 'ta' || language === 'hi';
   const isTamil = isIndic;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
