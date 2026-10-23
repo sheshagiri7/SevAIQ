@@ -97,6 +97,8 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
       text:
         language === 'ta'
           ? 'வணக்கம்! நான் SevAIQ குரல் மற்றும் உரை உதவியாளர். விவசாயி நிதி உதவி, இலவச மருத்துவ காப்பீடு, வீடு கட்ட மானியம், முதியோர் ஓய்வூதியம், அல்லது சிறு தொழில் கடன் குறித்து தமிழில் கேட்கலாம் அல்லது தட்டச்சு செய்யலாம்.'
+          : language === 'hi'
+          ? 'नमस्ते! मैं SevAIQ वॉइस और टेक्स्ट सहायक हूँ। किसान सम्मान निधि, मुफ्त आयुष्मान इलाज, आवास योजना, अटल पेंशन, या मुद्रा/स्वनिधि ऋण के बारे में हिंदी में बोलकर या लिखकर पूछ सकते हैं।'
           : 'Welcome! I am the SevAIQ Voice & Text Assistant. Ask questions about farming assistance, health insurance, housing subsidies, senior pensions, or business loans in simple English.',
       timestamp: new Date(),
     },
@@ -122,6 +124,8 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
         text:
           language === 'ta'
             ? 'மொழி தமிழுக்கு மாற்றப்பட்டது. உங்கள் அரசு நலத்திட்ட கேள்விகளை தமிழில் கேட்கவும் அல்லது பேசவும்.'
+            : language === 'hi'
+            ? 'भाषा बदलकर हिंदी कर दी गई है। आप सरकारी कल्याणकारी योजनाओं के सवाल हिंदी में बोल या लिख सकते हैं।'
             : 'Language switched to English. You can speak or type your welfare scheme questions in simple English.',
         timestamp: new Date(),
       };
