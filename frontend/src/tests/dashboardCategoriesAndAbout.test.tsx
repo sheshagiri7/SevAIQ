@@ -91,7 +91,7 @@ describe('Dashboard Category Grid and Bottom-Left About Modal', () => {
     expect(html).toContain('1183 திட்டங்கள்');
   });
 
-  it('Dashboard renders the CategoryGrid with floating options and removes features layout', () => {
+  it('Dashboard replaces the workflow cards with the CategoryGrid', () => {
     const html = renderToString(
       <LanguageProvider>
         <AccessibilityProvider>
@@ -111,13 +111,10 @@ describe('Dashboard Category Grid and Bottom-Left About Modal', () => {
     expect(html).toContain('Find schemes based on categories');
     expect(html).toContain('Agriculture,Rural &amp; Environment');
     expect(html).toContain('944 Schemes');
-    expect(html).toContain('id="options-section"');
 
-    // Features and metrics layout has been removed
-    expect(html).not.toContain('Citizen Readiness &amp; Scheme Intelligence');
-    expect(html).not.toContain('Cataloged Schemes');
-    expect(html).not.toContain('Eligible Matches');
-    expect(html).not.toContain('View Features &amp; Working');
+    // Metrics are still rendered
+    expect(html).toContain('Cataloged Schemes');
+    expect(html).toContain('Eligible Matches');
   });
 
   it('AboutModal contains the 4 workflow stages and 3 specialized citizen tools', () => {

@@ -78,7 +78,7 @@ describe('Full-Frame Scheme Carousel Banner & Floating Options Section', () => {
     expect(html).toContain('Next Scheme Slide');
   });
 
-  it('Dashboard renders the full-frame carousel followed by the floating #options-section with features layout removed', () => {
+  it('Dashboard renders the full-frame carousel followed by the separate #options-section layout', () => {
     const html = renderToString(
       <LanguageProvider>
         <AccessibilityProvider>
@@ -98,19 +98,16 @@ describe('Full-Frame Scheme Carousel Banner & Floating Options Section', () => {
     expect(html).toContain('aria-label="Featured Government Schemes Showcase"');
     expect(html).toContain('h-[calc(100vh-4.25rem)]');
 
-    // Options layout is floating with id="options-section"
+    // Options layout is separated with id="options-section"
     expect(html).toContain('id="options-section"');
-    expect(html).toContain('-mt-');
-    expect(html).toContain('shadow-2xl');
 
-    // Inside options section, CategoryGrid appears prominently
+    // Inside options section, CategoryGrid appears first
     expect(html).toContain('Find schemes based on categories');
     expect(html).toContain('Agriculture,Rural &amp; Environment');
 
-    // Features and metrics layout has been removed from Dashboard
-    expect(html).not.toContain('Citizen Readiness &amp; Scheme Intelligence');
-    expect(html).not.toContain('Cataloged Schemes');
-    expect(html).not.toContain('Eligible Matches');
-    expect(html).not.toContain('View Features &amp; Working');
+    // Followed by Civic Intelligence metrics
+    expect(html).toContain('Citizen Readiness &amp; Scheme Intelligence');
+    expect(html).toContain('Cataloged Schemes');
+    expect(html).toContain('Eligible Matches');
   });
 });

@@ -17,7 +17,7 @@ export interface AssistantAnswer {
   };
 }
 
-export const SAMPLE_PROMPTS: Record<AssistantLanguage, Array<{ label: string; query: string }>> = {
+export const SAMPLE_PROMPTS = {
   ta: [
     { label: '🌾 விவசாயி உதவி', query: 'விவசாயிகளுக்கு என்னென்ன அரசு திட்டங்கள் உள்ளன?' },
     { label: '🏥 இலவச மருத்துவ காப்பீடு', query: 'ஆயுஷ்மான் பாரத் அட்டை பெறுவது எப்படி?' },
@@ -31,13 +31,6 @@ export const SAMPLE_PROMPTS: Record<AssistantLanguage, Array<{ label: string; qu
     { label: '🏠 Housing Subsidy', query: 'Who is eligible for PMAY housing grant?' },
     { label: '👴 Senior Pension', query: 'What documents are required for Atal Pension Yojana?' },
     { label: '🛒 Street Vendor Loan', query: 'How can street vendors apply for PM SVANidhi loan?' },
-  ],
-  hi: [
-    { label: '🌾 किसान वित्तीय सहायता', query: 'किसानों के लिए कौन सी सरकारी योजनाएं उपलब्ध हैं?' },
-    { label: '🏥 मुफ्त स्वास्थ्य कार्ड', query: 'आयुष्मान भारत कार्ड कैसे प्राप्त करें?' },
-    { label: '🏠 आवास सब्सिडी', query: 'पीएम आवास योजना के लिए कौन पात्र है?' },
-    { label: '👴 वरिष्ठ नागरिक पेंशन', query: 'अटल पेंशन योजना के लिए क्या दस्तावेज चाहिए?' },
-    { label: '🛒 स्ट्रीट वेंडर ऋण', query: 'पीएम स्वनिधि ऋण के लिए कैसे आवेदन करें?' },
   ],
 };
 

@@ -14,7 +14,7 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({ onSelectCategory }) 
   return (
     <section
       aria-labelledby="categories-heading"
-      className="p-6 sm:p-8 bg-white/95 backdrop-blur-md rounded-3xl border border-slate-200/90 shadow-2xl shadow-slate-900/10 space-y-6"
+      className="p-6 sm:p-8 bg-white rounded-3xl border border-slate-200/90 shadow-xs space-y-6"
     >
       {/* Section Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-4 border-b border-slate-100">
@@ -56,7 +56,7 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({ onSelectCategory }) 
               key={cat.id}
               type="button"
               onClick={() => onSelectCategory(cat.categoryFilterId)}
-              className={`group relative flex flex-col items-center justify-between p-4 sm:p-5 bg-slate-50/70 hover:bg-white rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-xl hover:-translate-y-2 ${cat.accentBorder} transition-all duration-300 text-center focus:outline-none focus:ring-2 focus:ring-civic-500 min-h-[170px] sm:min-h-[190px] cursor-pointer`}
+              className={`group relative flex flex-col items-center justify-between p-4 sm:p-5 bg-slate-50/70 hover:bg-white rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-lg hover:-translate-y-1.5 ${cat.accentBorder} transition-all duration-300 text-center focus:outline-none focus:ring-2 focus:ring-civic-500 min-h-[170px] sm:min-h-[190px] cursor-pointer`}
               aria-label={`${title} - ${schemesText}`}
             >
               <div className="flex flex-col items-center w-full">
