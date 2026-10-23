@@ -1,6 +1,6 @@
 """SevAIQ FastAPI Application Entry Point.
 
-Civic Intelligence platform for the Seva First Innovation Challenge 2026.
+Civic intelligence platform providing verified government scheme discovery.
 """
 
 import json
@@ -79,7 +79,7 @@ def root():
     """Welcome endpoint with service pointers."""
     return {
         "service": "SevAIQ Backend API",
-        "challenge": "Seva First Innovation Challenge 2026",
+        "tagline": "Government Benefits. Made Accessible.",
         "docs": "/docs",
         "health": "/api/health",
         "schemes": "/api/schemes",
