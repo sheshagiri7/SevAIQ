@@ -1016,7 +1016,7 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                   </div>
 
                   {/* Smartphone Mockup with Overlapping Badges */}
-                  <div className="relative shrink-0 flex items-center justify-center">
+                  <div className="relative shrink-0 flex items-center justify-center animate-float-subtle">
                     {/* 3D Floating Graphic */}
                     <div className="absolute -top-3 right-4 sm:right-10 z-20 pointer-events-none drop-shadow-xl">
                       <FloatingGraphic3D type={slide.phone.floating3DIcon} />
