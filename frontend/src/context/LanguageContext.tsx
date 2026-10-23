@@ -24,6 +24,7 @@ interface LanguageContextType {
 }
 
 const STORAGE_KEY = 'SEVAIQ_APP_LANGUAGE';
+const VALID_LANGUAGES = ['en', 'ta', 'hi', 'te', 'kn', 'ml', 'mr', 'gu', 'bn', 'pa', 'or', 'as'];
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
@@ -31,7 +32,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [language, setLanguageState] = useState<AppLanguage>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved === 'ta' || saved === 'en' || saved === 'hi') return saved;
+      if (saved && VALID_LANGUAGES.includes(saved)) return saved as AppLanguage;
     } catch {
       // ignore
     }
@@ -66,7 +67,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   }, [language]);
 
-  const t = UI_TRANSLATIONS[language];
+  const t = (UI_TRANSLATIONS as Record<string, typeof UI_TRANSLATIONS.en>)[language] || UI_TRANSLATIONS.en;
 
   // Helper to get localized scheme values
   const getLocalizedScheme = useMemo(() => {

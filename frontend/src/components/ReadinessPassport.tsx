@@ -87,6 +87,8 @@ export const ReadinessPassport: React.FC<ReadinessPassportProps> = ({
       setPdfError(
         language === 'ta'
           ? 'அதிகாரப்பூர்வ பாஸ்போர்ட் PDF உருவாக்க திட்ட அட்டவணையில் இருந்து குறைந்தபட்சம் ஒரு திட்டத்தையாவது தேர்ந்தெடுக்கவும்.'
+          : language === 'hi'
+          ? 'आधिकारिक पासपोर्ट PDF उत्पन्न करने के लिए कैटलॉग से कम से कम एक सत्यापित सरकारी योजना चुनें।'
           : 'Please select at least one verified government scheme from the catalog to generate the official Passport PDF.'
       );
       return;
@@ -114,10 +116,19 @@ export const ReadinessPassport: React.FC<ReadinessPassportProps> = ({
       setPdfSuccess(
         language === 'ta'
           ? `அதிகாரப்பூர்வ பாஸ்போர்ட் PDF வெற்றிகரமாக பதிவிறக்கப்பட்டது (${res.filename || 'SevAIQ_Scheme_Passport.pdf'}).`
+          : language === 'hi'
+          ? `आधिकारिक पासपोर्ट PDF सफलतापूर्वक डाउनलोड हो गया (${res.filename || 'SevAIQ_Scheme_Passport.pdf'})।`
           : `Official Passport PDF downloaded successfully (${res.filename || 'SevAIQ_Scheme_Passport.pdf'}).`
       );
     } else {
-      setPdfError(res.error || (language === 'ta' ? 'FastAPI பின்தள சேவையிலிருந்து PDF உருவாக்க முடியவில்லை' : 'Failed to generate PDF from FastAPI backend service'));
+      setPdfError(
+        res.error ||
+          (language === 'ta'
+            ? 'FastAPI பின்தள சேவையிலிருந்து PDF உருவாக்க முடியவில்லை'
+            : language === 'hi'
+            ? 'FastAPI बैकएंड सेवा से PDF उत्पन्न करने में विफल'
+            : 'Failed to generate PDF from FastAPI backend service')
+      );
     }
   };
 
