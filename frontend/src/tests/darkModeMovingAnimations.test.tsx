@@ -1,0 +1,79 @@
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { renderToString } from 'react-dom/server';
+import fs from 'fs';
+import path from 'path';
+import { SchemeBannerCarousel } from '../components/SchemeBannerCarousel';
+import { LanguageProvider } from '../context/LanguageContext';
+import { AccessibilityProvider } from '../context/AccessibilityContext';
+import { MemoryStorage } from '../utils/kioskStorage';
+
+describe('Dark Mode & Moving Animation Images Exemption', () => {
+  beforeEach(() => {
+    (globalThis as any).localStorage = new MemoryStorage();
+    if (typeof document === 'undefined') {
+      (globalThis as any).document = {
+        documentElement: { lang: 'en', style: {} },
+        body: { classList: { add: vi.fn(), remove: vi.fn() } },
+        getElementById: vi.fn().mockReturnValue({ scrollIntoView: vi.fn() }),
+      };
+    }
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('renders SchemeBannerCarousel with dark mode exempt classes and data attributes', () => {
+    const html = renderToString(
+      <LanguageProvider>
+        <AccessibilityProvider>
+          <SchemeBannerCarousel onNavigate={vi.fn()} />
+        </AccessibilityProvider>
+      </LanguageProvider>
+    );
+
+    // Verifies the carousel banner container is exempt from dark mode inversion
+    expect(html).toContain('moving-animation-exempt');
+    expect(html).toContain('scheme-banner-carousel');
+    expect(html).toContain('data-dark-exempt="true"');
+    expect(html).toContain('data-moving-animation="true"');
+  });
+
+  it('renders moving animated graphics with moving-animation-image and data-dark-exempt tags', () => {
+    const html = renderToString(
+      <LanguageProvider>
+        <AccessibilityProvider>
+          <SchemeBannerCarousel onNavigate={vi.fn()} />
+        </AccessibilityProvider>
+      </LanguageProvider>
+    );
+
+    // Animated 3D Floating Graphic
+    expect(html).toContain('moving-animation-image');
+    expect(html).toContain('3D Floating Graduation Cap');
+
+    // Origami Paper Airplane with floating motion
+    expect(html).toContain('animate-float-subtle');
+
+    // QR Code graphic
+    expect(html).toContain('aria-label="Scheme QR Code"');
+
+    // Citizen mobile user graphic
+    expect(html).toContain('aria-label="Citizen using smartphone illustration"');
+  });
+
+  it('index.css specifies dark mode re-inversion rules for moving animation images and carousel', () => {
+    const cssPath = path.resolve(__dirname, '../index.css');
+    const cssContent = fs.readFileSync(cssPath, 'utf8');
+
+    // Verify dark mode base rule
+    expect(cssContent).toContain('html.a11y-invert');
+
+    // Verify re-inversion rules for moving animations, carousel, and graphics
+    expect(cssContent).toContain('html.a11y-invert .moving-animation-exempt');
+    expect(cssContent).toContain('html.a11y-invert .scheme-banner-carousel');
+    expect(cssContent).toContain('html.a11y-invert .moving-animation-image');
+    expect(cssContent).toContain('html.a11y-invert [data-dark-exempt="true"]');
+    expect(cssContent).toContain('html.a11y-invert [data-moving-animation="true"]');
+  });
+});
