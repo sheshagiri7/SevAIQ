@@ -743,10 +743,14 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
   };
 
   return (
-    <div className="w-full relative">
+    <div
+      className="w-full relative moving-animation-exempt scheme-banner-carousel"
+      data-dark-exempt="true"
+      data-moving-animation="true"
+    >
       {/* Outer Banner Carousel Container: Occupies Full Frame Viewport */}
       <div
-        className="relative w-full h-[calc(100vh-4.25rem)] min-h-[640px] max-h-[960px] flex flex-col justify-between overflow-hidden select-none group border-b border-slate-200/80 bg-slate-50"
+        className="relative w-full h-[calc(100vh-4.25rem)] min-h-[640px] max-h-[960px] flex flex-col justify-between overflow-hidden select-none group border-b border-slate-200/80 bg-slate-50 moving-animation-exempt"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
         onTouchStart={handleTouchStart}
