@@ -114,6 +114,9 @@ export function App() {
   // Target scheme for Application Guidance Tracker
   const [selectedTrackerSchemeId, setSelectedTrackerSchemeId] = useState<string>('pm-kisan');
 
+  // Target scheme for Eligibility Engine Screen
+  const [selectedEligibilitySchemeId, setSelectedEligibilitySchemeId] = useState<string | null>(null);
+
   // Guard ref to prevent React transition effects from writing kiosk-session data to localStorage
   const justExitedKioskRef = useRef(false);
 
@@ -136,6 +139,7 @@ export function App() {
       setProfile(EMPTY_PROFILE);
       setDocuments(INITIAL_DOCUMENT_RECORDS);
       setSelectedSchemeIds([]);
+      setSelectedEligibilitySchemeId(null);
       setIsKioskMode(false);
     } else {
       // Entering Kiosk Mode:
@@ -151,6 +155,7 @@ export function App() {
       setProfile(EMPTY_PROFILE);
       setDocuments(INITIAL_DOCUMENT_RECORDS);
       setSelectedSchemeIds([]);
+      setSelectedEligibilitySchemeId(null);
       setIsKioskMode(true);
     }
   };
@@ -161,6 +166,7 @@ export function App() {
     setProfile(EMPTY_PROFILE);
     setDocuments(INITIAL_DOCUMENT_RECORDS);
     setSelectedSchemeIds([]);
+    setSelectedEligibilitySchemeId(null);
     setIsVoiceAssistantOpen(false);
   };
 

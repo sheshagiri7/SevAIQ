@@ -112,6 +112,20 @@
   animation: carousel-progress 5000ms linear forwards;
 }
 
+/* Subtle Floating Action Animation */
+@keyframes float-subtle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.animate-float-subtle {
+  animation: float-subtle 3.2s ease-in-out infinite;
+}
+
 /* ==========================================================================
    UX4G & WCAG 2.1 Accessibility Suite Styles
    ========================================================================== */
