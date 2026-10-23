@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   CheckSquare,
   AlertCircle,
@@ -13,6 +13,9 @@ import {
   Lock,
   ArrowRight,
   Filter,
+  RefreshCw,
+  Server,
+  ExternalLink,
 } from 'lucide-react';
 import {
   CitizenProfile,
@@ -20,12 +23,21 @@ import {
   SchemeEvaluationResult,
   EligibilityStatus,
   NavigationTab,
+  DocumentRecord,
+  BackendEligibilityCheckResponse,
 } from '../types';
 import { evaluateSchemeEligibility } from '../utils/eligibilityEngine';
+import { checkEligibilityApi } from '../services/api';
+import {
+  adaptProfileToBackend,
+  adaptBackendEligibilityResult,
+  resolveBackendSchemeId,
+} from '../utils/schemaAdapter';
 
 interface EligibilityScreenProps {
   schemes: Scheme[];
   profile: CitizenProfile;
+  documents?: DocumentRecord[];
   onUpdateProfile: (updated: Partial<CitizenProfile>) => void;
   onNavigate: (tab: NavigationTab) => void;
   onSelectForMapper: (schemeId: string) => void;
@@ -61,6 +73,7 @@ const OCCUPATIONS = [
 export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
   schemes,
   profile,
+  documents = [],
   onUpdateProfile,
   onNavigate,
   onSelectForMapper,
@@ -75,10 +88,63 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
   const [statusFilter, setStatusFilter] = useState<'all' | EligibilityStatus>('all');
   const [expandedSchemeId, setExpandedSchemeId] = useState<string | null>(null);
 
-  // Evaluate all schemes against current profile
-  const evaluationResults: SchemeEvaluationResult[] = schemes.map((scheme) =>
-    evaluateSchemeEligibility(scheme, profile)
-  );
+  // Server-side eligibility state
+  const [backendResponse, setBackendResponse] = useState<BackendEligibilityCheckResponse | null>(null);
+  const [isEvaluatingBackend, setIsEvaluatingBackend] = useState<boolean>(false);
+  const [backendEvalError, setBackendEvalError] = useState<string | null>(null);
+  const [lastEvaluatedAt, setLastEvaluatedAt] = useState<Date | null>(null);
+
+  const availableDocNames = useMemo(() => {
+    return documents.filter((d) => d.status === 'have').map((d) => d.name);
+  }, [documents]);
+
+  const runBackendEvaluation = useCallback(async () => {
+    setIsEvaluatingBackend(true);
+    setBackendEvalError(null);
+
+    const backendProfile = adaptProfileToBackend(profile, availableDocNames);
+    const result = await checkEligibilityApi(backendProfile);
+    setIsEvaluatingBackend(false);
+
+    if (result.success && result.data) {
+      setBackendResponse(result.data);
+      setLastEvaluatedAt(new Date());
+    } else {
+      setBackendEvalError(result.error || 'Failed to evaluate eligibility with backend service');
+    }
+  }, [profile, availableDocNames]);
+
+  // Debounced auto-evaluation when profile or documents change
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      runBackendEvaluation();
+    }, 200);
+    return () => clearTimeout(timer);
+  }, [runBackendEvaluation]);
+
+  // Compute unified evaluation results:
+  // If backend returned results, map each scheme; fallback to client evaluator for local-only schemes or if backend is offline.
+  const evaluationResults: SchemeEvaluationResult[] = useMemo(() => {
+    if (backendResponse && backendResponse.schemes && backendResponse.schemes.length > 0) {
+      const backendMap = new Map<string, typeof backendResponse.schemes[0]>();
+      backendResponse.schemes.forEach((s) => {
+        backendMap.set(s.scheme_id.toLowerCase(), s);
+      });
+
+      return schemes.map((scheme) => {
+        const canonicalId = resolveBackendSchemeId(scheme.id);
+        const bResult = backendMap.get(canonicalId.toLowerCase());
+        if (bResult) {
+          return adaptBackendEligibilityResult(bResult, scheme);
+        }
+        // Local-only scheme (e.g. nsp-post-matric)
+        return evaluateSchemeEligibility(scheme, profile);
+      });
+    }
+
+    // Fallback: evaluate all schemes client-side
+    return schemes.map((scheme) => evaluateSchemeEligibility(scheme, profile));
+  }, [schemes, profile, backendResponse]);
 
   const metCount = evaluationResults.filter((r) => r.overallStatus === 'met').length;
   const unknownCount = evaluationResults.filter((r) => r.overallStatus === 'unknown').length;
@@ -303,6 +369,112 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                 <option value="Medium/Large (> 2 ha)">Medium / Large (&gt; 2 Hectares)</option>
               </select>
             </div>
+
+            {/* Exact Annual Household Income */}
+            <div>
+              <label htmlFor="field-annual-income" className="block font-semibold text-slate-700 mb-1.5">
+                Exact Annual Income (₹) <span className="text-[10px] text-slate-500 font-normal">(Optional)</span>
+              </label>
+              <input
+                id="field-annual-income"
+                type="number"
+                min="0"
+                step="5000"
+                value={profile.annualIncome ?? ''}
+                onChange={(e) =>
+                  handleProfileFieldChange(
+                    'annualIncome',
+                    e.target.value === '' ? null : parseFloat(e.target.value)
+                  )
+                }
+                placeholder="e.g. 120000"
+                className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-civic-500 focus:bg-white text-slate-900"
+              />
+            </div>
+
+            {/* Owns Pucca House */}
+            <div>
+              <label htmlFor="field-pucca-house" className="block font-semibold text-slate-700 mb-1.5">
+                Owns Pucca House? <span className="text-[10px] text-slate-500 font-normal">(Optional)</span>
+              </label>
+              <select
+                id="field-pucca-house"
+                value={
+                  profile.ownsPuccaHouse === true
+                    ? 'true'
+                    : profile.ownsPuccaHouse === false
+                    ? 'false'
+                    : ''
+                }
+                onChange={(e) =>
+                  handleProfileFieldChange(
+                    'ownsPuccaHouse',
+                    e.target.value === '' ? null : e.target.value === 'true'
+                  )
+                }
+                className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-civic-500 focus:bg-white text-slate-900"
+              >
+                <option value="">Unanswered (Unknown)</option>
+                <option value="false">No (Kutcha / Homeless)</option>
+                <option value="true">Yes (Owns Pucca House)</option>
+              </select>
+            </div>
+
+            {/* Income Tax Payer */}
+            <div>
+              <label htmlFor="field-tax-payer" className="block font-semibold text-slate-700 mb-1.5">
+                Income Tax Payer? <span className="text-[10px] text-slate-500 font-normal">(Optional)</span>
+              </label>
+              <select
+                id="field-tax-payer"
+                value={
+                  profile.isTaxPayer === true
+                    ? 'true'
+                    : profile.isTaxPayer === false
+                    ? 'false'
+                    : ''
+                }
+                onChange={(e) =>
+                  handleProfileFieldChange(
+                    'isTaxPayer',
+                    e.target.value === '' ? null : e.target.value === 'true'
+                  )
+                }
+                className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-civic-500 focus:bg-white text-slate-900"
+              >
+                <option value="">Unanswered (Unknown)</option>
+                <option value="false">No (Non-Taxpayer)</option>
+                <option value="true">Yes (Income Tax Payer)</option>
+              </select>
+            </div>
+
+            {/* Government Employee */}
+            <div>
+              <label htmlFor="field-govt-employee" className="block font-semibold text-slate-700 mb-1.5">
+                Govt Employee? <span className="text-[10px] text-slate-500 font-normal">(Optional)</span>
+              </label>
+              <select
+                id="field-govt-employee"
+                value={
+                  profile.isGovernmentEmployee === true
+                    ? 'true'
+                    : profile.isGovernmentEmployee === false
+                    ? 'false'
+                    : ''
+                }
+                onChange={(e) =>
+                  handleProfileFieldChange(
+                    'isGovernmentEmployee',
+                    e.target.value === '' ? null : e.target.value === 'true'
+                  )
+                }
+                className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-civic-500 focus:bg-white text-slate-900"
+              >
+                <option value="">Unanswered (Unknown)</option>
+                <option value="false">No (Non-Govt Worker)</option>
+                <option value="true">Yes (Serving/Retired Govt Employee)</option>
+              </select>
+            </div>
           </div>
 
           {/* Toggle Checkboxes */}
@@ -359,6 +531,46 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                 </button>
               )}
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Backend Evaluation Status Notice */}
+      {isEvaluatingBackend && (
+        <div className="p-3.5 bg-blue-50 border border-blue-200 text-blue-900 rounded-2xl flex items-center space-x-2.5 text-xs font-medium">
+          <RefreshCw className="w-4 h-4 text-civic-600 animate-spin shrink-0" />
+          <span>Evaluating citizen profile against statutory criteria via FastAPI <code className="bg-white/80 px-1 py-0.5 rounded font-mono">POST /api/eligibility/check</code>...</span>
+        </div>
+      )}
+
+      {backendResponse && !isEvaluatingBackend && (
+        <div className="p-4 bg-emerald-50/80 border border-emerald-200 text-emerald-950 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs">
+          <div className="flex items-center space-x-2.5">
+            <Server className="w-4 h-4 text-emerald-700 shrink-0" />
+            <span>
+              <strong>Server-Computed 3-Valued Logic:</strong> Evaluated across {backendResponse.total_schemes_evaluated} verified schemes ({backendResponse.summary.meets_known_criteria} met, {backendResponse.summary.needs_verification} need information, {backendResponse.summary.does_not_meet_known_criteria} disqualified)
+              {lastEvaluatedAt && <span className="text-emerald-700"> at {lastEvaluatedAt.toLocaleTimeString()}</span>}.
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={runBackendEvaluation}
+            className="text-emerald-800 underline font-semibold flex items-center space-x-1 hover:text-emerald-900 self-start sm:self-auto"
+          >
+            <RefreshCw className="w-3 h-3" />
+            <span>Re-evaluate</span>
+          </button>
+        </div>
+      )}
+
+      {backendEvalError && !isEvaluatingBackend && (
+        <div className="p-4 bg-amber-50 border border-amber-200 text-amber-900 rounded-2xl flex items-start space-x-3 text-xs">
+          <AlertCircle className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
+          <div>
+            <p className="font-semibold">FastAPI Backend Notice: {backendEvalError}</p>
+            <p className="text-amber-800 mt-0.5">
+              Showing local client assessment as fallback. The application will automatically reconnect once the backend is reachable.
+            </p>
           </div>
         </div>
       )}
@@ -445,10 +657,22 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                 {/* Scheme Header Row */}
                 <div className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div className="space-y-1.5 flex-1">
-                    <div className="flex items-center space-x-2">
+                    <div className="flex flex-wrap items-center gap-2">
                       <span className="px-2.5 py-0.5 rounded text-[11px] font-semibold bg-civic-50 text-civic-700">
                         {scheme.category}
                       </span>
+
+                      {/* Engine Source Badge */}
+                      {backendResponse && backendResponse.schemes.some((s) => s.scheme_id.toLowerCase() === resolveBackendSchemeId(scheme.id).toLowerCase()) ? (
+                        <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-blue-50 text-blue-800 border border-blue-200">
+                          <Server className="w-3 h-3 text-blue-600" />
+                          <span>FastAPI Verified Engine</span>
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-700 border border-slate-200">
+                          <span>Local Reference Model</span>
+                        </span>
+                      )}
 
                       {/* Overall Status Badge */}
                       {overallStatus === 'met' ? (
@@ -459,7 +683,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                       ) : overallStatus === 'unknown' ? (
                         <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200">
                           <HelpCircle className="w-3.5 h-3.5 text-amber-600" />
-                          <span>Unknown (Missing Details)</span>
+                          <span>Unknown (Needs Info)</span>
                         </span>
                       ) : (
                         <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-100 text-rose-800 border border-rose-200">
@@ -469,7 +693,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                       )}
 
                       <span className="text-xs text-slate-400">
-                        {metCount}/{totalCriteriaCount} criteria met
+                        {metCount}/{totalCriteriaCount} criteria evaluated
                       </span>
                     </div>
 
@@ -574,15 +798,24 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                       ))}
                     </div>
 
+                    {/* Unassessed criteria disclaimer */}
+                    <div className="p-3 bg-slate-100/70 rounded-xl text-[11px] text-slate-600 space-y-1">
+                      <span className="font-semibold text-slate-700 block">Criteria Not Evaluated by Scheme Rules:</span>
+                      <p>
+                        Criteria such as gender, student status, disability, or social category were not assessed if not specified in official scheme rules (open to all citizens).
+                      </p>
+                    </div>
+
                     <div className="pt-2 text-[11px] text-slate-500 flex items-center justify-between">
                       <span>Source: {scheme.verification_source || 'Official Gazette'}</span>
                       <a
                         href={scheme.official_portal_url ?? '#'}
                         target="_blank"
                         rel="noreferrer"
-                        className="text-civic-700 font-semibold hover:underline"
+                        className="text-civic-700 font-semibold hover:underline inline-flex items-center space-x-1"
                       >
-                        Official Guidelines ↗
+                        <span>Official Guidelines</span>
+                        <ExternalLink className="w-3 h-3" />
                       </a>
                     </div>
                   </div>

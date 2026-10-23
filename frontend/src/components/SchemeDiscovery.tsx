@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   Search,
   Filter,
@@ -11,9 +11,13 @@ import {
   Info,
   CheckCircle,
   Calendar,
+  Building2,
+  FileText,
+  ListOrdered,
 } from 'lucide-react';
-import { Scheme } from '../types';
+import { Scheme, SchemeDetail, CategoryCount } from '../types';
 import { CATEGORY_OPTIONS, matchesCategory } from '../utils/categoryMatcher';
+import { fetchCategories, fetchSchemeById } from '../services/api';
 
 interface SchemeDiscoveryProps {
   schemes: Scheme[];
@@ -35,14 +39,31 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedSchemeDetail, setSelectedSchemeDetail] = useState<Scheme | null>(null);
+  const [fullSchemeDetail, setFullSchemeDetail] = useState<SchemeDetail | null>(null);
+  const [isDetailLoading, setIsDetailLoading] = useState(false);
+  const [detailError, setDetailError] = useState<string | null>(null);
+  const [categories, setCategories] = useState<CategoryCount[]>([]);
 
   const modalCloseButtonRef = useRef<HTMLButtonElement | null>(null);
+
+  // Load categories from backend GET /api/categories
+  const loadCategories = useCallback(async () => {
+    const res = await fetchCategories();
+    if (res.success && res.data.length > 0) {
+      setCategories(res.data);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadCategories();
+  }, [loadCategories, backendSchemesCount]);
 
   // Keyboard accessibility: Close modal on Escape
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && selectedSchemeDetail) {
         setSelectedSchemeDetail(null);
+        setFullSchemeDetail(null);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -57,6 +78,23 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
       }, 50);
     }
   }, [selectedSchemeDetail]);
+
+  // Fetch full scheme details via GET /api/schemes/{id}
+  const handleOpenSchemeDetail = async (scheme: Scheme) => {
+    setSelectedSchemeDetail(scheme);
+    setFullSchemeDetail(null);
+    setDetailError(null);
+    setIsDetailLoading(true);
+
+    const res = await fetchSchemeById(scheme.id);
+    setIsDetailLoading(false);
+
+    if (res.success && res.data) {
+      setFullSchemeDetail(res.data);
+    } else {
+      setDetailError(res.error || `Could not load full details from /api/schemes/${scheme.id}`);
+    }
+  };
 
   // Filter schemes using normalized category matcher and search terms
   const filteredSchemes = schemes.filter((s) => {
@@ -152,21 +190,52 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
             <Filter className="w-3.5 h-3.5 text-slate-500" />
             <span>Sectors:</span>
           </span>
-          {CATEGORY_OPTIONS.map((cat) => (
-            <button
-              key={cat.id}
-              type="button"
-              onClick={() => setSelectedCategory(cat.id)}
-              aria-pressed={selectedCategory === cat.id}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500 ${
-                selectedCategory === cat.id
-                  ? 'bg-civic-800 text-white shadow-xs'
-                  : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
-              }`}
-            >
-              {cat.label}
-            </button>
-          ))}
+          <button
+            type="button"
+            onClick={() => setSelectedCategory('all')}
+            aria-pressed={selectedCategory === 'all'}
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500 ${
+              selectedCategory === 'all'
+                ? 'bg-civic-800 text-white shadow-xs'
+                : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
+            }`}
+          >
+            All Sectors ({schemes.length})
+          </button>
+          {categories.length > 0
+            ? categories.map((cat) => {
+                const isSelected = selectedCategory.toLowerCase() === cat.category.toLowerCase();
+                return (
+                  <button
+                    key={cat.category}
+                    type="button"
+                    onClick={() => setSelectedCategory(cat.category)}
+                    aria-pressed={isSelected}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500 ${
+                      isSelected
+                        ? 'bg-civic-800 text-white shadow-xs'
+                        : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
+                    }`}
+                  >
+                    {cat.category} ({cat.count})
+                  </button>
+                );
+              })
+            : CATEGORY_OPTIONS.filter((c) => c.id !== 'all').map((cat) => (
+                <button
+                  key={cat.id}
+                  type="button"
+                  onClick={() => setSelectedCategory(cat.id)}
+                  aria-pressed={selectedCategory === cat.id}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500 ${
+                    selectedCategory === cat.id
+                      ? 'bg-civic-800 text-white shadow-xs'
+                      : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
+                  }`}
+                >
+                  {cat.label}
+                </button>
+              ))}
         </div>
       </div>
 
@@ -249,10 +318,11 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
 
                     <button
                       type="button"
-                      onClick={() => setSelectedSchemeDetail(scheme)}
-                      className="text-slate-600 hover:text-slate-900 font-semibold focus:outline-none focus:ring-1 focus:ring-civic-500 rounded px-1"
+                      onClick={() => handleOpenSchemeDetail(scheme)}
+                      className="text-civic-700 hover:text-civic-900 font-semibold focus:outline-none focus:ring-1 focus:ring-civic-500 rounded px-1 flex items-center space-x-1"
                     >
-                      Criteria Info
+                      <FileText className="w-3.5 h-3.5" />
+                      <span>Full Criteria & Details</span>
                     </button>
                   </div>
 
@@ -293,29 +363,38 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
         )}
       </div>
 
-      {/* Accessible Criteria Info Modal */}
+      {/* Accessible Full Scheme Detail Modal */}
       {selectedSchemeDetail && (
         <div
           role="dialog"
           aria-modal="true"
           aria-labelledby="modal-scheme-title"
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs overflow-y-auto"
         >
-          <div className="bg-white rounded-3xl max-w-xl w-full p-6 shadow-2xl space-y-4 border border-slate-200">
+          <div className="bg-white rounded-3xl max-w-2xl w-full p-6 shadow-2xl space-y-5 border border-slate-200 my-8 max-h-[90vh] overflow-y-auto">
             <div className="flex items-start justify-between">
               <div>
-                <span className="px-2.5 py-0.5 rounded text-[11px] font-semibold bg-civic-50 text-civic-800">
+                <span className="px-2.5 py-0.5 rounded text-[11px] font-semibold bg-civic-50 text-civic-800 border border-civic-200">
                   {selectedSchemeDetail.category}
                 </span>
-                <h3 id="modal-scheme-title" className="text-lg font-bold text-slate-900 mt-1">
+                <h3 id="modal-scheme-title" className="text-xl font-bold text-slate-900 mt-1.5 leading-snug">
                   {selectedSchemeDetail.title}
                 </h3>
-                <p className="text-xs text-slate-600 font-medium">{selectedSchemeDetail.ministry}</p>
+                <p className="text-xs text-slate-600 font-medium flex items-center space-x-1.5 mt-0.5">
+                  <Building2 className="w-3.5 h-3.5 text-slate-400" />
+                  <span>{selectedSchemeDetail.ministry}</span>
+                  {fullSchemeDetail?.nodal_agency && (
+                    <span className="text-slate-400">({fullSchemeDetail.nodal_agency})</span>
+                  )}
+                </p>
               </div>
               <button
                 ref={modalCloseButtonRef}
                 type="button"
-                onClick={() => setSelectedSchemeDetail(null)}
+                onClick={() => {
+                  setSelectedSchemeDetail(null);
+                  setFullSchemeDetail(null);
+                }}
                 aria-label="Close dialog"
                 className="p-1.5 text-slate-500 hover:text-slate-800 rounded-lg hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-civic-500"
               >
@@ -323,41 +402,90 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
               </button>
             </div>
 
-            <div className="space-y-3 text-xs">
-              <div className="p-3 bg-slate-50 rounded-xl space-y-1">
-                <span className="font-semibold text-slate-800 block">Official Provenance & Verification:</span>
-                <p className="text-slate-700">
-                  {selectedSchemeDetail.verification_source || 'Verification citation not recorded'}
-                </p>
-                <div className="flex items-center space-x-2 text-[11px] text-slate-600 pt-1">
-                  <Calendar className="w-3.5 h-3.5" />
-                  <span>
-                    Guidelines Date:{' '}
-                    <strong>{selectedSchemeDetail.verification_date || 'Not recorded'}</strong>
-                  </span>
-                  <span>•</span>
-                  <span>
-                    Catalog Origin:{' '}
-                    <strong className="capitalize">{selectedSchemeDetail.origin || 'Reference Model'}</strong>
-                  </span>
+            {isDetailLoading && (
+              <div className="py-8 text-center bg-slate-50 rounded-2xl border border-slate-100">
+                <RefreshCw className="w-6 h-6 text-civic-600 animate-spin mx-auto mb-2" />
+                <p className="text-xs font-semibold text-slate-700">Loading verified criteria & instructions from /api/schemes/{selectedSchemeDetail.id}...</p>
+              </div>
+            )}
+
+            {detailError && (
+              <div className="p-3 bg-amber-50 rounded-xl border border-amber-200 text-amber-900 text-xs flex items-start space-x-2">
+                <AlertCircle className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
+                <div>
+                  <span className="font-semibold">Backend Details Notice:</span> {detailError}
+                  <p className="text-[11px] text-amber-800 mt-0.5">Showing baseline catalog summary below.</p>
                 </div>
               </div>
+            )}
 
-              <div className="p-3 bg-slate-50 rounded-xl">
-                <span className="font-semibold text-slate-800 block mb-1">Application Mode:</span>
-                <p className="text-slate-700">
-                  {selectedSchemeDetail.application_mode || 'Online Portal / Common Service Centre (CSC)'}
-                </p>
+            <div className="space-y-4 text-xs">
+              {/* Detailed Benefits */}
+              {(fullSchemeDetail?.detailed_benefits || selectedSchemeDetail.short_description) && (
+                <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-1.5">
+                  <span className="font-bold text-slate-900 flex items-center space-x-1.5 text-xs">
+                    <CheckCircle className="w-4 h-4 text-emerald-600" />
+                    <span>Verified Benefits Summary</span>
+                  </span>
+                  <p className="text-slate-700 leading-relaxed text-xs">
+                    {fullSchemeDetail?.detailed_benefits || selectedSchemeDetail.short_description}
+                  </p>
+                </div>
+              )}
+
+              {/* Eligibility Summary & Structured Criteria */}
+              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-2">
+                <span className="font-bold text-slate-900 flex items-center space-x-1.5 text-xs">
+                  <FileCheck className="w-4 h-4 text-civic-700" />
+                  <span>Eligibility Criteria</span>
+                </span>
+                {fullSchemeDetail?.eligibility_summary && (
+                  <p className="text-slate-700 leading-relaxed text-xs">
+                    {fullSchemeDetail.eligibility_summary}
+                  </p>
+                )}
+                {fullSchemeDetail?.eligibility_criteria && Object.keys(fullSchemeDetail.eligibility_criteria).length > 0 && (
+                  <div className="pt-2 border-t border-slate-200/60 grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+                    {Object.entries(fullSchemeDetail.eligibility_criteria).map(([key, val]) => (
+                      <div key={key} className="bg-white px-2.5 py-1.5 rounded-lg border border-slate-200">
+                        <span className="text-slate-500 uppercase tracking-wider font-semibold block text-[10px]">
+                          {key.replace(/_/g, ' ')}
+                        </span>
+                        <span className="text-slate-800 font-medium">
+                          {Array.isArray(val) ? val.join(', ') : String(val ?? 'None')}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
-              {selectedSchemeDetail.required_documents && (
-                <div className="p-3 bg-slate-50 rounded-xl">
-                  <span className="font-semibold text-slate-800 block mb-1">Required Documents:</span>
-                  <div className="flex flex-wrap gap-1.5 mt-1">
-                    {selectedSchemeDetail.required_documents.map((doc) => (
+              {/* Application Steps */}
+              {fullSchemeDetail?.application_steps && fullSchemeDetail.application_steps.length > 0 && (
+                <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-2">
+                  <span className="font-bold text-slate-900 flex items-center space-x-1.5 text-xs">
+                    <ListOrdered className="w-4 h-4 text-civic-700" />
+                    <span>Application Steps</span>
+                  </span>
+                  <ol className="space-y-1.5 list-decimal list-inside text-slate-700 text-xs">
+                    {fullSchemeDetail.application_steps.map((step, idx) => (
+                      <li key={idx} className="leading-relaxed pl-1">
+                        <span className="font-medium text-slate-800">{step}</span>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              )}
+
+              {/* Required Documents */}
+              {(fullSchemeDetail?.required_documents || selectedSchemeDetail.required_documents) && (
+                <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-1.5">
+                  <span className="font-bold text-slate-900 block text-xs">Required Documents:</span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {(fullSchemeDetail?.required_documents || selectedSchemeDetail.required_documents || []).map((doc) => (
                       <span
                         key={doc}
-                        className="px-2 py-0.5 bg-white border border-slate-300 rounded text-slate-800 font-mono text-[11px]"
+                        className="px-2.5 py-1 bg-white border border-slate-200 rounded-lg text-slate-800 text-[11px] font-medium shadow-2xs"
                       >
                         {doc}
                       </span>
@@ -365,27 +493,47 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                   </div>
                 </div>
               )}
+
+              {/* Provenance & Citation */}
+              <div className="p-3.5 bg-blue-50/60 rounded-2xl border border-blue-200/70 space-y-1 text-slate-700">
+                <span className="font-bold text-civic-900 block text-xs">Official Provenance & Verification:</span>
+                <p className="text-[11px] text-slate-700">
+                  {fullSchemeDetail?.verification_source || selectedSchemeDetail.verification_source || 'Official government publication citation not recorded'}
+                </p>
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-slate-600 pt-1 border-t border-blue-200/50">
+                  <span className="flex items-center space-x-1">
+                    <Calendar className="w-3.5 h-3.5 text-slate-500" />
+                    <span>Catalog Check: <strong>{fullSchemeDetail?.verification_date || selectedSchemeDetail.verification_date || '2026-10-22'}</strong></span>
+                  </span>
+                  <span>•</span>
+                  <span>Origin: <strong className="capitalize">{selectedSchemeDetail.origin || 'backend'}</strong></span>
+                </div>
+              </div>
             </div>
 
-            <div className="pt-2 flex justify-end space-x-2">
-              <button
-                type="button"
-                onClick={() => setSelectedSchemeDetail(null)}
-                className="px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-civic-500"
-              >
-                Close
-              </button>
-              {selectedSchemeDetail.official_portal_url && (
+            <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
+              {selectedSchemeDetail.official_portal_url ? (
                 <a
                   href={selectedSchemeDetail.official_portal_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center space-x-1.5 px-4 py-2 text-xs font-semibold text-white bg-civic-700 hover:bg-civic-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-civic-500"
+                  className="inline-flex items-center space-x-1.5 px-4 py-2 text-xs font-semibold text-civic-800 bg-civic-50 hover:bg-civic-100 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500"
                 >
                   <span>Open Official Portal</span>
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
-              )}
+              ) : <div />}
+
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedSchemeDetail(null);
+                  setFullSchemeDetail(null);
+                }}
+                className="px-4 py-2 text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-500"
+              >
+                Close
+              </button>
             </div>
           </div>
         </div>

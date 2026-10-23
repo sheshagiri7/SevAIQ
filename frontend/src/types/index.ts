@@ -60,6 +60,25 @@ export interface Scheme {
 }
 
 /**
+ * Detailed verified scheme details returned by GET /api/schemes/{id}
+ */
+export interface SchemeDetail extends Scheme {
+  nodal_agency?: string | null;
+  detailed_benefits?: string | null;
+  eligibility_summary?: string | null;
+  eligibility_criteria?: Record<string, any>;
+  application_steps?: string[];
+}
+
+/**
+ * Category count returned by GET /api/categories
+ */
+export interface CategoryCount {
+  category: string;
+  count: number;
+}
+
+/**
  * Citizen Profile for eligibility matching.
  * PRIVACY MANDATE: strictly no Aadhaar or bank account numbers collected.
  */
@@ -74,6 +93,103 @@ export interface CitizenProfile {
   landholding: 'None' | 'Marginal (< 1 ha)' | 'Small (1-2 ha)' | 'Medium/Large (> 2 ha)' | '';
   isStudent: boolean;
   hasDisability: boolean;
+  // Optional statutory criteria inputs for backend API matching
+  annualIncome?: number | null;
+  ownsPuccaHouse?: boolean | null;
+  isTaxPayer?: boolean | null;
+  isGovernmentEmployee?: boolean | null;
+}
+
+/**
+ * Backend CitizenProfile wire model for POST /api/eligibility/check & POST /api/passport/pdf
+ */
+export interface BackendCitizenProfile {
+  age?: number | null;
+  state?: string | null;
+  residence_type?: 'rural' | 'urban' | null;
+  occupation?: string | null;
+  annual_income?: number | null;
+  owns_cultivable_land?: boolean | null;
+  owns_pucca_house?: boolean | null;
+  is_tax_payer?: boolean | null;
+  is_government_employee?: boolean | null;
+  available_documents?: string[];
+}
+
+export type BackendEligibilityOutcome =
+  | 'meets_known_criteria'
+  | 'does_not_meet_known_criteria'
+  | 'needs_verification';
+
+export interface BackendSchemeEligibilityResult {
+  scheme_id: string;
+  scheme_title: string;
+  category: string;
+  outcome: BackendEligibilityOutcome;
+  reasons: string[];
+  criteria_matched: string[];
+  criteria_not_met: string[];
+  missing_information: string[];
+  official_portal_url?: string | null;
+  verification_source?: string | null;
+}
+
+export interface BackendEligibilityCheckResponse {
+  total_schemes_evaluated: number;
+  summary: {
+    meets_known_criteria: number;
+    does_not_meet_known_criteria: number;
+    needs_verification: number;
+  };
+  schemes: BackendSchemeEligibilityResult[];
+}
+
+export interface BackendMappedDocument {
+  canonical_name: string;
+  raw_names: string[];
+  schemes_requiring: string[];
+  reusability_count: number;
+  status: 'available' | 'missing' | 'needs_verification';
+  category: string;
+}
+
+export interface BackendReadinessScore {
+  score_percentage: number;
+  numerator: number;
+  denominator: number;
+  formula: string;
+  disclaimer: string;
+}
+
+export interface BackendDocumentMappingResponse {
+  selected_scheme_ids: string[];
+  selected_schemes_summary: Array<{ id: string; title: string }>;
+  total_unique_required_documents: number;
+  reusable_documents: BackendMappedDocument[];
+  single_scheme_documents: BackendMappedDocument[];
+  available_documents: BackendMappedDocument[];
+  missing_documents: BackendMappedDocument[];
+  unverified_requirements: string[];
+  readiness_score: BackendReadinessScore;
+  official_source_references: Array<{
+    scheme_id: string;
+    scheme_title: string;
+    official_portal_url?: string | null;
+    verification_source?: string | null;
+  }>;
+}
+
+export interface DocumentMapperRequest {
+  scheme_ids: string[];
+  citizen_documents?: string[];
+  profile?: BackendCitizenProfile | null;
+}
+
+export interface PassportRequest {
+  scheme_ids: string[];
+  profile: BackendCitizenProfile;
+  citizen_documents?: string[];
+  notes?: string;
 }
 
 export type EligibilityStatus = 'met' | 'not_met' | 'unknown';

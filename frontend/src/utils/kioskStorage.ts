@@ -11,6 +11,10 @@ export const EMPTY_PROFILE: CitizenProfile = {
   landholding: '',
   isStudent: false,
   hasDisability: false,
+  annualIncome: null,
+  ownsPuccaHouse: null,
+  isTaxPayer: null,
+  isGovernmentEmployee: null,
 };
 
 export const DEMO_PROFILE: CitizenProfile = {
@@ -24,6 +28,10 @@ export const DEMO_PROFILE: CitizenProfile = {
   landholding: 'Small (1-2 ha)',
   isStudent: false,
   hasDisability: false,
+  annualIncome: 120000,
+  ownsPuccaHouse: false,
+  isTaxPayer: false,
+  isGovernmentEmployee: false,
 };
 
 export const STORAGE_KEYS = {
@@ -95,7 +103,11 @@ export function isProfileEmpty(profile: CitizenProfile | null | undefined): bool
     !profile.category &&
     !profile.landholding &&
     !profile.isStudent &&
-    !profile.hasDisability
+    !profile.hasDisability &&
+    (profile.annualIncome === null || profile.annualIncome === undefined) &&
+    (profile.ownsPuccaHouse === null || profile.ownsPuccaHouse === undefined) &&
+    (profile.isTaxPayer === null || profile.isTaxPayer === undefined) &&
+    (profile.isGovernmentEmployee === null || profile.isGovernmentEmployee === undefined)
   );
 }
 

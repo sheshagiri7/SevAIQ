@@ -5,7 +5,17 @@
  * network interruptions, malformed JSON, and request timeouts.
  */
 
-import { HealthResponse, Scheme } from '../types';
+import {
+  HealthResponse,
+  Scheme,
+  SchemeDetail,
+  CategoryCount,
+  BackendCitizenProfile,
+  BackendEligibilityCheckResponse,
+  DocumentMapperRequest,
+  BackendDocumentMappingResponse,
+  PassportRequest,
+} from '../types';
 
 export const getApiBaseUrl = (): string => {
   // Configurable via Vite environment variable, fallback to local FastAPI default
@@ -153,20 +163,99 @@ export async function checkBackendHealth(): Promise<HealthCheckResult> {
 }
 
 /**
- * Retrieves verified schemes from the backend.
- * Initially returns an empty list until official schemes are verified.
+ * Retrieves distinct scheme categories and counts from GET /api/categories.
  */
-export async function fetchSchemes(): Promise<{ success: boolean; data: Scheme[]; error?: string }> {
+export async function fetchCategories(): Promise<{
+  success: boolean;
+  data: CategoryCount[];
+  error?: string;
+}> {
   const baseUrl = getApiBaseUrl();
-  
+
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 5000);
 
-    const response = await fetch(`${baseUrl}/api/schemes`, {
+    const response = await fetch(`${baseUrl}/api/categories`, {
       method: 'GET',
       headers: {
-        'Accept': 'application/json',
+        Accept: 'application/json',
+      },
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      const errorMessage = await extractApiErrorMessage(response);
+      return {
+        success: false,
+        data: [],
+        error: errorMessage,
+      };
+    }
+
+    try {
+      const data = await response.json();
+      if (Array.isArray(data)) {
+        return {
+          success: true,
+          data: data as CategoryCount[],
+        };
+      }
+      return {
+        success: false,
+        data: [],
+        error: 'Malformed response: expected array from /api/categories',
+      };
+    } catch {
+      return {
+        success: false,
+        data: [],
+        error: 'Malformed JSON received from /api/categories',
+      };
+    }
+  } catch (err: unknown) {
+    let message = 'Failed to fetch categories from backend';
+    if (err instanceof DOMException && err.name === 'AbortError') {
+      message = 'Request to /api/categories timed out (5s)';
+    } else if (err instanceof Error && err.message) {
+      message = err.message;
+    }
+    return {
+      success: false,
+      data: [],
+      error: message,
+    };
+  }
+}
+
+/**
+ * Retrieves verified schemes from the backend.
+ * Supports optional category and text search ('q') query parameters.
+ */
+export async function fetchSchemes(params?: {
+  category?: string;
+  q?: string;
+}): Promise<{ success: boolean; data: Scheme[]; error?: string }> {
+  const baseUrl = getApiBaseUrl();
+
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 6000);
+
+    const url = new URL(`${baseUrl}/api/schemes`);
+    if (params?.category && params.category.trim() !== '') {
+      url.searchParams.set('category', params.category.trim());
+    }
+    if (params?.q && params.q.trim() !== '') {
+      url.searchParams.set('q', params.q.trim());
+    }
+
+    const response = await fetch(url.toString(), {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
       },
       signal: controller.signal,
     });
@@ -205,7 +294,7 @@ export async function fetchSchemes(): Promise<{ success: boolean; data: Scheme[]
   } catch (err: unknown) {
     let message = 'Failed to fetch schemes from backend';
     if (err instanceof DOMException && err.name === 'AbortError') {
-      message = 'Request to /api/schemes timed out (5s)';
+      message = 'Request to /api/schemes timed out (6s)';
     } else if (err instanceof Error && err.message) {
       message = err.message;
     }
@@ -215,4 +304,317 @@ export async function fetchSchemes(): Promise<{ success: boolean; data: Scheme[]
       error: message,
     };
   }
+}
+
+/**
+ * Retrieves full verified details, criteria, and requirements for a scheme by ID from GET /api/schemes/{id}.
+ */
+export async function fetchSchemeById(schemeId: string): Promise<{
+  success: boolean;
+  data: SchemeDetail | null;
+  error?: string;
+}> {
+  const baseUrl = getApiBaseUrl();
+
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+    const response = await fetch(`${baseUrl}/api/schemes/${encodeURIComponent(schemeId)}`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+      },
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      const errorMessage = await extractApiErrorMessage(response);
+      return {
+        success: false,
+        data: null,
+        error: errorMessage,
+      };
+    }
+
+    try {
+      const data = await response.json();
+      if (data && typeof data === 'object' && typeof data.id === 'string') {
+        return {
+          success: true,
+          data: data as SchemeDetail,
+        };
+      }
+      return {
+        success: false,
+        data: null,
+        error: 'Malformed response payload from /api/schemes/{id}',
+      };
+    } catch {
+      return {
+        success: false,
+        data: null,
+        error: `Malformed JSON received for scheme ${schemeId}`,
+      };
+    }
+  } catch (err: unknown) {
+    let message = `Failed to fetch scheme ${schemeId}`;
+    if (err instanceof DOMException && err.name === 'AbortError') {
+      message = `Request for scheme ${schemeId} timed out (5s)`;
+    } else if (err instanceof Error && err.message) {
+      message = err.message;
+    }
+    return {
+      success: false,
+      data: null,
+      error: message,
+    };
+  }
+}
+
+/**
+ * Evaluates a citizen profile against verified schemes via POST /api/eligibility/check.
+ */
+export async function checkEligibilityApi(profile: BackendCitizenProfile): Promise<{
+  success: boolean;
+  data: BackendEligibilityCheckResponse | null;
+  error?: string;
+}> {
+  const baseUrl = getApiBaseUrl();
+
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+    const response = await fetch(`${baseUrl}/api/eligibility/check`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify(profile),
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      const errorMessage = await extractApiErrorMessage(response);
+      return {
+        success: false,
+        data: null,
+        error: errorMessage,
+      };
+    }
+
+    try {
+      const data = await response.json();
+      if (data && typeof data === 'object' && Array.isArray(data.schemes)) {
+        return {
+          success: true,
+          data: data as BackendEligibilityCheckResponse,
+        };
+      }
+      return {
+        success: false,
+        data: null,
+        error: 'Malformed response structure from /api/eligibility/check',
+      };
+    } catch {
+      return {
+        success: false,
+        data: null,
+        error: 'Malformed JSON received from /api/eligibility/check',
+      };
+    }
+  } catch (err: unknown) {
+    let message = 'Eligibility evaluation request failed';
+    if (err instanceof DOMException && err.name === 'AbortError') {
+      message = 'Eligibility evaluation timed out (8s)';
+    } else if (err instanceof Error && err.message) {
+      message = err.message;
+    }
+    return {
+      success: false,
+      data: null,
+      error: message,
+    };
+  }
+}
+
+/**
+ * Analyzes document requirements and reusability across selected schemes via POST /api/documents/mapper.
+ */
+export async function mapDocumentsApi(request: DocumentMapperRequest): Promise<{
+  success: boolean;
+  data: BackendDocumentMappingResponse | null;
+  error?: string;
+}> {
+  const baseUrl = getApiBaseUrl();
+
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+    const response = await fetch(`${baseUrl}/api/documents/mapper`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify(request),
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      const errorMessage = await extractApiErrorMessage(response);
+      return {
+        success: false,
+        data: null,
+        error: errorMessage,
+      };
+    }
+
+    try {
+      const data = await response.json();
+      if (data && typeof data === 'object' && Array.isArray(data.selected_scheme_ids)) {
+        return {
+          success: true,
+          data: data as BackendDocumentMappingResponse,
+        };
+      }
+      return {
+        success: false,
+        data: null,
+        error: 'Malformed response payload from /api/documents/mapper',
+      };
+    } catch {
+      return {
+        success: false,
+        data: null,
+        error: 'Malformed JSON received from /api/documents/mapper',
+      };
+    }
+  } catch (err: unknown) {
+    let message = 'Document mapping request failed';
+    if (err instanceof DOMException && err.name === 'AbortError') {
+      message = 'Document mapper request timed out (8s)';
+    } else if (err instanceof Error && err.message) {
+      message = err.message;
+    }
+    return {
+      success: false,
+      data: null,
+      error: message,
+    };
+  }
+}
+
+/**
+ * Requests an in-memory generated Scheme Passport PDF from POST /api/passport/pdf.
+ * Returns the application/pdf Blob and extracted filename.
+ */
+export async function downloadPassportPdfApi(request: PassportRequest): Promise<{
+  success: boolean;
+  blob: Blob | null;
+  filename: string;
+  error?: string;
+}> {
+  const baseUrl = getApiBaseUrl();
+
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+    const response = await fetch(`${baseUrl}/api/passport/pdf`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/pdf',
+      },
+      body: JSON.stringify(request),
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      const errorMessage = await extractApiErrorMessage(response);
+      return {
+        success: false,
+        blob: null,
+        filename: '',
+        error: errorMessage,
+      };
+    }
+
+    // Extract filename from Content-Disposition header if available
+    let filename = 'SevAIQ_Scheme_Passport.pdf';
+    const disposition =
+      response.headers.get('Content-Disposition') ||
+      response.headers.get('content-disposition');
+    if (disposition) {
+      const filenameMatch = disposition.match(/filename\*?=['"]?(?:UTF-8'')?([^"';]+)['"]?/i);
+      if (filenameMatch && filenameMatch[1]) {
+        filename = decodeURIComponent(filenameMatch[1].trim());
+      }
+    }
+
+    const blob = await response.blob();
+    if (!blob || blob.size === 0) {
+      return {
+        success: false,
+        blob: null,
+        filename: '',
+        error: 'Backend returned an empty PDF stream',
+      };
+    }
+
+    return {
+      success: true,
+      blob,
+      filename,
+    };
+  } catch (err: unknown) {
+    let message = 'Passport PDF generation failed';
+    if (err instanceof DOMException && err.name === 'AbortError') {
+      message = 'Passport PDF generation timed out (15s)';
+    } else if (err instanceof Error && err.message) {
+      message = err.message;
+    }
+    return {
+      success: false,
+      blob: null,
+      filename: '',
+      error: message,
+    };
+  }
+}
+
+/**
+ * Triggers a browser download of a received PDF Blob, safely revoking the ObjectURL afterwards.
+ */
+export function triggerBlobDownload(blob: Blob, filename: string): void {
+  if (typeof window === 'undefined' || !window.URL || !document.body) {
+    return;
+  }
+  const url = window.URL.createObjectURL(blob);
+  const anchor = document.createElement('a');
+  anchor.style.display = 'none';
+  anchor.href = url;
+  anchor.download = filename;
+  document.body.appendChild(anchor);
+  anchor.click();
+  setTimeout(() => {
+    try {
+      document.body.removeChild(anchor);
+      window.URL.revokeObjectURL(url);
+    } catch {
+      // ignore
+    }
+  }, 200);
 }

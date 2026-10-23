@@ -42,7 +42,12 @@ export function reconcileCatalogSchemes(
     );
     const isVerified = Boolean(bScheme.verified && hasSource);
 
-    const existing = schemeMap.get(bScheme.id);
+    // Check direct match or confirmed alias (e.g. client 'ab-pmjay' for backend 'pm-jay')
+    let existing = schemeMap.get(bScheme.id);
+    if (!existing && bScheme.id === 'pm-jay' && schemeMap.has('ab-pmjay')) {
+      existing = schemeMap.get('ab-pmjay');
+      schemeMap.delete('ab-pmjay');
+    }
 
     if (existing) {
       // Backend metadata overlays reference metadata

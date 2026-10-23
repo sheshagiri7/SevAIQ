@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Award,
   ShieldCheck,
@@ -9,14 +9,21 @@ import {
   ExternalLink,
   Sparkles,
   ArrowRight,
+  Download,
+  RefreshCw,
+  AlertCircle,
+  CheckCircle,
 } from 'lucide-react';
 import {
   CitizenProfile,
   Scheme,
   DocumentRecord,
   NavigationTab,
+  PassportRequest,
 } from '../types';
 import { evaluateSchemeEligibility } from '../utils/eligibilityEngine';
+import { downloadPassportPdfApi, triggerBlobDownload } from '../services/api';
+import { adaptProfileToBackend, resolveBackendSchemeId } from '../utils/schemaAdapter';
 
 interface ReadinessPassportProps {
   profile: CitizenProfile;
@@ -33,8 +40,23 @@ export const ReadinessPassport: React.FC<ReadinessPassportProps> = ({
   selectedSchemeIds,
   onNavigate,
 }) => {
+  const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
+  const [pdfError, setPdfError] = useState<string | null>(null);
+  const [pdfSuccess, setPdfSuccess] = useState<string | null>(null);
+
   const activeSchemeIds =
     selectedSchemeIds.length > 0 ? selectedSchemeIds : schemes.map((s) => s.id);
+
+  // Valid backend scheme IDs (resolving aliases e.g. ab-pmjay -> pm-jay)
+  const validBackendSchemeIds = useMemo(() => {
+    const backendCatalogIds = new Set(
+      schemes.map((s) => resolveBackendSchemeId(s.id).toLowerCase())
+    );
+    const resolved = activeSchemeIds
+      .map((id) => resolveBackendSchemeId(id))
+      .filter((id) => backendCatalogIds.has(id.toLowerCase()));
+    return Array.from(new Set(resolved));
+  }, [activeSchemeIds, schemes]);
 
   const targetSchemes = schemes.filter((s) => activeSchemeIds.includes(s.id));
   const evaluations = targetSchemes.map((s) => evaluateSchemeEligibility(s, profile));
@@ -56,6 +78,39 @@ export const ReadinessPassport: React.FC<ReadinessPassportProps> = ({
 
   const handlePrint = () => {
     window.print();
+  };
+
+  const handleDownloadOfficialPdf = async () => {
+    if (validBackendSchemeIds.length === 0) {
+      setPdfError(
+        'Please select at least one verified government scheme from the catalog to generate the official Passport PDF.'
+      );
+      return;
+    }
+
+    setIsDownloadingPdf(true);
+    setPdfError(null);
+    setPdfSuccess(null);
+
+    const availableDocNames = documents.filter((d) => d.status === 'have').map((d) => d.name);
+    const backendProfile = adaptProfileToBackend(profile, availableDocNames);
+
+    const req: PassportRequest = {
+      scheme_ids: validBackendSchemeIds,
+      profile: backendProfile,
+      citizen_documents: availableDocNames,
+      notes: 'Generated via SevAIQ Citizen Self-Service Portal',
+    };
+
+    const res = await downloadPassportPdfApi(req);
+    setIsDownloadingPdf(false);
+
+    if (res.success && res.blob) {
+      triggerBlobDownload(res.blob, res.filename || 'SevAIQ_Scheme_Passport.pdf');
+      setPdfSuccess(`Official Passport PDF downloaded successfully (${res.filename || 'SevAIQ_Scheme_Passport.pdf'}).`);
+    } else {
+      setPdfError(res.error || 'Failed to generate PDF from FastAPI backend service');
+    }
   };
 
   // Generate a non-sensitive unique identifier per generated report session
@@ -83,22 +138,68 @@ export const ReadinessPassport: React.FC<ReadinessPassportProps> = ({
           </p>
         </div>
 
-        <div className="flex items-center space-x-3 self-start sm:self-auto">
+        <div className="flex flex-wrap items-center gap-2.5 self-start sm:self-auto">
           <button
+            type="button"
+            onClick={handleDownloadOfficialPdf}
+            disabled={isDownloadingPdf}
+            className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-civic-700 hover:bg-civic-800 disabled:bg-civic-400 text-white font-semibold text-xs shadow-md transition-all focus:outline-none focus:ring-2 focus:ring-civic-500"
+          >
+            {isDownloadingPdf ? (
+              <RefreshCw className="w-4 h-4 animate-spin" />
+            ) : (
+              <Download className="w-4 h-4" />
+            )}
+            <span>{isDownloadingPdf ? 'Generating In-Memory PDF...' : 'Download Scheme Passport (PDF)'}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={handlePrint}
+            className="inline-flex items-center space-x-1.5 px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 text-xs font-semibold shadow-xs transition-colors"
+            title="Browser print stylesheet fallback"
+          >
+            <Printer className="w-4 h-4" />
+            <span>Browser Print</span>
+          </button>
+
+          <button
+            type="button"
             onClick={() => onNavigate('document-mapper')}
             className="inline-flex items-center space-x-1.5 px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 text-xs font-semibold shadow-xs transition-colors"
           >
             <span>Edit in Document Mapper</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
-          <button
-            onClick={handlePrint}
-            className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs shadow-md transition-all"
-          >
-            <Printer className="w-4 h-4" />
-            <span>Print / Save as PDF</span>
-          </button>
         </div>
+      </div>
+
+      {/* Notifications */}
+      {pdfSuccess && (
+        <div className="p-4 bg-emerald-50 border border-emerald-200 text-emerald-950 rounded-2xl flex items-center space-x-3 text-xs">
+          <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+          <span>{pdfSuccess}</span>
+        </div>
+      )}
+
+      {pdfError && (
+        <div className="p-4 bg-amber-50 border border-amber-200 text-amber-950 rounded-2xl flex items-start space-x-3 text-xs">
+          <AlertCircle className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
+          <div>
+            <span className="font-semibold">PDF Download Notice:</span> {pdfError}
+            <p className="text-amber-800 text-[11px] mt-0.5">
+              You can still use the <strong>Browser Print</strong> button to view or print the document locally.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Informational Legal Advisory Banner */}
+      <div className="p-3.5 bg-slate-100 rounded-2xl border border-slate-200 text-[11px] text-slate-600 flex items-start space-x-2.5">
+        <ShieldCheck className="w-4 h-4 text-slate-500 shrink-0 mt-0.5" />
+        <p className="leading-relaxed">
+          <strong>Advisory Civic Assessment:</strong> This Scheme Readiness Passport is an informational preparedness summary generated by SevAIQ based on verified guidelines. It does not constitute an official government application, statutory approval, or entitlement guarantee.
+        </p>
       </div>
 
       {/* Printable Passport Card Shell */}

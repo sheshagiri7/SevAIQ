@@ -1,25 +1,30 @@
-# Proposed API Contract Extension (v0.2.0 Proposal)
+# Proposed API Contract Extension (v0.2.0 Proposal & Integration Reconciliation)
 **Seva First Innovation Challenge 2026**  
 **Author:** Developer 1 (Frontend & Integration Lead)  
 **Target Recipient:** Developer 2 (Backend Lead)  
-**Status:** PROPOSED FOR COORDINATION (NOT YET IMPLEMENTED IN BACKEND)
+**Status:** RECONCILED WITH BACKEND BRANCH IMPLEMENTATION (ACTIVE CONTRACT: `docs/API_CONTRACT.md`)
 
 ---
 
-## 1. Overview & Motivation
+## 1. Integration Status & Active vs. Proposed Reconciliation
 
-The Task 1 project foundation implemented basic foundation endpoints:
-- `GET /api/health`
-- `GET /api/schemes` (returns an array of basic schemes)
+Developer 2 has implemented the expanded backend service on the `backend` branch, now documented authoritatively in [`docs/API_CONTRACT.md`](./API_CONTRACT.md). Below is the reconciliation showing what is currently implemented in the active backend vs. what remains proposed or differs:
 
-During frontend Milestone 1 development (Scheme Discovery, Eligibility Engine, Document Mapper, and Scheme Readiness Passport), we identified metadata required for client-server consistency:
-1. **Scheme Model Expansion**: Rich criteria specifications, document requirements, and verification dates.
-2. **Server-Side Eligibility Validation**: `POST /api/eligibility/check` for dual verification.
-3. **Master Document Catalog**: `GET /api/documents` to standardize document issuing authorities.
-4. **Scheme Readiness Passport Validation**: `POST /api/passport/validate` for official tamper-proof verification.
+| Feature / Endpoint | Active Backend Contract (`docs/API_CONTRACT.md`) | Status | Implementation Notes / Differences |
+| :--- | :--- | :--- | :--- |
+| **Service Health Check** | `GET /api/health` | **Implemented** | Returns service status, version, and name. |
+| **Categories & Counts** | `GET /api/categories` | **Implemented** | Returns distinct categories and scheme count per sector. |
+| **Scheme Listing & Search** | `GET /api/schemes?category=&q=` | **Implemented** | Supports category filtering and full-text keyword search across 8 verified central schemes. |
+| **Scheme Details by ID** | `GET /api/schemes/{id}` | **Implemented** | Returns full details: `eligibility_criteria`, `required_documents`, `detailed_benefits`, `application_steps`. |
+| **Eligibility Assessment** | `POST /api/eligibility/check` | **Implemented** | Uses 3-valued logic (`meets_known_criteria`, `does_not_meet_known_criteria`, `needs_verification`). Input expects statutory profile indicators (`residence_type`, `annual_income`, `owns_cultivable_land`, etc.). |
+| **Cross-Scheme Document Mapper** | `POST /api/documents/mapper` | **Implemented** | Replaces static catalog with dynamic cross-scheme analysis returning `reusable_documents`, `single_scheme_documents`, and readiness score formula. |
+| **Scheme Passport PDF** | `POST /api/passport/pdf` | **Implemented** | Replaces proposed JSON validation with full in-memory ReportLab PDF generation. Returns `application/pdf` binary stream. |
+| **Master Document Catalog** | `GET /api/documents` | *Proposed Only* | Not implemented; backend dynamically derives canonical documents in `POST /api/documents/mapper`. |
+| **Cryptographic Token / JSON Stamp** | `POST /api/passport/validate` | *Proposed Only* | Deferred; current release focuses on printable citizen-facing Passport PDF (`POST /api/passport/pdf`). |
+| **Extended Demographic Rules** | `must_be_student`, `requires_disability`, `allowed_categories` | *Proposed Only* | Reserved for future scheme catalog expansion; active backend criteria prioritize statutory rules (`land_ownership_required`, `tax_payer_allowed`, `owns_pucca_house`, `residence_type`). |
 
 > [!IMPORTANT]
-> This document is a **collaborative proposal**. The active contract in `docs/API_CONTRACT.md` remains unchanged until Developer 2 reviews and approves these additions.
+> The active contract in `docs/API_CONTRACT.md` and the actual FastAPI implementation in `backend/app/` serve as the **sole source of truth** for runtime integration. This proposal document is retained for historical traceability and future roadmap planning.
 
 ---
 

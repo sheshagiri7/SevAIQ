@@ -2,9 +2,15 @@ import { describe, it, expect } from 'vitest';
 import {
   normalizeEligibilityRule,
   normalizeScheme,
+  resolveBackendSchemeId,
+  adaptProfileToBackend,
+  mapBackendStatusToFrontend,
+  mapFrontendStatusToBackend,
+  adaptBackendEligibilityResult,
   RawBackendEligibilityRule,
   RawBackendScheme,
 } from '../utils/schemaAdapter';
+import { CitizenProfile, BackendSchemeEligibilityResult } from '../types';
 
 describe('Schema Adapter Suite (Backend snake_case to Frontend camelCase)', () => {
   describe('normalizeEligibilityRule', () => {
@@ -137,6 +143,182 @@ describe('Schema Adapter Suite (Backend snake_case to Frontend camelCase)', () =
       expect(normalized.rules).toBeUndefined();
       expect(normalized.required_documents).toEqual([]);
       expect(normalized.application_mode).toBe('Both');
+    });
+  });
+
+  describe('resolveBackendSchemeId', () => {
+    it('maps ab-pmjay alias to backend authoritative pm-jay', () => {
+      expect(resolveBackendSchemeId('ab-pmjay')).toBe('pm-jay');
+      expect(resolveBackendSchemeId('AB-PMJAY')).toBe('pm-jay');
+    });
+
+    it('returns original normalized id for standard scheme IDs', () => {
+      expect(resolveBackendSchemeId('pm-kisan')).toBe('pm-kisan');
+      expect(resolveBackendSchemeId('PM-KISAN')).toBe('pm-kisan');
+    });
+
+    it('handles empty or whitespace strings', () => {
+      expect(resolveBackendSchemeId('')).toBe('');
+      expect(resolveBackendSchemeId('   ')).toBe('');
+    });
+  });
+
+  describe('adaptProfileToBackend', () => {
+    it('correctly maps citizen profile to backend wire format', () => {
+      const frontendProfile: CitizenProfile = {
+        age: 35,
+        gender: 'Male',
+        state: 'Karnataka',
+        area: 'Rural',
+        occupation: 'Farmer / Cultivator',
+        incomeBracket: '1 - 2.5 Lakh',
+        annualIncome: 120000,
+        category: 'OBC',
+        landholding: 'Marginal (< 1 ha)',
+        isStudent: false,
+        hasDisability: false,
+        ownsPuccaHouse: false,
+        isTaxPayer: false,
+        isGovernmentEmployee: false,
+      };
+
+      const backendProfile = adaptProfileToBackend(frontendProfile, ['Aadhaar Card', 'Land Records']);
+
+      expect(backendProfile.age).toBe(35);
+      expect(backendProfile.state).toBe('Karnataka');
+      expect(backendProfile.residence_type).toBe('rural');
+      expect(backendProfile.occupation).toBe('Farmer / Cultivator');
+      expect(backendProfile.annual_income).toBe(120000);
+      expect(backendProfile.owns_cultivable_land).toBe(true);
+      expect(backendProfile.owns_pucca_house).toBe(false);
+      expect(backendProfile.is_tax_payer).toBe(false);
+      expect(backendProfile.is_government_employee).toBe(false);
+      expect(backendProfile.available_documents).toEqual(['Aadhaar Card', 'Land Records']);
+    });
+
+    it('never guesses income midpoint when annualIncome is undefined', () => {
+      const frontendProfile: CitizenProfile = {
+        age: 28,
+        gender: 'Female',
+        state: 'Delhi',
+        area: 'Urban',
+        occupation: 'Street Vendor',
+        incomeBracket: '1 - 2.5 Lakh',
+        category: 'General',
+        landholding: 'None',
+        isStudent: false,
+        hasDisability: false,
+      };
+
+      const backendProfile = adaptProfileToBackend(frontendProfile);
+      expect(backendProfile.annual_income).toBeNull();
+      expect(backendProfile.residence_type).toBe('urban');
+      expect(backendProfile.owns_cultivable_land).toBe(false);
+    });
+
+    it('preserves null for unselected fields', () => {
+      const emptyProfile: CitizenProfile = {
+        age: null,
+        gender: '',
+        state: '',
+        area: '',
+        occupation: '',
+        incomeBracket: '',
+        category: '',
+        landholding: '',
+        isStudent: false,
+        hasDisability: false,
+      };
+      const backendProfile = adaptProfileToBackend(emptyProfile);
+
+      expect(backendProfile.age).toBeNull();
+      expect(backendProfile.state).toBeNull();
+      expect(backendProfile.residence_type).toBeNull();
+      expect(backendProfile.occupation).toBeNull();
+      expect(backendProfile.annual_income).toBeNull();
+      expect(backendProfile.owns_cultivable_land).toBeNull();
+      expect(backendProfile.owns_pucca_house).toBeNull();
+      expect(backendProfile.is_tax_payer).toBeNull();
+      expect(backendProfile.is_government_employee).toBeNull();
+      expect(backendProfile.available_documents).toEqual([]);
+    });
+  });
+
+  describe('mapBackendStatusToFrontend and mapFrontendStatusToBackend', () => {
+    it('correctly maps between backend wire document status and frontend possession status', () => {
+      expect(mapBackendStatusToFrontend('available')).toBe('have');
+      expect(mapBackendStatusToFrontend('missing')).toBe('missing');
+      expect(mapBackendStatusToFrontend('needs_verification')).toBe('unconfirmed');
+      expect(mapBackendStatusToFrontend('unknown_status')).toBe('unconfirmed');
+
+      expect(mapFrontendStatusToBackend('have')).toBe('available');
+      expect(mapFrontendStatusToBackend('missing')).toBe('missing');
+      expect(mapFrontendStatusToBackend('unconfirmed')).toBe('needs_verification');
+    });
+  });
+
+  describe('adaptBackendEligibilityResult', () => {
+    it('transforms meets_known_criteria outcome to met status with criteria details', () => {
+      const backendResult: BackendSchemeEligibilityResult = {
+        scheme_id: 'pm-kisan',
+        scheme_title: 'PM-KISAN',
+        category: 'Agriculture & Rural',
+        official_portal_url: 'https://pmkisan.gov.in',
+        verification_source: 'Operational Guidelines',
+        outcome: 'meets_known_criteria',
+        reasons: ['Citizen meets all known criteria.'],
+        criteria_matched: ['Age 18+ verified', 'Owns cultivable land verified'],
+        criteria_not_met: [],
+        missing_information: [],
+      };
+
+      const adapted = adaptBackendEligibilityResult(backendResult);
+      expect(adapted.overallStatus).toBe('met');
+      expect(adapted.metCount).toBe(2);
+      expect(adapted.totalCriteriaCount).toBe(2);
+      expect(adapted.criteriaResults).toHaveLength(2);
+      expect(adapted.criteriaResults[0].status).toBe('met');
+      expect(adapted.scheme.id).toBe('pm-kisan');
+      expect(adapted.scheme.verified).toBe(true);
+    });
+
+    it('transforms does_not_meet_known_criteria outcome to not_met status', () => {
+      const backendResult: BackendSchemeEligibilityResult = {
+        scheme_id: 'pm-kisan',
+        scheme_title: 'PM-KISAN',
+        category: 'Agriculture & Rural',
+        official_portal_url: 'https://pmkisan.gov.in',
+        verification_source: 'Operational Guidelines',
+        outcome: 'does_not_meet_known_criteria',
+        reasons: ['Income taxpayer disqualified.'],
+        criteria_matched: [],
+        criteria_not_met: ['Institutional landholder or income taxpayer excluded'],
+        missing_information: [],
+      };
+
+      const adapted = adaptBackendEligibilityResult(backendResult);
+      expect(adapted.overallStatus).toBe('not_met');
+      expect(adapted.metCount).toBe(0);
+      expect(adapted.criteriaResults[0].status).toBe('not_met');
+    });
+
+    it('transforms needs_verification outcome to unknown status', () => {
+      const backendResult: BackendSchemeEligibilityResult = {
+        scheme_id: 'pm-jay',
+        scheme_title: 'Ayushman Bharat PM-JAY',
+        category: 'Healthcare',
+        official_portal_url: 'https://pmjay.gov.in',
+        verification_source: 'NHA Guidelines',
+        outcome: 'needs_verification',
+        reasons: ['SECC 2011 entitlement status not provided.'],
+        criteria_matched: [],
+        criteria_not_met: [],
+        missing_information: ['SECC 2011 / Ration Card entitlement requires verification'],
+      };
+
+      const adapted = adaptBackendEligibilityResult(backendResult);
+      expect(adapted.overallStatus).toBe('unknown');
+      expect(adapted.criteriaResults[0].status).toBe('unknown');
     });
   });
 });

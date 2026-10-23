@@ -324,6 +324,7 @@ export function App() {
           <EligibilityScreen
             schemes={allSchemes}
             profile={profile}
+            documents={documents}
             onUpdateProfile={handleUpdateProfile}
             onNavigate={setActiveTab}
             onSelectForMapper={handleToggleSchemeSelection}
@@ -338,6 +339,7 @@ export function App() {
           <DocumentMapper
             documents={documents}
             schemes={allSchemes}
+            profile={profile}
             selectedSchemeIds={selectedSchemeIds}
             onToggleSchemeSelection={handleToggleSchemeSelection}
             onResetSchemeSelection={handleResetSchemeSelection}

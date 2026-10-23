@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   Files,
   CheckCircle2,
@@ -9,13 +9,30 @@ import {
   ArrowRight,
   Sparkles,
   Info,
+  RefreshCw,
+  Server,
+  AlertCircle,
+  ExternalLink,
 } from 'lucide-react';
-import { DocumentRecord, DocumentPossessionStatus, Scheme, NavigationTab } from '../types';
+import {
+  DocumentRecord,
+  DocumentPossessionStatus,
+  Scheme,
+  NavigationTab,
+  CitizenProfile,
+  BackendDocumentMappingResponse,
+} from '../types';
+import { mapDocumentsApi } from '../services/api';
+import {
+  resolveBackendSchemeId,
+  adaptProfileToBackend,
+} from '../utils/schemaAdapter';
 
 interface DocumentMapperProps {
   documents: DocumentRecord[];
   schemes: Scheme[];
   selectedSchemeIds: string[];
+  profile?: CitizenProfile;
   onToggleSchemeSelection: (schemeId: string) => void;
   onResetSchemeSelection: () => void;
   onUpdateDocumentStatus: (docId: string, status: DocumentPossessionStatus) => void;
@@ -26,6 +43,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
   documents,
   schemes,
   selectedSchemeIds,
+  profile,
   onToggleSchemeSelection,
   onResetSchemeSelection,
   onUpdateDocumentStatus,
@@ -33,38 +51,114 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
 }) => {
   const [filterTab, setFilterTab] = useState<'all' | 'shared' | 'missing' | 'have'>('all');
 
-  // Filter documents that apply to currently selected schemes
-  // If no schemes specifically selected, evaluate across all cataloged schemes
-  const activeSchemeIds =
-    selectedSchemeIds.length > 0 ? selectedSchemeIds : schemes.map((s) => s.id);
+  // Backend Mapping API state
+  const [backendMapping, setBackendMapping] = useState<BackendDocumentMappingResponse | null>(null);
+  const [isMappingLoading, setIsMappingLoading] = useState<boolean>(false);
+  const [mappingError, setMappingError] = useState<string | null>(null);
 
-  const relevantDocuments = documents.filter((doc) =>
-    doc.applicableSchemeIds.some((sId) => activeSchemeIds.includes(sId))
-  );
+  // Active scheme IDs (if none selected, prompt citizen to select)
+  const activeSchemeIds = useMemo(() => {
+    return selectedSchemeIds.length > 0 ? selectedSchemeIds : [];
+  }, [selectedSchemeIds]);
 
-  const haveCount = relevantDocuments.filter((d) => d.status === 'have').length;
-  const missingCount = relevantDocuments.filter((d) => d.status === 'missing').length;
-  const unconfirmedCount = relevantDocuments.filter((d) => d.status === 'unconfirmed').length;
-  const totalCount = relevantDocuments.length;
+  // Resolve valid backend scheme IDs (normalizing aliases like ab-pmjay -> pm-jay)
+  const resolvedBackendIds = useMemo(() => {
+    const ids = activeSchemeIds.map((id) => resolveBackendSchemeId(id));
+    // Remove duplicates
+    return Array.from(new Set(ids));
+  }, [activeSchemeIds]);
 
-  const readinessPercent = totalCount > 0 ? Math.round((haveCount / totalCount) * 100) : 0;
+  // Documents citizen currently marks as available in hand
+  const citizenAvailableNames = useMemo(() => {
+    return documents.filter((d) => d.status === 'have').map((d) => d.name);
+  }, [documents]);
 
-  // Documents required by more than one selected scheme = Shared Synergy!
-  const sharedDocuments = relevantDocuments.filter(
-    (doc) =>
-      doc.applicableSchemeIds.filter((sId) => activeSchemeIds.includes(sId)).length > 1
-  );
+  // Call POST /api/documents/mapper
+  const runDocumentMapping = useCallback(async () => {
+    if (resolvedBackendIds.length === 0) {
+      setBackendMapping(null);
+      return;
+    }
 
-  const displayedDocs = relevantDocuments.filter((doc) => {
-    if (filterTab === 'shared') {
-      return (
+    setIsMappingLoading(true);
+    setMappingError(null);
+
+    const backendProfile = profile ? adaptProfileToBackend(profile, citizenAvailableNames) : null;
+    const res = await mapDocumentsApi({
+      scheme_ids: resolvedBackendIds,
+      citizen_documents: citizenAvailableNames,
+      profile: backendProfile,
+    });
+
+    setIsMappingLoading(false);
+
+    if (res.success && res.data) {
+      setBackendMapping(res.data);
+    } else {
+      setMappingError(res.error || 'Failed to map documents via backend API');
+    }
+  }, [resolvedBackendIds, citizenAvailableNames, profile]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      runDocumentMapping();
+    }, 200);
+    return () => clearTimeout(timer);
+  }, [runDocumentMapping]);
+
+  // Fallback calculations for local reference schemes
+  const relevantDocuments = useMemo(() => {
+    if (activeSchemeIds.length === 0) return [];
+    return documents.filter((doc) =>
+      doc.applicableSchemeIds.some((sId) => activeSchemeIds.includes(sId))
+    );
+  }, [documents, activeSchemeIds]);
+
+  const haveCount = backendMapping
+    ? backendMapping.readiness_score.numerator
+    : relevantDocuments.filter((d) => d.status === 'have').length;
+
+  const totalCount = backendMapping
+    ? backendMapping.readiness_score.denominator
+    : relevantDocuments.length;
+
+  const missingCount = backendMapping
+    ? backendMapping.missing_documents.length
+    : relevantDocuments.filter((d) => d.status === 'missing').length;
+
+  const unconfirmedCount = backendMapping
+    ? Math.max(0, totalCount - haveCount - missingCount)
+    : relevantDocuments.filter((d) => d.status === 'unconfirmed').length;
+
+  const readinessPercent = backendMapping
+    ? backendMapping.readiness_score.score_percentage
+    : totalCount > 0
+    ? Math.round((haveCount / totalCount) * 100)
+    : 0;
+
+  // Shared documents across 2+ schemes
+  const sharedDocuments = useMemo(() => {
+    return relevantDocuments.filter(
+      (doc) =>
         doc.applicableSchemeIds.filter((sId) => activeSchemeIds.includes(sId)).length > 1
+    );
+  }, [relevantDocuments, activeSchemeIds]);
+
+  const sharedDocsCount = backendMapping
+    ? backendMapping.reusable_documents.length
+    : sharedDocuments.length;
+
+  const displayedDocs = useMemo(() => {
+    if (filterTab === 'shared') {
+      return relevantDocuments.filter(
+        (doc) =>
+          doc.applicableSchemeIds.filter((sId) => activeSchemeIds.includes(sId)).length > 1
       );
     }
-    if (filterTab === 'missing') return doc.status === 'missing';
-    if (filterTab === 'have') return doc.status === 'have';
-    return true;
-  });
+    if (filterTab === 'missing') return relevantDocuments.filter((doc) => doc.status === 'missing');
+    if (filterTab === 'have') return relevantDocuments.filter((doc) => doc.status === 'have');
+    return relevantDocuments;
+  }, [relevantDocuments, filterTab, activeSchemeIds]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
@@ -92,6 +186,45 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
           <ArrowRight className="w-3.5 h-3.5" />
         </button>
       </div>
+
+      {/* Backend Synchronization Notification */}
+      {isMappingLoading && (
+        <div className="p-3 bg-blue-50 border border-blue-200 text-blue-900 rounded-2xl flex items-center space-x-2 text-xs font-medium">
+          <RefreshCw className="w-4 h-4 text-civic-600 animate-spin shrink-0" />
+          <span>Computing cross-scheme document synergy via FastAPI <code className="bg-white/80 px-1 py-0.5 rounded font-mono">POST /api/documents/mapper</code>...</span>
+        </div>
+      )}
+
+      {backendMapping && !isMappingLoading && (
+        <div className="p-3.5 bg-emerald-50/80 border border-emerald-200 text-emerald-950 rounded-2xl flex items-center justify-between text-xs">
+          <div className="flex items-center space-x-2">
+            <Server className="w-4 h-4 text-emerald-700 shrink-0" />
+            <span>
+              <strong>Server-Computed Document Synergy:</strong> Analyzed across {backendMapping.selected_scheme_ids.length} schemes ({backendMapping.reusable_documents.length} reusable multi-scheme documents, {backendMapping.single_scheme_documents.length} scheme-specific).
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={runDocumentMapping}
+            className="text-emerald-800 underline font-semibold flex items-center space-x-1 hover:text-emerald-900"
+          >
+            <RefreshCw className="w-3 h-3" />
+            <span>Re-analyze</span>
+          </button>
+        </div>
+      )}
+
+      {mappingError && !isMappingLoading && (
+        <div className="p-4 bg-amber-50 border border-amber-200 text-amber-900 rounded-2xl flex items-start space-x-3 text-xs">
+          <AlertCircle className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
+          <div>
+            <p className="font-semibold">Backend Document Mapper Notice: {mappingError}</p>
+            <p className="text-amber-800 mt-0.5">
+              Showing local document synergy model as fallback.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Target Schemes Selector Pill Bar */}
       <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-xs space-y-3">
@@ -174,6 +307,15 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
               <span className="text-slate-500 text-[10px]">Unconfirmed</span>
             </div>
           </div>
+
+          {backendMapping?.readiness_score && (
+            <div className="mt-3 p-2.5 bg-slate-50 rounded-xl border border-slate-100 text-[10px] text-slate-500 space-y-1">
+              <span className="font-mono text-slate-700 block font-semibold">
+                {backendMapping.readiness_score.formula}
+              </span>
+              <p className="italic leading-snug">{backendMapping.readiness_score.disclaimer}</p>
+            </div>
+          )}
         </div>
 
         {/* Shared Synergy Insight */}
@@ -184,7 +326,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
               <span>Cross-Scheme Synergy Unlocked</span>
             </div>
             <h3 className="text-lg font-bold text-white">
-              {sharedDocuments.length} Shared Documents Found
+              {sharedDocsCount} Shared Documents Found
             </h3>
             <p className="text-xs text-slate-300 mt-1 leading-relaxed">
               Applying for multiple schemes does not mean duplicating paperwork. One verified document
@@ -194,14 +336,14 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
           </div>
 
           <div className="mt-4 pt-3 border-t border-white/10 flex flex-wrap gap-2">
-            {sharedDocuments.map((doc) => (
+            {sharedDocuments.map((doc: DocumentRecord) => (
               <span
                 key={doc.id}
                 className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-white/15 text-white text-xs font-medium backdrop-blur-xs"
               >
                 <span>{doc.name}</span>
                 <span className="text-cyan-300 font-mono text-[10px]">
-                  ({doc.applicableSchemeIds.filter((id) => activeSchemeIds.includes(id)).length} schemes)
+                  ({doc.applicableSchemeIds.filter((id: string) => activeSchemeIds.includes(id)).length} schemes)
                 </span>
               </span>
             ))}
@@ -230,7 +372,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
               : 'bg-indigo-50 text-indigo-800 border border-indigo-200 hover:bg-indigo-100'
           }`}
         >
-          Shared Synergies ({sharedDocuments.length})
+          Shared Synergies ({sharedDocsCount})
         </button>
 
         <button
@@ -358,6 +500,41 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
           </div>
         )}
       </div>
+
+      {/* Official Source Attributions & Verification Citations */}
+      {backendMapping?.official_source_references && backendMapping.official_source_references.length > 0 && (
+        <div className="p-6 bg-white rounded-3xl border border-slate-200 shadow-xs space-y-3">
+          <div className="flex items-center space-x-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-800">
+              Verified Scheme Document Citations & Operational Guidelines
+            </span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+            {backendMapping.official_source_references.map((ref) => (
+              <div
+                key={ref.scheme_id}
+                className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-1.5"
+              >
+                <span className="font-bold text-slate-900 block">{ref.scheme_title}</span>
+                <p className="text-[11px] text-slate-600 leading-relaxed">
+                  {ref.verification_source || 'Verified Government Scheme Guidelines'}
+                </p>
+                {ref.official_portal_url && (
+                  <a
+                    href={ref.official_portal_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center space-x-1 text-[11px] text-civic-700 font-semibold hover:underline pt-0.5"
+                  >
+                    <span>Official Portal</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
