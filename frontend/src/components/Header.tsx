@@ -157,7 +157,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <span className="text-base sm:text-lg xl:text-xl font-black tracking-tight text-slate-900 leading-none">
                   Sev<span className="text-civic-600">AI</span>Q
                 </span>
-                <span className={`text-[9px] xl:text-[10px] text-slate-500 font-medium tracking-normal leading-none mt-1 ${isTamil ? 'max-w-[185px] sm:max-w-[215px] 2xl:max-w-none' : 'max-w-[200px] xl:max-w-none'} truncate`}>
+                <span className={`text-[9px] xl:text-[10px] text-slate-500 font-medium tracking-normal leading-none mt-1 ${isIndic ? 'max-w-[185px] sm:max-w-[215px] 2xl:max-w-none' : 'max-w-[200px] xl:max-w-none'} truncate`}>
                   {t.header.tagline}
                 </span>
               </div>
@@ -179,7 +179,7 @@ export const Header: React.FC<HeaderProps> = ({
                   onClick={() => handleNavClick(item.id)}
                   aria-current={isActive ? 'page' : undefined}
                   className={`relative flex items-center ${
-                    isTamil
+                    isIndic
                       ? 'gap-1 xl:gap-1.5 px-1.5 py-1 xl:px-2 xl:py-1.5 2xl:px-2.5 text-[11px] xl:text-xs font-semibold'
                       : 'gap-1.5 px-2 py-1 xl:px-2.5 xl:py-1.5 text-xs font-semibold'
                   } rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 whitespace-nowrap shrink-0 ${
@@ -188,7 +188,7 @@ export const Header: React.FC<HeaderProps> = ({
                       : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                   }`}
                 >
-                  <Icon className={`${isTamil ? 'w-3 h-3 xl:w-3.5 xl:h-3.5' : 'w-3.5 h-3.5'} shrink-0 ${isActive ? 'text-civic-700' : 'text-slate-500'}`} />
+                  <Icon className={`${isIndic ? 'w-3 h-3 xl:w-3.5 xl:h-3.5' : 'w-3.5 h-3.5'} shrink-0 ${isActive ? 'text-civic-700' : 'text-slate-500'}`} />
                   <span>
                     {item.id === 'eligibility' && isTamil ? (
                       <>
@@ -222,7 +222,7 @@ export const Header: React.FC<HeaderProps> = ({
               type="button"
               onClick={onToggleKioskMode}
               className={`h-7 xl:h-8 px-2 xl:px-2.5 rounded-lg ${
-                isTamil ? 'text-[11px] xl:text-xs' : 'text-xs'
+                isIndic ? 'text-[11px] xl:text-xs' : 'text-xs'
               } font-semibold inline-flex items-center gap-1 xl:gap-1.5 border transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 shrink-0 ${
                 isKioskMode
                   ? 'bg-amber-50 text-amber-900 border-amber-300 shadow-2xs hover:bg-amber-100'
@@ -236,7 +236,7 @@ export const Header: React.FC<HeaderProps> = ({
               aria-pressed={isKioskMode}
             >
               <Monitor className={`w-3 h-3 xl:w-3.5 xl:h-3.5 shrink-0 ${isKioskMode ? 'text-amber-800' : 'text-slate-500'}`} />
-              <span className={isTamil ? 'hidden 2xl:inline' : 'hidden xl:inline'}>{t.header.kioskMode}</span>
+              <span className={isIndic ? 'hidden 2xl:inline' : 'hidden xl:inline'}>{t.header.kioskMode}</span>
               <span className={isKioskMode ? 'font-bold text-amber-900' : ''}>
                 {isKioskMode ? t.header.active : t.header.off}
               </span>
@@ -248,7 +248,7 @@ export const Header: React.FC<HeaderProps> = ({
               type="button"
               onClick={() => setShowClearConfirm(true)}
               className={`h-7 xl:h-8 px-2 xl:px-2.5 rounded-lg ${
-                isTamil ? 'text-[11px] xl:text-xs' : 'text-xs'
+                isIndic ? 'text-[11px] xl:text-xs' : 'text-xs'
               } font-semibold inline-flex items-center gap-1 xl:gap-1.5 border border-rose-200 text-rose-700 bg-white hover:bg-rose-50 hover:border-rose-300 transition-all focus:outline-none focus:ring-2 focus:ring-rose-500 shadow-2xs shrink-0 cursor-pointer`}
               title={t.header.endSessionTooltip}
               aria-label={t.header.endSession}
