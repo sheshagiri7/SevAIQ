@@ -469,6 +469,7 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
   onNavigate,
   onSelectScheme,
   onSelectSchemeForEligibility,
+  onScrollToOptions,
 }) => {
   const { settings } = useAccessibility();
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
@@ -529,11 +530,24 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
     }
   };
 
+  const handleScrollToOptions = () => {
+    if (onScrollToOptions) {
+      onScrollToOptions();
+      return;
+    }
+    const el = document.getElementById('options-section');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      onNavigate('discover');
+    }
+  };
+
   return (
-    <div className="space-y-6">
-      {/* Outer Banner Carousel Container */}
+    <div className="w-full relative">
+      {/* Outer Banner Carousel Container: Occupies Full Frame Viewport */}
       <div
-        className="relative w-full rounded-3xl overflow-hidden shadow-md select-none group border border-slate-200/90"
+        className="relative w-full h-[calc(100vh-4.25rem)] min-h-[640px] max-h-[960px] flex flex-col justify-between overflow-hidden select-none group border-b border-slate-200/80 bg-slate-50"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
         onTouchStart={handleTouchStart}
@@ -545,51 +559,51 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
         <button
           type="button"
           onClick={prevSlide}
-          className={`absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 z-40 w-9 h-9 sm:w-11 sm:h-11 rounded-full ${activeSlide.theme.arrowBg} text-white shadow-xl flex items-center justify-center transition-all hover:scale-110 active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500`}
+          className={`absolute left-3 sm:left-6 lg:left-8 top-1/2 -translate-y-1/2 z-40 w-10 h-10 sm:w-12 sm:h-12 lg:w-13 lg:h-13 rounded-full ${activeSlide.theme.arrowBg} text-white shadow-2xl flex items-center justify-center transition-all hover:scale-110 active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 cursor-pointer`}
           aria-label="Previous Scheme Slide"
         >
-          <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.5]" />
+          <ChevronLeft className="w-6 h-6 sm:w-7 sm:h-7 stroke-[2.5]" />
         </button>
 
         {/* Right Arrow Button */}
         <button
           type="button"
           onClick={nextSlide}
-          className={`absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 z-40 w-9 h-9 sm:w-11 sm:h-11 rounded-full ${activeSlide.theme.arrowBg} text-white shadow-xl flex items-center justify-center transition-all hover:scale-110 active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500`}
+          className={`absolute right-3 sm:right-6 lg:right-8 top-1/2 -translate-y-1/2 z-40 w-10 h-10 sm:w-12 sm:h-12 lg:w-13 lg:h-13 rounded-full ${activeSlide.theme.arrowBg} text-white shadow-2xl flex items-center justify-center transition-all hover:scale-110 active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 cursor-pointer`}
           aria-label="Next Scheme Slide"
         >
-          <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.5]" />
+          <ChevronRight className="w-6 h-6 sm:w-7 sm:h-7 stroke-[2.5]" />
         </button>
 
-        {/* Scrolling Horizontal Slide Track (Animated smoothly every 2s) */}
+        {/* Scrolling Horizontal Slide Track (Animated smoothly every 5s) */}
         <div
-          className="flex transition-transform duration-500 ease-in-out w-full"
+          className="flex-1 flex transition-transform duration-500 ease-in-out w-full h-full"
           style={{ transform: `translateX(-${currentSlideIndex * 100}%)` }}
         >
           {SLIDES.map((slide) => (
             <div
               key={slide.id}
-              className={`w-full shrink-0 bg-gradient-to-r ${slide.theme.bgGradient} p-5 sm:p-7 lg:p-9 relative min-h-[380px] sm:min-h-[430px] flex items-center overflow-hidden`}
+              className={`w-full h-full shrink-0 bg-gradient-to-r ${slide.theme.bgGradient} px-4 sm:px-8 lg:px-12 py-4 sm:py-6 relative flex items-center justify-center overflow-hidden`}
             >
               {/* Subtle background decorative shapes */}
               <div
-                className={`absolute -right-20 -bottom-20 w-80 h-80 rounded-full ${slide.theme.decorCircle} blur-3xl pointer-events-none`}
+                className={`absolute -right-20 -bottom-20 w-96 h-96 rounded-full ${slide.theme.decorCircle} blur-3xl pointer-events-none`}
               />
               <div className="absolute inset-0 opacity-15 pointer-events-none bg-[radial-gradient(#155e3b_1px,transparent_1px)] [background-size:20px_20px]" />
 
               {/* Main Content Layout: Left Scheme Info + Right Phone Mockup */}
-              <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pl-8 sm:pl-12 pr-8 sm:pr-12">
+              <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center px-4 sm:px-10 lg:px-14">
                 {/* Left Column: Scheme Title, Emblems, Description, CTA */}
-                <div className="lg:col-span-7 flex flex-col justify-center text-left space-y-4 sm:space-y-5 z-10">
+                <div className="lg:col-span-7 flex flex-col justify-center text-left space-y-3.5 sm:space-y-4.5 lg:space-y-5 z-10">
                   {/* Government Emblem & Partner Logos */}
                   <div className="flex items-center space-x-3 sm:space-x-4">
-                    <div className="flex items-center space-x-2 text-slate-800 shrink-0">
-                      <StateEmblemOfIndia className="w-8 h-10 sm:w-9 sm:h-11 text-slate-800" />
-                      <div className="flex flex-col leading-tight border-l border-slate-300 pl-2.5">
-                        <span className="text-[10px] sm:text-[11px] font-black tracking-wider text-slate-800 uppercase">
+                    <div className="flex items-center space-x-2.5 text-slate-800 shrink-0">
+                      <StateEmblemOfIndia className="w-9 h-11 sm:w-10 sm:h-12 text-slate-800" />
+                      <div className="flex flex-col leading-tight border-l-2 border-slate-400/50 pl-2.5 sm:pl-3">
+                        <span className="text-[10px] sm:text-xs font-black tracking-wider text-slate-900 uppercase">
                           {slide.ministryBadge}
                         </span>
-                        <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-widest">
+                        <span className="text-[9px] sm:text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-0.5">
                           {slide.ministrySub}
                         </span>
                       </div>
@@ -597,22 +611,22 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
 
                     {/* UMANG / Portal Badge */}
                     <div className="shrink-0 pl-1">
-                      <UmangEmblem className="h-9 w-10 sm:h-10 sm:w-11" />
+                      <UmangEmblem className="h-10 w-11 sm:h-11 sm:w-12" />
                     </div>
                   </div>
 
                   {/* Main Headline with LIVE badge (matching image 1) */}
                   <div className="space-y-1.5 sm:space-y-2">
                     <h2
-                      className={`text-2xl sm:text-4xl lg:text-[42px] font-black tracking-tight leading-[1.15] ${slide.theme.headlineColor}`}
+                      className={`text-2xl sm:text-4xl lg:text-[44px] xl:text-[48px] font-black tracking-tight leading-[1.12] ${slide.theme.headlineColor}`}
                     >
                       {slide.titlePrimary}
                     </h2>
 
-                    <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 text-xl sm:text-3xl font-extrabold text-slate-900 leading-none">
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 text-xl sm:text-3xl lg:text-[32px] font-extrabold text-slate-900 leading-none">
                       <span>is now</span>
                       <span
-                        className={`${slide.theme.badgeBg} text-white font-black text-xs sm:text-sm px-2.5 sm:px-3 py-1 rounded-lg tracking-wider shadow-sm uppercase animate-pulse inline-flex items-center`}
+                        className={`${slide.theme.badgeBg} text-white font-black text-xs sm:text-sm px-3 py-1 rounded-md tracking-wider shadow-sm uppercase animate-pulse inline-flex items-center`}
                       >
                         {slide.statusBadge}
                       </span>
@@ -626,17 +640,17 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                   </p>
 
                   {/* Key Guarantee Benefit Tag */}
-                  <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/70 border border-slate-200/80 text-xs font-semibold text-slate-800 shadow-2xs backdrop-blur-xs w-fit">
+                  <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-white/80 border border-slate-200/90 text-xs sm:text-sm font-semibold text-slate-800 shadow-2xs backdrop-blur-xs w-fit">
                     <Sparkles className="w-3.5 h-3.5 text-amber-500 shrink-0" />
                     <span>{slide.benefitPill}</span>
                   </div>
 
                   {/* CTA Buttons */}
-                  <div className="flex flex-wrap items-center gap-3 pt-2">
+                  <div className="flex flex-wrap items-center gap-3 pt-1">
                     <button
                       type="button"
                       onClick={() => handlePrimaryClick(slide)}
-                      className={`px-7 py-3 rounded-2xl bg-white hover:bg-slate-50 ${slide.theme.buttonText} font-bold text-sm sm:text-base shadow-md hover:shadow-lg border border-slate-200/80 transition-all hover:scale-[1.02] active:scale-[0.98] inline-flex items-center space-x-2 focus:outline-none focus:ring-2 focus:ring-emerald-600`}
+                      className={`px-8 sm:px-9 py-3 sm:py-3.5 rounded-full bg-white hover:bg-slate-50 ${slide.theme.buttonText} font-black text-sm sm:text-base shadow-md hover:shadow-xl border border-slate-200/90 transition-all hover:scale-105 active:scale-95 inline-flex items-center space-x-2 focus:outline-none focus:ring-2 focus:ring-emerald-600 cursor-pointer`}
                     >
                       <span>{slide.primaryCtaText}</span>
                       <ExternalLink className="w-4 h-4 shrink-0" />
@@ -645,7 +659,7 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                     <button
                       type="button"
                       onClick={handleSecondaryClick}
-                      className="px-5 py-3 rounded-2xl bg-slate-900/10 hover:bg-slate-900/15 text-slate-800 font-semibold text-xs sm:text-sm border border-slate-400/30 transition-all hover:scale-[1.02] active:scale-[0.98] inline-flex items-center space-x-1.5 focus:outline-none focus:ring-2 focus:ring-slate-700"
+                      className="px-6 py-3 sm:py-3.5 rounded-full bg-slate-900/10 hover:bg-slate-900/15 text-slate-800 font-bold text-xs sm:text-sm border border-slate-400/30 transition-all hover:scale-105 active:scale-95 inline-flex items-center space-x-1.5 focus:outline-none focus:ring-2 focus:ring-slate-700 cursor-pointer"
                     >
                       <span>{slide.secondaryCtaText}</span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -654,14 +668,14 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                 </div>
 
                 {/* Right Column: Realistic Smartphone Mockup with Floating Badges */}
-                <div className="lg:col-span-5 flex justify-center lg:justify-end items-center relative py-4">
+                <div className="lg:col-span-5 flex justify-center lg:justify-end items-center relative py-2 sm:py-4">
                   {/* 3D Floating Illustration (Graduation cap, sprout, heart, etc.) */}
                   <div className="absolute -top-3 right-4 sm:right-10 z-20 pointer-events-none drop-shadow-xl">
                     <FloatingGraphic3D type={slide.phone.floating3DIcon} />
                   </div>
 
                   {/* Floating Action Badge 1 (overlapping the phone) */}
-                  <div className="absolute top-20 -right-2 sm:right-2 z-20 bg-white/95 backdrop-blur-md rounded-2xl p-2.5 sm:p-3 shadow-xl border border-slate-100 flex items-center space-x-2.5 hover:scale-105 transition-transform max-w-[210px] sm:max-w-[230px]">
+                  <div className="absolute top-16 sm:top-20 -right-2 sm:right-2 z-20 bg-white/95 backdrop-blur-md rounded-2xl p-2.5 sm:p-3 shadow-xl border border-slate-100 flex items-center space-x-2.5 hover:scale-105 transition-transform max-w-[210px] sm:max-w-[230px]">
                     <div
                       className={`w-9 h-9 rounded-xl ${slide.phone.floatingBadge1.color} text-white flex items-center justify-center shrink-0 shadow-xs`}
                     >
@@ -678,7 +692,7 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                   </div>
 
                   {/* Floating Action Badge 2 (overlapping lower phone edge) */}
-                  <div className="absolute top-36 -right-3 sm:right-0 z-20 bg-white/95 backdrop-blur-md rounded-2xl p-2.5 sm:p-3 shadow-xl border border-slate-100 flex items-center space-x-2.5 hover:scale-105 transition-transform max-w-[200px] sm:max-w-[220px]">
+                  <div className="absolute top-32 sm:top-36 -right-3 sm:right-0 z-20 bg-white/95 backdrop-blur-md rounded-2xl p-2.5 sm:p-3 shadow-xl border border-slate-100 flex items-center space-x-2.5 hover:scale-105 transition-transform max-w-[200px] sm:max-w-[220px]">
                     <div
                       className={`w-9 h-9 rounded-xl ${slide.phone.floatingBadge2.color} text-white flex items-center justify-center shrink-0 shadow-xs`}
                     >
@@ -695,7 +709,7 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                   </div>
 
                   {/* Smartphone Outer Shell */}
-                  <div className="w-[240px] sm:w-[265px] h-[400px] sm:h-[440px] bg-slate-950 rounded-[36px] p-2.5 shadow-2xl border-[6px] border-slate-800/95 relative overflow-hidden flex flex-col justify-between">
+                  <div className="w-[240px] sm:w-[275px] lg:w-[295px] h-[400px] sm:h-[450px] lg:h-[480px] bg-slate-950 rounded-[38px] p-2.5 shadow-2xl border-[6px] border-slate-800/95 relative overflow-hidden flex flex-col justify-between">
                     {/* Dynamic Island / Speaker Pill */}
                     <div className="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-4 bg-slate-950 rounded-full z-30 flex items-center justify-end pr-2 space-x-1">
                       <div className="w-2 h-2 rounded-full bg-slate-900" />
@@ -735,7 +749,7 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                       </div>
 
                       {/* Phone Inner Content */}
-                      <div className="p-2.5 space-y-2.5 flex-1 overflow-hidden bg-slate-50/80">
+                      <div className="p-2.5 space-y-2 flex-1 overflow-hidden bg-slate-50/80">
                         {/* Scheme Header Card */}
                         <div className="p-2 rounded-xl bg-white border border-slate-200/70 shadow-2xs flex items-center space-x-2">
                           <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-800 flex items-center justify-center font-bold text-[10px] shrink-0 border border-emerald-200">
@@ -802,51 +816,65 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
           ))}
         </div>
 
-        {/* Carousel Slide Indicators with 2-Second Progress Bar Timer */}
-        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-40 flex items-center space-x-2">
-          {SLIDES.map((slide, index) => {
-            const isActive = index === currentSlideIndex;
-            return (
-              <button
-                key={slide.id}
-                type="button"
-                onClick={() => setCurrentSlideIndex(index)}
-                className={`relative h-2 rounded-full overflow-hidden transition-all duration-300 ${
-                  isActive ? 'w-10 bg-slate-300/80 shadow-2xs' : 'w-2 bg-slate-400/50 hover:bg-slate-500'
-                }`}
-                aria-label={`Go to slide ${index + 1}: ${slide.titlePrimary}`}
-              >
-                {isActive && (
-                  <div
-                    key={`progress-${currentSlideIndex}`}
-                    className={`h-full ${activeSlide.theme.accentDot} rounded-full`}
-                    style={{
-                      animation: isPaused
-                        ? 'none'
-                        : `carousel-progress ${SLIDE_DURATION_MS}ms linear forwards`,
-                    }}
-                  />
-                )}
-              </button>
-            );
-          })}
+        {/* Bottom Area: Slide Indicator Dots + Floating Options Launcher */}
+        <div className="relative z-30 pb-3 sm:pb-5 pt-1 flex flex-col items-center justify-center space-y-2.5">
+          {/* Carousel Slide Indicators with 5-Second Progress Bar Timer */}
+          <div className="flex items-center space-x-2">
+            {SLIDES.map((slide, index) => {
+              const isActive = index === currentSlideIndex;
+              return (
+                <button
+                  key={slide.id}
+                  type="button"
+                  onClick={() => setCurrentSlideIndex(index)}
+                  className={`relative h-2 rounded-full overflow-hidden transition-all duration-300 ${
+                    isActive ? 'w-10 bg-slate-300/90 shadow-2xs' : 'w-2.5 bg-slate-400/50 hover:bg-slate-500'
+                  }`}
+                  aria-label={`Go to slide ${index + 1}: ${slide.titlePrimary}`}
+                >
+                  {isActive && (
+                    <div
+                      key={`progress-${currentSlideIndex}`}
+                      className={`h-full ${activeSlide.theme.accentDot} rounded-full`}
+                      style={{
+                        animation: isPaused
+                          ? 'none'
+                          : `carousel-progress ${SLIDE_DURATION_MS}ms linear forwards`,
+                      }}
+                    />
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Floating Options Launcher Bar (Exact replica of Image 1) */}
+          <div className="inline-flex flex-col items-center px-6 sm:px-8 py-2.5 sm:py-3 rounded-2xl sm:rounded-3xl bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-xl hover:shadow-2xl transition-all duration-300 group/float animate-float-subtle">
+            <p className="text-[10px] sm:text-xs font-black tracking-widest text-slate-700 uppercase mb-1.5">
+              #GOVERNMENTSCHEMES / #SCHEMESFORYOU
+            </p>
+            <button
+              type="button"
+              onClick={handleScrollToOptions}
+              className="inline-flex items-center space-x-2 px-6 sm:px-8 py-2 sm:py-2.5 rounded-xl bg-[#107c41] hover:bg-[#0c6534] text-white font-bold text-xs sm:text-sm shadow-md hover:shadow-lg transition-all hover:scale-105 active:scale-95 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-600"
+              aria-label="Find Schemes For You - scroll to options"
+            >
+              <span>Find Schemes For You</span>
+              <ArrowRight className="w-4 h-4 stroke-[2.5] group-hover/float:translate-x-1 transition-transform" />
+            </button>
+            <button
+              type="button"
+              onClick={handleScrollToOptions}
+              className="flex items-center space-x-1 text-[10px] font-bold text-slate-500 hover:text-emerald-700 mt-1 transition-colors cursor-pointer"
+            >
+              <span>Scroll down to explore options</span>
+              <ChevronDown className="w-3.5 h-3.5 animate-bounce text-emerald-700" />
+            </button>
+          </div>
         </div>
       </div>
-
-      {/* Official Government Portal Discovery Banner (matching image 1 bottom section) */}
-      <div className="text-center space-y-3 pt-1">
-        <p className="text-xs sm:text-sm font-black tracking-wider text-slate-700 uppercase">
-          #GOVERNMENTSCHEMES / #SCHEMESFORYOU
-        </p>
-        <button
-          type="button"
-          onClick={() => onNavigate('discover')}
-          className="inline-flex items-center space-x-2 px-6 py-2.5 rounded-xl bg-[#107c41] hover:bg-[#0c6534] text-white font-bold text-xs sm:text-sm shadow-md hover:shadow-lg transition-all hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-600"
-        >
-          <span>Find Schemes For You</span>
-          <ArrowRight className="w-4 h-4 stroke-[2.5]" />
-        </button>
-      </div>
     </div>
+  );
+};
   );
 };

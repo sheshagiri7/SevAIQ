@@ -94,8 +94,6 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
     !profile.age || !profile.occupation
   );
   const [statusFilter, setStatusFilter] = useState<'all' | EligibilityStatus>('all');
-  const [expandedSchemeId, setExpandedSchemeId] = useState<string | null>(null);
-
   const isSchemeMatching = useCallback((schemeId: string, filterId: string) => {
     if (!schemeId || !filterId) return false;
     const sId = schemeId.toLowerCase();
@@ -103,6 +101,14 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
     if (sId === fId) return true;
     return resolveBackendSchemeId(sId).toLowerCase() === resolveBackendSchemeId(fId).toLowerCase();
   }, []);
+
+  const [expandedSchemeId, setExpandedSchemeId] = useState<string | null>(() => {
+    if (targetSchemeId) {
+      const matched = schemes.find((s) => isSchemeMatching(s.id, targetSchemeId));
+      return matched ? matched.id : targetSchemeId;
+    }
+    return null;
+  });
 
   const [selectedSchemeFilter, setSelectedSchemeFilter] = useState<string>(targetSchemeId || 'all');
 
