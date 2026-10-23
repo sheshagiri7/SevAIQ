@@ -33,7 +33,7 @@ export interface DocumentTranslation {
   issuingAuthority: string;
 }
 
-export const SCHEME_TRANSLATIONS: Record<'ta' | 'hi', Record<string, SchemeTranslation>> = {
+export const SCHEME_TRANSLATIONS: Record<string, Record<string, SchemeTranslation>> = {
   ta: {
     'pm-kisan': {
       title: 'பிரதான் மந்திரி கிசான் சம்மான் நிதி (PM-KISAN)',
@@ -260,7 +260,7 @@ export const SCHEME_TRANSLATIONS: Record<'ta' | 'hi', Record<string, SchemeTrans
   },
 };
 
-export const DOCUMENT_TRANSLATIONS: Record<'ta' | 'hi', Record<string, DocumentTranslation>> = {
+export const DOCUMENT_TRANSLATIONS: Record<string, Record<string, DocumentTranslation>> = {
   ta: {
     'aadhaar-card': {
       name: 'ஆதார் அட்டை',
