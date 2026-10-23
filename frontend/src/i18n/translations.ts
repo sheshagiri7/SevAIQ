@@ -248,7 +248,7 @@ export const SCHEME_TRANSLATIONS: Record<'ta' | 'hi', Record<string, SchemeTrans
   },
 };
 
-export const DOCUMENT_TRANSLATIONS: Record<'ta', Record<string, DocumentTranslation>> = {
+export const DOCUMENT_TRANSLATIONS: Record<'ta' | 'hi', Record<string, DocumentTranslation>> = {
   ta: {
     'aadhaar-card': {
       name: 'ஆதார் அட்டை',
@@ -309,6 +309,68 @@ export const DOCUMENT_TRANSLATIONS: Record<'ta', Record<string, DocumentTranslat
       name: 'கிராம ஊராட்சி குடியிருப்பு சான்றிதழ்',
       description: 'குடிசை வீட்டில் வசிப்பதையும் கிராம வசிப்பிடத்தையும் உறுதிப்படுத்தும் உள்ளாட்சி சான்றிதழ்.',
       issuingAuthority: 'கிராம ஊராட்சி / ஊராட்சி மன்ற தலைவர் / வட்டார வளர்ச்சி அலுவலர் (BDO)',
+    },
+  },
+  hi: {
+    'aadhaar-card': {
+      name: 'आधार कार्ड (Aadhaar Card)',
+      description: 'नागरिकों की पहचान एवं पते को प्रमाणित करने वाला 12-अंकों का राष्ट्रीय बायोमेट्रिक पहचान पत्र।',
+      issuingAuthority: 'भारतीय विशिष्ट पहचान प्राधिकरण (UIDAI)',
+    },
+    'bank-passbook': {
+      name: 'बैंक पासबुक / खाता विवरण',
+      description: 'डीबीटी सक्षम आधार से जुड़ा बैंक खाता पासबुक अथवा आईएफएससी कोड युक्त बैंक स्टेटमेंट।',
+      issuingAuthority: 'मान्यता प्राप्त वाणिज्यिक बैंक / क्षेत्रीय ग्रामीण बैंक / डाकघर बैंक',
+    },
+    'mobile-number': {
+      name: 'आधार से जुड़ा मोबाइल नंबर',
+      description: 'ओटीपी सत्यापन और सरकारी सूचनाओं हेतु आधार से लिंक सक्रिय मोबाइल नंबर।',
+      issuingAuthority: 'दूरसंचार प्रदाता / UIDAI',
+    },
+    'pan-card': {
+      name: 'पैन कार्ड (PAN Card)',
+      description: 'आयकर एवं वित्तीय लेनदेन सत्यापन हेतु जारी स्थायी खाता संख्या कार्ड।',
+      issuingAuthority: 'आयकर विभाग / NSDL / UTIITSL',
+    },
+    'income-certificate': {
+      name: 'आय प्रमाण पत्र (Income Certificate)',
+      description: 'परिवार की कुल वार्षिक आय को सत्यापित करने वाला सक्षम राजस्व अधिकारी द्वारा जारी आधिकारिक प्रमाण पत्र।',
+      issuingAuthority: 'राजस्व विभाग / तहसीलदार / उप-जिलाधिकारी (SDM)',
+    },
+    'domicile-certificate': {
+      name: 'मूल निवास प्रमाण पत्र (Domicile / Residence Certificate)',
+      description: 'संबंधित राज्य या केंद्र शासित प्रदेश में स्थायी निवास की पुष्टि करने वाला आधिकारिक दस्तावेज।',
+      issuingAuthority: 'तहसीलदार / जिला मजिस्ट्रेट कार्यालय / राजस्व विभाग',
+    },
+    'ration-card': {
+      name: 'राशन कार्ड (Ration Card)',
+      description: 'सार्वजनिक वितरण प्रणाली परिवार राशन कार्ड (एनएफएसए / अंत्योदय / बीपीएल / पीएचएच)।',
+      issuingAuthority: 'खाद्य, नागरिक आपूर्ति एवं उपभोक्ता मामले विभाग',
+    },
+    'caste-certificate': {
+      name: 'जाति प्रमाण पत्र (SC / ST / OBC)',
+      description: 'संवैधानिक आरक्षण व कल्याणकारी योजनाओं के लाभ हेतु वैध सामाजिक वर्ग प्रमाण पत्र।',
+      issuingAuthority: 'राजस्व विभाग / तहसीलदार / सक्षम राजस्व प्राधिकारी',
+    },
+    'land-records': {
+      name: 'भूलेख / खतौनी / जमाबंदी (RoR)',
+      description: 'आवेदक के नाम पर दर्ज कृषि योग्य भूमि स्वामित्व का आधिकारिक राजस्व अभिलेख।',
+      issuingAuthority: 'भू-अभिलेख एवं राजस्व विभाग / पटवारी / लेखपाल',
+    },
+    'education-marksheet': {
+      name: 'पिछली कक्षा की अंकतालिका एवं प्रमाण पत्र',
+      description: 'शैक्षणिक योग्यता एवं मान्यता प्राप्त संस्थान में वर्तमान नामांकन का प्रमाण।',
+      issuingAuthority: 'मान्यता प्राप्त शिक्षा बोर्ड / विश्वविद्यालय / संस्थान',
+    },
+    'vending-id': {
+      name: 'स्ट्रीट वेंडर पहचान पत्र / वेंडिंग प्रमाण पत्र (CoV)',
+      description: 'शहरी स्थानीय निकाय द्वारा पथ विक्रेताओं को जारी किया गया वेंडिंग कार्ड या अनुशंसा पत्र।',
+      issuingAuthority: 'शहरी स्थानीय निकाय (ULB) / नगर पालिका / टाउन वेंडिंग कमेटी (TVC)',
+    },
+    'gram-panchayat-residence': {
+      name: 'ग्राम पंचायत निवास प्रमाण पत्र',
+      description: 'ग्रामीण क्षेत्र में निवास एवं कच्चे आवास की पुष्टि करने वाला स्थानीय स्वशासन प्रमाण पत्र।',
+      issuingAuthority: 'ग्राम पंचायत / ग्राम प्रधान / खंड विकास अधिकारी (BDO)',
     },
   },
 };
