@@ -296,6 +296,8 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
               <span>
                 {language === 'ta'
                   ? `${progressPercent}% முடிந்தது (${completedCount}/${steps.length} படிகள்)`
+                  : language === 'hi'
+                  ? `${progressPercent}% पूर्ण (${completedCount}/${steps.length} चरण)`
                   : `${progressPercent}% Complete (${completedCount}/${steps.length} steps)`}
               </span>
             </div>
@@ -312,7 +314,11 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
       {/* Step-by-Step Interactive Checklist */}
       <div className="space-y-3">
         <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700">
-          {language === 'ta' ? 'படிபடியான தயாரிப்பு சரிபார்ப்பு பட்டியல்:' : 'Step-by-Step Preparation Checklist:'}
+          {language === 'ta'
+            ? 'படிபடியான தயாரிப்பு சரிபார்ப்பு பட்டியல்:'
+            : language === 'hi'
+            ? 'चरण-दर-चरण तैयारी चेकलिस्ट:'
+            : 'Step-by-Step Preparation Checklist:'}
         </h3>
 
         <div className="space-y-3">
@@ -347,7 +353,7 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
                     {step.title}
                   </h4>
                   <span className="text-[11px] font-mono text-slate-400">
-                    {language === 'ta' ? `படி ${idx + 1}` : `Step ${idx + 1}`}
+                    {language === 'ta' ? `படி ${idx + 1}` : language === 'hi' ? `चरण ${idx + 1}` : `Step ${idx + 1}`}
                   </span>
                 </div>
                 <p className="text-xs text-slate-600 leading-relaxed">{step.description}</p>
@@ -361,7 +367,11 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
       {activeScheme && (activeScheme as any).application_steps && (activeScheme as any).application_steps.length > 0 && (
         <div className="p-6 bg-white rounded-3xl border border-slate-200 shadow-xs space-y-3">
           <span className="text-xs font-bold uppercase tracking-wider text-slate-800 block">
-            {language === 'ta' ? 'அதிகாரப்பூர்வ விண்ணப்ப நடைமுறை:' : 'Official Application Procedure:'}
+            {language === 'ta'
+              ? 'அதிகாரப்பூர்வ விண்ணப்ப நடைமுறை:'
+              : language === 'hi'
+              ? 'आधिकारिक आवेदन प्रक्रिया:'
+              : 'Official Application Procedure:'}
           </span>
           <ol className="space-y-2 list-decimal list-inside text-xs text-slate-700">
             {((activeScheme as any).application_steps as string[]).map((st, i) => (
@@ -381,7 +391,11 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
           </span>
           {isKioskMode && (
             <span className="text-[10px] text-amber-800 font-semibold bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
-              {language === 'ta' ? 'பொது கியோஸ்க்: குறிப்புகள் நினைவகத்தில் மட்டுமே இருக்கும்' : 'Public Kiosk: Notes in volatile memory'}
+              {language === 'ta'
+                ? 'பொது கியோஸ்க்: குறிப்புகள் நினைவகத்தில் மட்டுமே இருக்கும்'
+                : language === 'hi'
+                ? 'सार्वजनिक कियोस्क: नोट्स केवल मेमोरी में हैं'
+                : 'Public Kiosk: Notes in volatile memory'}
             </span>
           )}
         </div>
@@ -395,6 +409,8 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
         <p className="text-[11px] text-slate-500">
           {language === 'ta'
             ? 'தனியுரிமை விதி: வங்கி பின் எண்கள், கடவுச்சொற்கள் போன்ற ரகசிய விவரங்களை இங்கு பதிய வேண்டாம்.'
+            : language === 'hi'
+            ? 'गोपनीयता नियम: बैंक पिन, पासवर्ड या बायोमेट्रिक जैसी गोपनीय जानकारी यहाँ दर्ज न करें।'
             : 'Privacy Mandate: Do not store bank PINs, passwords, or biometric secrets here.'}
         </p>
       </div>
@@ -410,6 +426,8 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
           <span>
             {language === 'ta'
               ? 'ஆவண வரைபடத்தில் தேவையான ஆவணங்களை தயார் செய்யவும்'
+              : language === 'hi'
+              ? 'दस्तावेज़ मैपर में आवश्यक दस्तावेज़ तैयार करें'
               : 'Prepare Required Documents in Document Mapper'}
           </span>
         </button>
@@ -419,7 +437,13 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
           onClick={() => onNavigate('readiness-passport')}
           className="inline-flex items-center space-x-1.5 text-civic-700 hover:text-civic-900 font-semibold"
         >
-          <span>{language === 'ta' ? 'திட்ட பாஸ்போர்ட்டை பதிவிறக்கவும்' : 'Download Scheme Passport'}</span>
+          <span>
+            {language === 'ta'
+              ? 'திட்ட பாஸ்போர்ட்டை பதிவிறக்கவும்'
+              : language === 'hi'
+              ? 'योजना पासपोर्ट डाउनलोड करें'
+              : 'Download Scheme Passport'}
+          </span>
           <ArrowRight className="w-4 h-4" />
         </button>
       </div>
