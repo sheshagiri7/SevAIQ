@@ -19,15 +19,18 @@ import {
   ExternalLink,
   Sparkles,
   CheckCircle2,
+  Tractor,
 } from 'lucide-react';
 import { NavigationTab } from '../types';
 import { useAccessibility } from '../context/AccessibilityContext';
+import { useLanguage } from '../context/LanguageContext';
 
 interface SchemeBannerCarouselProps {
   onNavigate: (tab: NavigationTab) => void;
   onSelectScheme?: (schemeId: string) => void;
   onSelectSchemeForEligibility?: (schemeId: string) => void;
   onScrollToOptions?: () => void;
+  onSelectCategory?: (categoryId: string) => void;
 }
 
 interface SchemeSlide {
