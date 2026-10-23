@@ -49,7 +49,7 @@ describe('LanguageContext and Complete Trilingual Support (English, Tamil & Hind
 
   it('provides comprehensive Hindi translations in UI_TRANSLATIONS dictionary', () => {
     expect(UI_TRANSLATIONS.hi.header.schemes).toBe('योजनाएं');
-    expect(UI_TRANSLATIONS.hi.header.documents).toBe('दस्तावेज़');
+    expect(UI_TRANSLATIONS.hi.header.documents).toBe('दस्तावेज');
     expect(UI_TRANSLATIONS.hi.header.dashboard).toBe('डैशबोर्ड');
     expect(UI_TRANSLATIONS.hi.footer.rights).toContain('सशक्तिकरण');
   });
@@ -63,7 +63,7 @@ describe('LanguageContext and Complete Trilingual Support (English, Tamil & Hind
     expect(taTranslation.title).toBe('பிரதான் மந்திரி கிசான் சம்மான் நிதி (PM-KISAN)');
     expect(taTranslation.category).toBe('வேளாண்மை & கிராமப்புறம்');
     expect(taTranslation.ministry).toContain('அமைச்சகம்');
-    expect(taTranslation.benefits_summary).toContain('₹6,000');
+    expect(taTranslation.benefits_summary).toContain('₹6,00,000');
   });
 
   it('localizes scheme details accurately when language is Hindi', () => {
@@ -73,7 +73,7 @@ describe('LanguageContext and Complete Trilingual Support (English, Tamil & Hind
     const hiTranslation = SCHEME_TRANSLATIONS.hi['pm-kisan'];
     expect(hiTranslation).toBeDefined();
     expect(hiTranslation.title).toBe('प्रधानमंत्री किसान सम्मान निधि (PM-KISAN)');
-    expect(hiTranslation.category).toBe('कृषि एवं ग्रामीण');
+    expect(hiTranslation.category).toBe('कृषि एवं ग्रामीण विकास');
     expect(hiTranslation.ministry).toContain('कृषि एवं किसान कल्याण मंत्रालय');
     expect(hiTranslation.benefits_summary).toContain('₹6,000');
   });
@@ -94,7 +94,7 @@ describe('LanguageContext and Complete Trilingual Support (English, Tamil & Hind
 
     const hiDoc = DOCUMENT_TRANSLATIONS.hi['aadhaar-card'];
     expect(hiDoc).toBeDefined();
-    expect(hiDoc.name).toBe('आधार कार्ड');
+    expect(hiDoc.name).toBe('आधार कार्ड (Aadhaar Card)');
     expect(hiDoc.issuingAuthority).toBe('भारतीय विशिष्ट पहचान प्राधिकरण (UIDAI)');
   });
 

@@ -540,21 +540,21 @@ export function prepareSpeechText(text: string, language: AssistantLanguage): st
     // 5. Currency amounts to fluent spoken Hindi numbers
     clean = clean.replace(/₹\s*([0-9,.]+)\s*(लाख|करोड़)?/g, (_match, num, unit) => {
       const cleanNum = num.replace(/,/g, '');
-      if (cleanNum === '500000') return 'पांच लाख रुपये';
-      if (cleanNum === '6000') return 'छह हजार रुपये';
-      if (cleanNum === '2000') return 'दो हजार रुपये';
-      if (cleanNum === '1000') return 'एक हजार रुपये';
-      if (cleanNum === '5000') return 'पांच हजार रुपये';
-      if (cleanNum === '120000') return 'एक लाख बीस हजार रुपये';
-      if (cleanNum === '130000') return 'एक लाख तीस हजार रुपये';
-      if (cleanNum === '10000') return 'दस हजार रुपये';
-      if (cleanNum === '20000') return 'बीस हजार रुपये';
-      if (cleanNum === '50000') return 'पचास हजार रुपये';
-      if (cleanNum === '2.5' && unit === 'लाख') return 'ढाई लाख रुपये';
-      if (cleanNum === '3' && unit === 'लाख') return 'तीन लाख रुपये';
-      if (cleanNum === '10' && unit === 'लाख') return 'दस लाख रुपये';
-      if (cleanNum === '20' && unit === 'लाख') return 'बीस लाख रुपये';
-      return unit ? `${cleanNum} ${unit} रुपये` : `${cleanNum} रुपये`;
+      if (cleanNum === '500000') return 'पांच लाख रुपये ';
+      if (cleanNum === '6000') return 'छह हजार रुपये ';
+      if (cleanNum === '2000') return 'दो हजार रुपये ';
+      if (cleanNum === '1000') return 'एक हजार रुपये ';
+      if (cleanNum === '5000') return 'पांच हजार रुपये ';
+      if (cleanNum === '120000') return 'एक लाख बीस हजार रुपये ';
+      if (cleanNum === '130000') return 'एक लाख तीस हजार रुपये ';
+      if (cleanNum === '10000') return 'दस हजार रुपये ';
+      if (cleanNum === '20000') return 'बीस हजार रुपये ';
+      if (cleanNum === '50000') return 'पचास हजार रुपये ';
+      if (cleanNum === '2.5' && unit === 'लाख') return 'ढाई लाख रुपये ';
+      if (cleanNum === '3' && unit === 'लाख') return 'तीन लाख रुपये ';
+      if (cleanNum === '10' && unit === 'लाख') return 'दस लाख रुपये ';
+      if (cleanNum === '20' && unit === 'लाख') return 'बीस लाख रुपये ';
+      return unit ? `${cleanNum} ${unit} रुपये ` : `${cleanNum} रुपये `;
     });
     clean = clean.replace(/₹/g, ' रुपये ');
 
