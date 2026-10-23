@@ -39,6 +39,11 @@ export const STORAGE_KEYS = {
   DOCUMENTS: 'sevaiq_documents',
   SELECTED_SCHEMES: 'sevaiq_selected_schemes',
   KIOSK_MODE: 'sevaiq_kiosk_mode',
+  APPLICATION_PROGRESS: 'SEVAIQ_APPLICATION_PROGRESS',
+  APPLICATION_NOTES: 'SEVAIQ_APPLICATION_NOTES',
+  APPLICATION_TRACKING: 'SEVAIQ_APPLICATION_TRACKING',
+  APPLICATION_STATUS: 'SEVAIQ_APPLICATION_STATUS',
+  APPLICATION_REMINDERS: 'SEVAIQ_APPLICATION_REMINDERS',
 } as const;
 
 /**
@@ -119,6 +124,11 @@ export function purgeCitizenStorage(storage: Storage = getDefaultStorage()): voi
     storage.removeItem(STORAGE_KEYS.PROFILE);
     storage.removeItem(STORAGE_KEYS.DOCUMENTS);
     storage.removeItem(STORAGE_KEYS.SELECTED_SCHEMES);
+    storage.removeItem(STORAGE_KEYS.APPLICATION_PROGRESS);
+    storage.removeItem(STORAGE_KEYS.APPLICATION_NOTES);
+    storage.removeItem(STORAGE_KEYS.APPLICATION_TRACKING);
+    storage.removeItem(STORAGE_KEYS.APPLICATION_STATUS);
+    storage.removeItem(STORAGE_KEYS.APPLICATION_REMINDERS);
   } catch {
     // Storage access may be restricted in sandboxed iframes
   }

@@ -116,6 +116,25 @@ export function App() {
   // Target scheme for Eligibility Engine Screen
   const [selectedEligibilitySchemeId, setSelectedEligibilitySchemeId] = useState<string | null>(null);
 
+  // Pending query to pass directly to VoiceAssistant
+  const [pendingChatQuery, setPendingChatQuery] = useState<string | null>(null);
+
+  const handleAskAiAboutScheme = (schemeTitle: string) => {
+    setPendingChatQuery(
+      language === 'ta'
+        ? `${schemeTitle} திட்டத்தின் பயன்கள், தகுதி விதிகள் மற்றும் விண்ணப்பிக்கும் முறையை எளிய தமிழில் விளக்குங்கள்.`
+        : `Please explain the benefits, eligibility rules, and application process for ${schemeTitle} in simple words.`
+    );
+    setActiveTab('chat');
+  };
+
+  const handleNavigateToDocuments = (schemeId: string) => {
+    if (!selectedSchemeIds.includes(schemeId)) {
+      setSelectedSchemeIds((prev) => [...prev, schemeId]);
+    }
+    setActiveTab('document-mapper');
+  };
+
   // Guard ref to prevent React transition effects from writing kiosk-session data to localStorage
   const justExitedKioskRef = useRef(false);
 
@@ -139,6 +158,7 @@ export function App() {
       setDocuments(INITIAL_DOCUMENT_RECORDS);
       setSelectedSchemeIds([]);
       setSelectedEligibilitySchemeId(null);
+      setPendingChatQuery(null);
       setIsKioskMode(false);
     } else {
       // Entering Kiosk Mode:
@@ -363,6 +383,8 @@ export function App() {
             isKioskMode={isKioskMode}
             isMainScreen={true}
             onOpenAbout={() => setIsAboutOpen(true)}
+            pendingQuery={pendingChatQuery}
+            onClearPendingQuery={() => setPendingChatQuery(null)}
           />
         </div>
 
@@ -396,6 +418,10 @@ export function App() {
                 setSelectedTrackerSchemeId(schemeId);
                 setActiveTab('application-tracker');
               }}
+              onNavigateToDocuments={handleNavigateToDocuments}
+              onAskAiAboutScheme={handleAskAiAboutScheme}
+              onNavigateToEligibility={() => setActiveTab('eligibility')}
+              profile={profile}
               backendSchemesCount={backendSchemes.length}
               selectedCategory={selectedCategoryFilter}
               onSelectCategory={setSelectedCategoryFilter}

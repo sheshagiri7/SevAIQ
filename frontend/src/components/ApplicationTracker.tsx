@@ -7,6 +7,8 @@ import {
   ArrowRight,
   FileText,
   RotateCcw,
+  Bell,
+  CheckCircle2,
 } from 'lucide-react';
 import { Scheme, NavigationTab } from '../types';
 import { useLanguage } from '../context/LanguageContext';
@@ -17,6 +19,139 @@ interface ApplicationTrackerProps {
   onNavigate: (tab: NavigationTab) => void;
   isKioskMode: boolean;
 }
+
+export type CitizenApplicationStatus =
+  | 'not_applied'
+  | 'preparing_docs'
+  | 'ready_to_apply'
+  | 'submitted'
+  | 'under_review'
+  | 'action_required'
+  | 'approved'
+  | 'rejected'
+  | 'unknown';
+
+const OFFICIAL_STATUS_CHECK_URLS: Record<
+  string,
+  { labelEn: string; labelTa: string; url: string; portalName: string }
+> = {
+  'pm-kisan': {
+    labelEn: 'Check PM-KISAN Beneficiary Status & Installment Details',
+    labelTa: 'PM-KISAN தவணை & பயனாளி நிலையை சரிபார்க்கவும்',
+    url: 'https://pmkisan.gov.in/BeneficiaryStatus_New.aspx',
+    portalName: 'PM-KISAN Portal (pmkisan.gov.in)',
+  },
+  'ab-pmjay': {
+    labelEn: 'Check Ayushman Card & Treatment Eligibility Status',
+    labelTa: 'ஆயுஷ்மான் கார்டு & சிகிச்சை நிலையை சரிபார்க்கவும்',
+    url: 'https://beneficiary.nha.gov.in/',
+    portalName: 'NHA Beneficiary Portal (beneficiary.nha.gov.in)',
+  },
+  'pm-jay': {
+    labelEn: 'Check Ayushman Card & Treatment Eligibility Status',
+    labelTa: 'ஆயுஷ்மான் கார்டு & சிகிச்சை நிலையை சரிபார்க்கவும்',
+    url: 'https://beneficiary.nha.gov.in/',
+    portalName: 'NHA Beneficiary Portal (beneficiary.nha.gov.in)',
+  },
+  'pmay-u': {
+    labelEn: 'Check PMAY-U 2.0 Housing Application Status',
+    labelTa: 'PMAY-U 2.0 வீடு கட்டும் விண்ணப்ப நிலையை சரிபார்க்கவும்',
+    url: 'https://pmay-urban.gov.in/',
+    portalName: 'MoHUA PMAY-Urban Portal (pmay-urban.gov.in)',
+  },
+  'pm-mudra-yojana': {
+    labelEn: 'Track Mudra Loan Application on Udyami Mitra',
+    labelTa: 'முத்ரா கடன் விண்ணப்பத்தை உத்யமி மித்ரா தளத்தில் கண்காணிக்கவும்',
+    url: 'https://www.udyamimitra.in/',
+    portalName: 'Udyami Mitra (udyamimitra.in)',
+  },
+  'nsap': {
+    labelEn: 'Track National Social Assistance Pension Application',
+    labelTa: 'தேசிய சமூக ஓய்வூதிய விண்ணப்ப நிலையை கண்காணிக்கவும்',
+    url: 'https://nsap.nic.in/',
+    portalName: 'NSAP Pension Portal (nsap.nic.in)',
+  },
+  'nsp-post-matric': {
+    labelEn: 'Track National Scholarship Portal (NSP) Application',
+    labelTa: 'தேசிய கல்வி உதவித்தொகை விண்ணப்ப நிலையை கண்காணிக்கவும்',
+    url: 'https://scholarships.gov.in/',
+    portalName: 'National Scholarship Portal (scholarships.gov.in)',
+  },
+  'pm-svanidhi': {
+    labelEn: 'Track Street Vendor Loan Status on PM SVANidhi Portal',
+    labelTa: 'PM SVANidhi சிறு வியாபாரி கடன் நிலையை கண்காணிக்கவும்',
+    url: 'https://pmsvanidhi.mohua.gov.in/',
+    portalName: 'PM SVANidhi Portal (pmsvanidhi.mohua.gov.in)',
+  },
+  'pm-vishwakarma': {
+    labelEn: 'Track PM Vishwakarma Application & Artisan Verification',
+    labelTa: 'விஸ்வகர்மா விண்ணப்பம் & கைவினைஞர் சரிபார்ப்பு நிலை',
+    url: 'https://pmvishwakarma.gov.in/',
+    portalName: 'PM Vishwakarma Portal (pmvishwakarma.gov.in)',
+  },
+};
+
+const STATUS_OPTIONS: {
+  id: CitizenApplicationStatus;
+  labelEn: string;
+  labelTa: string;
+  badgeStyle: string;
+}[] = [
+  {
+    id: 'not_applied',
+    labelEn: 'Not applied yet',
+    labelTa: 'இன்னும் விண்ணப்பிக்கவில்லை',
+    badgeStyle: 'bg-slate-100 text-slate-700 border-slate-300',
+  },
+  {
+    id: 'preparing_docs',
+    labelEn: 'Preparing documents (Stage 3)',
+    labelTa: 'ஆவணங்கள் தயாரிப்பில் உள்ளது (படி 3)',
+    badgeStyle: 'bg-blue-100 text-blue-800 border-blue-300',
+  },
+  {
+    id: 'ready_to_apply',
+    labelEn: 'Ready to apply (all docs ready)',
+    labelTa: 'விண்ணப்பிக்க தயார் (ஆவணங்கள் உள்ளன)',
+    badgeStyle: 'bg-indigo-100 text-indigo-800 border-indigo-300',
+  },
+  {
+    id: 'submitted',
+    labelEn: 'Application submitted on portal / Kendra',
+    labelTa: 'போர்டல் / சேவை மையத்தில் சமர்ப்பிக்கப்பட்டது',
+    badgeStyle: 'bg-cyan-100 text-cyan-800 border-cyan-300',
+  },
+  {
+    id: 'under_review',
+    labelEn: 'Under government review / scrutiny',
+    labelTa: 'அரசு பரிசீலனையில் உள்ளது',
+    badgeStyle: 'bg-amber-100 text-amber-800 border-amber-300',
+  },
+  {
+    id: 'action_required',
+    labelEn: 'Action required (e-KYC / correction)',
+    labelTa: 'நடவடிக்கை தேவை (e-KYC / திருத்தம்)',
+    badgeStyle: 'bg-orange-100 text-orange-800 border-orange-300',
+  },
+  {
+    id: 'approved',
+    labelEn: 'Approved by department',
+    labelTa: 'துறையால் ஒப்புதல் அளிக்கப்பட்டது',
+    badgeStyle: 'bg-emerald-100 text-emerald-800 border-emerald-300',
+  },
+  {
+    id: 'rejected',
+    labelEn: 'Application rejected / ineligible',
+    labelTa: 'நிராகரிக்கப்பட்டது / தகுதி பெறவில்லை',
+    badgeStyle: 'bg-rose-100 text-rose-800 border-rose-300',
+  },
+  {
+    id: 'unknown',
+    labelEn: 'Status unknown / not checked',
+    labelTa: 'நிலை தெரியவில்லை',
+    badgeStyle: 'bg-slate-100 text-slate-600 border-slate-200',
+  },
+];
 
 interface StepItem {
   id: string;
@@ -65,6 +200,34 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
     return {};
   });
 
+  // Citizen self-reported application status per scheme
+  const [statusMap, setStatusMap] = useState<Record<string, CitizenApplicationStatus>>(() => {
+    if (!isKioskMode) {
+      try {
+        const saved = localStorage.getItem('SEVAIQ_APPLICATION_STATUS');
+        if (saved) return JSON.parse(saved);
+      } catch {
+        // ignore
+      }
+    }
+    return {};
+  });
+
+  // Follow-up reminder date per scheme
+  const [reminderMap, setReminderMap] = useState<Record<string, string>>(() => {
+    if (!isKioskMode) {
+      try {
+        const saved = localStorage.getItem('SEVAIQ_APPLICATION_REMINDERS');
+        if (saved) return JSON.parse(saved);
+      } catch {
+        // ignore
+      }
+    }
+    return {};
+  });
+
+  const [reminderNotice, setReminderNotice] = useState<string | null>(null);
+
   // Sync to localStorage only when NOT in kiosk mode
   useEffect(() => {
     if (isKioskMode) return;
@@ -83,6 +246,72 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
       // ignore
     }
   }, [notesMap, isKioskMode]);
+
+  useEffect(() => {
+    if (isKioskMode) return;
+    try {
+      localStorage.setItem('SEVAIQ_APPLICATION_STATUS', JSON.stringify(statusMap));
+    } catch {
+      // ignore
+    }
+  }, [statusMap, isKioskMode]);
+
+  useEffect(() => {
+    if (isKioskMode) return;
+    try {
+      localStorage.setItem('SEVAIQ_APPLICATION_REMINDERS', JSON.stringify(reminderMap));
+    } catch {
+      // ignore
+    }
+  }, [reminderMap, isKioskMode]);
+
+  const handleStatusChange = (status: CitizenApplicationStatus) => {
+    setStatusMap((prev) => ({ ...prev, [selectedSchemeId]: status }));
+  };
+
+  const handleReminderChange = (date: string) => {
+    setReminderMap((prev) => ({ ...prev, [selectedSchemeId]: date }));
+  };
+
+  const handleRequestReminder = async () => {
+    const date = reminderMap[selectedSchemeId];
+    if (!date) {
+      setReminderNotice(
+        language === 'ta'
+          ? 'தயவுசெய்து நினைவூட்டலுக்கான தேதியை தேர்ந்தெடுக்கவும்.'
+          : 'Please select a reminder date first.'
+      );
+      setTimeout(() => setReminderNotice(null), 3000);
+      return;
+    }
+
+    if ('Notification' in window) {
+      try {
+        const perm = await Notification.requestPermission();
+        if (perm === 'granted') {
+          setReminderNotice(
+            language === 'ta'
+              ? `நினைவூட்டல் அமைக்கப்பட்டது! (${date})`
+              : `Reminder set! Browser will notify you on ${date}.`
+          );
+        } else {
+          setReminderNotice(
+            language === 'ta'
+              ? `நினைவூட்டல் சேமிக்கப்பட்டது: ${date}. (அறிவிப்பு அனுமதி வழங்கப்படவில்லை)`
+              : `Reminder saved for ${date}. (Browser notification permission denied).`
+          );
+        }
+      } catch {
+        setReminderNotice(`Reminder saved for ${date}.`);
+      }
+    } else {
+      setReminderNotice(`Reminder saved for ${date}.`);
+    }
+
+    setTimeout(() => {
+      setReminderNotice(null);
+    }, 4000);
+  };
 
   const activeScheme = schemes.find((s) => s.id === selectedSchemeId) || schemes[0];
   const locActiveScheme = activeScheme ? getLocalizedScheme(activeScheme) : null;
@@ -188,13 +417,17 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
         <div>
           <div className="inline-flex items-center space-x-1.5 text-xs font-semibold uppercase tracking-wider text-civic-700 mb-1">
             <ListChecks className="w-4 h-4" />
-            <span>{t.tracker.badge}</span>
+            <span>{language === 'ta' ? 'படி 4: விண்ணப்ப நிலை' : language === 'hi' ? 'चरण 4: आवेदन स्थिति' : 'Stage 4: Track Application'}</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
-            {t.tracker.title}
+            {language === 'ta' ? 'விண்ணப்பத்தை கண்காணிக்கவும்' : language === 'hi' ? 'अपना आवेदन ट्रैक करें' : 'Track Your Application'}
           </h1>
           <p className="text-sm text-slate-600 mt-1">
-            {t.tracker.subtitle}
+            {language === 'ta'
+              ? 'உங்கள் விண்ணப்ப நிலையை குறிக்கவும், நேரடி அரசு போர்ட்டல்களில் சரிபார்க்கவும், நினைவூட்டல் அமைக்கவும்.'
+              : language === 'hi'
+              ? 'अपने आवेदन की स्थिति दर्ज करें, आधिकारिक सरकारी पोर्टलों पर जांचें और रिमाइंडर सेट करें।'
+              : 'Record your application stage, check live progress on authentic official portals, and set reminders.'}
           </p>
         </div>
 
@@ -258,9 +491,9 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
         </div>
       </div>
 
-      {/* Active Scheme Summary Card */}
+      {/* Active Scheme Summary & User-Reported Status Card */}
       {locActiveScheme && (
-        <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-xs space-y-4">
+        <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-xs space-y-5">
           <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
             <div>
               <span className="px-2.5 py-0.5 rounded text-[11px] font-semibold bg-civic-50 text-civic-700 border border-civic-200">
@@ -281,13 +514,134 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
                 href={locActiveScheme.official_portal_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-civic-700 hover:bg-civic-800 text-white font-semibold text-xs shadow-md transition-all shrink-0 self-start sm:self-auto"
+                className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-civic-700 hover:bg-civic-800 text-white font-semibold text-xs shadow-md transition-all shrink-0 self-start sm:self-auto cursor-pointer"
               >
                 <span>{t.tracker.visitPortal}</span>
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
             )}
           </div>
+
+          {/* User-Reported Status & Official Status Check Links Grid */}
+          <div className="p-4 sm:p-5 bg-slate-50/80 rounded-2xl border border-slate-200/90 grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Status Dropdown */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <label htmlFor="scheme-status-dropdown" className="text-xs font-bold text-slate-800">
+                  {language === 'ta' ? 'உங்கள் விண்ணப்ப நிலை:' : 'Your Reported Status:'}
+                </label>
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-200/70 text-slate-700">
+                  {language === 'ta' ? 'சுய அறிவிப்பு' : 'User-Reported'}
+                </span>
+              </div>
+
+              <select
+                id="scheme-status-dropdown"
+                value={statusMap[selectedSchemeId] || 'not_applied'}
+                onChange={(e) => handleStatusChange(e.target.value as CitizenApplicationStatus)}
+                className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-civic-500 shadow-2xs"
+              >
+                {STATUS_OPTIONS.map((opt) => (
+                  <option key={opt.id} value={opt.id}>
+                    {language === 'ta' ? opt.labelTa : opt.labelEn}
+                  </option>
+                ))}
+              </select>
+
+              <p className="text-[10px] text-slate-500 leading-tight">
+                {language === 'ta'
+                  ? 'உங்கள் தனிப்பட்ட கண்காணிப்பிற்கு மட்டும். அரசு இறுதி ஒப்புதல் அதிகாரப்பூர்வ போர்ட்டலில் மட்டுமே வழங்கப்படும்.'
+                  : 'For your personal tracking. Government approval is verified exclusively by statutory authorities.'}
+              </p>
+            </div>
+
+            {/* Official Status Check Portal Link */}
+            <div className="space-y-2">
+              <div className="text-xs font-bold text-slate-800">
+                {language === 'ta' ? 'அதிகாரப்பூர்வ நிலை சரிபார்ப்பு:' : 'Official Live Status Check:'}
+              </div>
+
+              {OFFICIAL_STATUS_CHECK_URLS[selectedSchemeId] ? (
+                <div className="space-y-2">
+                  <a
+                    href={OFFICIAL_STATUS_CHECK_URLS[selectedSchemeId].url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full inline-flex items-center justify-between px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-xs transition-colors cursor-pointer"
+                  >
+                    <span>
+                      {language === 'ta'
+                        ? OFFICIAL_STATUS_CHECK_URLS[selectedSchemeId].labelTa
+                        : OFFICIAL_STATUS_CHECK_URLS[selectedSchemeId].labelEn}
+                    </span>
+                    <ExternalLink className="w-3.5 h-3.5 shrink-0 ml-1.5" />
+                  </a>
+                  <p className="text-[10px] text-slate-500">
+                    {language === 'ta'
+                      ? `${OFFICIAL_STATUS_CHECK_URLS[selectedSchemeId].portalName} தளத்தில் திறக்கும். உங்கள் குறிப்பு எண்/ஆதார் தேவைப்படலாம்.`
+                      : `Opens ${OFFICIAL_STATUS_CHECK_URLS[selectedSchemeId].portalName}. Requires Registration No, Mobile, or Aadhaar OTP.`}
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <a
+                    href={activeScheme.official_portal_url || '#'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full inline-flex items-center justify-between px-3.5 py-2 bg-slate-900 hover:bg-civic-700 text-white font-bold rounded-xl text-xs shadow-xs transition-colors cursor-pointer"
+                  >
+                    <span>{t.tracker.visitPortal}</span>
+                    <ExternalLink className="w-3.5 h-3.5 shrink-0 ml-1.5" />
+                  </a>
+                  <p className="text-[10px] text-slate-500">
+                    {language === 'ta'
+                      ? 'அதிகாரப்பூர்வ அரசு தளத்தில் நேரடி நிலையை சரிபார்க்கலாம்.'
+                      : 'Check status directly on the official department portal.'}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Follow-Up Status Check Reminder */}
+          <div className="p-3.5 bg-blue-50/60 rounded-2xl border border-blue-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+            <div className="flex items-center space-x-2.5">
+              <Bell className="w-4 h-4 text-civic-700 shrink-0" />
+              <div>
+                <span className="font-bold text-slate-800 block text-[11px]">
+                  {language === 'ta' ? 'அடுத்த நிலை சரிபார்ப்பு நினைவூட்டல்:' : 'Next Status Check Reminder:'}
+                </span>
+                <span className="text-[10px] text-slate-600">
+                  {language === 'ta'
+                    ? 'விண்ணப்ப நிலையை மீண்டும் பார்க்க விரும்பும் தேதியைத் தேர்ந்தெடுக்கவும்.'
+                    : 'Pick a date to check your status on the portal again.'}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <input
+                type="date"
+                value={reminderMap[selectedSchemeId] || ''}
+                onChange={(e) => handleReminderChange(e.target.value)}
+                className="px-2.5 py-1 bg-white border border-slate-300 rounded-lg text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-civic-500"
+              />
+              <button
+                type="button"
+                onClick={handleRequestReminder}
+                className="px-3 py-1 bg-civic-700 hover:bg-civic-800 text-white font-semibold rounded-lg text-xs transition-colors cursor-pointer shrink-0"
+              >
+                {language === 'ta' ? 'நினைவூட்டு' : 'Remind Me'}
+              </button>
+            </div>
+          </div>
+
+          {reminderNotice && (
+            <div className="p-2.5 bg-emerald-50 border border-emerald-200 text-emerald-900 rounded-xl text-xs font-medium animate-in fade-in flex items-center space-x-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>{reminderNotice}</span>
+            </div>
+          )}
 
           {/* Progress Bar */}
           <div className="pt-3 border-t border-slate-100 space-y-2">

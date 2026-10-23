@@ -76,7 +76,7 @@ describe('Main Chatbot Screen Experience Suite', () => {
     expect(html).toContain('Chat');
     expect(html).toContain('Dashboard');
     expect(html).toContain('Schemes');
-    expect(html).toContain('Eligibility');
+    expect(html).toContain('Your Details');
     // Active styling for chat tab
     expect(html).toContain('bg-civic-50 text-civic-800');
     expect(html).toContain('aria-current="page"');

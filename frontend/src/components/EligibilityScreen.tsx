@@ -35,6 +35,7 @@ import {
   resolveBackendSchemeId,
 } from '../utils/schemaAdapter';
 import { useLanguage } from '../context/LanguageContext';
+import { GuidedProfile } from './GuidedProfile';
 
 
 interface EligibilityScreenProps {
@@ -90,6 +91,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
   onClearTargetScheme,
 }) => {
   const { language, t, getLocalizedScheme, getLocalizedOption } = useLanguage();
+  const [profileMode, setProfileMode] = useState<'guided' | 'all'>('guided');
   const [profileEditorOpen, setProfileEditorOpen] = useState(
     !profile.age || !profile.occupation
   );
@@ -220,24 +222,38 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
         <div>
           <div className="inline-flex items-center space-x-1.5 text-xs font-semibold uppercase tracking-wider text-civic-700 mb-1">
             <CheckSquare className="w-4 h-4" />
-            <span>{t.eligibility.badge}</span>
+            <span>{language === 'ta' ? 'படி 1: உங்கள் விவரங்கள்' : language === 'hi' ? 'चरण 1: आपकी जानकारी' : 'Stage 1: Your Details'}</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
-            {t.eligibility.title}
+            {language === 'ta' ? 'உங்கள் விவரங்கள்: தகுதி சரிபார்ப்பு' : language === 'hi' ? 'आपकी जानकारी: पात्रता जांचें' : 'Your Details: Check If You May Qualify'}
           </h1>
           <p className="text-sm text-slate-600 mt-1">
-            {t.eligibility.subtitle}
+            {language === 'ta'
+              ? 'எளிய கேள்விகளுக்கு பதிலளித்து, உங்களுக்கு பொருந்தக்கூடிய நலத்திட்டங்களை கண்டறியவும். ஆதார் அல்லது வங்கி விவரங்கள் தேவையில்லை.'
+              : language === 'hi'
+              ? 'सरल प्रश्नों के उत्तर देकर अपने लिए उपयुक्त सरकारी योजनाएं खोजें। आधार या बैंक विवरण की आवश्यकता नहीं है।'
+              : 'Answer simple questions to see which government schemes may help you. No Aadhaar or bank account needed.'}
           </p>
         </div>
 
-        <button
-          onClick={() => setProfileEditorOpen(!profileEditorOpen)}
-          className="inline-flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 transition-colors shadow-xs self-start md:self-auto"
-        >
-          <User className="w-4 h-4 text-civic-700" />
-          <span>{profileEditorOpen ? t.eligibility.collapseProfile : t.eligibility.editProfile}</span>
-          {profileEditorOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-        </button>
+        <div className="flex items-center space-x-2.5 self-start md:self-auto flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => onNavigate('discover')}
+            className="inline-flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white transition-colors shadow-xs cursor-pointer"
+          >
+            <span>{language === 'ta' ? 'திட்டங்களை காண்க (படி 2)' : language === 'hi' ? 'योजनाएं देखें (चरण 2)' : 'Find Schemes (Stage 2)'}</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
+          <button
+            onClick={() => setProfileEditorOpen(!profileEditorOpen)}
+            className="inline-flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 transition-colors shadow-xs cursor-pointer"
+          >
+            <User className="w-4 h-4 text-civic-700" />
+            <span>{profileEditorOpen ? t.eligibility.collapseProfile : t.eligibility.editProfile}</span>
+            {profileEditorOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+          </button>
+        </div>
       </div>
 
       {/* Statutory Legal Notice & Non-Guarantee Advisory */}
@@ -262,7 +278,32 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
       </div>
 
       {/* Citizen Profile Configuration Card */}
-      {profileEditorOpen && (
+      {profileEditorOpen && profileMode === 'guided' && (
+        <div className="space-y-3">
+          <div className="flex items-center justify-between px-1">
+            <span className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+              {language === 'ta' ? 'வழிகாட்டப்பட்ட 4-படி சுயவிவரம்' : 'Guided 4-Step Profile'}
+            </span>
+            <button
+              type="button"
+              onClick={() => setProfileMode('all')}
+              className="text-xs text-civic-700 hover:text-civic-900 font-semibold underline cursor-pointer"
+            >
+              {language === 'ta' ? 'அனைத்து புலங்களையும் ஒரே பார்வையில் காண்க' : 'Switch to all-fields view'}
+            </button>
+          </div>
+          <GuidedProfile
+            profile={profile}
+            onUpdateProfile={onUpdateProfile}
+            onComplete={() => onNavigate('discover')}
+            onPreFillDemoProfile={onPreFillDemoProfile}
+            onResetProfile={onResetProfile}
+            isKioskMode={isKioskMode}
+          />
+        </div>
+      )}
+
+      {profileEditorOpen && profileMode === 'all' && (
         <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-slate-100">
             <div className="flex items-center space-x-3">
@@ -279,16 +320,25 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
               </div>
             </div>
 
-            {/* Privacy Guarantee Pill */}
-            <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-medium self-start sm:self-auto">
-              <Lock className="w-3.5 h-3.5 text-emerald-600" />
-              <span>
-                {language === 'ta'
-                  ? 'ஆதார் / வங்கி கணக்கு தேவையில்லை'
-                  : language === 'hi'
-                  ? 'आधार / बैंक खाते की आवश्यकता नहीं'
-                  : 'No Aadhaar / Bank account required'}
-              </span>
+            <div className="flex items-center space-x-3">
+              <button
+                type="button"
+                onClick={() => setProfileMode('guided')}
+                className="text-xs font-semibold text-civic-700 hover:text-civic-900 underline cursor-pointer"
+              >
+                {language === 'ta' ? 'படி-படியான முறைக்கு மாறு' : 'Switch to step-by-step'}
+              </button>
+              {/* Privacy Guarantee Pill */}
+              <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-medium self-start sm:self-auto">
+                <Lock className="w-3.5 h-3.5 text-emerald-600" />
+                <span>
+                  {language === 'ta'
+                    ? 'ஆதார் / வங்கி கணக்கு தேவையில்லை'
+                    : language === 'hi'
+                    ? 'आधार / बैंक खाते की आवश्यकता नहीं'
+                    : 'No Aadhaar / Bank account required'}
+                </span>
+              </div>
             </div>
           </div>
 
@@ -668,11 +718,17 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
         </div>
       )}
 
-      {/* Backend Evaluation Status Notice */}
+      {/* Eligibility Evaluation Status Notice */}
       {isEvaluatingBackend && (
         <div className="p-3.5 bg-blue-50 border border-blue-200 text-blue-900 rounded-2xl flex items-center space-x-2.5 text-xs font-medium">
           <RefreshCw className="w-4 h-4 text-civic-600 animate-spin shrink-0" />
-          <span>Evaluating citizen profile against statutory criteria via FastAPI <code className="bg-white/80 px-1 py-0.5 rounded font-mono">POST /api/eligibility/check</code>...</span>
+          <span>
+            {language === 'ta'
+              ? 'அரசு விதிகளுடன் உங்கள் விவரங்கள் சரிபார்க்கப்படுகின்றன...'
+              : language === 'hi'
+              ? 'सरकारी नियमों के अनुसार आपकी जानकारी जांची जा रही है...'
+              : 'Checking your details against official government scheme rules...'}
+          </span>
         </div>
       )}
 
@@ -681,17 +737,32 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
           <div className="flex items-center space-x-2.5">
             <Server className="w-4 h-4 text-emerald-700 shrink-0" />
             <span>
-              <strong>Server-Computed 3-Valued Logic:</strong> Evaluated across {backendResponse.total_schemes_evaluated} verified schemes ({backendResponse.summary.meets_known_criteria} met, {backendResponse.summary.needs_verification} need information, {backendResponse.summary.does_not_meet_known_criteria} disqualified)
-              {lastEvaluatedAt && <span className="text-emerald-700"> at {lastEvaluatedAt.toLocaleTimeString()}</span>}.
+              <strong>
+                {language === 'ta'
+                  ? 'திட்ட தகுதி முடிவுகள்:'
+                  : language === 'hi'
+                  ? 'योजना पात्रता परिणाम:'
+                  : 'Official Scheme Check Results:'}
+              </strong>{' '}
+              {language === 'ta'
+                ? `${backendResponse.total_schemes_evaluated} சரிபார்க்கப்பட்ட அரசு திட்டங்களில் மதிப்பீடு செய்யப்பட்டது (${backendResponse.summary.meets_known_criteria} திட்டங்களுக்கு தகுதி பெறலாம், ${backendResponse.summary.needs_verification} திட்டங்களுக்கு கூடுதல் விவரங்கள் தேவை).`
+                : language === 'hi'
+                ? `${backendResponse.total_schemes_evaluated} सत्यापित योजनाओं में मूल्यांकित (${backendResponse.summary.meets_known_criteria} योजनाओं में आप पात्र हो सकते हैं, ${backendResponse.summary.needs_verification} में अधिक जानकारी आवश्यक है)।`
+                : `Evaluated across ${backendResponse.total_schemes_evaluated} verified official schemes (${backendResponse.summary.meets_known_criteria} schemes you may qualify for, ${backendResponse.summary.needs_verification} need more information).`}
+              {lastEvaluatedAt && (
+                <span className="opacity-75 text-[11px] block mt-0.5 sm:mt-0 sm:inline sm:ml-1">
+                  ({language === 'ta' ? 'சரிபார்க்கப்பட்ட நேரம்:' : 'Checked:'} {lastEvaluatedAt.toLocaleTimeString()})
+                </span>
+              )}
             </span>
           </div>
           <button
             type="button"
             onClick={runBackendEvaluation}
-            className="text-emerald-800 underline font-semibold flex items-center space-x-1 hover:text-emerald-900 self-start sm:self-auto"
+            className="text-emerald-800 underline font-semibold flex items-center space-x-1 hover:text-emerald-900 self-start sm:self-auto cursor-pointer"
           >
             <RefreshCw className="w-3 h-3" />
-            <span>Re-evaluate</span>
+            <span>{language === 'ta' ? 'மீண்டும் சரிபார்க்கவும்' : language === 'hi' ? 'पुन: जांचें' : 'Check Again'}</span>
           </button>
         </div>
       )}
@@ -701,19 +772,23 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
           <div className="flex items-start space-x-3">
             <AlertCircle className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
             <div>
-              <p className="font-semibold">FastAPI Backend Notice: {backendEvalError}</p>
+              <p className="font-semibold">
+                {language === 'ta' ? 'தகுதி சரிபார்ப்பு அறிவிப்பு' : 'Eligibility Check Notice'}
+              </p>
               <p className="text-amber-800 mt-0.5">
-                Showing local client assessment as fallback. The application will evaluate locally or you can retry the backend check.
+                {language === 'ta'
+                  ? 'உள்ளூர் சரிபார்ப்பு மாதிரியின் அடிப்படையில் முடிவுகள் காட்டப்படுகின்றன.'
+                  : 'Showing official criteria results using reference guidelines.'}
               </p>
             </div>
           </div>
           <button
             type="button"
             onClick={runBackendEvaluation}
-            className="px-3 py-1.5 bg-amber-200 hover:bg-amber-300 text-amber-950 font-semibold rounded-xl self-start sm:self-auto transition-colors flex items-center space-x-1.5 shrink-0"
+            className="px-3 py-1.5 bg-amber-200 hover:bg-amber-300 text-amber-950 font-semibold rounded-xl self-start sm:self-auto transition-colors flex items-center space-x-1.5 shrink-0 cursor-pointer"
           >
             <RefreshCw className="w-3.5 h-3.5" />
-            <span>Retry Backend Check</span>
+            <span>{language === 'ta' ? 'மீண்டும் முயற்சி' : 'Retry Check'}</span>
           </button>
         </div>
       )}
@@ -868,7 +943,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
           onClick={() => onNavigate('document-mapper')}
           className="hidden sm:inline-flex items-center space-x-1.5 text-xs font-semibold text-civic-700 hover:underline"
         >
-          <span>{language === 'ta' ? 'ஆவண வரைபடத்திற்கு செல்' : language === 'hi' ? 'दस्तावेज़ मैपर पर जाएं' : 'Go to Document Mapper'}</span>
+          <span>{language === 'ta' ? 'ஆவணங்களை தயார் செய்க (படி 3)' : language === 'hi' ? 'दस्तावेज़ तैयार करें (चरण 3)' : 'Prepare Documents (Stage 3)'}</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </button>
       </div>
@@ -956,26 +1031,38 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                   {/* Actions */}
                   <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 pt-2 md:pt-0">
                     <button
+                      onClick={() => {
+                        if (!isSelectedForMapper) onSelectForMapper(scheme.id);
+                        onNavigate('document-mapper');
+                      }}
+                      className="px-3 py-2 rounded-xl text-xs font-semibold bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200 flex items-center space-x-1.5 transition-colors cursor-pointer"
+                    >
+                      <FileText className="w-3.5 h-3.5 text-emerald-700" />
+                      <span>
+                        {language === 'ta' ? 'ஆவணங்கள் (படி 3)' : language === 'hi' ? 'दस्तावेज़ (चरण 3)' : 'Check Documents (Stage 3)'}
+                      </span>
+                    </button>
+
+                    <button
                       onClick={() => onSelectForMapper(scheme.id)}
-                      className={`px-3 py-2 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition-colors ${
+                      className={`px-3 py-2 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition-colors cursor-pointer ${
                         isSelectedForMapper
-                          ? 'bg-emerald-600 text-white'
+                          ? 'bg-civic-700 text-white'
                           : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                       }`}
                     >
-                      <FileText className="w-3.5 h-3.5" />
                       <span>
                         {isSelectedForMapper
                           ? language === 'ta'
-                            ? 'வரைபடத்தில் உள்ளது ✓'
+                            ? 'தேர்வில் உள்ளது ✓'
                             : language === 'hi'
-                            ? 'मैपर में मौजूद ✓'
-                            : 'In Document Mapper ✓'
+                            ? 'सूची में शामिल ✓'
+                            : 'In Checklist ✓'
                           : language === 'ta'
-                          ? '+ வரைபடத்தில் சேர்'
+                          ? '+ பட்டியலில் சேர்'
                           : language === 'hi'
-                          ? '+ मैपर में जोड़ें'
-                          : '+ Add to Mapper'}
+                          ? '+ सूची में जोड़ें'
+                          : '+ Add to Checklist'}
                       </span>
                     </button>
 

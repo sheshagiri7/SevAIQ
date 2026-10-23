@@ -19,6 +19,10 @@ import {
   Play,
   Square,
   Info,
+  CheckSquare,
+  ListOrdered,
+  FileText,
+  MessageSquare,
 } from 'lucide-react';
 import { Scheme, AssistantLanguage, AssistantMessage, NavigationTab, ChatMessageWire } from '../types';
 import {
@@ -51,6 +55,8 @@ export interface VoiceAssistantProps {
   isKioskMode?: boolean;
   isMainScreen?: boolean;
   onOpenAbout?: () => void;
+  pendingQuery?: string | null;
+  onClearPendingQuery?: () => void;
 }
 
 export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
@@ -63,6 +69,8 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
   isKioskMode = false,
   isMainScreen = false,
   onOpenAbout,
+  pendingQuery,
+  onClearPendingQuery,
 }) => {
   const [internalIsOpen, setInternalIsOpen] = useState(false);
   const [isMaximized, setIsMaximized] = useState(false);
@@ -657,6 +665,15 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
     }
   };
 
+  // Auto-send or prefill query when passed externally (e.g. from Scheme cards)
+  useEffect(() => {
+    if (pendingQuery && pendingQuery.trim()) {
+      const q = pendingQuery.trim();
+      onClearPendingQuery?.();
+      handleSendQuery(q);
+    }
+  }, [pendingQuery, onClearPendingQuery]);
+
   const handleResetChat = () => {
     stopAllAudio();
     setSpeechTranscript('');
@@ -889,25 +906,195 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
       <div className="flex-1 p-3.5 sm:p-5 overflow-y-auto space-y-3.5 bg-slate-50/60 dark:bg-[#070e22]/80 scroll-smooth">
         {/* Welcoming Starter Experience with Large Suggested Question Cards */}
         {messages.length <= 1 && (
-          <div className="p-4 sm:p-5 bg-gradient-to-br from-slate-50 via-blue-50/40 to-indigo-50/20 dark:from-[#0d1a38] dark:via-[#0c1834] dark:to-[#081228] rounded-2xl border border-slate-200/90 dark:border-slate-800/80 shadow-2xs space-y-4 my-1 animate-in fade-in">
-            <div className="flex items-start space-x-3">
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-br from-civic-700 to-indigo-900 text-white flex items-center justify-center shadow-xs shrink-0 mt-0.5">
-                <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-amber-300" />
+          <div className="p-4 sm:p-6 bg-gradient-to-br from-slate-50 via-blue-50/40 to-indigo-50/20 dark:from-[#0d1a38] dark:via-[#0c1834] dark:to-[#081228] rounded-3xl border border-slate-200/90 dark:border-slate-800/80 shadow-2xs space-y-6 my-1 animate-in fade-in">
+            {/* Greeting Header */}
+            <div className="flex items-start space-x-3.5">
+              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-civic-700 to-indigo-900 text-white flex items-center justify-center shadow-xs shrink-0 mt-0.5">
+                <Sparkles className="w-5 h-5 text-amber-300" />
               </div>
-              <div>
-                <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white tracking-tight">
-                  {language === 'ta'
-                    ? 'இன்று SevAIQ உங்களுக்கு எவ்வாறு உதவ முடியும்?'
-                    : 'How can SevAIQ help you today?'}
-                </h3>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white tracking-tight">
+                    {language === 'ta'
+                      ? 'இன்று SevAIQ உங்களுக்கு எவ்வாறு உதவ முடியும்?'
+                      : language === 'hi'
+                      ? 'आज SevAIQ आपकी क्या मदद कर सकता है?'
+                      : 'How can SevAIQ help you today?'}
+                  </h3>
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300 border border-emerald-200">
+                    {language === 'ta' ? 'அதிகாரப்பூர்வ அரசு வழிகாட்டுதல்' : language === 'hi' ? 'आधिकारिक सरकारी मार्गदर्शन' : 'Verified Official Guidance'}
+                  </span>
+                </div>
                 <p className="text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
                   {language === 'ta'
-                    ? 'மத்திய மற்றும் மாநில அரசு நலத்திட்டங்கள், தகுதி வரம்புகள் மற்றும் தேவையான ஆவணங்கள் குறித்து எளிய தமிழில் அல்லது ஆங்கிலத்தில் கேட்கலாம். அனைத்து பதில்களும் அதிகாரப்பூர்வ அரசு வழிகாட்டுதல்களின் அடிப்படையில் மட்டுமே வழங்கப்படும்.'
-                    : 'Ask in simple English or தமிழ் about central and state welfare benefits, eligibility rules, and required application documents. All answers are grounded directly in verified government portals.'}
+                    ? 'விவசாயி நிதி உதவி, மருத்துவ காப்பீடு, வீடு கட்ட மானியம், ஓய்வூதியம், மற்றும் கல்வி உதவித்தொகை குறித்த உங்கள் உரிமைகளை எளிதாக அறியலாம்.'
+                    : language === 'hi'
+                    ? 'किसान सहायता, स्वास्थ्य बीमा, आवास सब्सिडी, पेंशन और छात्रवृत्ति से संबंधित अपने अधिकारों को सरलता से जानें।'
+                    : 'Discover central and state welfare benefits, check if you qualify, prepare required documents, and track applications in simple language.'}
                 </p>
               </div>
             </div>
 
+            {/* Two Primary Action CTAs */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 pt-1">
+              {/* Primary CTA 1: Find Government Schemes for Me */}
+              <button
+                type="button"
+                onClick={() => onNavigate('eligibility')}
+                className="group relative p-4 bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white rounded-2xl shadow-sm hover:shadow-md transition-all text-left flex items-start justify-between space-x-3 cursor-pointer border border-emerald-500/30"
+              >
+                <div className="space-y-1 flex-1">
+                  <div className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-white/20 text-white">
+                    <span>
+                      {language === 'ta' ? 'படி 1: பரிந்துரைக்கப்பட்டது' : language === 'hi' ? 'चरण 1: अनुशंसित' : 'Step 1: Recommended'}
+                    </span>
+                  </div>
+                  <h4 className="text-sm sm:text-base font-bold text-white tracking-tight flex items-center space-x-1.5">
+                    <span>
+                      {language === 'ta'
+                        ? 'எனக்கான அரசு திட்டங்களை கண்டறியவும்'
+                        : language === 'hi'
+                        ? 'मेरे लिए सरकारी योजनाएं खोजें'
+                        : 'Find Government Schemes for Me'}
+                    </span>
+                  </h4>
+                  <p className="text-[11px] sm:text-xs text-emerald-100/90 leading-snug">
+                    {language === 'ta'
+                      ? 'எளிய 4 கேள்விகளுக்கு பதிலளித்து, உங்களுக்கு பொருந்தக்கூடிய திட்டங்களை உடனடியாகக் காண்க (2 நிமிடங்கள்).'
+                      : language === 'hi'
+                      ? 'सरल 4 प्रश्नों के उत्तर दें और अपने लिए उपयुक्त योजनाएं तुरंत देखें (2 मिनट)।'
+                      : 'Answer 4 simple questions to see which welfare schemes match your needs in 2 minutes.'}
+                  </p>
+                </div>
+                <div className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center shrink-0 group-hover:translate-x-1 transition-transform">
+                  <ArrowRight className="w-4 h-4 text-white" />
+                </div>
+              </button>
+
+              {/* Primary CTA 2: Ask SevAIQ a Question */}
+              <button
+                type="button"
+                onClick={() => {
+                  inputRef.current?.focus();
+                  inputRef.current?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="group relative p-4 bg-white dark:bg-[#0f2146] hover:bg-civic-50/60 dark:hover:bg-[#142a59] text-slate-900 dark:text-white rounded-2xl border-2 border-civic-300 dark:border-civic-600 shadow-2xs hover:shadow-xs transition-all text-left flex items-start justify-between space-x-3 cursor-pointer"
+              >
+                <div className="space-y-1 flex-1">
+                  <div className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-civic-100 dark:bg-civic-950/80 text-civic-800 dark:text-civic-300">
+                    <MessageSquare className="w-3 h-3 text-civic-600" />
+                    <span>
+                      {language === 'ta' ? 'குரல் & உரை AI' : language === 'hi' ? 'आवाज और टेक्स्ट AI' : 'Voice & Text AI'}
+                    </span>
+                  </div>
+                  <h4 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white tracking-tight">
+                    {language === 'ta'
+                      ? 'SevAIQ-விடம் நேரடியாக கேட்கவும்'
+                      : language === 'hi'
+                      ? 'SevAIQ से सीधे प्रश्न पूछें'
+                      : 'Ask SevAIQ a Question'}
+                  </h4>
+                  <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-300 leading-snug">
+                    {language === 'ta'
+                      ? 'தமிழில் அல்லது ஆங்கிலத்தில் மைக் மூலம் பேசலாம் அல்லது தட்டச்சு செய்யலாம்.'
+                      : language === 'hi'
+                      ? 'हिंदी या अंग्रेजी में माइक से बोलें या नीचे प्रश्न टाइप करें।'
+                      : 'Speak via microphone or type your question in English or தமிழ்.'}
+                  </p>
+                </div>
+                <div className="w-8 h-8 rounded-xl bg-civic-100 dark:bg-civic-900/60 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform text-civic-700 dark:text-civic-300">
+                  <Mic className="w-4 h-4" />
+                </div>
+              </button>
+            </div>
+
+            {/* 4-Stage Citizen Journey Visual Roadmap */}
+            <div className="pt-2">
+              <div className="flex items-center justify-between mb-2.5">
+                <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                  {language === 'ta' ? 'குடிமக்கள் 4-படி பயணம்:' : language === 'hi' ? 'नागरिक 4-चरणीय यात्रा:' : '4-Stage Citizen Journey:'}
+                </span>
+                <span className="text-[10px] text-civic-700 dark:text-civic-400 font-semibold">
+                  {language === 'ta' ? 'நேரடியாக செல்ல எந்த படியையும் தொடவும்' : 'Tap any step to jump'}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
+                {/* Step 1 */}
+                <button
+                  type="button"
+                  onClick={() => onNavigate('eligibility')}
+                  className="p-3 bg-white dark:bg-[#0c1834] hover:bg-civic-50/60 dark:hover:bg-[#12244c] rounded-xl border border-slate-200/90 dark:border-slate-800 text-left transition-all shadow-2xs group cursor-pointer"
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs font-black text-civic-700 dark:text-civic-400">1</span>
+                    <CheckSquare className="w-3.5 h-3.5 text-civic-600" />
+                  </div>
+                  <div className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-civic-700 transition-colors">
+                    {language === 'ta' ? '1. உங்கள் விவரங்கள்' : language === 'hi' ? '1. आपकी जानकारी' : '1. Your Details'}
+                  </div>
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-1">
+                    {language === 'ta' ? '2 நிமிட சுயவிவரம்' : 'Quick eligibility check'}
+                  </p>
+                </button>
+
+                {/* Step 2 */}
+                <button
+                  type="button"
+                  onClick={() => onNavigate('discover')}
+                  className="p-3 bg-white dark:bg-[#0c1834] hover:bg-civic-50/60 dark:hover:bg-[#12244c] rounded-xl border border-slate-200/90 dark:border-slate-800 text-left transition-all shadow-2xs group cursor-pointer"
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs font-black text-civic-700 dark:text-civic-400">2</span>
+                    <Sparkles className="w-3.5 h-3.5 text-civic-600" />
+                  </div>
+                  <div className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-civic-700 transition-colors">
+                    {language === 'ta' ? '2. திட்டங்களை தேடவும்' : language === 'hi' ? '2. योजनाएं खोजें' : '2. Find Schemes'}
+                  </div>
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-1">
+                    {language === 'ta' ? 'பொருந்தும் நலத்திட்டங்கள்' : 'Personalized matches'}
+                  </p>
+                </button>
+
+                {/* Step 3 */}
+                <button
+                  type="button"
+                  onClick={() => onNavigate('document-mapper')}
+                  className="p-3 bg-white dark:bg-[#0c1834] hover:bg-civic-50/60 dark:hover:bg-[#12244c] rounded-xl border border-slate-200/90 dark:border-slate-800 text-left transition-all shadow-2xs group cursor-pointer"
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs font-black text-civic-700 dark:text-civic-400">3</span>
+                    <FileText className="w-3.5 h-3.5 text-civic-600" />
+                  </div>
+                  <div className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-civic-700 transition-colors">
+                    {language === 'ta' ? '3. ஆவணங்கள் தயார்' : language === 'hi' ? '3. दस्तावेज़ तैयारी' : '3. Prepare Docs'}
+                  </div>
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-1">
+                    {language === 'ta' ? 'சரிபார்ப்பு பட்டியல்' : 'Checklist & Kendra guidance'}
+                  </p>
+                </button>
+
+                {/* Step 4 */}
+                <button
+                  type="button"
+                  onClick={() => onNavigate('application-tracker')}
+                  className="p-3 bg-white dark:bg-[#0c1834] hover:bg-civic-50/60 dark:hover:bg-[#12244c] rounded-xl border border-slate-200/90 dark:border-slate-800 text-left transition-all shadow-2xs group cursor-pointer"
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs font-black text-civic-700 dark:text-civic-400">4</span>
+                    <ListOrdered className="w-3.5 h-3.5 text-civic-600" />
+                  </div>
+                  <div className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-civic-700 transition-colors">
+                    {language === 'ta' ? '4. விண்ணப்ப நிலை' : language === 'hi' ? '4. आवेदन स्थिति' : '4. Track Application'}
+                  </div>
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-1">
+                    {language === 'ta' ? 'அதிகாரப்பூர்வ இணைப்புகள்' : 'Official links & reminders'}
+                  </p>
+                </button>
+              </div>
+            </div>
+
+            {/* Suggested 1-Click Questions */}
             <div>
               <div className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2.5 flex items-center justify-between">
                 <span>

@@ -5,7 +5,6 @@ import {
   XCircle,
   HelpCircle,
   Building,
-  Award,
   ArrowRight,
   Sparkles,
   Info,
@@ -13,6 +12,7 @@ import {
   Server,
   AlertCircle,
   ExternalLink,
+  Printer,
 } from 'lucide-react';
 import {
   DocumentRecord,
@@ -175,6 +175,80 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
     return relevantDocuments;
   }, [relevantDocuments, filterTab, activeSchemeIds]);
 
+  const getProcurementGuidance = (docName: string) => {
+    const name = docName.toLowerCase();
+    if (name.includes('aadhaar')) {
+      return {
+        text: language === 'ta'
+          ? 'ஆதார் அட்டை அல்லது e-Aadhaar நகலை பதிவிறக்க UIDAI போர்ட்டலை அல்லது அருகிலுள்ள இ-சேவை மையத்தை அணுகலாம்.'
+          : 'Download e-Aadhaar from the official UIDAI portal or visit any Aadhaar Seva Kendra.',
+        url: 'https://uidai.gov.in',
+        label: 'uidai.gov.in',
+      };
+    }
+    if (name.includes('bank') || name.includes('passbook')) {
+      return {
+        text: language === 'ta'
+          ? 'உங்கள் வங்கி அல்லது தபால் நிலைய கிளைக்கு சென்று கணக்கு புத்தகத்தை புதுப்பித்துக் கொள்ளவும். IFSC குறியீடு தெளிவாக இருக்க வேண்டும்.'
+          : 'Visit your local bank branch or post office to update passbook with clear IFSC and account numbers.',
+        url: null,
+        label: null,
+      };
+    }
+    if (name.includes('land') || name.includes('patta') || name.includes('ror') || name.includes('record')) {
+      return {
+        text: language === 'ta'
+          ? 'மாநில நில ஆவண போர்டல் (எ.கா. தமிழ்நாடு இ-சேவை / நிலம்) அல்லது தாலுகா வட்டாட்சியர் அலுவலகத்தில் பட்டா/சிட்டா நகல் பெறலாம்.'
+          : 'Download certified land record from your State Land Records portal or obtain it from the Taluk/Tehsildar office.',
+        url: 'https://eservices.tn.gov.in',
+        label: 'State Land Records / e-Services',
+      };
+    }
+    if (name.includes('income')) {
+      return {
+        text: language === 'ta'
+          ? 'அரசு பொது சேவை மையம் (e-Seva Kendra) அல்லது மாவட்ட வருவாய்த் துறை மூலம் வருமானச் சான்றிதழ் பெறலாம்.'
+          : 'Apply at your nearest Common Service Centre (CSC / e-Seva) or District Revenue Portal.',
+        url: 'https://www.tnesevai.tn.gov.in',
+        label: 'e-Seva Portal',
+      };
+    }
+    if (name.includes('caste') || name.includes('community')) {
+      return {
+        text: language === 'ta'
+          ? 'அரசு இ-சேவை மையம் அல்லது வட்டாட்சியர் அலுவலகம் மூலம் சாதிச் சான்றிதழ் பெறலாம்.'
+          : 'Apply at your nearest e-Seva Kendra or Taluk Revenue Office.',
+        url: 'https://www.tnesevai.tn.gov.in',
+        label: 'e-Seva Portal',
+      };
+    }
+    if (name.includes('ration')) {
+      return {
+        text: language === 'ta'
+          ? 'உணவு வழங்கல் துறை போர்ட்டலில் ஸ்மார்ட் குடும்ப அட்டையை பதிவிறக்கலாம் அல்லது சரிபார்க்கலாம்.'
+          : 'Check or download smart card from State Food & Civil Supplies portal.',
+        url: 'https://www.tnpds.gov.in',
+        label: 'State PDS Portal',
+      };
+    }
+    if (name.includes('udyam') || name.includes('business')) {
+      return {
+        text: language === 'ta'
+          ? 'சிறு தொழில் மற்றும் வியாபாரிகளுக்கு அதிகாரப்பூர்வ உத்யாம் பதிவு போர்ட்டலில் இலவசமாக பதிவு செய்யலாம்.'
+          : 'Register free of cost at the official Udyam Registration portal (udyamregistration.gov.in).',
+        url: 'https://udyamregistration.gov.in',
+        label: 'Udyam Registration Portal',
+      };
+    }
+    return {
+      text: language === 'ta'
+        ? 'அருகிலுள்ள கிராம நிர்வாக அலுவலர் (VAO) அல்லது அரசு பொது சேவை மையத்தை (CSC) அணுகவும்.'
+        : 'Visit your nearest Village Administrative Officer (VAO) or Common Service Centre (CSC) for guidance.',
+      url: null,
+      label: null,
+    };
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       {/* Title */}
@@ -182,24 +256,40 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
         <div>
           <div className="inline-flex items-center space-x-1.5 text-xs font-semibold uppercase tracking-wider text-civic-700 mb-1">
             <Files className="w-4 h-4" />
-            <span>{t.documentMapper.badge}</span>
+            <span>{language === 'ta' ? 'படி 3: ஆவணங்கள் தயார்' : language === 'hi' ? 'चरण 3: दस्तावेज़ तैयारी' : 'Stage 3: Prepare Documents'}</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
-            {t.documentMapper.title}
+            {language === 'ta' ? 'தேவையான ஆவணங்கள்: சரிபார்ப்பு பட்டியல்' : language === 'hi' ? 'आवश्यक दस्तावेज़: चेकलिस्ट' : 'Documents You Need: Actionable Checklist'}
           </h1>
           <p className="text-sm text-slate-600 mt-1">
-            {t.documentMapper.subtitle}
+            {language === 'ta'
+              ? 'உங்கள் கையில் உள்ள ஆவணங்களை குறிக்கவும், விடுபட்டவற்றை எங்கு பெறலாம் என்பதை அறியவும்.'
+              : language === 'hi'
+              ? 'अपने पास उपलब्ध दस्तावेज़ों को चिह्नित करें और देखें कि शेष कहां से प्राप्त करें।'
+              : 'Mark the documents you have in hand, see what you still need to get, and find where to procure them.'}
           </p>
         </div>
 
-        <button
-          onClick={() => onNavigate('readiness-passport')}
-          className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-civic-700 hover:bg-civic-800 text-white font-semibold text-xs shadow-md transition-all self-start md:self-auto"
-        >
-          <Award className="w-4 h-4" />
-          <span>{t.documentMapper.proceedPassport}</span>
-          <ArrowRight className="w-3.5 h-3.5" />
-        </button>
+        <div className="flex items-center space-x-2.5 self-start md:self-auto flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => window.print()}
+            className="inline-flex items-center space-x-2 px-3.5 py-2.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 font-semibold text-xs shadow-xs transition-all cursor-pointer"
+            title="Print or save this checklist as PDF"
+          >
+            <Printer className="w-4 h-4 text-slate-600" />
+            <span>{language === 'ta' ? 'அச்சிடு / PDF சேமி' : 'Print Checklist'}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onNavigate('application-tracker')}
+            className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xs transition-all cursor-pointer"
+          >
+            <span>{language === 'ta' ? 'அடுத்த படி: விண்ணப்ப நிலை (படி 4)' : 'Next: Track Application (Stage 4)'}</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
       </div>
 
       {/* Backend Synchronization Notification */}
@@ -208,10 +298,8 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
           <RefreshCw className="w-4 h-4 text-civic-600 animate-spin shrink-0" />
           <span>
             {language === 'ta'
-              ? 'FastAPI மூலம் பல திட்டங்களுக்கான ஆவண இணைப்பை கணக்கிடுகிறது...'
-              : language === 'hi'
-              ? 'FastAPI के माध्यम से बहु-योजना दस्तावेज़ तालमेल की गणना की जा रही है...'
-              : 'Computing cross-scheme document synergy via FastAPI POST /api/documents/mapper...'}
+              ? 'தேர்ந்தெடுத்த திட்டங்களுக்கான ஆவணங்கள் பகுப்பாய்வு செய்யப்படுகின்றன...'
+              : 'Organizing your document checklist across selected schemes...'}
           </span>
         </div>
       )}
@@ -223,25 +311,21 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
             <span>
               <strong>
                 {language === 'ta'
-                  ? 'சேவையக ஆவண இணைப்பு:'
-                  : language === 'hi'
-                  ? 'सर्वर-गणना दस्तावेज़ तालमेल:'
-                  : 'Server-Computed Document Synergy:'}
+                  ? 'சரிபார்க்கப்பட்ட ஆவண பட்டியல்:'
+                  : 'Verified Document Checklist:'}
               </strong>{' '}
               {language === 'ta'
-                ? `${backendMapping.selected_scheme_ids.length} திட்டங்களில் பகுப்பாய்வு செய்யப்பட்டது (${backendMapping.reusable_documents.length} மறுபயன்பாட்டு ஆவணங்கள், ${backendMapping.single_scheme_documents.length} தனித்த ஆவணங்கள்).`
-                : language === 'hi'
-                ? `${backendMapping.selected_scheme_ids.length} योजनाओं में विश्लेषण किया गया (${backendMapping.reusable_documents.length} पुन: प्रयोज्य दस्तावेज़, ${backendMapping.single_scheme_documents.length} योजना-विशिष्ट दस्तावेज़)।`
-                : `Analyzed across ${backendMapping.selected_scheme_ids.length} schemes (${backendMapping.reusable_documents.length} reusable multi-scheme documents, ${backendMapping.single_scheme_documents.length} scheme-specific).`}
+                ? `${backendMapping.selected_scheme_ids.length} திட்டங்களில் பகுப்பாய்வு செய்யப்பட்டது (${backendMapping.reusable_documents.length} பொது ஆவணங்கள்).`
+                : `Checked across ${backendMapping.selected_scheme_ids.length} schemes (${backendMapping.reusable_documents.length} reusable documents you only need to get once).`}
             </span>
           </div>
           <button
             type="button"
             onClick={runDocumentMapping}
-            className="text-emerald-800 underline font-semibold flex items-center space-x-1 hover:text-emerald-900"
+            className="text-emerald-800 underline font-semibold flex items-center space-x-1 hover:text-emerald-900 cursor-pointer"
           >
             <RefreshCw className="w-3 h-3" />
-            <span>{language === 'ta' ? 'மீண்டும் பகுப்பாய்வு' : language === 'hi' ? 'पुन: विश्लेषण करें' : 'Re-analyze'}</span>
+            <span>{language === 'ta' ? 'மீண்டும் புதுப்பி' : 'Refresh'}</span>
           </button>
         </div>
       )}
@@ -603,11 +687,12 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                     <p className="text-xs text-slate-600">{locDoc.description}</p>
                   </div>
 
-                  {/* Interactive Status Selector Pill */}
+                  {/* Interactive 3-Way Status Selector */}
                   <div className="flex items-center space-x-1.5 p-1 bg-slate-100 rounded-2xl self-start sm:self-auto shrink-0">
                     <button
+                      type="button"
                       onClick={() => onUpdateDocumentStatus(doc.id, 'have')}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center space-x-1 transition-all ${
+                      className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center space-x-1 transition-all cursor-pointer ${
                         doc.status === 'have'
                           ? 'bg-emerald-600 text-white shadow-xs'
                           : 'text-slate-600 hover:text-slate-900'
@@ -618,30 +703,63 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                     </button>
 
                     <button
+                      type="button"
                       onClick={() => onUpdateDocumentStatus(doc.id, 'missing')}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center space-x-1 transition-all ${
+                      className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center space-x-1 transition-all cursor-pointer ${
                         doc.status === 'missing'
-                          ? 'bg-rose-600 text-white shadow-xs'
-                          : 'text-slate-600 hover:text-slate-900'
-                      }`}
-                    >
-                      <XCircle className="w-3.5 h-3.5" />
-                      <span>{language === 'ta' ? 'இல்லை' : language === 'hi' ? 'नहीं है' : 'Missing'}</span>
-                    </button>
-
-                    <button
-                      onClick={() => onUpdateDocumentStatus(doc.id, 'unconfirmed')}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center space-x-1 transition-all ${
-                        doc.status === 'unconfirmed'
                           ? 'bg-amber-600 text-white shadow-xs'
                           : 'text-slate-600 hover:text-slate-900'
                       }`}
                     >
+                      <XCircle className="w-3.5 h-3.5" />
+                      <span>{language === 'ta' ? 'தேவைப்படுகிறது' : language === 'hi' ? 'चाहिए' : 'I Need This'}</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => onUpdateDocumentStatus(doc.id, 'unconfirmed')}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center space-x-1 transition-all cursor-pointer ${
+                        doc.status === 'unconfirmed'
+                          ? 'bg-slate-700 text-white shadow-xs'
+                          : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
                       <HelpCircle className="w-3.5 h-3.5" />
-                      <span>{language === 'ta' ? 'தெரியவில்லை' : language === 'hi' ? 'पता नहीं' : 'Unconfirmed'}</span>
+                      <span>{language === 'ta' ? 'தெரியவில்லை' : language === 'hi' ? 'निश्चित नहीं' : 'Not Sure'}</span>
                     </button>
                   </div>
                 </div>
+
+                {/* Procurement Guidance when missing or unconfirmed */}
+                {doc.status !== 'have' && (() => {
+                  const procurement = getProcurementGuidance(doc.name);
+                  return (
+                    <div className="p-3 bg-amber-50/80 border border-amber-200/90 rounded-2xl text-xs text-amber-950 flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-in fade-in">
+                      <div className="flex items-start space-x-2.5">
+                        <Info className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
+                        <div>
+                          <span className="font-bold text-amber-900 block text-[11px]">
+                            {language === 'ta' ? 'இதை எவ்வாறு பெறுவது:' : 'How to procure this:'}
+                          </span>
+                          <p className="text-[11px] text-amber-900/90 leading-relaxed">
+                            {procurement.text}
+                          </p>
+                        </div>
+                      </div>
+                      {procurement.url && (
+                        <a
+                          href={procurement.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center space-x-1 px-3 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-semibold text-[11px] self-start sm:self-auto shrink-0 shadow-2xs transition-colors"
+                        >
+                          <span>{procurement.label}</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      )}
+                    </div>
+                  );
+                })()}
 
                 {/* Details Footer: Issuing Authority & Applicable Schemes */}
                 <div className="pt-3 border-t border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-2 text-xs">
@@ -688,6 +806,78 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
             </p>
           </div>
         )}
+      </div>
+
+      {/* You're Ready for the Next Step Transition Card */}
+      <div
+        className={`p-6 sm:p-8 rounded-3xl border shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6 ${
+          readinessPercent >= 80
+            ? 'bg-gradient-to-r from-emerald-600 to-teal-700 text-white border-emerald-500/40'
+            : 'bg-white border-slate-200 text-slate-900'
+        }`}
+      >
+        <div className="space-y-1.5 flex-1">
+          <div className="flex items-center space-x-2">
+            <span
+              className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                readinessPercent >= 80 ? 'bg-white/20 text-white' : 'bg-civic-100 text-civic-800'
+              }`}
+            >
+              {language === 'ta' ? 'அடுத்த கட்ட நடவடிக்கை' : 'Next Step Guidance'}
+            </span>
+            <span className={`text-xs font-bold ${readinessPercent >= 80 ? 'text-emerald-100' : 'text-slate-500'}`}>
+              {readinessPercent}% {language === 'ta' ? 'தயார்நிலை' : 'Readiness'}
+            </span>
+          </div>
+
+          <h3 className={`text-lg sm:text-xl font-bold tracking-tight ${readinessPercent >= 80 ? 'text-white' : 'text-slate-900'}`}>
+            {readinessPercent >= 80
+              ? language === 'ta'
+                ? 'நீங்கள் அடுத்த கட்டத்திற்கு தயாராக உள்ளீர்கள்!'
+                : "You're Ready for the Next Step!"
+              : language === 'ta'
+              ? 'ஆவணங்கள் தயாரானதும் விண்ணப்பிக்கவும்'
+              : 'Prepare Remaining Documents to Apply'}
+          </h3>
+
+          <p className={`text-xs sm:text-sm leading-relaxed max-w-2xl ${readinessPercent >= 80 ? 'text-emerald-100' : 'text-slate-600'}`}>
+            {readinessPercent >= 80
+              ? language === 'ta'
+                ? 'உங்கள் முக்கிய ஆவணங்கள் அனைத்தும் கையில் உள்ளன. அதிகாரப்பூர்வ அரசு போர்ட்டலில் விண்ணப்பிக்க படி 4-க்கு செல்லவும்.'
+                : 'You have your key documents ready in hand. Move to Stage 4: Track Application to see direct submission portal links and monitor your status.'
+              : language === 'ta'
+              ? 'விடுபட்ட ஆவணங்களை அருகில் உள்ள இ-சேவை மையம் அல்லது அரசு போர்ட்டல் மூலம் பெற்று, பின்னர் விண்ணப்பிக்கவும்.'
+              : 'Procure any missing documents using the links above, or visit your nearest e-Seva Kendra. You can also print this checklist.'}
+          </p>
+        </div>
+
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
+          <button
+            type="button"
+            onClick={() => window.print()}
+            className={`px-4 py-2.5 rounded-xl font-semibold text-xs border transition-all flex items-center justify-center space-x-2 cursor-pointer ${
+              readinessPercent >= 80
+                ? 'bg-white/10 hover:bg-white/20 text-white border-white/20'
+                : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-300'
+            }`}
+          >
+            <Printer className="w-4 h-4" />
+            <span>{language === 'ta' ? 'பட்டியலை அச்சிடு' : 'Print Checklist'}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onNavigate('application-tracker')}
+            className={`px-5 py-2.5 rounded-xl font-bold text-xs shadow-md transition-all flex items-center justify-center space-x-2 cursor-pointer ${
+              readinessPercent >= 80
+                ? 'bg-white text-emerald-900 hover:bg-emerald-50'
+                : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+            }`}
+          >
+            <span>{language === 'ta' ? 'விண்ணப்ப நிலை (படி 4)' : 'Track Application (Stage 4)'}</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
       {/* Official Source Attributions & Verification Citations */}

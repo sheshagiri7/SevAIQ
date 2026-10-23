@@ -4,7 +4,6 @@ import {
   Menu,
   X,
   Compass,
-  CheckSquare,
   Files,
   Award,
   LayoutDashboard,
@@ -15,6 +14,8 @@ import {
   MessageSquare,
   Sun,
   Moon,
+  User,
+  ChevronDown,
 } from 'lucide-react';
 import { ApiState, NavigationTab } from '../types';
 import { useLanguage } from '../context/LanguageContext';
@@ -52,28 +53,35 @@ export const Header: React.FC<HeaderProps> = ({
   const { language, t } = useLanguage();
   const { isDark, toggleTheme } = useTheme();
   const isIndic = language === 'ta' || language === 'hi';
-  const isTamil = language === 'ta';
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [moreMenuOpen, setMoreMenuOpen] = useState(false);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
 
   const triggerButtonRef = useRef<HTMLButtonElement | null>(null);
   const cancelButtonRef = useRef<HTMLButtonElement | null>(null);
   const confirmButtonRef = useRef<HTMLButtonElement | null>(null);
+  const moreMenuRef = useRef<HTMLDivElement | null>(null);
 
-  const navItems: NavItem[] = [
+  const primaryJourneyItems: NavItem[] = [
     { id: 'chat', label: t.header.chat, mobileLabel: t.header.chatMobile, description: t.header.chatDesc, icon: MessageSquare },
+    { id: 'eligibility', label: t.header.details || '1. Your Details', mobileLabel: t.header.detailsMobile || '1. Details', description: t.header.detailsDesc, icon: User, badge: eligibleCount > 0 ? eligibleCount : undefined },
+    { id: 'discover', label: t.header.findSchemes || '2. Find Schemes', mobileLabel: t.header.findSchemesMobile || '2. Schemes', description: t.header.findSchemesDesc, icon: Compass },
+    { id: 'document-mapper', label: t.header.prepareDocs || '3. Prepare Documents', mobileLabel: t.header.prepareDocsMobile || '3. Documents', description: t.header.prepareDocsDesc, icon: Files },
+    { id: 'application-tracker', label: t.header.trackApp || '4. Track Application', mobileLabel: t.header.trackAppMobile || '4. Tracking', description: t.header.trackAppDesc, icon: ListChecks },
+  ];
+
+  const secondaryTools: NavItem[] = [
     { id: 'dashboard', label: t.header.dashboard, icon: LayoutDashboard },
-    { id: 'discover', label: t.header.schemes, mobileLabel: t.header.schemesMobile, description: t.header.schemesDesc, icon: Compass },
-    { id: 'eligibility', label: t.header.eligibility, mobileLabel: t.header.eligibilityMobile, description: t.header.eligibilityDesc, icon: CheckSquare, badge: eligibleCount > 0 ? eligibleCount : undefined },
-    { id: 'document-mapper', label: t.header.documents, mobileLabel: t.header.documentsMobile, description: t.header.documentsDesc, icon: Files },
     { id: 'readiness-passport', label: t.header.passport, mobileLabel: t.header.passportMobile, description: t.header.passportDesc, icon: Award },
     { id: 'trust-monitor', label: t.header.trust, mobileLabel: t.header.trustMobile, description: t.header.trustDesc, icon: ShieldCheck },
-    { id: 'application-tracker', label: t.header.guidance, mobileLabel: t.header.guidanceMobile, description: t.header.guidanceDesc, icon: ListChecks },
   ];
+
+  const isSecondaryActive = secondaryTools.some((t) => t.id === activeTab);
 
   const handleNavClick = (tab: NavigationTab) => {
     onSelectTab(tab);
     setMobileMenuOpen(false);
+    setMoreMenuOpen(false);
   };
 
   const handleCloseModal = () => {
@@ -91,16 +99,26 @@ export const Header: React.FC<HeaderProps> = ({
     }, 0);
   };
 
-  // Global Escape key listener for open modals/menus
+  // Global Escape key & outside click listener for open modals/menus
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         if (mobileMenuOpen) setMobileMenuOpen(false);
+        if (moreMenuOpen) setMoreMenuOpen(false);
+      }
+    };
+    const handleClickOutside = (e: MouseEvent) => {
+      if (moreMenuRef.current && !moreMenuRef.current.contains(e.target as Node)) {
+        setMoreMenuOpen(false);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [mobileMenuOpen]);
+    window.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [mobileMenuOpen, moreMenuOpen]);
 
   // Keyboard navigation, Escape dismissal, and focus trap for the End Session dialog
   useEffect(() => {
@@ -170,12 +188,12 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
           </div>
 
-          {/* Center: All Navigation Options Aligned in Center */}
+          {/* Center: Primary Citizen Journey (4 Stages + Chat) & More Tools */}
           <nav
             className="hidden lg:flex items-center justify-center flex-1 min-w-0 mx-1 lg:mx-2 gap-0.5 xl:gap-1 2xl:gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden py-1"
             aria-label="Main Navigation"
           >
-            {navItems.map((item) => {
+            {primaryJourneyItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
               return (
@@ -195,16 +213,7 @@ export const Header: React.FC<HeaderProps> = ({
                   }`}
                 >
                   <Icon className={`${isIndic ? 'w-3 h-3 xl:w-3.5 xl:h-3.5' : 'w-3.5 h-3.5'} shrink-0 ${isActive ? 'text-civic-700 dark:text-civic-400' : 'text-slate-500 dark:text-slate-400'}`} />
-                  <span>
-                    {item.id === 'eligibility' && isTamil ? (
-                      <>
-                        <span>தகுதி</span>
-                        <span className="hidden xl:inline"> சரிபார்ப்பு</span>
-                      </>
-                    ) : (
-                      item.label
-                    )}
-                  </span>
+                  <span>{item.label}</span>
                   {item.badge !== undefined && (
                     <span className="inline-flex items-center px-1.5 py-0.2 rounded-full text-[8px] xl:text-[9px] font-bold bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60">
                       {item.badge}
@@ -216,6 +225,52 @@ export const Header: React.FC<HeaderProps> = ({
                 </button>
               );
             })}
+
+            {/* Clean Secondary Tools Menu Dropdown */}
+            <div className="relative shrink-0" ref={moreMenuRef}>
+              <button
+                type="button"
+                onClick={() => setMoreMenuOpen((prev) => !prev)}
+                aria-expanded={moreMenuOpen}
+                aria-haspopup="true"
+                className={`relative flex items-center gap-1 px-2 py-1 xl:px-2.5 xl:py-1.5 text-xs font-semibold rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 whitespace-nowrap ${
+                  isSecondaryActive
+                    ? 'bg-civic-50 text-civic-800 dark:bg-civic-950/80 dark:text-civic-300 shadow-2xs font-bold border border-civic-200/50 dark:border-civic-800/60'
+                    : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
+                }`}
+              >
+                <span>{t.header.moreTools || 'More'}</span>
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform ${moreMenuOpen ? 'rotate-180' : ''}`} />
+                {isSecondaryActive && (
+                  <span className="absolute bottom-0 left-1.5 right-1.5 h-0.5 bg-civic-600 dark:bg-civic-400 rounded-full" />
+                )}
+              </button>
+
+              <div className={`absolute right-0 top-full mt-1.5 w-48 bg-white dark:bg-[#0c1834] rounded-xl shadow-xl border border-slate-200 dark:border-slate-700/80 py-1.5 z-50 animate-in fade-in ${moreMenuOpen ? 'block' : 'hidden'}`}>
+                <div className="px-3 py-1 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+                  {language === 'ta' ? 'கூடுதல் கருவிகள்' : language === 'hi' ? 'अन्य विकल्प' : 'Secondary Tools'}
+                </div>
+                {secondaryTools.map((tool) => {
+                  const ToolIcon = tool.icon;
+                  const isToolActive = activeTab === tool.id;
+                  return (
+                    <button
+                      key={tool.id}
+                      type="button"
+                      onClick={() => handleNavClick(tool.id)}
+                      className={`w-full flex items-center space-x-2 px-3 py-2 text-xs text-left font-medium transition-colors ${
+                        isToolActive
+                          ? 'bg-civic-50 dark:bg-civic-950 text-civic-800 dark:text-civic-300 font-bold'
+                          : 'text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800'
+                      }`}
+                    >
+                      <ToolIcon className="w-3.5 h-3.5 text-civic-600 dark:text-civic-400 shrink-0" />
+                      <span>{tool.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </nav>
 
           {/* Top Right: Language Switcher, Theme Mode, Kiosk Mode, End Session & Mobile Menu Toggle */}
@@ -337,7 +392,10 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
 
             <div className="space-y-1">
-              {navItems.map((item) => {
+              <div className="px-3 pt-1 pb-0.5 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+                {language === 'ta' ? 'குடிமக்கள் பயணம் (4 நிலைகள்)' : language === 'hi' ? 'नागरिक यात्रा (4 चरण)' : 'Citizen Journey (4 Stages)'}
+              </div>
+              {primaryJourneyItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = activeTab === item.id;
                 return (
@@ -346,7 +404,7 @@ export const Header: React.FC<HeaderProps> = ({
                     type="button"
                     onClick={() => handleNavClick(item.id)}
                     aria-current={isActive ? 'page' : undefined}
-                    className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500 ${
+                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500 ${
                       isActive
                         ? 'bg-civic-50 text-civic-800 dark:bg-civic-950/80 dark:text-civic-300 font-bold'
                         : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white'
@@ -361,6 +419,32 @@ export const Header: React.FC<HeaderProps> = ({
                         {item.badge}
                       </span>
                     )}
+                  </button>
+                );
+              })}
+
+              <div className="px-3 pt-3 pb-0.5 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+                {language === 'ta' ? 'கூடுதல் கருவிகள்' : language === 'hi' ? 'अन्य विकल्प' : 'More Tools'}
+              </div>
+              {secondaryTools.map((item) => {
+                const Icon = item.icon;
+                const isActive = activeTab === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => handleNavClick(item.id)}
+                    aria-current={isActive ? 'page' : undefined}
+                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500 ${
+                      isActive
+                        ? 'bg-civic-50 text-civic-800 dark:bg-civic-950/80 dark:text-civic-300 font-bold'
+                        : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white'
+                    }`}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <Icon className={`w-4 h-4 ${isActive ? 'text-civic-700 dark:text-civic-400' : 'text-slate-500 dark:text-slate-400'}`} />
+                      <span>{item.mobileLabel || item.label}</span>
+                    </div>
                   </button>
                 );
               })}
