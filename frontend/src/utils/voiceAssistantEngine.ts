@@ -628,6 +628,40 @@ export function getBestVoice<T extends VoiceCandidate>(
     return null;
   }
 
+  if (language === 'hi') {
+    // 1. Preferred high-quality native Hindi voices
+    const preferredHindi = voices.find(
+      (v) =>
+        (v.lang.toLowerCase() === 'hi-in' ||
+          v.lang.toLowerCase() === 'hi_in' ||
+          v.lang.toLowerCase().startsWith('hi')) &&
+        (v.name.includes('Google') ||
+          v.name.includes('Kalpana') ||
+          v.name.includes('Lekha') ||
+          v.name.includes('Hemant') ||
+          v.name.includes('Neerja') ||
+          v.name.includes('Hindi') ||
+          v.name.includes('हिन्दी'))
+    );
+    if (preferredHindi) return preferredHindi;
+
+    // 2. Exact match on language tag hi-IN or hi_IN
+    const exactHindi = voices.find(
+      (v) => v.lang.toLowerCase() === 'hi-in' || v.lang.toLowerCase() === 'hi_in'
+    );
+    if (exactHindi) return exactHindi;
+
+    // 3. Any voice starting with hi
+    const anyHindi = voices.find((v) => v.lang.toLowerCase().startsWith('hi'));
+    if (anyHindi) return anyHindi;
+
+    // 4. Any voice with 'hindi' in its name
+    const namedHindi = voices.find((v) => v.name.toLowerCase().includes('hindi'));
+    if (namedHindi) return namedHindi;
+
+    return null;
+  }
+
   // English: Indian English preferred for authentic local terminology pronunciation
   const indianEnglish = voices.find(
     (v) =>
