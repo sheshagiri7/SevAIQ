@@ -321,20 +321,6 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                 </button>
               ))}
         </div>
-
-        {/* Honest AI & Bilingual Search Disclosure */}
-        <div className="pt-2 text-[11px] text-slate-500 flex items-center space-x-1.5 border-t border-slate-100">
-          <Info className="w-3.5 h-3.5 text-civic-600 shrink-0" />
-          <span>
-            {language === 'ta' ? (
-              <><strong>வெளிப்படைத்தன்மை:</strong> இருமொழி தேடலானது குடிமக்களின் தேவைகளை நேரடியாக சரிபார்க்கப்பட்ட அரசு திட்டங்களுடன் இணைக்கிறது. உங்கள் தரவு எங்கும் கசியாமல் சாதனத்திலேயே பாதுகாப்பாக இயங்குகிறது.</>
-            ) : language === 'hi' ? (
-              <><strong>इंजन पारदर्शिता:</strong> बहुभाषी खोज नागरिक की आवश्यकता को सीधे सत्यापित सरकारी योजना रिकॉर्ड्स से जोड़ती है। आपका डेटा किसी बाहरी मॉडल को भेजे बिना उपकरण पर ही सुरक्षित रूप से संसाधित होता है।</>
-            ) : (
-              <><strong>Engine Transparency:</strong> Bilingual search maps citizen intent in simple Tamil, Hindi, and English directly to verified FastAPI backend scheme records (<code className="font-mono text-[10px] bg-slate-100 px-1 py-0.5 rounded">GET /api/schemes</code>) using client-side semantic matching without transmitting personal queries to external LLMs.</>
-            )}
-          </span>
-        </div>
       </div>
 
       {/* Error state if backend query failed */}
