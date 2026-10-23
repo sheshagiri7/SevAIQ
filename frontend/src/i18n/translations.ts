@@ -380,6 +380,9 @@ export const UI_TRANSLATIONS = {
     // Header
     header: {
       tagline: 'Civic Intelligence & Scheme Readiness',
+      chat: 'Chat',
+      chatMobile: 'AI Assistant',
+      chatDesc: 'Civic AI welfare assistant',
       dashboard: 'Dashboard',
       schemes: 'Schemes',
       schemesMobile: 'Find Schemes',
@@ -736,6 +739,9 @@ export const UI_TRANSLATIONS = {
     // Header
     header: {
       tagline: 'குடிமக்கள் தகவல் நுண்ணறிவு & திட்டத் தகுதி தளம்',
+      chat: 'அரட்டை',
+      chatMobile: 'AI உதவியாளர்',
+      chatDesc: 'அரசு நலத்திட்ட AI வழிகாட்டி',
       dashboard: 'முகப்பு',
       schemes: 'திட்டங்கள்',
       schemesMobile: 'திட்டங்களை காண்க',
@@ -1092,6 +1098,9 @@ export const UI_TRANSLATIONS = {
     // Header
     header: {
       tagline: 'नागरिक सूचना बुद्धिमत्ता एवं योजना तत्परता मंच',
+      chat: 'चैट',
+      chatMobile: 'एआई सहायक',
+      chatDesc: 'नागरिक कल्याण एआई सहायक',
       dashboard: 'डैशबोर्ड',
       schemes: 'योजनाएं',
       schemesMobile: 'सरकारी योजनाएं खोजें',
@@ -1617,3 +1626,5 @@ export const LOCALIZED_OPTIONS = {
     },
   },
 };
+
+export const TRANSLATIONS = UI_TRANSLATIONS;

@@ -17,27 +17,36 @@ export interface AssistantAnswer {
   };
 }
 
-export const SAMPLE_PROMPTS: Record<AssistantLanguage, Array<{ label: string; query: string }>> = {
+export interface SamplePrompt {
+  label: string;
+  category?: string;
+  description?: string;
+  query: string;
+  text?: string;
+  icon?: string;
+}
+
+export const SAMPLE_PROMPTS: Record<AssistantLanguage, SamplePrompt[]> = {
   ta: [
-    { label: '🌾 விவசாயி உதவி', query: 'விவசாயிகளுக்கு என்னென்ன அரசு திட்டங்கள் உள்ளன?' },
-    { label: '🏥 இலவச மருத்துவ காப்பீடு', query: 'ஆயுஷ்மான் பாரத் அட்டை பெறுவது எப்படி?' },
-    { label: '🏠 வீடு கட்ட நிதி உதவி', query: 'வீடு கட்ட அரசு மானியம் யாருக்கு கிடைக்கும்?' },
-    { label: '👴 முதியோர் ஓய்வூதியம்', query: 'முதியோர் பென்ஷன் திட்டத்திற்கு என்னென்ன ஆவணங்கள் தேவை?' },
-    { label: '🛒 வியாபார கடன்', query: 'தெருவோர வியாபாரிகள் கடன் பெறுவது எப்படி?' },
+    { label: '🌾 விவசாயி நிதி உதவி', category: 'farmer', description: 'PM-KISAN ₹6,000 ஆண்டு நிதியுதவி மற்றும் நில வரம்புகள்', query: 'விவசாயிகளுக்கு என்னென்ன அரசு திட்டங்கள் உள்ளன?', text: 'விவசாயிகளுக்கு என்னென்ன அரசு திட்டங்கள் உள்ளன?', icon: '🌾' },
+    { label: '🏥 இலவச மருத்துவக் காப்பீடு', category: 'healthcare', description: 'ஆயுஷ்மான் பாரத் ₹5 லட்சம் பணமில்லா சிகிச்சை அட்டை', query: 'ஆயுஷ்மான் பாரத் அட்டை பெறுவது எப்படி?', text: 'ஆயுஷ்மான் பாரத் அட்டை பெறுவது எப்படி?', icon: '🏥' },
+    { label: '🏠 வீடு கட்ட நிதி உதவி', category: 'housing', description: 'PMAY வீடு கட்ட அரசு மானியம் மற்றும் விண்ணப்ப முறை', query: 'வீடு கட்ட அரசு மானியம் யாருக்கு கிடைக்கும்?', text: 'வீடு கட்ட அரசு மானியம் யாருக்கு கிடைக்கும்?', icon: '🏠' },
+    { label: '👴 முதியோர் ஓய்வூதியம்', category: 'pension', description: 'அடல் பென்ஷன் மாத ஓய்வூதியத் திட்டம் மற்றும் ஆவணங்கள்', query: 'முதியோர் பென்ஷன் திட்டத்திற்கு என்னென்ன ஆவணங்கள் தேவை?', text: 'முதியோர் பென்ஷன் திட்டத்திற்கு என்னென்ன ஆவணங்கள் தேவை?', icon: '👴' },
+    { label: '💼 சிறு தொழில் & வியாபார கடன்', category: 'business', description: 'முத்ரா & ஸ்வநிதி திட்டத்தில் பிணையமில்லா கடன்', query: 'தெருவோர வியாபாரிகள் கடன் பெறுவது எப்படி?', text: 'தெருவோர வியாபாரிகள் கடன் பெறுவது எப்படி?', icon: '💼' },
   ],
   en: [
-    { label: '🌾 Farmer Financial Support', query: 'What schemes are available for farmers?' },
-    { label: '🏥 Free Healthcare Card', query: 'How to get an Ayushman Bharat health card?' },
-    { label: '🏠 Housing Subsidy', query: 'Who is eligible for PMAY housing grant?' },
-    { label: '👴 Senior Pension', query: 'What documents are required for Atal Pension Yojana?' },
-    { label: '🛒 Street Vendor Loan', query: 'How can street vendors apply for PM SVANidhi loan?' },
+    { label: '🌾 Farmer Financial Assistance', category: 'farmer', description: 'PM-KISAN ₹6,000 annual direct income support', query: 'What schemes are available for farmers?', text: 'What schemes are available for farmers?', icon: '🌾' },
+    { label: '🏥 Free Healthcare Schemes', category: 'healthcare', description: 'Ayushman Bharat PM-JAY ₹5 Lakh cashless hospital cover', query: 'How to get an Ayushman Bharat health card?', text: 'How to get an Ayushman Bharat health card?', icon: '🏥' },
+    { label: '🏠 Housing Assistance', category: 'housing', description: 'PMAY-U 2.0 & PMAY-G pucca house subsidies', query: 'Who is eligible for PMAY housing grant?', text: 'Who is eligible for PMAY housing grant?', icon: '🏠' },
+    { label: '👴 Senior Citizen Pension', category: 'pension', description: 'Atal Pension Yojana monthly guaranteed pension', query: 'What documents are required for Atal Pension Yojana?', text: 'What documents are required for Atal Pension Yojana?', icon: '👴' },
+    { label: '💼 Small-Business Loans', category: 'business', description: 'PM Mudra Yojana & PM SVANidhi collateral-free credit', query: 'How can street vendors apply for PM SVANidhi loan?', text: 'How can street vendors apply for PM SVANidhi loan?', icon: '💼' },
   ],
   hi: [
-    { label: '🌾 किसान वित्तीय सहायता', query: 'किसानों के लिए कौन सी सरकारी योजनाएं उपलब्ध हैं?' },
-    { label: '🏥 मुफ्त स्वास्थ्य कार्ड', query: 'आयुष्मान भारत स्वास्थ्य कार्ड कैसे प्राप्त करें?' },
-    { label: '🏠 आवास निर्माण अनुदान', query: 'पीएम आवास योजना के तहत मकान के लिए कौन पात्र है?' },
-    { label: '👴 वरिष्ठ नागरिक पेंशन', query: 'अटल पेंशन योजना के लिए कौन से दस्तावेज आवश्यक हैं?' },
-    { label: '🛒 रेहड़ी-पटरी ऋण', query: 'स्ट्रीट वेंडर पीएम स्वनिधि लोन के लिए कैसे आवेदन करें?' },
+    { label: '🌾 किसान वित्तीय सहायता', category: 'farmer', description: 'पीएम-किसान ₹6,000 वार्षिक प्रत्यक्ष आय सहायता', query: 'किसानों के लिए कौन सी सरकारी योजनाएं उपलब्ध हैं?', text: 'किसानों के लिए कौन सी सरकारी योजनाएं उपलब्ध हैं?', icon: '🌾' },
+    { label: '🏥 मुफ्त स्वास्थ्य योजनाएं', category: 'healthcare', description: 'आयुष्मान भारत ₹5 लाख कैशलेस अस्पताल सुरक्षा', query: 'आयुष्मान भारत स्वास्थ्य कार्ड कैसे प्राप्त करें?', text: 'आयुष्मान भारत स्वास्थ्य कार्ड कैसे प्राप्त करें?', icon: '🏥' },
+    { label: '🏠 आवास निर्माण सहायता', category: 'housing', description: 'पीएम आवास योजना पक्का मकान निर्माण अनुदान', query: 'पीएम आवास योजना के तहत मकान के लिए कौन पात्र है?', text: 'पीएम आवास योजना के तहत मकान के लिए कौन पात्र है?', icon: '🏠' },
+    { label: '👴 वरिष्ठ नागरिक पेंशन', category: 'pension', description: 'अटल पेंशन योजना मासिक पेंशन और जरूरी दस्तावेज', query: 'अटल पेंशन योजना के लिए कौन से दस्तावेज आवश्यक हैं?', text: 'अटल पेंशन योजना के लिए कौन से दस्तावेज आवश्यक हैं?', icon: '👴' },
+    { label: '💼 लघु उद्योग व व्यापार ऋण', category: 'business', description: 'मुद्रा व स्वनिधि योजना बिना गारंटी ऋण', query: 'स्ट्रीट वेंडर पीएम स्वनिधि लोन के लिए कैसे आवेदन करें?', text: 'स्ट्रीट वेंडर पीएम स्वनिधि लोन के लिए कैसे आवेदन करें?', icon: '💼' },
   ],
 };
 

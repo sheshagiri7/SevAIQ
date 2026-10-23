@@ -12,6 +12,7 @@ import {
   Trash2,
   ListChecks,
   Globe,
+  MessageSquare,
 } from 'lucide-react';
 import { ApiState, NavigationTab } from '../types';
 import { useLanguage } from '../context/LanguageContext';
@@ -23,9 +24,9 @@ interface HeaderProps {
   onSelectTab: (tab: NavigationTab) => void;
   onRefreshHealth?: () => void;
   eligibleCount?: number;
-  isKioskMode: boolean;
-  onToggleKioskMode: () => void;
-  onClearSession: () => void;
+  isKioskMode?: boolean;
+  onToggleKioskMode?: () => void;
+  onClearSession?: () => void;
 }
 
 interface NavItem {
@@ -41,9 +42,9 @@ export const Header: React.FC<HeaderProps> = ({
   activeTab,
   onSelectTab,
   eligibleCount = 0,
-  isKioskMode,
-  onToggleKioskMode,
-  onClearSession,
+  isKioskMode = false,
+  onToggleKioskMode = () => {},
+  onClearSession = () => {},
 }) => {
   const { language, t } = useLanguage();
   const isIndic = language === 'ta' || language === 'hi';
@@ -56,6 +57,7 @@ export const Header: React.FC<HeaderProps> = ({
   const confirmButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const navItems: NavItem[] = [
+    { id: 'chat', label: t.header.chat, mobileLabel: t.header.chatMobile, description: t.header.chatDesc, icon: MessageSquare },
     { id: 'dashboard', label: t.header.dashboard, icon: LayoutDashboard },
     { id: 'discover', label: t.header.schemes, mobileLabel: t.header.schemesMobile, description: t.header.schemesDesc, icon: Compass },
     { id: 'eligibility', label: t.header.eligibility, mobileLabel: t.header.eligibilityMobile, description: t.header.eligibilityDesc, icon: CheckSquare, badge: eligibleCount > 0 ? eligibleCount : undefined },
@@ -146,9 +148,9 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="flex items-center shrink-0 pr-1">
             <button
               type="button"
-              onClick={() => handleNavClick('dashboard')}
+              onClick={() => handleNavClick('chat')}
               className="flex items-center space-x-2 text-left group focus:outline-none focus:ring-2 focus:ring-civic-500 rounded-xl p-0.5"
-              aria-label="SevAIQ - Civic Intelligence & Scheme Readiness Dashboard"
+              aria-label="SevAIQ - Civic Intelligence & AI Assistant"
             >
               <div className="w-7 h-7 sm:w-8 sm:h-8 xl:w-9 xl:h-9 rounded-xl bg-gradient-to-br from-blue-800 via-civic-700 to-indigo-900 flex items-center justify-center text-white shadow-xs group-hover:scale-105 transition-transform shrink-0">
                 <ShieldCheck className="w-4 h-4 sm:w-4.5 sm:h-4.5 xl:w-5 xl:h-5 stroke-[2.2]" />

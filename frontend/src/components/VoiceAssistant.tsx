@@ -18,6 +18,7 @@ import {
   Pause,
   Play,
   Square,
+  Info,
 } from 'lucide-react';
 import { Scheme, AssistantLanguage, AssistantMessage, NavigationTab, ChatMessageWire } from '../types';
 import {
@@ -48,6 +49,8 @@ export interface VoiceAssistantProps {
   onToggleOpen?: () => void;
   onClose?: () => void;
   isKioskMode?: boolean;
+  isMainScreen?: boolean;
+  onOpenAbout?: () => void;
 }
 
 export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
@@ -58,6 +61,8 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
   onToggleOpen,
   onClose,
   isKioskMode = false,
+  isMainScreen = false,
+  onOpenAbout,
 }) => {
   const [internalIsOpen, setInternalIsOpen] = useState(false);
   const [isMaximized, setIsMaximized] = useState(false);
@@ -664,6 +669,809 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
 
   const privacyNotice = getSpeechPrivacyNotice(language);
 
+  const renderChatContent = () => (
+    <>
+      {/* Top Decorative Gradient Accent */}
+      <div className="h-1 bg-gradient-to-r from-blue-700 via-civic-600 to-indigo-700 w-full shrink-0" />
+
+      {/* Window / Workspace Header */}
+      <div className="p-3 sm:px-5 sm:py-3.5 border-b border-slate-200 flex items-center justify-between gap-2 bg-white shrink-0">
+        {/* Left: Branding & Status Dot */}
+        <div className="flex items-center space-x-2.5 sm:space-x-3 min-w-0">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-civic-700 to-indigo-800 text-white flex items-center justify-center shadow-xs shrink-0">
+            <Mic className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
+          </div>
+          <div className="min-w-0">
+            <div className="flex items-center space-x-2">
+              <span className="text-xs sm:text-sm md:text-base font-black text-slate-900 tracking-tight leading-none">
+                Sev<span className="text-civic-600">AI</span>Q Voice AI
+              </span>
+              <span className="inline-flex items-center space-x-1 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/60 leading-none shrink-0">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span>Active</span>
+              </span>
+            </div>
+            <div className="text-[10px] sm:text-[11px] text-slate-500 font-medium truncate leading-tight mt-0.5">
+              {language === 'ta'
+                ? 'தமிழ் (ta-IN) & English (en-IN) குரல் வழிகாட்டி'
+                : 'Bilingual Civic Assistant (ta-IN / en-IN)'}
+            </div>
+          </div>
+        </div>
+
+        {/* Right: Segmented Language Selector & Window Controls */}
+        <div className="flex items-center space-x-1.5 shrink-0">
+          {/* Distinct BCP 47 Language Selector */}
+          <div
+            className="flex items-center bg-slate-100 p-0.5 rounded-xl border border-slate-200 text-[10px] font-bold"
+            role="group"
+            aria-label="Speech and language selector"
+          >
+            <button
+              type="button"
+              onClick={() => handleLanguageChange('ta')}
+              className={`px-2 py-1 rounded-lg transition-all flex items-center space-x-1 cursor-pointer ${
+                language === 'ta'
+                  ? 'bg-civic-800 text-white shadow-2xs font-extrabold'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+              aria-label="Switch to Tamil (ta-IN)"
+              aria-pressed={language === 'ta'}
+              data-testid="lang-select-ta"
+            >
+              <Globe className="w-3 h-3" />
+              <span>தமிழ் (ta-IN)</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => handleLanguageChange('en')}
+              className={`px-2 py-1 rounded-lg transition-all flex items-center space-x-1 cursor-pointer ${
+                language === 'en'
+                  ? 'bg-civic-800 text-white shadow-2xs font-extrabold'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+              aria-label="Switch to English (en-IN)"
+              aria-pressed={language === 'en'}
+              data-testid="lang-select-en"
+            >
+              <span>English (en-IN)</span>
+            </button>
+          </div>
+
+          {/* Reset Conversation */}
+          <button
+            type="button"
+            onClick={handleResetChat}
+            className="w-7 h-7 inline-flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+            title="Reset conversation"
+            aria-label="Reset conversation"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+          </button>
+
+          {/* About SevAIQ Shortcut button (shown on main screen if onOpenAbout provided) */}
+          {isMainScreen && onOpenAbout && (
+            <button
+              type="button"
+              onClick={onOpenAbout}
+              className="w-7 h-7 inline-flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+              title="About SevAIQ"
+              aria-label="About SevAIQ"
+            >
+              <Info className="w-3.5 h-3.5" />
+            </button>
+          )}
+
+          {/* Maximize / Restore Toggle (only when NOT main screen) */}
+          {!isMainScreen && (
+            <button
+              type="button"
+              onClick={() => setIsMaximized(!isMaximized)}
+              className="hidden sm:inline-flex w-7 h-7 items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+              title={isMaximized ? 'Restore compact widget' : 'Maximize window'}
+              aria-label={isMaximized ? 'Restore compact widget' : 'Maximize window'}
+            >
+              {isMaximized ? (
+                <Minimize2 className="w-3.5 h-3.5" />
+              ) : (
+                <Maximize2 className="w-3.5 h-3.5" />
+              )}
+            </button>
+          )}
+
+          {/* Close Button (only when NOT main screen) */}
+          {!isMainScreen && (
+            <button
+              type="button"
+              onClick={handleClose}
+              className="w-7 h-7 inline-flex items-center justify-center text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+              title="Close Voice Assistant (Esc)"
+              aria-label="Close Voice Assistant"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Truthful Privacy Disclosure Strip (No false 'local on-device' claim) */}
+      <div className="px-3.5 py-1.5 bg-blue-50/90 border-b border-blue-100/80 flex items-center justify-between text-[10px] text-blue-900 shrink-0">
+        <div className="flex items-center space-x-1.5 truncate">
+          <ShieldCheck className="w-3.5 h-3.5 text-civic-700 shrink-0" />
+          <span className="font-semibold truncate" title={privacyNotice.detailed}>
+            {privacyNotice.badge}
+          </span>
+        </div>
+        {activeVoiceLabel && (
+          <span className="text-civic-800 text-[9px] font-semibold bg-blue-100 px-1.5 py-0.5 rounded shrink-0 hidden sm:inline">
+            {activeVoiceLabel.split(' ')[0]}
+          </span>
+        )}
+      </div>
+
+      {/* Microphone Permission Denied Banner */}
+      {speechState === 'permission_denied' && (
+        <div
+          className="mx-3 mt-2 p-3 bg-amber-50 border border-amber-300 rounded-2xl flex items-start space-x-2.5 text-amber-950 shrink-0 animate-in fade-in"
+          data-testid="speech-permission-denied-banner"
+        >
+          <AlertTriangle className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
+          <div className="flex-1 min-w-0">
+            <div className="text-xs font-bold">
+              {language === 'ta' ? 'மைக்ரோஃபோன் அனுமதி தேவை' : 'Microphone Permission Needed'}
+            </div>
+            <p className="text-[11px] text-amber-900 mt-0.5 leading-snug">
+              {speechError?.message ||
+                (language === 'ta'
+                  ? 'உலாவி அமைப்பில் மைக்ரோஃபோனை அனுமதிக்கவும் அல்லது கீழே உள்ள உரை பெட்டியில் தட்டச்சு செய்யவும்.'
+                  : 'Please allow microphone access in your browser or use the manual text input below.')}
+            </p>
+            <div className="flex items-center space-x-2 mt-2">
+              <button
+                type="button"
+                onClick={startListening}
+                className="px-2.5 py-1 bg-amber-700 hover:bg-amber-800 text-white rounded-lg text-[10px] font-bold transition-colors shadow-2xs cursor-pointer"
+              >
+                {language === 'ta' ? 'மீண்டும் அனுமதி கேட்கவும்' : 'Retry Permission'}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setSpeechState('idle');
+                  setSpeechError(null);
+                }}
+                className="px-2 py-1 text-amber-800 hover:text-amber-950 text-[10px] font-semibold cursor-pointer"
+              >
+                {language === 'ta' ? 'மூடு' : 'Dismiss'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* General Speech Error Banner (Non-permission) */}
+      {speechState === 'error' && speechError && (
+        <div
+          className="mx-3 mt-2 p-2.5 bg-amber-50 border border-amber-200 text-amber-900 rounded-xl text-xs flex items-start space-x-2 shrink-0 animate-in fade-in"
+          data-testid="speech-error-banner"
+        >
+          <AlertCircle className="w-3.5 h-3.5 text-amber-700 shrink-0 mt-0.5" />
+          <div className="flex-1 text-[11px] leading-tight">
+            <span className="font-semibold">{language === 'ta' ? 'அறிவிப்பு:' : 'Notice:'}</span>{' '}
+            {speechError.message}
+          </div>
+          <div className="flex items-center space-x-1 shrink-0">
+            {speechError.isRetryable && (
+              <button
+                type="button"
+                onClick={startListening}
+                className="px-2 py-0.5 bg-amber-600 hover:bg-amber-700 text-white rounded text-[10px] font-semibold transition-colors cursor-pointer"
+              >
+                {language === 'ta' ? 'மீண்டும் முயற்சி' : 'Retry'}
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={() => {
+                setSpeechState('idle');
+                setSpeechError(null);
+              }}
+              className="text-amber-700 hover:text-amber-900 p-0.5 cursor-pointer"
+              aria-label="Dismiss error"
+            >
+              <X className="w-3 h-3" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Chat Messages Scroll Container */}
+      <div className="flex-1 p-3.5 sm:p-5 overflow-y-auto space-y-3.5 bg-slate-50/60 scroll-smooth">
+        {/* Welcoming Starter Experience with Large Suggested Question Cards */}
+        {messages.length <= 1 && (
+          <div className="p-4 sm:p-5 bg-gradient-to-br from-slate-50 via-blue-50/40 to-indigo-50/20 rounded-2xl border border-slate-200/90 shadow-2xs space-y-4 my-1 animate-in fade-in">
+            <div className="flex items-start space-x-3">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-br from-civic-700 to-indigo-900 text-white flex items-center justify-center shadow-xs shrink-0 mt-0.5">
+                <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-amber-300" />
+              </div>
+              <div>
+                <h3 className="text-sm sm:text-base font-bold text-slate-900 tracking-tight">
+                  {language === 'ta'
+                    ? 'இன்று SevAIQ உங்களுக்கு எவ்வாறு உதவ முடியும்?'
+                    : 'How can SevAIQ help you today?'}
+                </h3>
+                <p className="text-xs sm:text-[13px] text-slate-600 mt-1 leading-relaxed">
+                  {language === 'ta'
+                    ? 'மத்திய மற்றும் மாநில அரசு நலத்திட்டங்கள், தகுதி வரம்புகள் மற்றும் தேவையான ஆவணங்கள் குறித்து எளிய தமிழில் அல்லது ஆங்கிலத்தில் கேட்கலாம். அனைத்து பதில்களும் அதிகாரப்பூர்வ அரசு வழிகாட்டுதல்களின் அடிப்படையில் மட்டுமே வழங்கப்படும்.'
+                    : 'Ask in simple English or தமிழ் about central and state welfare benefits, eligibility rules, and required application documents. All answers are grounded directly in verified government portals.'}
+                </p>
+              </div>
+            </div>
+
+            <div>
+              <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2.5 flex items-center justify-between">
+                <span>
+                  {language === 'ta'
+                    ? 'பரிந்துரைக்கப்பட்ட கேள்விகள் (1-கிளிக்):'
+                    : 'Suggested Questions (1-Click Ask):'}
+                </span>
+                <span className="text-[10px] text-civic-700 font-semibold normal-case">
+                  {language === 'ta' ? 'கார்டை கிளிக் செய்து கேட்கலாம்' : 'Tap any card to ask'}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                {SAMPLE_PROMPTS[language].map((prompt, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => {
+                      setInputText(prompt.query);
+                      handleSendQuery(prompt.query);
+                    }}
+                    disabled={isAiLoading}
+                    className="group p-3 bg-white hover:bg-civic-50/80 active:bg-civic-100/60 rounded-xl border border-slate-200/90 hover:border-civic-300 text-left transition-all shadow-2xs hover:shadow-xs flex flex-col justify-between gap-1.5 cursor-pointer disabled:opacity-60"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <span className="text-base sm:text-lg leading-none shrink-0">{prompt.icon || '📌'}</span>
+                      <span className="text-xs sm:text-[13px] font-bold text-slate-900 group-hover:text-civic-800 transition-colors line-clamp-1">
+                        {prompt.label}
+                      </span>
+                    </div>
+                    {prompt.description && (
+                      <p className="text-[11px] text-slate-500 group-hover:text-slate-700 line-clamp-2 leading-snug">
+                        {prompt.description}
+                      </p>
+                    )}
+                    <div className="flex items-center space-x-1 text-[10px] font-semibold text-civic-700 group-hover:text-civic-900 mt-0.5">
+                      <span>{language === 'ta' ? 'கேட்க கிளிக் செய்க' : 'Click to ask'}</span>
+                      <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {messages.map((msg) => {
+          const isBot = msg.sender === 'assistant';
+
+          return (
+            <div
+              key={msg.id}
+              className={`flex flex-col ${isBot ? 'items-start' : 'items-end'} space-y-1`}
+            >
+              <div
+                className={`max-w-[92%] sm:max-w-[85%] p-3.5 sm:p-4 rounded-2xl text-xs sm:text-[13px] leading-relaxed ${
+                  isBot
+                    ? msg.isError
+                      ? 'bg-amber-50/90 text-amber-950 border border-amber-300 shadow-2xs rounded-tl-xs'
+                      : 'bg-white text-slate-800 border border-slate-200/80 shadow-2xs rounded-tl-xs'
+                    : 'bg-gradient-to-br from-civic-700 to-civic-800 text-white rounded-tr-xs shadow-xs font-medium'
+                }`}
+              >
+                {isBot ? (
+                  msg.isError ? (
+                    <p className="whitespace-pre-wrap font-medium">{msg.text}</p>
+                  ) : (
+                    <CivicMarkdown content={msg.text} />
+                  )
+                ) : (
+                  <p className="whitespace-pre-wrap font-medium">{msg.text}</p>
+                )}
+
+                {/* Retry button for retryable provider errors */}
+                {isBot && msg.isError && msg.retryable && (
+                  <div className="mt-2.5 pt-2 border-t border-amber-200/70 flex items-center justify-between">
+                    <span className="text-[10px] text-amber-700 font-medium">
+                      {language === 'ta' ? 'மீண்டும் முயற்சிக்கலாம்' : 'Retry available'}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handleRetryLastQuery}
+                      disabled={isAiLoading}
+                      className="inline-flex items-center space-x-1 px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-lg text-[10px] shadow-2xs transition-colors cursor-pointer"
+                    >
+                      <RefreshCw className="w-2.5 h-2.5" />
+                      <span>{language === 'ta' ? 'மீண்டும் முயற்சி' : 'Retry Query'}</span>
+                    </button>
+                  </div>
+                )}
+
+                {/* Card Footer: AI Attribution & Audio Speaker Controls */}
+                {isBot && !msg.isError && (
+                  <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-500">
+                    <div className="flex items-center space-x-1.5">
+                      <span className="inline-flex items-center space-x-1 font-bold text-civic-700 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-100">
+                        <Sparkles className="w-2.5 h-2.5 text-civic-600" />
+                        <span>
+                          {msg.provider ? `AI • ${msg.provider.toUpperCase()}` : 'AI • GEMINI'}
+                        </span>
+                      </span>
+                      {msg.latencyMs && (
+                        <span className="text-slate-400 font-mono text-[9px] hidden sm:inline">
+                          {msg.latencyMs}ms
+                        </span>
+                      )}
+                    </div>
+
+                    {/* TTS Audio Controls: Listen, Pause, Resume, Stop, Replay */}
+                    <div className="flex items-center space-x-1">
+                      {ttsState.messageId === msg.id && ttsState.status === 'playing' ? (
+                        <>
+                          <button
+                            type="button"
+                            onClick={pauseSpeaking}
+                            className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-md font-semibold bg-amber-100 text-amber-900 border border-amber-300 transition-colors cursor-pointer"
+                            title="Pause audio"
+                            aria-label="Pause audio"
+                          >
+                            <Pause className="w-3 h-3 text-amber-800" />
+                            <span>{language === 'ta' ? 'இடைநிறுத்து' : 'Pause'}</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={stopSpeaking}
+                            className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-md font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 transition-colors cursor-pointer"
+                            title="Stop audio"
+                            aria-label="Stop audio"
+                          >
+                            <Square className="w-2.5 h-2.5 text-slate-700 fill-current" />
+                            <span>{language === 'ta' ? 'நிறுத்து' : 'Stop'}</span>
+                          </button>
+                        </>
+                      ) : ttsState.messageId === msg.id && ttsState.status === 'paused' ? (
+                        <>
+                          <button
+                            type="button"
+                            onClick={resumeSpeaking}
+                            className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-md font-semibold bg-emerald-100 text-emerald-900 border border-emerald-300 transition-colors cursor-pointer"
+                            title="Resume audio"
+                            aria-label="Resume audio"
+                          >
+                            <Play className="w-3 h-3 text-emerald-800 fill-current" />
+                            <span>{language === 'ta' ? 'தொடர' : 'Resume'}</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={stopSpeaking}
+                            className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-md font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 transition-colors cursor-pointer"
+                            title="Stop audio"
+                            aria-label="Stop audio"
+                          >
+                            <Square className="w-2.5 h-2.5 text-slate-700 fill-current" />
+                            <span>{language === 'ta' ? 'நிறுத்து' : 'Stop'}</span>
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <button
+                            type="button"
+                            onClick={() => startSpeaking(msg.id, msg.text)}
+                            className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-md font-semibold bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 transition-colors cursor-pointer"
+                            aria-label="Listen to response"
+                          >
+                            <Volume2 className="w-3 h-3 text-civic-600" />
+                            <span>{language === 'ta' ? 'கேளுங்கள்' : 'Listen'}</span>
+                          </button>
+                          {lastSpokenMessageId === msg.id && (
+                            <button
+                              type="button"
+                              onClick={() => replaySpeaking(msg.id, msg.text)}
+                              className="inline-flex items-center p-1 rounded-md text-slate-500 hover:text-slate-800 hover:bg-slate-100 border border-slate-200 transition-colors cursor-pointer"
+                              title="Replay audio"
+                              aria-label="Replay audio"
+                            >
+                              <RotateCcw className="w-3 h-3" />
+                            </button>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Embedded Scheme Recommendation Cards */}
+                {msg.suggestedSchemes && msg.suggestedSchemes.length > 0 && (
+                  <div className="mt-2.5 pt-2 border-t border-slate-100 space-y-1.5">
+                    <span className="font-bold text-[10px] uppercase tracking-wider text-slate-500 block">
+                      {language === 'ta' ? 'தொடர்புடைய அரசு திட்டங்கள்:' : 'Related Schemes:'}
+                    </span>
+                    <div className="space-y-1.5">
+                      {msg.suggestedSchemes.map((s) => {
+                        const locScheme = getLocalizedScheme(s);
+                        return (
+                          <div
+                            key={s.id}
+                            className="p-2 bg-slate-50/80 hover:bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between gap-2 transition-colors"
+                          >
+                            <div className="min-w-0">
+                              <span className="font-bold text-slate-900 block text-xs truncate">
+                                {locScheme.title}
+                              </span>
+                              <span className="text-[10px] text-slate-500 truncate block">
+                                {locScheme.category}
+                              </span>
+                            </div>
+                            {onSelectSchemeForEligibility && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  onSelectSchemeForEligibility(s);
+                                  onNavigate('eligibility');
+                                }}
+                                className="px-2 py-1 bg-civic-600 hover:bg-civic-700 text-white rounded-lg text-[10px] font-bold flex items-center space-x-1 shrink-0 shadow-2xs transition-colors cursor-pointer"
+                              >
+                                <span>{language === 'ta' ? 'சரிபார்' : 'Check'}</span>
+                                <ArrowRight className="w-2.5 h-2.5" />
+                              </button>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Quick Action Button */}
+                {msg.suggestedAction && (
+                  <div className="mt-2 pt-2 border-t border-slate-100">
+                    <button
+                      type="button"
+                      onClick={() => onNavigate(msg.suggestedAction!.tab)}
+                      className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-semibold text-[11px] transition-colors cursor-pointer"
+                    >
+                      <span>{msg.suggestedAction.label}</span>
+                      <ArrowRight className="w-3 h-3" />
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <span className="text-[9px] text-slate-400 px-1">
+                {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              </span>
+            </div>
+          );
+        })}
+
+        {/* Genuine AI Model Thinking State Indicator */}
+        {isAiLoading && (
+          <div className="flex flex-col items-start space-y-1 animate-in fade-in">
+            <div className="p-3 bg-white text-slate-700 border border-slate-200/90 shadow-2xs rounded-2xl rounded-tl-xs flex items-center space-x-2.5 text-xs">
+              <Sparkles className="w-4 h-4 text-civic-600 animate-spin" />
+              <span className="font-semibold text-slate-700">
+                {language === 'ta'
+                  ? 'Gemini AI திட்டங்களை ஆராய்கிறது...'
+                  : 'Gemini AI is analyzing schemes...'}
+              </span>
+              <span className="flex space-x-1">
+                <span className="w-1.5 h-1.5 bg-civic-600 rounded-full animate-bounce" />
+                <span className="w-1.5 h-1.5 bg-civic-600 rounded-full animate-bounce [animation-delay:0.2s]" />
+                <span className="w-1.5 h-1.5 bg-civic-600 rounded-full animate-bounce [animation-delay:0.4s]" />
+              </span>
+            </div>
+          </div>
+        )}
+        <div ref={messagesEndRef} />
+      </div>
+
+      {/* REAL-TIME LISTENING VISUALIZER BANNER */}
+      {speechState === 'listening' && (
+        <div
+          className="mx-3 my-1.5 p-2.5 bg-gradient-to-r from-rose-50 via-rose-100/50 to-amber-50 border border-rose-200 rounded-2xl flex items-center justify-between gap-3 shadow-xs shrink-0 animate-in fade-in"
+          data-testid="speech-listening-banner"
+        >
+          <div className="flex items-center space-x-2.5 min-w-0">
+            <span className="relative flex h-3 w-3 shrink-0">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-rose-600" />
+            </span>
+            <div className="min-w-0">
+              <div className="text-xs font-bold text-rose-950 truncate flex items-center space-x-1.5">
+                <span>
+                  {language === 'ta'
+                    ? 'கேட்கிறது... தமிழில் இப்போது பேசவும்'
+                    : 'Listening... speak clearly now'}
+                </span>
+                <span className="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-rose-200/70 text-rose-900">
+                  {getSpeechLocale(language)}
+                </span>
+              </div>
+              <div className="text-[10px] text-rose-700 truncate">
+                {interimTranscript
+                  ? `"${interimTranscript}..."`
+                  : language === 'ta'
+                  ? 'பேசி முடித்ததும் சரிபார்க்கலாம்'
+                  : 'Review transcript before sending'}
+              </div>
+            </div>
+          </div>
+
+          {/* Animated Soundwave Equalizer Bars */}
+          <div className="flex items-center space-x-1 shrink-0 h-5 px-1">
+            <span className="w-1 bg-rose-600 rounded-full animate-voice-wave-1" />
+            <span className="w-1 bg-rose-600 rounded-full animate-voice-wave-2" />
+            <span className="w-1 bg-rose-600 rounded-full animate-voice-wave-3" />
+            <span className="w-1 bg-rose-600 rounded-full animate-voice-wave-4" />
+          </div>
+
+          <div className="flex items-center space-x-1.5 shrink-0">
+            <button
+              type="button"
+              onClick={handleStopListening}
+              className="px-2.5 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-[10px] font-bold shrink-0 transition-colors shadow-2xs cursor-pointer"
+              aria-label="Stop recording"
+            >
+              {language === 'ta' ? 'நிறுத்து' : 'Stop'}
+            </button>
+            <button
+              type="button"
+              onClick={handleCancelSpeech}
+              className="px-2 py-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-lg text-[10px] font-bold shrink-0 transition-colors shadow-2xs cursor-pointer"
+              aria-label="Cancel recording"
+            >
+              {language === 'ta' ? 'ரத்து' : 'Cancel'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* EDITABLE TRANSCRIPT REVIEW & CONFIRMATION BOX */}
+      {speechState === 'reviewing' && (
+        <div
+          className="mx-3 my-2 p-3 bg-blue-50/90 border border-blue-200/90 rounded-2xl shadow-xs space-y-2 shrink-0 animate-in fade-in"
+          data-testid="speech-review-container"
+        >
+          <div className="flex items-center justify-between text-xs font-bold text-slate-800">
+            <div className="flex items-center space-x-1.5">
+              <Mic className="w-3.5 h-3.5 text-civic-700" />
+              <span>
+                {language === 'ta' ? 'குரல் உரை சரிபார்ப்பு' : 'Review Voice Transcript'}
+              </span>
+              <span className="px-1.5 py-0.2 rounded-full text-[9px] font-mono font-bold bg-blue-100 text-blue-800 border border-blue-200">
+                {getSpeechLocale(language)}
+              </span>
+            </div>
+            <span className="text-[10px] text-slate-500 font-normal">
+              {language === 'ta' ? 'அனுப்பும் முன் திருத்தலாம்' : 'Editable before send'}
+            </span>
+          </div>
+
+          <textarea
+            value={speechTranscript}
+            onChange={(e) => setSpeechTranscript(e.target.value)}
+            rows={2}
+            className="w-full p-2.5 text-xs sm:text-sm bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-civic-500 text-slate-900 resize-none font-medium leading-relaxed"
+            placeholder={
+              language === 'ta'
+                ? 'குரல் உரை இங்கே தோன்றும்... ஏதேனும் திருத்தங்கள் இருந்தால் மாற்றவும்'
+                : 'Your voice transcript appears here. You can edit before sending...'
+            }
+            aria-label="Editable voice transcript"
+            data-testid="speech-transcript-input"
+          />
+
+          <div className="flex items-center justify-between gap-2 pt-0.5">
+            <div className="flex items-center space-x-1.5">
+              <button
+                type="button"
+                onClick={handleRetrySpeech}
+                className="px-2.5 py-1 text-[11px] font-semibold text-slate-700 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg flex items-center space-x-1 transition-colors shadow-2xs cursor-pointer"
+                aria-label="Speak again"
+              >
+                <RotateCcw className="w-3 h-3 text-slate-600" />
+                <span>{language === 'ta' ? 'மீண்டும் பேச' : 'Retry'}</span>
+              </button>
+              <button
+                type="button"
+                onClick={handleCancelSpeech}
+                className="px-2.5 py-1 text-[11px] font-semibold text-slate-600 hover:text-slate-800 rounded-lg transition-colors cursor-pointer"
+                aria-label="Discard voice transcript"
+              >
+                <span>{language === 'ta' ? 'ரத்து' : 'Cancel'}</span>
+              </button>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleConfirmSpeech}
+              disabled={!isValidTranscript(speechTranscript) || isAiLoading}
+              className="px-3.5 py-1.5 text-xs font-bold text-white bg-civic-700 hover:bg-civic-800 disabled:bg-slate-200 disabled:text-slate-400 rounded-xl flex items-center space-x-1.5 shadow-2xs transition-all active:scale-95 cursor-pointer"
+              aria-label="Confirm and send transcript to Gemini"
+              data-testid="speech-confirm-send-button"
+            >
+              <Send className="w-3 h-3" />
+              <span>
+                {language === 'ta'
+                  ? 'உறுதிசெய்து Gemini-க்கு அனுப்பு'
+                  : 'Confirm & Send to Gemini'}
+              </span>
+            </button>
+          </div>
+
+          <p className="text-[9px] text-slate-500 leading-tight">
+            {language === 'ta'
+              ? 'தனியுரிமை: உறுதிசெய்த உரை மட்டுமே Gemini AI-க்கு அனுப்பப்படும். ஆடியோ பதிவு செய்யப்படாது.'
+              : 'Privacy: Only this confirmed text is sent to Gemini AI. No voice audio is stored by SevAIQ.'}
+          </p>
+        </div>
+      )}
+
+      {/* Quick 1-Click Suggested Query Chips */}
+      <div className="px-3 py-2 bg-slate-50 border-t border-slate-200/80 shrink-0">
+        <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1 flex items-center justify-between">
+          <span>{language === 'ta' ? '1-கிளிக் கேள்விகள் (Quick Ask):' : 'Suggested Questions:'}</span>
+          {!hasInteracted && (
+            <span className="text-civic-700 font-semibold normal-case">Tap any chip to ask</span>
+          )}
+        </div>
+        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+          {SAMPLE_PROMPTS[language].map((sample, idx) => (
+            <button
+              key={idx}
+              type="button"
+              onClick={() => {
+                setInputText(sample.query);
+                handleSendQuery(sample.query);
+              }}
+              className="px-2.5 py-1 bg-white hover:bg-civic-50 hover:border-civic-300 border border-slate-200 text-slate-700 hover:text-civic-900 text-[11px] font-medium rounded-xl whitespace-nowrap transition-all shadow-2xs shrink-0 active:scale-95 cursor-pointer"
+            >
+              <span>{sample.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Bottom Dock Input Bar: Tactile Mic & Text Box */}
+      <div className="p-3 sm:p-4 bg-white border-t border-slate-200 shrink-0">
+        <div className="flex items-center space-x-2 sm:space-x-2.5">
+          {/* Large Tactile Microphone Button */}
+          <button
+            type="button"
+            onClick={toggleListening}
+            className={`w-11 h-11 sm:w-12 sm:h-12 rounded-2xl transition-all flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-civic-500 shrink-0 cursor-pointer ${
+              speechState === 'listening'
+                ? 'bg-rose-600 text-white animate-pulse shadow-md shadow-rose-500/40 ring-2 ring-rose-400'
+                : speechState === 'reviewing'
+                ? 'bg-blue-600 text-white shadow-md shadow-blue-500/30 ring-2 ring-blue-300'
+                : speechSupported
+                ? 'bg-civic-50 hover:bg-civic-100 text-civic-700 border border-civic-200/80 shadow-2xs active:scale-95'
+                : 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200'
+            }`}
+            title={
+              !speechSupported
+                ? 'Speech recognition not supported in this browser (Firefox). Text input is available.'
+                : speechState === 'listening'
+                ? 'Stop listening'
+                : speechState === 'reviewing'
+                ? 'Speak again (Retry)'
+                : language === 'ta'
+                ? 'குரல் மூலம் பேச மைக் அழுத்தவும் (ta-IN)'
+                : 'Click microphone to speak (en-IN)'
+            }
+            aria-label={
+              speechState === 'listening'
+                ? 'Stop microphone recording'
+                : speechState === 'reviewing'
+                ? 'Retry microphone recording'
+                : 'Start microphone speech recognition'
+            }
+            data-testid="microphone-toggle-button"
+          >
+            {speechState === 'listening' ? (
+              <MicOff className="w-5 h-5" />
+            ) : (
+              <Mic className="w-5 h-5 text-civic-700" />
+            )}
+          </button>
+
+          {/* Text Input Field */}
+          <div className="relative flex-1">
+            <input
+              ref={inputRef}
+              type="text"
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  handleSendQuery();
+                }
+              }}
+              disabled={isAiLoading}
+              placeholder={
+                isAiLoading
+                  ? language === 'ta'
+                    ? 'Gemini AI பதிலளிக்கிறது...'
+                    : 'Gemini AI is generating response...'
+                  : speechState === 'listening'
+                  ? language === 'ta'
+                    ? 'கேட்கிறது... தமிழில் பேசவும்...'
+                    : 'Listening... speak now...'
+                  : language === 'ta'
+                  ? 'தமிழில் கேட்கவும் அல்லது தட்டச்சு செய்யவும்...'
+                  : 'Ask welfare questions in English or Tamil...'
+              }
+              className={`w-full px-4 py-2.5 sm:py-3 text-xs sm:text-sm bg-slate-50 border border-slate-300 rounded-2xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-civic-500 text-slate-900 placeholder-slate-400 transition-colors ${
+                speechState === 'listening' ? 'border-rose-400 bg-rose-50/30' : ''
+              } ${isAiLoading ? 'opacity-70 cursor-wait' : ''}`}
+            />
+            {inputText && !isAiLoading && (
+              <button
+                type="button"
+                onClick={() => setInputText('')}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer"
+                aria-label="Clear input"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
+
+          {/* Send Button */}
+          <button
+            type="button"
+            onClick={() => handleSendQuery()}
+            disabled={!inputText.trim() || isAiLoading}
+            className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-civic-700 hover:bg-civic-800 disabled:bg-slate-100 disabled:text-slate-400 text-white flex items-center justify-center transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 shrink-0 shadow-2xs active:scale-95 cursor-pointer disabled:cursor-not-allowed"
+            aria-label="Send query"
+          >
+            {isAiLoading ? (
+              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 animate-spin text-civic-300" />
+            ) : (
+              <Send className="w-4 h-4 sm:w-5 sm:h-5" />
+            )}
+          </button>
+        </div>
+
+        {/* Micro Caption */}
+        <div className="text-[10px] text-slate-400 text-center mt-2 flex items-center justify-center gap-1.5">
+          <span>Press Enter to send</span>
+          <span>•</span>
+          <span>Speak in தமிழ் (ta-IN) or English (en-IN)</span>
+        </div>
+      </div>
+    </>
+  );
+
+  // 1. Primary Full Main Screen Citizen Workspace Layout
+  if (isMainScreen) {
+    return (
+      <div className="w-full max-w-5xl xl:max-w-6xl mx-auto px-2 sm:px-4 md:px-6 py-3 sm:py-5 flex flex-col flex-1">
+        <section
+          role="region"
+          aria-label="SevAIQ Tamil & English Voice Assistant"
+          className="bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-slate-200/90 flex flex-col flex-1 min-h-[580px] sm:min-h-[640px] h-[calc(100vh-8.5rem)] max-h-[920px] overflow-hidden"
+        >
+          {renderChatContent()}
+        </section>
+      </div>
+    );
+  }
+
+  // 2. Secondary Pages Floating Launcher and Window Layout
   return (
     <>
       {/* Floating Bottom-Right Corner Launcher Button */}
@@ -739,704 +1547,7 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
               : 'bottom-20 right-4 sm:right-6 w-[calc(100vw-2rem)] sm:w-[420px] md:w-[460px] h-[600px] sm:h-[640px] max-h-[calc(100vh-6.5rem)]'
           }`}
         >
-          {/* Top Decorative Gradient Accent */}
-          <div className="h-1 bg-gradient-to-r from-blue-700 via-civic-600 to-indigo-700 w-full shrink-0" />
-
-          {/* Window Header */}
-          <div className="p-3 sm:px-4 sm:py-3 border-b border-slate-200 flex items-center justify-between gap-2 bg-white shrink-0">
-            {/* Left: Branding & Status Dot */}
-            <div className="flex items-center space-x-2.5 min-w-0">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-civic-700 to-indigo-800 text-white flex items-center justify-center shadow-xs shrink-0">
-                <Mic className="w-4 h-4" />
-              </div>
-              <div className="min-w-0">
-                <div className="flex items-center space-x-1.5">
-                  <span className="text-xs sm:text-sm font-black text-slate-900 tracking-tight leading-none">
-                    Sev<span className="text-civic-600">AI</span>Q Voice AI
-                  </span>
-                  <span className="inline-flex items-center space-x-1 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/60 leading-none shrink-0">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                    <span>Active</span>
-                  </span>
-                </div>
-                <div className="text-[10px] text-slate-500 font-medium truncate leading-tight mt-0.5">
-                  {language === 'ta'
-                    ? 'தமிழ் (ta-IN) & English (en-IN) குரல் வழிகாட்டி'
-                    : 'Bilingual Civic Assistant (ta-IN / en-IN)'}
-                </div>
-              </div>
-            </div>
-
-            {/* Right: Segmented Language Selector & Window Controls */}
-            <div className="flex items-center space-x-1.5 shrink-0">
-              {/* Distinct BCP 47 Language Selector */}
-              <div
-                className="flex items-center bg-slate-100 p-0.5 rounded-xl border border-slate-200 text-[10px] font-bold"
-                role="group"
-                aria-label="Speech and language selector"
-              >
-                <button
-                  type="button"
-                  onClick={() => handleLanguageChange('ta')}
-                  className={`px-2 py-1 rounded-lg transition-all flex items-center space-x-1 ${
-                    language === 'ta'
-                      ? 'bg-civic-800 text-white shadow-2xs font-extrabold'
-                      : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                  aria-label="Switch to Tamil (ta-IN)"
-                  aria-pressed={language === 'ta'}
-                  data-testid="lang-select-ta"
-                >
-                  <Globe className="w-3 h-3" />
-                  <span>தமிழ் (ta-IN)</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleLanguageChange('en')}
-                  className={`px-2 py-1 rounded-lg transition-all flex items-center space-x-1 ${
-                    language === 'en'
-                      ? 'bg-civic-800 text-white shadow-2xs font-extrabold'
-                      : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                  aria-label="Switch to English (en-IN)"
-                  aria-pressed={language === 'en'}
-                  data-testid="lang-select-en"
-                >
-                  <span>English (en-IN)</span>
-                </button>
-              </div>
-
-              {/* Reset Conversation */}
-              <button
-                type="button"
-                onClick={handleResetChat}
-                className="w-7 h-7 inline-flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
-                title="Reset conversation"
-                aria-label="Reset conversation"
-              >
-                <RotateCcw className="w-3.5 h-3.5" />
-              </button>
-
-              {/* Maximize / Restore Toggle */}
-              <button
-                type="button"
-                onClick={() => setIsMaximized(!isMaximized)}
-                className="hidden sm:inline-flex w-7 h-7 items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
-                title={isMaximized ? 'Restore compact widget' : 'Maximize window'}
-                aria-label={isMaximized ? 'Restore compact widget' : 'Maximize window'}
-              >
-                {isMaximized ? (
-                  <Minimize2 className="w-3.5 h-3.5" />
-                ) : (
-                  <Maximize2 className="w-3.5 h-3.5" />
-                )}
-              </button>
-
-              {/* Close Button */}
-              <button
-                type="button"
-                onClick={handleClose}
-                className="w-7 h-7 inline-flex items-center justify-center text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
-                title="Close Voice Assistant (Esc)"
-                aria-label="Close Voice Assistant"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-
-          {/* Truthful Privacy Disclosure Strip (No false 'local on-device' claim) */}
-          <div className="px-3.5 py-1.5 bg-blue-50/90 border-b border-blue-100/80 flex items-center justify-between text-[10px] text-blue-900 shrink-0">
-            <div className="flex items-center space-x-1.5 truncate">
-              <ShieldCheck className="w-3.5 h-3.5 text-civic-700 shrink-0" />
-              <span className="font-semibold truncate" title={privacyNotice.detailed}>
-                {privacyNotice.badge}
-              </span>
-            </div>
-            {activeVoiceLabel && (
-              <span className="text-civic-800 text-[9px] font-semibold bg-blue-100 px-1.5 py-0.5 rounded shrink-0 hidden sm:inline">
-                {activeVoiceLabel.split(' ')[0]}
-              </span>
-            )}
-          </div>
-
-          {/* Microphone Permission Denied Banner */}
-          {speechState === 'permission_denied' && (
-            <div
-              className="mx-3 mt-2 p-3 bg-amber-50 border border-amber-300 rounded-2xl flex items-start space-x-2.5 text-amber-950 shrink-0 animate-in fade-in"
-              data-testid="speech-permission-denied-banner"
-            >
-              <AlertTriangle className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
-              <div className="flex-1 min-w-0">
-                <div className="text-xs font-bold">
-                  {language === 'ta' ? 'மைக்ரோஃபோன் அனுமதி தேவை' : 'Microphone Permission Needed'}
-                </div>
-                <p className="text-[11px] text-amber-900 mt-0.5 leading-snug">
-                  {speechError?.message ||
-                    (language === 'ta'
-                      ? 'உலாவி அமைப்பில் மைக்ரோஃபோனை அனுமதிக்கவும் அல்லது கீழே உள்ள உரை பெட்டியில் தட்டச்சு செய்யவும்.'
-                      : 'Please allow microphone access in your browser or use the manual text input below.')}
-                </p>
-                <div className="flex items-center space-x-2 mt-2">
-                  <button
-                    type="button"
-                    onClick={startListening}
-                    className="px-2.5 py-1 bg-amber-700 hover:bg-amber-800 text-white rounded-lg text-[10px] font-bold transition-colors shadow-2xs"
-                  >
-                    {language === 'ta' ? 'மீண்டும் அனுமதி கேட்கவும்' : 'Retry Permission'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSpeechState('idle');
-                      setSpeechError(null);
-                    }}
-                    className="px-2 py-1 text-amber-800 hover:text-amber-950 text-[10px] font-semibold"
-                  >
-                    {language === 'ta' ? 'மூடு' : 'Dismiss'}
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* General Speech Error Banner (Non-permission) */}
-          {speechState === 'error' && speechError && (
-            <div
-              className="mx-3 mt-2 p-2.5 bg-amber-50 border border-amber-200 text-amber-900 rounded-xl text-xs flex items-start space-x-2 shrink-0 animate-in fade-in"
-              data-testid="speech-error-banner"
-            >
-              <AlertCircle className="w-3.5 h-3.5 text-amber-700 shrink-0 mt-0.5" />
-              <div className="flex-1 text-[11px] leading-tight">
-                <span className="font-semibold">{language === 'ta' ? 'அறிவிப்பு:' : 'Notice:'}</span>{' '}
-                {speechError.message}
-              </div>
-              <div className="flex items-center space-x-1 shrink-0">
-                {speechError.isRetryable && (
-                  <button
-                    type="button"
-                    onClick={startListening}
-                    className="px-2 py-0.5 bg-amber-600 hover:bg-amber-700 text-white rounded text-[10px] font-semibold transition-colors"
-                  >
-                    {language === 'ta' ? 'மீண்டும் முயற்சி' : 'Retry'}
-                  </button>
-                )}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSpeechState('idle');
-                    setSpeechError(null);
-                  }}
-                  className="text-amber-700 hover:text-amber-900 p-0.5"
-                  aria-label="Dismiss error"
-                >
-                  <X className="w-3 h-3" />
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Chat Messages Scroll Container */}
-          <div className="flex-1 p-3.5 sm:p-4 overflow-y-auto space-y-3 bg-slate-50/60 scroll-smooth">
-            {messages.map((msg) => {
-              const isBot = msg.sender === 'assistant';
-
-              return (
-                <div
-                  key={msg.id}
-                  className={`flex flex-col ${isBot ? 'items-start' : 'items-end'} space-y-1`}
-                >
-                  <div
-                    className={`max-w-[88%] sm:max-w-[82%] p-3.5 rounded-2xl text-xs sm:text-[13px] leading-relaxed ${
-                      isBot
-                        ? msg.isError
-                          ? 'bg-amber-50/90 text-amber-950 border border-amber-300 shadow-2xs rounded-tl-xs'
-                          : 'bg-white text-slate-800 border border-slate-200/80 shadow-2xs rounded-tl-xs'
-                        : 'bg-gradient-to-br from-civic-700 to-civic-800 text-white rounded-tr-xs shadow-xs font-medium'
-                    }`}
-                  >
-                    {isBot ? (
-                      msg.isError ? (
-                        <p className="whitespace-pre-wrap font-medium">{msg.text}</p>
-                      ) : (
-                        <CivicMarkdown content={msg.text} />
-                      )
-                    ) : (
-                      <p className="whitespace-pre-wrap font-medium">{msg.text}</p>
-                    )}
-
-                    {/* Retry button for retryable provider errors */}
-                    {isBot && msg.isError && msg.retryable && (
-                      <div className="mt-2.5 pt-2 border-t border-amber-200/70 flex items-center justify-between">
-                        <span className="text-[10px] text-amber-700 font-medium">
-                          {language === 'ta' ? 'மீண்டும் முயற்சிக்கலாம்' : 'Retry available'}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={handleRetryLastQuery}
-                          disabled={isAiLoading}
-                          className="inline-flex items-center space-x-1 px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-lg text-[10px] shadow-2xs transition-colors"
-                        >
-                          <RefreshCw className="w-2.5 h-2.5" />
-                          <span>{language === 'ta' ? 'மீண்டும் முயற்சி' : 'Retry Query'}</span>
-                        </button>
-                      </div>
-                    )}
-
-                    {/* Card Footer: AI Attribution & Audio Speaker Controls */}
-                    {isBot && !msg.isError && (
-                      <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-500">
-                        <div className="flex items-center space-x-1.5">
-                          <span className="inline-flex items-center space-x-1 font-bold text-civic-700 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-100">
-                            <Sparkles className="w-2.5 h-2.5 text-civic-600" />
-                            <span>
-                              {msg.provider ? `AI • ${msg.provider.toUpperCase()}` : 'AI • GEMINI'}
-                            </span>
-                          </span>
-                          {msg.latencyMs && (
-                            <span className="text-slate-400 font-mono text-[9px] hidden sm:inline">
-                              {msg.latencyMs}ms
-                            </span>
-                          )}
-                        </div>
-
-                        {/* TTS Audio Controls: Listen, Pause, Resume, Stop, Replay */}
-                        <div className="flex items-center space-x-1">
-                          {ttsState.messageId === msg.id && ttsState.status === 'playing' ? (
-                            <>
-                              <button
-                                type="button"
-                                onClick={pauseSpeaking}
-                                className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-md font-semibold bg-amber-100 text-amber-900 border border-amber-300 transition-colors"
-                                title="Pause audio"
-                                aria-label="Pause audio"
-                              >
-                                <Pause className="w-3 h-3 text-amber-800" />
-                                <span>{language === 'ta' ? 'இடைநிறுத்து' : 'Pause'}</span>
-                              </button>
-                              <button
-                                type="button"
-                                onClick={stopSpeaking}
-                                className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-md font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 transition-colors"
-                                title="Stop audio"
-                                aria-label="Stop audio"
-                              >
-                                <Square className="w-2.5 h-2.5 text-slate-700 fill-current" />
-                                <span>{language === 'ta' ? 'நிறுத்து' : 'Stop'}</span>
-                              </button>
-                            </>
-                          ) : ttsState.messageId === msg.id && ttsState.status === 'paused' ? (
-                            <>
-                              <button
-                                type="button"
-                                onClick={resumeSpeaking}
-                                className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-md font-semibold bg-emerald-100 text-emerald-900 border border-emerald-300 transition-colors"
-                                title="Resume audio"
-                                aria-label="Resume audio"
-                              >
-                                <Play className="w-3 h-3 text-emerald-800 fill-current" />
-                                <span>{language === 'ta' ? 'தொடர' : 'Resume'}</span>
-                              </button>
-                              <button
-                                type="button"
-                                onClick={stopSpeaking}
-                                className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-md font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 transition-colors"
-                                title="Stop audio"
-                                aria-label="Stop audio"
-                              >
-                                <Square className="w-2.5 h-2.5 text-slate-700 fill-current" />
-                                <span>{language === 'ta' ? 'நிறுத்து' : 'Stop'}</span>
-                              </button>
-                            </>
-                          ) : (
-                            <>
-                              <button
-                                type="button"
-                                onClick={() => startSpeaking(msg.id, msg.text)}
-                                className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-md font-semibold bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 transition-colors"
-                                aria-label="Listen to response"
-                              >
-                                <Volume2 className="w-3 h-3 text-civic-600" />
-                                <span>{language === 'ta' ? 'கேளுங்கள்' : 'Listen'}</span>
-                              </button>
-                              {lastSpokenMessageId === msg.id && (
-                                <button
-                                  type="button"
-                                  onClick={() => replaySpeaking(msg.id, msg.text)}
-                                  className="inline-flex items-center p-1 rounded-md text-slate-500 hover:text-slate-800 hover:bg-slate-100 border border-slate-200 transition-colors"
-                                  title="Replay audio"
-                                  aria-label="Replay audio"
-                                >
-                                  <RotateCcw className="w-3 h-3" />
-                                </button>
-                              )}
-                            </>
-                          )}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Embedded Scheme Recommendation Cards */}
-                    {msg.suggestedSchemes && msg.suggestedSchemes.length > 0 && (
-                      <div className="mt-2.5 pt-2 border-t border-slate-100 space-y-1.5">
-                        <span className="font-bold text-[10px] uppercase tracking-wider text-slate-500 block">
-                          {language === 'ta' ? 'தொடர்புடைய அரசு திட்டங்கள்:' : 'Related Schemes:'}
-                        </span>
-                        <div className="space-y-1.5">
-                          {msg.suggestedSchemes.map((s) => {
-                            const locScheme = getLocalizedScheme(s);
-                            return (
-                              <div
-                                key={s.id}
-                                className="p-2 bg-slate-50/80 hover:bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between gap-2 transition-colors"
-                              >
-                                <div className="min-w-0">
-                                  <span className="font-bold text-slate-900 block text-xs truncate">
-                                    {locScheme.title}
-                                  </span>
-                                  <span className="text-[10px] text-slate-500 truncate block">
-                                    {locScheme.category}
-                                  </span>
-                                </div>
-                                {onSelectSchemeForEligibility && (
-                                  <button
-                                    type="button"
-                                    onClick={() => {
-                                      onSelectSchemeForEligibility(s);
-                                      onNavigate('eligibility');
-                                    }}
-                                    className="px-2 py-1 bg-civic-600 hover:bg-civic-700 text-white rounded-lg text-[10px] font-bold flex items-center space-x-1 shrink-0 shadow-2xs transition-colors"
-                                  >
-                                    <span>{language === 'ta' ? 'சரிபார்' : 'Check'}</span>
-                                    <ArrowRight className="w-2.5 h-2.5" />
-                                  </button>
-                                )}
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Quick Action Button */}
-                    {msg.suggestedAction && (
-                      <div className="mt-2 pt-2 border-t border-slate-100">
-                        <button
-                          type="button"
-                          onClick={() => onNavigate(msg.suggestedAction!.tab)}
-                          className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-semibold text-[11px] transition-colors"
-                        >
-                          <span>{msg.suggestedAction.label}</span>
-                          <ArrowRight className="w-3 h-3" />
-                        </button>
-                      </div>
-                    )}
-                  </div>
-
-                  <span className="text-[9px] text-slate-400 px-1">
-                    {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                  </span>
-                </div>
-              );
-            })}
-
-            {/* Genuine AI Model Thinking State Indicator */}
-            {isAiLoading && (
-              <div className="flex flex-col items-start space-y-1 animate-in fade-in">
-                <div className="p-3 bg-white text-slate-700 border border-slate-200/90 shadow-2xs rounded-2xl rounded-tl-xs flex items-center space-x-2.5 text-xs">
-                  <Sparkles className="w-4 h-4 text-civic-600 animate-spin" />
-                  <span className="font-semibold text-slate-700">
-                    {language === 'ta'
-                      ? 'Gemini AI திட்டங்களை ஆராய்கிறது...'
-                      : 'Gemini AI is analyzing schemes...'}
-                  </span>
-                  <span className="flex space-x-1">
-                    <span className="w-1.5 h-1.5 bg-civic-600 rounded-full animate-bounce" />
-                    <span className="w-1.5 h-1.5 bg-civic-600 rounded-full animate-bounce [animation-delay:0.2s]" />
-                    <span className="w-1.5 h-1.5 bg-civic-600 rounded-full animate-bounce [animation-delay:0.4s]" />
-                  </span>
-                </div>
-              </div>
-            )}
-            <div ref={messagesEndRef} />
-          </div>
-
-          {/* REAL-TIME LISTENING VISUALIZER BANNER */}
-          {speechState === 'listening' && (
-            <div
-              className="mx-3 my-1.5 p-2.5 bg-gradient-to-r from-rose-50 via-rose-100/50 to-amber-50 border border-rose-200 rounded-2xl flex items-center justify-between gap-3 shadow-xs shrink-0 animate-in fade-in"
-              data-testid="speech-listening-banner"
-            >
-              <div className="flex items-center space-x-2.5 min-w-0">
-                <span className="relative flex h-3 w-3 shrink-0">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75" />
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-rose-600" />
-                </span>
-                <div className="min-w-0">
-                  <div className="text-xs font-bold text-rose-950 truncate flex items-center space-x-1.5">
-                    <span>
-                      {language === 'ta'
-                        ? 'கேட்கிறது... தமிழில் இப்போது பேசவும்'
-                        : 'Listening... speak clearly now'}
-                    </span>
-                    <span className="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-rose-200/70 text-rose-900">
-                      {getSpeechLocale(language)}
-                    </span>
-                  </div>
-                  <div className="text-[10px] text-rose-700 truncate">
-                    {interimTranscript
-                      ? `"${interimTranscript}..."`
-                      : language === 'ta'
-                      ? 'பேசி முடித்ததும் சரிபார்க்கலாம்'
-                      : 'Review transcript before sending'}
-                  </div>
-                </div>
-              </div>
-
-              {/* Animated Soundwave Equalizer Bars */}
-              <div className="flex items-center space-x-1 shrink-0 h-5 px-1">
-                <span className="w-1 bg-rose-600 rounded-full animate-voice-wave-1" />
-                <span className="w-1 bg-rose-600 rounded-full animate-voice-wave-2" />
-                <span className="w-1 bg-rose-600 rounded-full animate-voice-wave-3" />
-                <span className="w-1 bg-rose-600 rounded-full animate-voice-wave-4" />
-              </div>
-
-              <div className="flex items-center space-x-1.5 shrink-0">
-                <button
-                  type="button"
-                  onClick={handleStopListening}
-                  className="px-2.5 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-[10px] font-bold shrink-0 transition-colors shadow-2xs"
-                  aria-label="Stop recording"
-                >
-                  {language === 'ta' ? 'நிறுத்து' : 'Stop'}
-                </button>
-                <button
-                  type="button"
-                  onClick={handleCancelSpeech}
-                  className="px-2 py-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-lg text-[10px] font-bold shrink-0 transition-colors shadow-2xs"
-                  aria-label="Cancel recording"
-                >
-                  {language === 'ta' ? 'ரத்து' : 'Cancel'}
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* EDITABLE TRANSCRIPT REVIEW & CONFIRMATION BOX */}
-          {speechState === 'reviewing' && (
-            <div
-              className="mx-3 my-2 p-3 bg-blue-50/90 border border-blue-200/90 rounded-2xl shadow-xs space-y-2 shrink-0 animate-in fade-in"
-              data-testid="speech-review-container"
-            >
-              <div className="flex items-center justify-between text-xs font-bold text-slate-800">
-                <div className="flex items-center space-x-1.5">
-                  <Mic className="w-3.5 h-3.5 text-civic-700" />
-                  <span>
-                    {language === 'ta' ? 'குரல் உரை சரிபார்ப்பு' : 'Review Voice Transcript'}
-                  </span>
-                  <span className="px-1.5 py-0.2 rounded-full text-[9px] font-mono font-bold bg-blue-100 text-blue-800 border border-blue-200">
-                    {getSpeechLocale(language)}
-                  </span>
-                </div>
-                <span className="text-[10px] text-slate-500 font-normal">
-                  {language === 'ta' ? 'அனுப்பும் முன் திருத்தலாம்' : 'Editable before send'}
-                </span>
-              </div>
-
-              <textarea
-                value={speechTranscript}
-                onChange={(e) => setSpeechTranscript(e.target.value)}
-                rows={2}
-                className="w-full p-2.5 text-xs sm:text-sm bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-civic-500 text-slate-900 resize-none font-medium leading-relaxed"
-                placeholder={
-                  language === 'ta'
-                    ? 'குரல் உரை இங்கே தோன்றும்... ஏதேனும் திருத்தங்கள் இருந்தால் மாற்றவும்'
-                    : 'Your voice transcript appears here. You can edit before sending...'
-                }
-                aria-label="Editable voice transcript"
-                data-testid="speech-transcript-input"
-              />
-
-              <div className="flex items-center justify-between gap-2 pt-0.5">
-                <div className="flex items-center space-x-1.5">
-                  <button
-                    type="button"
-                    onClick={handleRetrySpeech}
-                    className="px-2.5 py-1 text-[11px] font-semibold text-slate-700 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg flex items-center space-x-1 transition-colors shadow-2xs"
-                    aria-label="Speak again"
-                  >
-                    <RotateCcw className="w-3 h-3 text-slate-600" />
-                    <span>{language === 'ta' ? 'மீண்டும் பேச' : 'Retry'}</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleCancelSpeech}
-                    className="px-2.5 py-1 text-[11px] font-semibold text-slate-600 hover:text-slate-800 rounded-lg transition-colors"
-                    aria-label="Discard voice transcript"
-                  >
-                    <span>{language === 'ta' ? 'ரத்து' : 'Cancel'}</span>
-                  </button>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={handleConfirmSpeech}
-                  disabled={!isValidTranscript(speechTranscript) || isAiLoading}
-                  className="px-3.5 py-1.5 text-xs font-bold text-white bg-civic-700 hover:bg-civic-800 disabled:bg-slate-200 disabled:text-slate-400 rounded-xl flex items-center space-x-1.5 shadow-2xs transition-all active:scale-95"
-                  aria-label="Confirm and send transcript to Gemini"
-                  data-testid="speech-confirm-send-button"
-                >
-                  <Send className="w-3 h-3" />
-                  <span>
-                    {language === 'ta'
-                      ? 'உறுதிசெய்து Gemini-க்கு அனுப்பு'
-                      : 'Confirm & Send to Gemini'}
-                  </span>
-                </button>
-              </div>
-
-              <p className="text-[9px] text-slate-500 leading-tight">
-                {language === 'ta'
-                  ? 'தனியுரிமை: உறுதிசெய்த உரை மட்டுமே Gemini AI-க்கு அனுப்பப்படும். ஆடியோ பதிவு செய்யப்படாது.'
-                  : 'Privacy: Only this confirmed text is sent to Gemini AI. No voice audio is stored by SevAIQ.'}
-              </p>
-            </div>
-          )}
-
-          {/* Quick 1-Click Suggested Query Chips */}
-          <div className="px-3 py-2 bg-slate-50 border-t border-slate-200/80 shrink-0">
-            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1 flex items-center justify-between">
-              <span>{language === 'ta' ? '1-கிளிக் கேள்விகள் (Quick Ask):' : 'Suggested Questions:'}</span>
-              {!hasInteracted && (
-                <span className="text-civic-700 font-semibold normal-case">Tap any chip to ask</span>
-              )}
-            </div>
-            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
-              {SAMPLE_PROMPTS[language].map((sample, idx) => (
-                <button
-                  key={idx}
-                  type="button"
-                  onClick={() => {
-                    setInputText(sample.query);
-                    handleSendQuery(sample.query);
-                  }}
-                  className="px-2.5 py-1 bg-white hover:bg-civic-50 hover:border-civic-300 border border-slate-200 text-slate-700 hover:text-civic-900 text-[11px] font-medium rounded-xl whitespace-nowrap transition-all shadow-2xs shrink-0 active:scale-95"
-                >
-                  <span>{sample.label}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Bottom Dock Input Bar: Tactile Mic & Text Box */}
-          <div className="p-2.5 sm:p-3 bg-white border-t border-slate-200 shrink-0">
-            <div className="flex items-center space-x-2">
-              {/* Large Tactile Microphone Button */}
-              <button
-                type="button"
-                onClick={toggleListening}
-                className={`w-10 h-10 sm:w-11 sm:h-11 rounded-2xl transition-all flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-civic-500 shrink-0 ${
-                  speechState === 'listening'
-                    ? 'bg-rose-600 text-white animate-pulse shadow-md shadow-rose-500/40 ring-2 ring-rose-400'
-                    : speechState === 'reviewing'
-                    ? 'bg-blue-600 text-white shadow-md shadow-blue-500/30 ring-2 ring-blue-300'
-                    : speechSupported
-                    ? 'bg-civic-50 hover:bg-civic-100 text-civic-700 border border-civic-200/80 shadow-2xs active:scale-95'
-                    : 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200'
-                }`}
-                title={
-                  !speechSupported
-                    ? 'Speech recognition not supported in this browser (Firefox). Text input is available.'
-                    : speechState === 'listening'
-                    ? 'Stop listening'
-                    : speechState === 'reviewing'
-                    ? 'Speak again (Retry)'
-                    : language === 'ta'
-                    ? 'குரல் மூலம் பேச மைக் அழுத்தவும் (ta-IN)'
-                    : 'Click microphone to speak (en-IN)'
-                }
-                aria-label={
-                  speechState === 'listening'
-                    ? 'Stop microphone recording'
-                    : speechState === 'reviewing'
-                    ? 'Retry microphone recording'
-                    : 'Start microphone speech recognition'
-                }
-                data-testid="microphone-toggle-button"
-              >
-                {speechState === 'listening' ? (
-                  <MicOff className="w-5 h-5" />
-                ) : (
-                  <Mic className="w-5 h-5 text-civic-700" />
-                )}
-              </button>
-
-              {/* Text Input Field */}
-              <div className="relative flex-1">
-                <input
-                  ref={inputRef}
-                  type="text"
-                  value={inputText}
-                  onChange={(e) => setInputText(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      e.preventDefault();
-                      handleSendQuery();
-                    }
-                  }}
-                  disabled={isAiLoading}
-                  placeholder={
-                    isAiLoading
-                      ? language === 'ta'
-                        ? 'Gemini AI பதிலளிக்கிறது...'
-                        : 'Gemini AI is generating response...'
-                      : speechState === 'listening'
-                      ? language === 'ta'
-                        ? 'கேட்கிறது... தமிழில் பேசவும்...'
-                        : 'Listening... speak now...'
-                      : language === 'ta'
-                      ? 'தமிழில் கேட்கவும் அல்லது தட்டச்சு செய்யவும்...'
-                      : 'Ask welfare questions in English or Tamil...'
-                  }
-                  className={`w-full px-3.5 py-2 sm:py-2.5 text-xs sm:text-sm bg-slate-50 border border-slate-300 rounded-2xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-civic-500 text-slate-900 placeholder-slate-400 transition-colors ${
-                    speechState === 'listening' ? 'border-rose-400 bg-rose-50/30' : ''
-                  } ${isAiLoading ? 'opacity-70 cursor-wait' : ''}`}
-                />
-                {inputText && !isAiLoading && (
-                  <button
-                    type="button"
-                    onClick={() => setInputText('')}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600"
-                    aria-label="Clear input"
-                  >
-                    <X className="w-3.5 h-3.5" />
-                  </button>
-                )}
-              </div>
-
-              {/* Send Button */}
-              <button
-                type="button"
-                onClick={() => handleSendQuery()}
-                disabled={!inputText.trim() || isAiLoading}
-                className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-civic-700 hover:bg-civic-800 disabled:bg-slate-100 disabled:text-slate-400 text-white flex items-center justify-center transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 shrink-0 shadow-2xs active:scale-95"
-                aria-label="Send query"
-              >
-                {isAiLoading ? (
-                  <Sparkles className="w-4 h-4 animate-spin text-civic-300" />
-                ) : (
-                  <Send className="w-4 h-4" />
-                )}
-              </button>
-            </div>
-
-            {/* Micro Caption */}
-            <div className="text-[10px] text-slate-400 text-center mt-1.5 flex items-center justify-center gap-1.5">
-              <span>Press Enter to send</span>
-              <span>•</span>
-              <span>Speak in தமிழ் (ta-IN) or English (en-IN)</span>
-            </div>
-          </div>
+          {renderChatContent()}
         </section>
       )}
     </>

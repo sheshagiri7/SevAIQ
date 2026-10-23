@@ -226,6 +226,7 @@ export interface DocumentRecord {
 }
 
 export type NavigationTab =
+  | 'chat'
   | 'dashboard'
   | 'discover'
   | 'eligibility'

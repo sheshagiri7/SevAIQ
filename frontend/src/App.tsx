@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
-import { Info } from 'lucide-react';
+import { Info, Mic, Sparkles } from 'lucide-react';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { Dashboard } from './components/Dashboard';
@@ -42,8 +42,7 @@ import {
 
 export function App() {
   const { language } = useLanguage();
-  const [activeTab, setActiveTab] = useState<NavigationTab>('dashboard');
-  const [isVoiceAssistantOpen, setIsVoiceAssistantOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<NavigationTab>('chat');
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState('all');
 
@@ -167,7 +166,6 @@ export function App() {
     setDocuments(INITIAL_DOCUMENT_RECORDS);
     setSelectedSchemeIds([]);
     setSelectedEligibilitySchemeId(null);
-    setIsVoiceAssistantOpen(false);
   };
 
   const handlePreFillDemoProfile = () => {
@@ -295,17 +293,16 @@ export function App() {
 
   const handleNavigate = (tab: NavigationTab) => {
     if (tab === 'voice-assistant') {
-      setIsVoiceAssistantOpen(true);
+      setActiveTab('chat');
       return;
     }
     setActiveTab(tab);
   };
 
-  // If activeTab is ever voice-assistant, open the corner assistant and show dashboard
+  // If activeTab is ever voice-assistant, switch to chat workspace
   useEffect(() => {
     if (activeTab === 'voice-assistant') {
-      setIsVoiceAssistantOpen(true);
-      setActiveTab('dashboard');
+      setActiveTab('chat');
     }
   }, [activeTab]);
 
@@ -347,7 +344,28 @@ export function App() {
       />
 
       {/* Main Screen Content */}
-      <main className="flex-1">
+      <main className="flex-1 flex flex-col">
+        {/* Main Citizen Chat Workspace - Keep mounted so conversation history persists */}
+        <div
+          className={
+            activeTab === 'chat' || activeTab === 'voice-assistant'
+              ? 'flex-1 flex flex-col'
+              : 'hidden'
+          }
+        >
+          <VoiceAssistant
+            schemes={allSchemes}
+            onNavigate={handleNavigate}
+            onSelectSchemeForEligibility={handleSelectSchemeForEligibility}
+            isOpen={true}
+            onToggleOpen={() => {}}
+            onClose={() => {}}
+            isKioskMode={isKioskMode}
+            isMainScreen={true}
+            onOpenAbout={() => setIsAboutOpen(true)}
+          />
+        </div>
+
         {activeTab === 'dashboard' && (
           <Dashboard
             onNavigate={handleNavigate}
@@ -490,16 +508,55 @@ export function App() {
         onNavigate={handleNavigate}
       />
 
-      {/* Floating Bottom-Right Corner Voice AI Assistant */}
-      <VoiceAssistant
-        schemes={allSchemes}
-        onNavigate={handleNavigate}
-        onSelectSchemeForEligibility={handleSelectSchemeForEligibility}
-        isOpen={isVoiceAssistantOpen}
-        onToggleOpen={() => setIsVoiceAssistantOpen((prev) => !prev)}
-        onClose={() => setIsVoiceAssistantOpen(false)}
-        isKioskMode={isKioskMode}
-      />
+      {/* Floating Bottom-Right Corner Voice AI Assistant Launcher - Rendered on Secondary Pages Only */}
+      {activeTab !== 'chat' && activeTab !== 'voice-assistant' && (
+        <aside aria-label="Voice AI Assistant Controller">
+          <button
+            type="button"
+            onClick={() => handleNavigate('chat')}
+            aria-label={
+              language === 'ta'
+                ? 'SevAIQ வாய்ஸ் AI அரட்டைக்கு செல் (தமிழ் & English)'
+                : language === 'hi'
+                ? 'SevAIQ वॉयस AI चैट पर जाएं (हिंदी, तमिल और अंग्रेजी)'
+                : 'Open SevAIQ Voice AI Chat (Tamil & English)'
+            }
+            className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-40 group flex items-center gap-2.5 px-4 py-3 sm:px-4.5 sm:py-3.5 rounded-full shadow-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-civic-500/40 select-none bg-gradient-to-r from-blue-700 via-civic-700 to-indigo-800 text-white shadow-civic-800/40 hover:shadow-2xl hover:scale-[1.03] active:scale-[0.98] border border-white/25 ring-4 ring-civic-500/15 cursor-pointer"
+          >
+            {/* Animated Glowing Mic Icon Badge */}
+            <div className="relative flex items-center justify-center w-8 h-8 rounded-full bg-white/15 backdrop-blur-xs text-white shrink-0 group-hover:scale-110 transition-transform">
+              <Mic className="w-4.5 h-4.5 text-white" />
+              {/* Live Online Ping Indicator */}
+              <span className="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400 border border-white/80" />
+              </span>
+            </div>
+
+            {/* Bilingual Label & Pill */}
+            <div className="flex flex-col items-start leading-tight text-left">
+              <div className="flex items-center gap-1.5">
+                <span className="text-xs sm:text-sm font-black tracking-tight text-white">
+                  {language === 'ta' ? 'வாய்ஸ் AI' : language === 'hi' ? 'वॉयस AI' : 'Voice AI'}
+                </span>
+                <span className="inline-flex items-center px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-white/20 text-blue-100 tracking-wide font-mono">
+                  ta-IN / en-IN
+                </span>
+              </div>
+              <span className="text-[10px] text-blue-100/90 font-medium whitespace-nowrap">
+                {language === 'ta'
+                  ? 'அரட்டைக்கு செல்'
+                  : language === 'hi'
+                  ? 'चैट पर जाएं'
+                  : 'Return to Chat'}
+              </span>
+            </div>
+
+            {/* Sparkle Accent */}
+            <Sparkles className="w-3.5 h-3.5 text-amber-300 opacity-90 hidden sm:block shrink-0 animate-pulse" />
+          </button>
+        </aside>
+      )}
 
       {/* UX4G Universal Accessibility Options Slide-over Drawer */}
       <AccessibilityDrawer />
