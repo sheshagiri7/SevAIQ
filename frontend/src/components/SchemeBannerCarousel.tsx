@@ -134,6 +134,7 @@ const SLIDES: SchemeSlide[] = [
         icon: 'file',
       },
       floating3DIcon: 'graduation',
+      phoneAnimationClass: 'animate-moving-phone-1',
     },
   },
   {
@@ -184,6 +185,7 @@ const SLIDES: SchemeSlide[] = [
         icon: 'shield',
       },
       floating3DIcon: 'sprout',
+      phoneAnimationClass: 'animate-moving-phone-2',
     },
   },
   {
@@ -234,6 +236,7 @@ const SLIDES: SchemeSlide[] = [
         icon: 'shield',
       },
       floating3DIcon: 'heart',
+      phoneAnimationClass: 'animate-moving-phone-3',
     },
   },
   {
@@ -284,6 +287,7 @@ const SLIDES: SchemeSlide[] = [
         icon: 'award',
       },
       floating3DIcon: 'coins',
+      phoneAnimationClass: 'animate-moving-phone-4',
     },
   },
   {
@@ -334,6 +338,7 @@ const SLIDES: SchemeSlide[] = [
         icon: 'check',
       },
       floating3DIcon: 'home',
+      phoneAnimationClass: 'animate-moving-phone-5',
     },
   },
 ];
