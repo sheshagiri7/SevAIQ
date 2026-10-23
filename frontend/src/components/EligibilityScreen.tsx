@@ -245,11 +245,17 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
         <Shield className="w-4 h-4 text-civic-700 shrink-0 mt-0.5" />
         <div className="space-y-1">
           <span className="font-bold text-slate-900 block">
-            {language === 'ta' ? 'சட்டப்பூர்வ வெளிப்படைத்தன்மை உத்தரவாதம்:' : 'Statutory Legal Notice & Transparency Mandate:'}
+            {language === 'ta'
+              ? 'சட்டப்பூர்வ வெளிப்படைத்தன்மை உத்தரவாதம்:'
+              : language === 'hi'
+              ? 'वैधानिक विधिक सूचना एवं पारदर्शिता अधिदेश:'
+              : 'Statutory Legal Notice & Transparency Mandate:'}
           </span>
           <p className="text-slate-600 leading-relaxed text-[11px]">
             {language === 'ta'
               ? 'SevAIQ குடிமக்கள் தகவல் & ஆவண தயார்நிலை தளம். இங்கு காட்டப்படும் மதிப்பீடுகள் அனைத்தும் வெளியிடப்பட்ட அரசிதழ் விதிகளின் அடிப்படையிலானவை. அரசு அதிகாரிகளின் நேரடி சரிபார்ப்பிற்கு பின்னரே முறையான பலன்கள் கிடைக்கும்.'
+              : language === 'hi'
+              ? 'SevAIQ एक नागरिक सूचना और दस्तावेज तत्परता मंच है। यहां प्रदर्शित सभी मूल्यांकन प्रकाशित राजपत्र नियमों पर आधारित हैं। आधिकारिक सरकारी सत्यापन के बाद ही योजना का अंतिम लाभ प्राप्त होगा।'
               : 'SevAIQ is a civic intelligence and document-readiness platform. All evaluation outcomes represent an explainable assessment against published statutory guidelines. SevAIQ does not guarantee scheme approval and does not replace official verification by statutory government authorities.'}
           </p>
         </div>
@@ -276,7 +282,13 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
             {/* Privacy Guarantee Pill */}
             <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-medium self-start sm:self-auto">
               <Lock className="w-3.5 h-3.5 text-emerald-600" />
-              <span>{language === 'ta' ? 'ஆதார் / வங்கி கணக்கு தேவையில்லை' : 'No Aadhaar / Bank account required'}</span>
+              <span>
+                {language === 'ta'
+                  ? 'ஆதார் / வங்கி கணக்கு தேவையில்லை'
+                  : language === 'hi'
+                  ? 'आधार / बैंक खाते की आवश्यकता नहीं'
+                  : 'No Aadhaar / Bank account required'}
+              </span>
             </div>
           </div>
 
