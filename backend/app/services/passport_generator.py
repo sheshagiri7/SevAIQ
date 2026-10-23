@@ -3,7 +3,7 @@
 Generates a professional, downloadable SevAIQ Scheme Passport PDF
 using ReportLab Platypus flowables and an in-memory BytesIO buffer.
 
-Civic Intelligence Platform for the Seva First Innovation Challenge 2026.
+Civic Intelligence Platform — Government Benefits. Made Accessible.
 """
 
 import io
@@ -354,7 +354,7 @@ def build_header_flowable(styles: Dict[str, ParagraphStyle], report_ref: str, ge
         Paragraph("SevAIQ", styles["BannerTitle"]),
         Paragraph("Civic Intelligence & Application-Readiness Platform", styles["BannerSubtitle"]),
         Spacer(1, 2),
-        Paragraph("Seva First Innovation Challenge 2026", styles["BannerTag"]),
+        Paragraph("Government Benefits. Made Accessible.", styles["BannerTag"]),
     ]
 
     right_cell = [
