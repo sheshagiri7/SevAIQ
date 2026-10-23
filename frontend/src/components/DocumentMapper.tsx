@@ -697,6 +697,8 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
             <span className="text-xs font-bold uppercase tracking-wider text-slate-800">
               {language === 'ta'
                 ? 'சரிபார்க்கப்பட்ட திட்ட ஆவண வழிகாட்டுதல்கள்'
+                : language === 'hi'
+                ? 'सत्यापित योजना दस्तावेज़ संदर्भ एवं दिशानिर्देश'
                 : 'Verified Scheme Document Citations & Operational Guidelines'}
             </span>
           </div>
@@ -708,7 +710,12 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
               >
                 <span className="font-bold text-slate-900 block">{ref.scheme_title}</span>
                 <p className="text-[11px] text-slate-600 leading-relaxed">
-                  {ref.verification_source || (language === 'ta' ? 'சரிபார்க்கப்பட்ட அரசு திட்ட வழிகாட்டுதல்கள்' : 'Verified Government Scheme Guidelines')}
+                  {ref.verification_source ||
+                    (language === 'ta'
+                      ? 'சரிபார்க்கப்பட்ட அரசு திட்ட வழிகாட்டுதல்கள்'
+                      : language === 'hi'
+                      ? 'सत्यापित सरकारी योजना दिशानिर्देश'
+                      : 'Verified Government Scheme Guidelines')}
                 </p>
                 {ref.official_portal_url && (
                   <a
