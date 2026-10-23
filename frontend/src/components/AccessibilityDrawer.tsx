@@ -312,34 +312,7 @@ export const AccessibilityDrawer: React.FC = () => {
                   )}
                 </button>
 
-                {/* 8. Invert Colors */}
-                <button
-                  type="button"
-                  onClick={toggleInvertColors}
-                  className={`p-3.5 rounded-2xl flex flex-col items-center justify-center text-center transition-all cursor-pointer relative ${
-                    settings.invertColors
-                      ? 'bg-purple-50 border-2 border-purple-600 text-purple-900 shadow-xs'
-                      : 'bg-white border border-slate-200/90 text-slate-800 hover:border-purple-300 hover:bg-slate-50'
-                  }`}
-                  aria-pressed={settings.invertColors}
-                >
-                  {settings.invertColors && (
-                    <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-purple-600 text-white rounded-full flex items-center justify-center text-[9px] font-bold">
-                      <Check className="w-2.5 h-2.5" />
-                    </span>
-                  )}
-                  <div className="h-7 flex items-center justify-center mb-1">
-                    <svg viewBox="0 0 24 24" className="w-7 h-7 stroke-current stroke-2">
-                      <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-                      <path d="M12 3v16.5a8 8 0 0 1 0-16z" fill="currentColor" />
-                    </svg>
-                  </div>
-                  <span className="text-xs font-semibold leading-tight">
-                    {labels.invertColors}
-                  </span>
-                </button>
-
-                {/* 9. Highlight Links */}
+                {/* 8. Highlight Links */}
                 <button
                   type="button"
                   onClick={toggleHighlightLinks}
