@@ -1571,9 +1571,9 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                         </div>
 
                         {/* Phone Inner Content */}
-                        <div className="p-2 space-y-1.5 flex-1 overflow-hidden bg-slate-50/80">
+                        <div className="p-2 space-y-1.5 flex-1 overflow-hidden bg-slate-50/80 flex flex-col justify-between">
                           {/* Scheme Header Card */}
-                          <div className="p-2 rounded-xl bg-white border border-slate-200/70 shadow-2xs flex items-center space-x-1.5">
+                          <div className="p-1.5 rounded-xl bg-white border border-slate-200/70 shadow-2xs flex items-center space-x-1.5 shrink-0">
                             <div className="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-800 flex items-center justify-center font-bold text-[9px] shrink-0 border border-emerald-200">
                               {locSlide.phone.shortCode}
                             </div>
@@ -1585,8 +1585,32 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                             </div>
                           </div>
 
+                          {/* Scheme Photographic Hero inside Smartphone Screen */}
+                          <div className="relative w-full h-22 sm:h-26 rounded-xl overflow-hidden shadow-xs border border-slate-200/90 bg-slate-100 shrink-0 group/phoneimg">
+                            <SchemeImageWithFallback
+                              src={locSlide.image.src}
+                              alt={locSlide.image.alt}
+                              fallbackTitle={locSlide.titlePrimary}
+                              category={locSlide.image.categoryTag}
+                              iconType={slide.phone.floating3DIcon}
+                              className="w-full h-full object-cover"
+                              objectPosition={locSlide.image.objectPosition}
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent pointer-events-none" />
+                            <div className="absolute top-1 right-1 pointer-events-none">
+                              <span className="inline-flex items-center px-1.5 py-0.2 rounded-full text-[6.5px] sm:text-[7px] font-extrabold bg-emerald-600/95 text-white shadow-xs uppercase tracking-wider">
+                                Verified Photo
+                              </span>
+                            </div>
+                            <div className="absolute bottom-1 left-1.5 right-1.5 pointer-events-none">
+                              <p className="text-[7.5px] sm:text-[8px] font-bold text-white leading-tight truncate drop-shadow-sm">
+                                {locSlide.image.caption}
+                              </p>
+                            </div>
+                          </div>
+
                           {/* Search Bar Input */}
-                          <div className="relative">
+                          <div className="relative shrink-0">
                             <Search className="w-2.5 h-2.5 text-slate-400 absolute left-2 top-2" />
                             <input
                               type="text"
@@ -1597,20 +1621,20 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                           </div>
 
                           {/* Highlight Feature Card */}
-                          <div className="p-2 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-1">
-                            <span className="text-[9px] font-bold text-slate-800 block leading-tight">
+                          <div className="p-1.5 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-1 shrink-0">
+                            <span className="text-[8.5px] font-bold text-slate-800 block leading-tight">
                               {locSlide.phone.highlightCard.title}
                             </span>
                             <button
                               type="button"
-                              className={`w-full py-0.5 rounded-md ${locSlide.phone.highlightCard.btnColor} text-white text-[8px] font-bold shadow-2xs tracking-wider uppercase`}
+                              className={`w-full py-0.5 rounded-md ${locSlide.phone.highlightCard.btnColor} text-white text-[7.5px] sm:text-[8px] font-bold shadow-2xs tracking-wider uppercase`}
                             >
                               {locSlide.phone.highlightCard.btnText}
                             </button>
                           </div>
 
                           {/* Service Row 1 */}
-                          <div className="p-1.5 rounded-xl bg-white border border-slate-200 shadow-2xs flex items-center justify-between">
+                          <div className="p-1.5 rounded-xl bg-white border border-slate-200 shadow-2xs flex items-center justify-between shrink-0">
                             <span className="text-[8px] font-semibold text-slate-800 truncate">
                               {locSlide.phone.service1}
                             </span>
@@ -1618,7 +1642,7 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                           </div>
 
                           {/* Service Row 2 */}
-                          <div className="p-1.5 rounded-xl bg-white border border-slate-200 shadow-2xs flex items-center justify-between">
+                          <div className="p-1.5 rounded-xl bg-white border border-slate-200 shadow-2xs flex items-center justify-between shrink-0">
                             <span className="text-[8px] font-semibold text-slate-800 truncate">
                               {locSlide.phone.service2}
                             </span>
@@ -1631,6 +1655,65 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                           <div className="w-16 h-1 bg-slate-300 rounded-full" />
                         </div>
                       </div>
+                    </div>
+                  </div>
+
+                  {/* Large Screen Scheme Photographic Showcase Card */}
+                  <div className="hidden lg:flex flex-col w-[220px] xl:w-[250px] h-[380px] sm:h-[430px] lg:h-[460px] rounded-[32px] bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-2xl overflow-hidden justify-between p-3 relative group/showcase transition-all duration-300 hover:shadow-3xl hover:scale-[1.01] shrink-0">
+                    {/* Scheme Photograph Window */}
+                    <div className="relative w-full h-[210px] xl:h-[240px] rounded-2xl overflow-hidden bg-slate-100 border border-slate-200/80 shadow-xs shrink-0">
+                      <SchemeImageWithFallback
+                        src={locSlide.image.src}
+                        alt={locSlide.image.alt}
+                        fallbackTitle={locSlide.titlePrimary}
+                        category={locSlide.image.categoryTag}
+                        iconType={slide.phone.floating3DIcon}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover/showcase:scale-105"
+                        objectPosition={locSlide.image.objectPosition}
+                      />
+                      {/* Category Pill Tag */}
+                      <div className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-slate-900/80 backdrop-blur-xs text-white text-[8px] xl:text-[9px] font-black uppercase tracking-wider flex items-center space-x-1 shadow-sm">
+                        <Sparkles className="w-2.5 h-2.5 text-amber-400" />
+                        <span className="truncate max-w-[120px]">{locSlide.image.categoryTag}</span>
+                      </div>
+                      {/* Verified Pill */}
+                      <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-emerald-600/90 backdrop-blur-xs text-white text-[8px] xl:text-[9px] font-bold flex items-center space-x-1 shadow-sm">
+                        <CheckCircle2 className="w-2.5 h-2.5" />
+                        <span>Verified</span>
+                      </div>
+                      {/* Gradient & Caption Overlay */}
+                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent p-2.5 text-white">
+                        <p className="text-[10px] xl:text-[11px] font-bold leading-tight drop-shadow-sm line-clamp-2">
+                          {locSlide.image.caption}
+                        </p>
+                        <span className="text-[7.5px] xl:text-[8px] text-slate-300 font-medium mt-0.5 block truncate">
+                          {locSlide.image.sourceAttribution}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Card Details & Action */}
+                    <div className="pt-2 px-1 flex flex-col justify-between flex-1 min-h-0">
+                      <div>
+                        <span className="text-[8.5px] font-black text-slate-400 uppercase tracking-widest block">
+                          Verified Scheme Initiative
+                        </span>
+                        <h4 className="text-xs xl:text-sm font-extrabold text-slate-900 line-clamp-1 mt-0.5">
+                          {locSlide.titlePrimary}
+                        </h4>
+                        <p className="text-[9px] xl:text-[9.5px] text-slate-600 line-clamp-2 mt-0.5 leading-snug">
+                          {locSlide.description}
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handlePrimaryClick(slide)}
+                        className="mt-2 w-full py-2 px-3 rounded-xl bg-[#107c41] hover:bg-[#0c6534] text-white text-[10px] xl:text-[11px] font-bold shadow-xs transition-all hover:scale-102 flex items-center justify-center space-x-1.5 cursor-pointer"
+                        aria-label={`Explore ${locSlide.titlePrimary} details`}
+                      >
+                        <span>Explore Scheme</span>
+                        <ExternalLink className="w-3 h-3" />
+                      </button>
                     </div>
                   </div>
 
