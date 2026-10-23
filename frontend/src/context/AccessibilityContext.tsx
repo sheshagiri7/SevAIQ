@@ -59,7 +59,7 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
-        return { ...DEFAULT_A11Y_SETTINGS, ...JSON.parse(saved), invertColors: false };
+        return { ...DEFAULT_A11Y_SETTINGS, ...JSON.parse(saved), invertColors: false, pauseAnimation: false };
       }
     } catch {
       // ignore

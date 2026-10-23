@@ -179,6 +179,34 @@
   animation: float-4 5s ease-in-out infinite 1.2s;
 }
 
+/* 3D Floating Icon Smooth Bounce Animation */
+@keyframes icon-bounce-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+
+.animate-icon-bounce {
+  animation: icon-bounce-float 2s ease-in-out infinite;
+}
+
+/* Moving Image / Phone Mockup Floating Animation */
+@keyframes moving-image-float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(0.6deg);
+  }
+}
+
+.animate-moving-image {
+  animation: moving-image-float 3.6s ease-in-out infinite;
+}
+
 /* ==========================================================================
    UX4G & WCAG 2.1 Accessibility Suite Styles
    ========================================================================== */
