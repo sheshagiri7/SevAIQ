@@ -1183,6 +1183,7 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
   const isHindi = language === 'hi';
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const [isPaused, setIsPaused] = useState(false);
 
   // 5-second time limit requested by user
   const SLIDE_DURATION_MS = 5000;
@@ -1195,16 +1196,16 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
     setCurrentSlideIndex((prev) => (prev - 1 + SLIDES.length) % SLIDES.length);
   }, []);
 
-  // 5-second automatic scrolling timer (respects WCAG pause animations)
+  // 5-second automatic scrolling timer (respects WCAG pause animations & user pause/hover)
   useEffect(() => {
-    if (settings.pauseAnimation) return;
+    if (settings.pauseAnimation || isPaused) return;
 
     const timer = setInterval(() => {
       nextSlide();
     }, SLIDE_DURATION_MS);
 
     return () => clearInterval(timer);
-  }, [settings.pauseAnimation, nextSlide]);
+  }, [settings.pauseAnimation, isPaused, nextSlide]);
 
   const activeSlide = SLIDES[currentSlideIndex];
 
@@ -1270,6 +1271,10 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
         className="relative w-full h-[calc(100vh-4.25rem)] min-h-[640px] max-h-[960px] flex flex-col justify-between overflow-hidden select-none group border-b border-slate-200/80 bg-slate-50 moving-animation-exempt"
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+        onFocus={() => setIsPaused(true)}
+        onBlur={() => setIsPaused(false)}
         aria-roledescription="carousel"
         aria-label="Government Schemes Showcase Carousel"
       >
