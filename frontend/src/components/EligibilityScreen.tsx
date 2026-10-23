@@ -86,6 +86,8 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
   isKioskMode = false,
   onResetProfile,
   onPreFillDemoProfile,
+  targetSchemeId,
+  onClearTargetScheme,
 }) => {
   const { language, t, getLocalizedScheme, getLocalizedOption } = useLanguage();
   const [profileEditorOpen, setProfileEditorOpen] = useState(
@@ -93,6 +95,41 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
   );
   const [statusFilter, setStatusFilter] = useState<'all' | EligibilityStatus>('all');
   const [expandedSchemeId, setExpandedSchemeId] = useState<string | null>(null);
+
+  const isSchemeMatching = useCallback((schemeId: string, filterId: string) => {
+    if (!schemeId || !filterId) return false;
+    const sId = schemeId.toLowerCase();
+    const fId = filterId.toLowerCase();
+    if (sId === fId) return true;
+    return resolveBackendSchemeId(sId).toLowerCase() === resolveBackendSchemeId(fId).toLowerCase();
+  }, []);
+
+  const [selectedSchemeFilter, setSelectedSchemeFilter] = useState<string>(targetSchemeId || 'all');
+
+  useEffect(() => {
+    if (targetSchemeId) {
+      setSelectedSchemeFilter(targetSchemeId);
+      const matched = schemes.find((s) => isSchemeMatching(s.id, targetSchemeId));
+      const targetId = matched ? matched.id : targetSchemeId;
+      setExpandedSchemeId(targetId);
+      setStatusFilter('all');
+
+      const timer = setTimeout(() => {
+        const el = document.getElementById(`eligibility-scheme-${targetId}`) || document.getElementById(`eligibility-scheme-${targetSchemeId}`);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 150);
+      return () => clearTimeout(timer);
+    } else {
+      setSelectedSchemeFilter('all');
+    }
+  }, [targetSchemeId, schemes, isSchemeMatching]);
+
+  const activeTargetScheme = useMemo(() => {
+    if (!selectedSchemeFilter || selectedSchemeFilter === 'all') return null;
+    return schemes.find((s) => isSchemeMatching(s.id, selectedSchemeFilter)) || null;
+  }, [schemes, selectedSchemeFilter, isSchemeMatching]);
 
   // Server-side eligibility state
   const [backendResponse, setBackendResponse] = useState<BackendEligibilityCheckResponse | null>(null);
