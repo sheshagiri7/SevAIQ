@@ -89,4 +89,41 @@ describe('Header & Accessibility Layout Integration', () => {
     const html = renderToString(<DrawerHarness />);
     expect(html).not.toContain('Ctrl+F2');
   });
+
+  it('renders AccessibilityDrawer without upgrade option in English, Tamil, and Hindi', () => {
+    localStorage.setItem('SEVAIQ_A11Y_OPEN', 'true');
+
+    // English check
+    localStorage.setItem('SEVAIQ_LANG', 'en');
+    const enHtml = renderToString(
+      <LanguageProvider>
+        <AccessibilityProvider>
+          <AccessibilityDrawer />
+        </AccessibilityProvider>
+      </LanguageProvider>
+    );
+    expect(enHtml).not.toContain('Upgrade');
+
+    // Tamil check
+    localStorage.setItem('SEVAIQ_LANG', 'ta');
+    const taHtml = renderToString(
+      <LanguageProvider>
+        <AccessibilityProvider>
+          <AccessibilityDrawer />
+        </AccessibilityProvider>
+      </LanguageProvider>
+    );
+    expect(taHtml).not.toContain('மேம்படுத்து');
+
+    // Hindi check
+    localStorage.setItem('SEVAIQ_LANG', 'hi');
+    const hiHtml = renderToString(
+      <LanguageProvider>
+        <AccessibilityProvider>
+          <AccessibilityDrawer />
+        </AccessibilityProvider>
+      </LanguageProvider>
+    );
+    expect(hiHtml).not.toContain('अपग्रेड');
+  });
 });
