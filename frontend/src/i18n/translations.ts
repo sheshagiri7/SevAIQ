@@ -3,7 +3,19 @@
  * Covers all screens, components, modals, filters, options, schemes, and documents.
  */
 
-export type AppLanguage = 'en' | 'ta' | 'hi';
+export type AppLanguage =
+  | 'en'
+  | 'ta'
+  | 'hi'
+  | 'te'
+  | 'kn'
+  | 'ml'
+  | 'mr'
+  | 'gu'
+  | 'bn'
+  | 'pa'
+  | 'or'
+  | 'as';
 
 export interface SchemeTranslation {
   title: string;
