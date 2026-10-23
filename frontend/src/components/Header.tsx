@@ -22,6 +22,7 @@ import {
 import { ApiState, NavigationTab, Scheme, CitizenProfile } from '../types';
 import { useLanguage } from '../context/LanguageContext';
 import { useAccessibility } from '../context/AccessibilityContext';
+import { LanguageSelector } from './LanguageSelector';
 
 // High-fidelity SVG of the State Emblem of India (Ashoka Lion Capital)
 export const EmblemOfIndia: React.FC<{ className?: string }> = ({ className = 'w-8 h-10' }) => (
