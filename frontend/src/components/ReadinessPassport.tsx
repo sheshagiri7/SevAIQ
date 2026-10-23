@@ -319,11 +319,15 @@ export const ReadinessPassport: React.FC<ReadinessPassportProps> = ({
               <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700">
                 {language === 'ta'
                   ? '1. குடிமக்கள் புள்ளிவிவரக் குறிப்பு (பெயர் குறிப்பிடாதது)'
+                  : language === 'hi'
+                  ? '1. नागरिक जनसांख्यिकीय प्रोफ़ाइल (गुमनाम)'
                   : '1. Citizen Demographic Profile (Anonymous)'}
               </h3>
               <span className="text-[11px] text-emerald-700 font-medium">
                 {language === 'ta'
                   ? 'ஆதார் அல்லது வங்கி விவரங்கள் சேமிக்கப்படவில்லை'
+                  : language === 'hi'
+                  ? 'कोई आधार या बैंक विवरण संग्रहीत नहीं'
                   : 'No Aadhaar or Bank Data Stored'}
               </span>
             </div>
@@ -331,52 +335,52 @@ export const ReadinessPassport: React.FC<ReadinessPassportProps> = ({
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
               <div>
                 <span className="text-slate-400 block text-[11px]">
-                  {language === 'ta' ? 'வயது / பாலினம்' : 'Age / Gender'}
+                  {language === 'ta' ? 'வயது / பாலினம்' : language === 'hi' ? 'आयु / लिंग' : 'Age / Gender'}
                 </span>
                 <span className="font-semibold text-slate-800">
                   {profile.age
-                    ? `${profile.age} ${language === 'ta' ? 'ஆண்டுகள்' : 'yrs'}`
-                    : language === 'ta' ? 'குறிப்பிடப்படவில்லை' : 'Not set'}{' '}
+                    ? `${profile.age} ${language === 'ta' ? 'ஆண்டுகள்' : language === 'hi' ? 'वर्ष' : 'yrs'}`
+                    : language === 'ta' ? 'குறிப்பிடப்படவில்லை' : language === 'hi' ? 'दर्ज नहीं' : 'Not set'}{' '}
                   •{' '}
                   {profile.gender
                     ? getLocalizedOption('genders', profile.gender)
-                    : language === 'ta' ? 'குறிப்பிடப்படவில்லை' : 'Not set'}
+                    : language === 'ta' ? 'குறிப்பிடப்படவில்லை' : language === 'hi' ? 'दर्ज नहीं' : 'Not set'}
                 </span>
               </div>
               <div>
                 <span className="text-slate-400 block text-[11px]">
-                  {language === 'ta' ? 'வசிப்பிடம்' : 'Location'}
+                  {language === 'ta' ? 'வசிப்பிடம்' : language === 'hi' ? 'स्थान' : 'Location'}
                 </span>
                 <span className="font-semibold text-slate-800">
-                  {profile.state || (language === 'ta' ? 'இந்தியா' : 'India')} (
+                  {profile.state || (language === 'ta' ? 'இந்தியா' : language === 'hi' ? 'भारत' : 'India')} (
                   {profile.area
                     ? getLocalizedOption('areas', profile.area)
-                    : language === 'ta' ? 'அனைத்து பகுதிகள்' : 'All regions'}
+                    : language === 'ta' ? 'அனைத்து பகுதிகள்' : language === 'hi' ? 'सभी क्षेत्र' : 'All regions'}
                   )
                 </span>
               </div>
               <div>
                 <span className="text-slate-400 block text-[11px]">
-                  {language === 'ta' ? 'தொழில்' : 'Occupation'}
+                  {language === 'ta' ? 'தொழில்' : language === 'hi' ? 'व्यवसाय' : 'Occupation'}
                 </span>
                 <span className="font-semibold text-slate-800">
                   {profile.occupation
                     ? getLocalizedOption('occupations', profile.occupation)
-                    : language === 'ta' ? 'குறிப்பிடப்படவில்லை' : 'Not specified'}
+                    : language === 'ta' ? 'குறிப்பிடப்படவில்லை' : language === 'hi' ? 'दर्ज नहीं' : 'Not specified'}
                 </span>
               </div>
               <div>
                 <span className="text-slate-400 block text-[11px]">
-                  {language === 'ta' ? 'வருமானம் & சமூகப் பிரிவு' : 'Income & Social Group'}
+                  {language === 'ta' ? 'வருமானம் & சமூகப் பிரிவு' : language === 'hi' ? 'आय एवं सामाजिक वर्ग' : 'Income & Social Group'}
                 </span>
                 <span className="font-semibold text-slate-800">
                   {profile.incomeBracket
                     ? getLocalizedOption('incomes', profile.incomeBracket)
-                    : language === 'ta' ? 'குறிப்பிடப்படவில்லை' : 'Not set'}{' '}
+                    : language === 'ta' ? 'குறிப்பிடப்படவில்லை' : language === 'hi' ? 'दर्ज नहीं' : 'Not set'}{' '}
                   •{' '}
                   {profile.category
                     ? getLocalizedOption('categories', profile.category)
-                    : language === 'ta' ? 'பொதுப்பிரிவு' : 'General'}
+                    : language === 'ta' ? 'பொதுப்பிரிவு' : language === 'hi' ? 'सामान्य' : 'General'}
                 </span>
               </div>
             </div>
@@ -386,12 +390,14 @@ export const ReadinessPassport: React.FC<ReadinessPassportProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-900">
               <span className="text-xs font-bold uppercase tracking-wider block">
-                {language === 'ta' ? 'தகுதியான திட்டங்கள்' : 'Eligible Schemes (Met)'}
+                {language === 'ta' ? 'தகுதியான திட்டங்கள்' : language === 'hi' ? 'पात्र योजनाएं' : 'Eligible Schemes (Met)'}
               </span>
               <span className="text-3xl font-extrabold mt-1 block">{metEvaluations.length}</span>
               <span className="text-xs text-emerald-700">
                 {language === 'ta'
                   ? 'அனைத்து விதிகளும் பூர்த்தி செய்யப்பட்டுள்ளன'
+                  : language === 'hi'
+                  ? 'सभी सत्यापित शर्तें पूरी हुईं'
                   : 'All verified criteria satisfied'}
               </span>
             </div>
@@ -404,18 +410,22 @@ export const ReadinessPassport: React.FC<ReadinessPassportProps> = ({
               <span className="text-xs text-blue-700">
                 {language === 'ta'
                   ? `${relevantDocuments.length} இல் ${readyDocs.length} ஆவணங்கள் தயார்`
+                  : language === 'hi'
+                  ? `${relevantDocuments.length} में से ${readyDocs.length} दस्तावेज़ तैयार`
                   : `${readyDocs.length} of ${relevantDocuments.length} certificates ready`}
               </span>
             </div>
 
             <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900">
               <span className="text-xs font-bold uppercase tracking-wider block">
-                {language === 'ta' ? 'விடுபட்ட சான்றிதழ்கள்' : 'Missing Certificates'}
+                {language === 'ta' ? 'விடுபட்ட சான்றிதழ்கள்' : language === 'hi' ? 'अनुपलब्ध प्रमाणपत्र' : 'Missing Certificates'}
               </span>
               <span className="text-3xl font-extrabold mt-1 block">{missingDocs.length}</span>
               <span className="text-xs text-amber-700">
                 {language === 'ta'
                   ? 'விண்ணப்பிக்கும் முன் எடுக்க வேண்டிய நடவடிக்கைகள்'
+                  : language === 'hi'
+                  ? 'आवेदन से पूर्व आवश्यक कदम'
                   : 'Action items required before applying'}
               </span>
             </div>
@@ -426,6 +436,8 @@ export const ReadinessPassport: React.FC<ReadinessPassportProps> = ({
             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700 pb-1 border-b border-slate-200">
               {language === 'ta'
                 ? '2. இலக்கு அரசு திட்டங்கள் & தகுதி நிர்ணயம்'
+                : language === 'hi'
+                ? '2. लक्षित सरकारी योजनाएं एवं पात्रता निर्धारण'
                 : '2. Target Government Schemes & Eligibility Determination'}
             </h3>
 
@@ -443,24 +455,24 @@ export const ReadinessPassport: React.FC<ReadinessPassportProps> = ({
                         {overallStatus === 'met' ? (
                           <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">
                             <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                            <span>{language === 'ta' ? 'தகுதி பூர்த்தி' : 'Eligible'}</span>
+                            <span>{language === 'ta' ? 'தகுதி பூர்த்தி' : language === 'hi' ? 'पात्र' : 'Eligible'}</span>
                           </span>
                         ) : overallStatus === 'unknown' ? (
                           <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800">
                             <HelpCircle className="w-3 h-3 text-amber-600" />
-                            <span>{language === 'ta' ? 'விவரம் தேவை' : 'Needs Info'}</span>
+                            <span>{language === 'ta' ? 'விவரம் தேவை' : language === 'hi' ? 'जानकारी चाहिए' : 'Needs Info'}</span>
                           </span>
                         ) : (
                           <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800">
                             <XCircle className="w-3 h-3 text-rose-600" />
-                            <span>{language === 'ta' ? 'தகுதியில்லை' : 'Not Met'}</span>
+                            <span>{language === 'ta' ? 'தகுதியில்லை' : language === 'hi' ? 'अपात्र' : 'Not Met'}</span>
                           </span>
                         )}
                       </div>
                       <p className="text-xs text-slate-500">{locScheme.ministry}</p>
                       {locScheme.benefits_summary && (
                         <p className="text-xs text-slate-700 font-medium">
-                          {language === 'ta' ? 'பயன்:' : 'Benefit:'} {locScheme.benefits_summary}
+                          {language === 'ta' ? 'பயன்:' : language === 'hi' ? 'लाभ:' : 'Benefit:'} {locScheme.benefits_summary}
                         </p>
                       )}
                     </div>
@@ -469,6 +481,8 @@ export const ReadinessPassport: React.FC<ReadinessPassportProps> = ({
                       <span className="text-slate-400 font-mono text-[11px]">
                         {language === 'ta'
                           ? `${metCount}/${totalCriteriaCount} விதிகள்`
+                          : language === 'hi'
+                          ? `${metCount}/${totalCriteriaCount} नियम`
                           : `${metCount}/${totalCriteriaCount} criteria`}
                       </span>
                       {scheme.official_portal_url && (
@@ -478,7 +492,7 @@ export const ReadinessPassport: React.FC<ReadinessPassportProps> = ({
                           rel="noreferrer"
                           className="inline-flex items-center space-x-1 text-civic-700 font-semibold hover:underline"
                         >
-                          <span>{language === 'ta' ? 'தளம்' : 'Portal'}</span>
+                          <span>{language === 'ta' ? 'தளம்' : language === 'hi' ? 'पोर्टल' : 'Portal'}</span>
                           <ExternalLink className="w-3.5 h-3.5" />
                         </a>
                       )}
