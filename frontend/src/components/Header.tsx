@@ -217,59 +217,23 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Top Right: Language Switcher, Kiosk Mode, End Session & Mobile Menu Toggle */}
           <div className="flex items-center justify-end gap-1.5 sm:gap-2 shrink-0">
-            {/* Language Switcher Segmented Control: English | தமிழ் | हिंदी */}
-            <div
-              className="flex items-center rounded-lg border border-slate-200 bg-slate-100/80 p-0.5 shadow-2xs shrink-0"
-              role="group"
-              aria-label="Language selection"
+            {/* Official Indian Governance / myScheme-Style Language Option */}
+            <LanguageSelector variant="header" />
+
+            {/* High Contrast / Dark Theme Toggle matching myScheme header */}
+            <button
+              type="button"
+              onClick={toggleInvertColors}
+              aria-label={settings.invertColors ? "Switch to standard theme" : "Switch to high contrast dark theme"}
+              title={settings.invertColors ? "Standard Theme" : "High Contrast Theme (Dark)"}
+              className={`h-8 w-8 xl:h-8.5 xl:w-8.5 rounded-lg flex items-center justify-center shrink-0 border transition-all focus:outline-none focus:ring-2 focus:ring-amber-400 cursor-pointer ${
+                settings.invertColors
+                  ? 'bg-amber-400 text-slate-950 border-amber-300 shadow-sm'
+                  : 'bg-slate-900 text-amber-300 border-slate-700 hover:bg-slate-800 shadow-2xs'
+              }`}
             >
-              <Globe className="w-3 h-3 xl:w-3.5 xl:h-3.5 text-slate-500 ml-1.5 mr-1 hidden sm:inline shrink-0" />
-              <button
-                type="button"
-                onClick={() => setLanguage('en')}
-                className={`h-7 px-2 xl:px-2.5 rounded-md ${
-                  isIndic ? 'text-[11px] xl:text-xs' : 'text-xs'
-                } font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 ${
-                  language === 'en'
-                    ? 'bg-white text-civic-900 shadow-2xs font-bold border border-slate-200'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-                aria-label="Switch website language to English"
-                aria-pressed={language === 'en'}
-              >
-                English
-              </button>
-              <button
-                type="button"
-                onClick={() => setLanguage('ta')}
-                className={`h-7 px-2 xl:px-2.5 rounded-md ${
-                  isIndic ? 'text-[11px] xl:text-xs' : 'text-xs'
-                } font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 ${
-                  language === 'ta'
-                    ? 'bg-civic-700 text-white shadow-2xs font-bold'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-                aria-label="வலைத்தள மொழியை தமிழுக்கு மாற்றவும் (Switch website to Tamil)"
-                aria-pressed={language === 'ta'}
-              >
-                தமிழ்
-              </button>
-              <button
-                type="button"
-                onClick={() => setLanguage('hi')}
-                className={`h-7 px-2 xl:px-2.5 rounded-md ${
-                  isIndic ? 'text-[11px] xl:text-xs' : 'text-xs'
-                } font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 ${
-                  language === 'hi'
-                    ? 'bg-civic-700 text-white shadow-2xs font-bold'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-                aria-label="वेबसाइट की भाषा हिंदी में बदलें (Switch website to Hindi)"
-                aria-pressed={language === 'hi'}
-              >
-                हिंदी
-              </button>
-            </div>
+              <Sun className="w-4 h-4 stroke-[2.2]" />
+            </button>
 
             {/* Ephemeral Public Kiosk Mode Toggle */}
             <button
@@ -333,47 +297,18 @@ export const Header: React.FC<HeaderProps> = ({
               <span className="text-[10px] text-amber-700 font-semibold">{t.header.civicDossier}</span>
             </div>
 
-            {/* Mobile Language Switcher */}
-            <div className="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs">
-              <span className="font-semibold text-slate-700 flex items-center gap-1.5">
-                <Globe className="w-3.5 h-3.5 text-slate-500" />
-                <span>{t.header.languageSelect}</span>
-              </span>
-              <div className="flex items-center space-x-1">
-                <button
-                  type="button"
-                  onClick={() => setLanguage('en')}
-                  className={`px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                    language === 'en'
-                      ? 'bg-white text-civic-800 shadow-xs border border-slate-200'
-                      : 'text-slate-600 hover:bg-slate-200/60'
-                  }`}
-                >
-                  English
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setLanguage('ta')}
-                  className={`px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                    language === 'ta'
-                      ? 'bg-civic-700 text-white shadow-xs'
-                      : 'text-slate-600 hover:bg-slate-200/60'
-                  }`}
-                >
-                  தமிழ்
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setLanguage('hi')}
-                  className={`px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                    language === 'hi'
-                      ? 'bg-civic-700 text-white shadow-xs'
-                      : 'text-slate-600 hover:bg-slate-200/60'
-                  }`}
-                >
-                  हिंदी
-                </button>
+            {/* Mobile Language Switcher with official myScheme branding */}
+            <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+              <div className="flex items-center justify-between text-xs px-1">
+                <span className="font-semibold text-slate-700 flex items-center gap-1.5">
+                  <Globe className="w-3.5 h-3.5 text-slate-500" />
+                  <span>{t.header.languageSelect}</span>
+                </span>
+                <span className="text-[10px] text-emerald-800 font-semibold bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                  myScheme
+                </span>
               </div>
+              <LanguageSelector variant="mobile" />
             </div>
 
             <div className="space-y-1">
