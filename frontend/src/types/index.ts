@@ -233,7 +233,7 @@ export type NavigationTab =
   | 'trust-monitor'
   | 'application-tracker';
 
-export type AssistantLanguage = 'en' | 'ta';
+export type AssistantLanguage = 'en' | 'ta' | 'hi';
 
 export interface AssistantMessage {
   id: string;
