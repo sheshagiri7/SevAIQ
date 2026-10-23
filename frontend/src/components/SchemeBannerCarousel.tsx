@@ -47,14 +47,6 @@ interface SchemeSlide {
   primaryCtaText: string;
   secondaryCtaText: string;
   officialUrl: string;
-  image: {
-    src: string;
-    alt: string;
-    caption: string;
-    categoryTag: string;
-    sourceAttribution: string;
-    objectPosition?: string;
-  };
   theme: {
     bgGradient: string;
     headlineColor: string;
@@ -108,14 +100,6 @@ const SLIDES: SchemeSlide[] = [
     primaryCtaText: 'Apply Now',
     secondaryCtaText: 'Check Eligibility',
     officialUrl: 'https://scholarships.gov.in',
-    image: {
-      src: '/schemes/nsp-post-matric.jpg',
-      alt: 'Indian school students studying in classroom for National Scholarship Portal',
-      caption: 'Empowering Indian Students with Direct Scholarships & Fee Support',
-      categoryTag: 'Education & Skilling',
-      sourceAttribution: 'Wikimedia Commons (CC-BY-SA 2.0)',
-      objectPosition: 'object-center',
-    },
     theme: {
       bgGradient: 'from-[#eef9f2] via-[#e5f4ea] to-[#d8ede0]',
       headlineColor: 'text-[#155e3b]',
@@ -167,14 +151,6 @@ const SLIDES: SchemeSlide[] = [
     primaryCtaText: 'Apply Now',
     secondaryCtaText: 'Check Beneficiary',
     officialUrl: 'https://pmkisan.gov.in',
-    image: {
-      src: '/schemes/pm-kisan.jpg',
-      alt: 'Indian farmers working in agricultural field for PM-KISAN Samman Nidhi',
-      caption: 'Direct Income Support of ₹6,000/year for Indian Farmer Families',
-      categoryTag: 'Agriculture & Rural',
-      sourceAttribution: 'Unsplash Verified Media (Free License)',
-      objectPosition: 'object-center',
-    },
     theme: {
       bgGradient: 'from-[#fefcf2] via-[#f9f5e2] to-[#ecf8eb]',
       headlineColor: 'text-[#1b6b3e]',
@@ -226,14 +202,6 @@ const SLIDES: SchemeSlide[] = [
     primaryCtaText: 'Apply Now',
     secondaryCtaText: 'Find Hospitals',
     officialUrl: 'https://pmjay.gov.in',
-    image: {
-      src: '/schemes/ab-pmjay.jpg',
-      alt: 'Healthcare medical doctor with stethoscope providing clinical care for Ayushman Bharat PM-JAY',
-      caption: 'Cashless Hospitalization Cover up to ₹5 Lakh Across 28,000+ Hospitals',
-      categoryTag: 'Healthcare & Wellness',
-      sourceAttribution: 'Unsplash Verified Media (Free License)',
-      objectPosition: 'object-center',
-    },
     theme: {
       bgGradient: 'from-[#f0f9ff] via-[#e2f2fe] to-[#d8eefd]',
       headlineColor: 'text-[#0355a3]',
@@ -285,14 +253,6 @@ const SLIDES: SchemeSlide[] = [
     primaryCtaText: 'Apply Now',
     secondaryCtaText: 'Check Loan Status',
     officialUrl: 'https://pmsvanidhi.mohua.gov.in',
-    image: {
-      src: '/schemes/pm-svanidhi.jpg',
-      alt: 'Indian street vendor smiling at produce stall for PM SVANidhi Micro-Credit Scheme',
-      caption: 'Working Capital Micro-Credit Loans for Urban Street Vendors',
-      categoryTag: 'Urban Livelihoods',
-      sourceAttribution: 'Unsplash Verified Media (Free License)',
-      objectPosition: 'object-center',
-    },
     theme: {
       bgGradient: 'from-[#fff8f0] via-[#feeedd] to-[#fae8ff]',
       headlineColor: 'text-[#9a3412]',
@@ -344,14 +304,6 @@ const SLIDES: SchemeSlide[] = [
     primaryCtaText: 'Apply Now',
     secondaryCtaText: 'Gram Panchayat List',
     officialUrl: 'https://pmayg.nic.in',
-    image: {
-      src: '/schemes/pmay-g.jpg',
-      alt: 'Permanent rural pucca masonry house in India under Pradhan Mantri Awas Yojana',
-      caption: 'Permanent All-Weather Pucca Housing for Rural Indian Families',
-      categoryTag: 'Housing & Shelter',
-      sourceAttribution: 'Wikimedia Commons (CC-BY-SA 3.0)',
-      objectPosition: 'object-center',
-    },
     theme: {
       bgGradient: 'from-[#ecfdf5] via-[#e3faf0] to-[#e0f2fe]',
       headlineColor: 'text-[#0f5132]',
@@ -401,8 +353,6 @@ interface SlideTextTranslation {
   benefitPill: string;
   primaryCtaText: string;
   secondaryCtaText: string;
-  imageAlt?: string;
-  imageCaption?: string;
   phone: {
     title: string;
     tagline: string;
@@ -436,8 +386,6 @@ const SLIDE_TRANSLATIONS: Record<'ta' | 'hi', Record<string, SlideTextTranslatio
       benefitPill: '100% கட்டாய கல்விக் கட்டண திருப்பிச் செலுத்துதல் & பராமரிப்பு உதவித்தொகை',
       primaryCtaText: 'விண்ணப்பிக்கவும்',
       secondaryCtaText: 'தகுதியை சரிபார்க்கவும்',
-      imageAlt: 'தேசிய கல்வி உதவித்தொகை தளம் - வகுப்பறையில் கற்கும் இந்திய பள்ளி மாணவர்கள்',
-      imageCaption: 'நேரடி கல்வி உதவித்தொகை மூலம் இந்திய மாணவர்களுக்கு அதிகாரமளித்தல்',
       phone: {
         title: 'தேசிய கல்வி உதவித்தொகை தளம்',
         tagline: 'கல்வி & சமூக நீதி அமைச்சகம்',
@@ -468,8 +416,6 @@ const SLIDE_TRANSLATIONS: Record<'ta' | 'hi', Record<string, SlideTextTranslatio
       benefitPill: 'நேரடி பயன் பரிமாற்றம் (DBT) மூலம் ஆண்டுக்கு ₹6,000',
       primaryCtaText: 'விண்ணப்பிக்கவும்',
       secondaryCtaText: 'பயனாளியை சரிபார்க்கவும்',
-      imageAlt: 'பிஎம்-கிசான் சம்மான் நிதி - விவசாய நிலத்தில் உழைக்கும் இந்திய விவசாயிகள்',
-      imageCaption: 'இந்திய விவசாய குடும்பங்களுக்கு ஆண்டுக்கு ₹6,000 நேரடி வருமான ஆதரவு',
       phone: {
         title: 'PM-KISAN உழவர் தளம்',
         tagline: 'விவசாயிகள் நலம் & DBT பரிமாற்றம்',
@@ -500,8 +446,6 @@ const SLIDE_TRANSLATIONS: Record<'ta' | 'hi', Record<string, SlideTextTranslatio
       benefitPill: 'ஆண்டுக்கு குடும்பத்திற்கு ₹5,00,000 வரை ரொக்கமில்லா மருத்துவ சிகிச்சை',
       primaryCtaText: 'விண்ணப்பிக்கவும்',
       secondaryCtaText: 'மருத்துவமனைகளைக் கண்டறியவும்',
-      imageAlt: 'ஆயுஷ்மான் பாரத் PM-JAY - மருத்துவ சிகிச்சை அளிக்கும் சுகாதார மருத்துவர்',
-      imageCaption: '28,000+ மருத்துவமனைகளில் ₹5 லட்சம் வரை கட்டணமில்லா சிகிச்சை',
       phone: {
         title: 'ஆயுஷ்மான் பாரத் PM-JAY',
         tagline: 'தேசிய சுகாதார ஆணைய டிஜிட்டல் தளம்',
@@ -532,8 +476,6 @@ const SLIDE_TRANSLATIONS: Record<'ta' | 'hi', Record<string, SlideTextTranslatio
       benefitPill: '7% வட்டி மானியத்துடன் ₹10,000 முதல் ₹50,000 வரை நுண்கடன்',
       primaryCtaText: 'விண்ணப்பிக்கவும்',
       secondaryCtaText: 'கடன் நிலையை சரிபார்க்கவும்',
-      imageAlt: 'பிஎம் ஸ்வநிதி திட்டம் - கடையில் புன்னகைக்கும் இந்திய சாலையோர வியாபாரி',
-      imageCaption: 'நகர்ப்புற சாலையோர வியாபாரிகளுக்கான பிணையில்லா செயல்பாட்டு மூலதனக் கடன்',
       phone: {
         title: 'PM SVANidhi மொபைல்',
         tagline: 'நகர்ப்புற வியாபாரிகள் நுண்கடன் திட்டம்',
@@ -564,8 +506,6 @@ const SLIDE_TRANSLATIONS: Record<'ta' | 'hi', Record<string, SlideTextTranslatio
       benefitPill: 'பக்கா வீடு கட்ட ₹1.30 லட்சம் நேரடி நிதி உதவி',
       primaryCtaText: 'விண்ணப்பிக்கவும்',
       secondaryCtaText: 'கிராம பஞ்சாயத்து பட்டியல்',
-      imageAlt: 'பிரதான் மந்திரி ஆவாஸ் திட்டம் - கிராமப்புறத்தில் கட்டப்பட்ட நிரந்தர பக்கா வீடு',
-      imageCaption: 'கிராமப்புற குடும்பங்களுக்கு அனைத்து காலநிலைகளுக்கும் ஏற்ற நிரந்தர பக்கா வீடு',
       phone: {
         title: 'ஆவாஸ்சாஃப்ட் கிராமப்புற வீட்டுவசதி',
         tagline: 'ஊரக வளர்ச்சி அமைச்சக DBT',
@@ -598,8 +538,6 @@ const SLIDE_TRANSLATIONS: Record<'ta' | 'hi', Record<string, SlideTextTranslatio
       benefitPill: '100% अनिवार्य शुल्क प्रतिपूर्ति और रखरखाव सहायता',
       primaryCtaText: 'अभी आवेदन करें',
       secondaryCtaText: 'पात्रता जांचें',
-      imageAlt: 'राष्ट्रीय छात्रवृत्ति पोर्टल - कक्षा में अध्ययनरत भारतीय स्कूली छात्र',
-      imageCaption: 'प्रत्यक्ष छात्रवृत्ति द्वारा देश भर के छात्रों का सशक्तिकरण',
       phone: {
         title: 'राष्ट्रीय छात्रवृत्ति पोर्टल',
         tagline: 'शिक्षा एवं सामाजिक न्याय मंत्रालय',
@@ -630,8 +568,6 @@ const SLIDE_TRANSLATIONS: Record<'ta' | 'hi', Record<string, SlideTextTranslatio
       benefitPill: 'प्रत्यक्ष लाभ अंतरण (DBT) के माध्यम से ₹6,000 प्रति वर्ष',
       primaryCtaText: 'अभी आवेदन करें',
       secondaryCtaText: 'लाभार्थी स्थिति जांचें',
-      imageAlt: 'पीएम किसान सम्मान निधि - कृषि क्षेत्र में कार्यरत भारतीय किसान',
-      imageCaption: 'भारतीय किसान परिवारों को ₹6,000/वर्ष की प्रत्यक्ष आय सहायता',
       phone: {
         title: 'पीएम-किसान किसान पोर्टल',
         tagline: 'किसान कल्याण और डीबीटी वितरण',
@@ -662,8 +598,6 @@ const SLIDE_TRANSLATIONS: Record<'ta' | 'hi', Record<string, SlideTextTranslatio
       benefitPill: 'प्रति परिवार ₹5,00,000 वार्षिक निःशुल्क अस्पताल उपचार',
       primaryCtaText: 'अभी आवेदन करें',
       secondaryCtaText: 'अस्पताल खोजें',
-      imageAlt: 'आयुष्मान भारत पीएम-जेएवाई - स्टेथोस्कोप के साथ रोगी का उपचार करते चिकित्सक',
-      imageCaption: '28,000+ अस्पतालों में ₹5 लाख तक का कैशलेस स्वास्थ्य सुरक्षा कवर',
       phone: {
         title: 'आयुष्मान भारत पीएम-जेएवाई',
         tagline: 'राष्ट्रीय स्वास्थ्य प्राधिकरण डिजिटल पोर्टल',
@@ -694,8 +628,6 @@ const SLIDE_TRANSLATIONS: Record<'ta' | 'hi', Record<string, SlideTextTranslatio
       benefitPill: '7% ब्याज सब्सिडी के साथ ₹10,000 से ₹50,000 तक सूक्ष्म ऋण',
       primaryCtaText: 'अभी आवेदन करें',
       secondaryCtaText: 'ऋण स्थिति जांचें',
-      imageAlt: 'पीएम स्वनिधि योजना - दुकान पर मुस्कुराते भारतीय स्ट्रीट वेंडर',
-      imageCaption: 'शहरी पथ विक्रेताओं के लिए संपार्श्विक-मुक्त कार्यशील पूंजी ऋण',
       phone: {
         title: 'पीएम स्वनिधि मोबाइल',
         tagline: 'शहरी विक्रेता सूक्ष्म ऋण योजना',
@@ -726,8 +658,6 @@ const SLIDE_TRANSLATIONS: Record<'ta' | 'hi', Record<string, SlideTextTranslatio
       benefitPill: 'पक्के मकान हेतु ₹1.30 लाख की प्रत्यक्ष वित्तीय सहायता',
       primaryCtaText: 'अभी आवेदन करें',
       secondaryCtaText: 'ग्राम पंचायत सूची',
-      imageAlt: 'प्रधानमंत्री आवास योजना - ग्रामीण भारत में निर्मित स्थायी पक्का मकान',
-      imageCaption: 'ग्रामीण परिवारों हेतु सर्व-ऋतु अनुकूल स्थायी पक्का आवास',
       phone: {
         title: 'आवाससॉफ्ट ग्रामीण आवास',
         tagline: 'ग्रामीण विकास मंत्रालय डीबीटी',
@@ -769,11 +699,6 @@ const getLocalizedSlide = (slide: SchemeSlide, lang: string): SchemeSlide => {
     benefitPill: trans.benefitPill,
     primaryCtaText: trans.primaryCtaText,
     secondaryCtaText: trans.secondaryCtaText,
-    image: {
-      ...slide.image,
-      alt: trans.imageAlt || slide.image.alt,
-      caption: trans.imageCaption || slide.image.caption,
-    },
     phone: {
       ...slide.phone,
       title: trans.phone.title,
@@ -872,73 +797,6 @@ const FloatingBadgeIcon: React.FC<{ type: string; className?: string }> = ({ typ
     default:
       return <CheckCircle2 className={className} />;
   }
-};
-
-// Robust Scheme Photograph Component with Guaranteed Local Fallback
-interface SchemeImageWithFallbackProps {
-  src: string;
-  alt: string;
-  fallbackTitle: string;
-  category: string;
-  iconType: string;
-  className?: string;
-  objectPosition?: string;
-}
-
-const SchemeImageWithFallback: React.FC<SchemeImageWithFallbackProps> = ({
-  src,
-  alt,
-  fallbackTitle,
-  category,
-  iconType,
-  className = 'w-full h-full object-cover',
-  objectPosition = 'object-center',
-}) => {
-  const [hasError, setHasError] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  useEffect(() => {
-    setHasError(false);
-    setIsLoaded(false);
-  }, [src]);
-
-  if (hasError) {
-    return (
-      <div
-        role="img"
-        aria-label={`${fallbackTitle} - ${category} (Neutral Fallback)`}
-        className="w-full h-full bg-gradient-to-br from-slate-100 via-slate-200 to-slate-300 flex flex-col items-center justify-center p-3 text-center relative overflow-hidden"
-      >
-        <div className="w-10 h-10 rounded-xl bg-white shadow-xs border border-slate-300/80 flex items-center justify-center text-slate-700 mb-1.5">
-          <FloatingBadgeIcon type={iconType} className="w-5 h-5 text-emerald-700" />
-        </div>
-        <span className="text-[9px] font-black text-slate-800 uppercase tracking-wider">{category}</span>
-        <span className="text-[10px] font-bold text-slate-600 line-clamp-1 mt-0.5">{fallbackTitle}</span>
-        <span className="text-[8px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-full mt-1">
-          Official Government Scheme
-        </span>
-      </div>
-    );
-  }
-
-  return (
-    <div className="w-full h-full relative overflow-hidden bg-slate-100">
-      {!isLoaded && (
-        <div className="absolute inset-0 bg-slate-200 animate-pulse flex items-center justify-center" aria-hidden="true">
-          <FloatingBadgeIcon type={iconType} className="w-6 h-6 text-slate-400" />
-        </div>
-      )}
-      <img
-        src={src}
-        alt={alt}
-        loading="eager"
-        decoding="async"
-        className={`${className} ${objectPosition} ${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`}
-        onLoad={() => setIsLoaded(true)}
-        onError={() => setHasError(true)}
-      />
-    </div>
-  );
 };
 
 // 3D Isometric Floating Graphics with Distinct Movement Per Image
@@ -1183,7 +1041,6 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
   const isHindi = language === 'hi';
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
-  const [isPaused, setIsPaused] = useState(false);
 
   // 5-second time limit requested by user
   const SLIDE_DURATION_MS = 5000;
@@ -1196,16 +1053,16 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
     setCurrentSlideIndex((prev) => (prev - 1 + SLIDES.length) % SLIDES.length);
   }, []);
 
-  // 5-second automatic scrolling timer (respects WCAG pause animations & user pause/hover)
+  // 5-second automatic scrolling timer (respects WCAG pause animations)
   useEffect(() => {
-    if (settings.pauseAnimation || isPaused) return;
+    if (settings.pauseAnimation) return;
 
     const timer = setInterval(() => {
       nextSlide();
     }, SLIDE_DURATION_MS);
 
     return () => clearInterval(timer);
-  }, [settings.pauseAnimation, isPaused, nextSlide]);
+  }, [settings.pauseAnimation, nextSlide]);
 
   const activeSlide = SLIDES[currentSlideIndex];
 
@@ -1271,10 +1128,6 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
         className="relative w-full h-[calc(100vh-4.25rem)] min-h-[640px] max-h-[960px] flex flex-col justify-between overflow-hidden select-none group border-b border-slate-200/80 bg-slate-50 moving-animation-exempt"
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
-        onMouseEnter={() => setIsPaused(true)}
-        onMouseLeave={() => setIsPaused(false)}
-        onFocus={() => setIsPaused(true)}
-        onBlur={() => setIsPaused(false)}
         aria-roledescription="carousel"
         aria-label="Government Schemes Showcase Carousel"
       >
@@ -1571,9 +1424,9 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                         </div>
 
                         {/* Phone Inner Content */}
-                        <div className="p-2 space-y-1.5 flex-1 overflow-hidden bg-slate-50/80 flex flex-col justify-between">
+                        <div className="p-2 space-y-1.5 flex-1 overflow-hidden bg-slate-50/80">
                           {/* Scheme Header Card */}
-                          <div className="p-1.5 rounded-xl bg-white border border-slate-200/70 shadow-2xs flex items-center space-x-1.5 shrink-0">
+                          <div className="p-2 rounded-xl bg-white border border-slate-200/70 shadow-2xs flex items-center space-x-1.5">
                             <div className="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-800 flex items-center justify-center font-bold text-[9px] shrink-0 border border-emerald-200">
                               {locSlide.phone.shortCode}
                             </div>
@@ -1585,32 +1438,8 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                             </div>
                           </div>
 
-                          {/* Scheme Photographic Hero inside Smartphone Screen */}
-                          <div className="relative w-full h-22 sm:h-26 rounded-xl overflow-hidden shadow-xs border border-slate-200/90 bg-slate-100 shrink-0 group/phoneimg">
-                            <SchemeImageWithFallback
-                              src={locSlide.image.src}
-                              alt={locSlide.image.alt}
-                              fallbackTitle={locSlide.titlePrimary}
-                              category={locSlide.image.categoryTag}
-                              iconType={slide.phone.floating3DIcon}
-                              className="w-full h-full object-cover"
-                              objectPosition={locSlide.image.objectPosition}
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent pointer-events-none" />
-                            <div className="absolute top-1 right-1 pointer-events-none">
-                              <span className="inline-flex items-center px-1.5 py-0.2 rounded-full text-[6.5px] sm:text-[7px] font-extrabold bg-emerald-600/95 text-white shadow-xs uppercase tracking-wider">
-                                Verified Photo
-                              </span>
-                            </div>
-                            <div className="absolute bottom-1 left-1.5 right-1.5 pointer-events-none">
-                              <p className="text-[7.5px] sm:text-[8px] font-bold text-white leading-tight truncate drop-shadow-sm">
-                                {locSlide.image.caption}
-                              </p>
-                            </div>
-                          </div>
-
                           {/* Search Bar Input */}
-                          <div className="relative shrink-0">
+                          <div className="relative">
                             <Search className="w-2.5 h-2.5 text-slate-400 absolute left-2 top-2" />
                             <input
                               type="text"
@@ -1621,20 +1450,20 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                           </div>
 
                           {/* Highlight Feature Card */}
-                          <div className="p-1.5 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-1 shrink-0">
-                            <span className="text-[8.5px] font-bold text-slate-800 block leading-tight">
+                          <div className="p-2 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-1">
+                            <span className="text-[9px] font-bold text-slate-800 block leading-tight">
                               {locSlide.phone.highlightCard.title}
                             </span>
                             <button
                               type="button"
-                              className={`w-full py-0.5 rounded-md ${locSlide.phone.highlightCard.btnColor} text-white text-[7.5px] sm:text-[8px] font-bold shadow-2xs tracking-wider uppercase`}
+                              className={`w-full py-0.5 rounded-md ${locSlide.phone.highlightCard.btnColor} text-white text-[8px] font-bold shadow-2xs tracking-wider uppercase`}
                             >
                               {locSlide.phone.highlightCard.btnText}
                             </button>
                           </div>
 
                           {/* Service Row 1 */}
-                          <div className="p-1.5 rounded-xl bg-white border border-slate-200 shadow-2xs flex items-center justify-between shrink-0">
+                          <div className="p-1.5 rounded-xl bg-white border border-slate-200 shadow-2xs flex items-center justify-between">
                             <span className="text-[8px] font-semibold text-slate-800 truncate">
                               {locSlide.phone.service1}
                             </span>
@@ -1642,7 +1471,7 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                           </div>
 
                           {/* Service Row 2 */}
-                          <div className="p-1.5 rounded-xl bg-white border border-slate-200 shadow-2xs flex items-center justify-between shrink-0">
+                          <div className="p-1.5 rounded-xl bg-white border border-slate-200 shadow-2xs flex items-center justify-between">
                             <span className="text-[8px] font-semibold text-slate-800 truncate">
                               {locSlide.phone.service2}
                             </span>
@@ -1655,65 +1484,6 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                           <div className="w-16 h-1 bg-slate-300 rounded-full" />
                         </div>
                       </div>
-                    </div>
-                  </div>
-
-                  {/* Large Screen Scheme Photographic Showcase Card */}
-                  <div className="hidden lg:flex flex-col w-[220px] xl:w-[250px] h-[380px] sm:h-[430px] lg:h-[460px] rounded-[32px] bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-2xl overflow-hidden justify-between p-3 relative group/showcase transition-all duration-300 hover:shadow-3xl hover:scale-[1.01] shrink-0">
-                    {/* Scheme Photograph Window */}
-                    <div className="relative w-full h-[210px] xl:h-[240px] rounded-2xl overflow-hidden bg-slate-100 border border-slate-200/80 shadow-xs shrink-0">
-                      <SchemeImageWithFallback
-                        src={locSlide.image.src}
-                        alt={locSlide.image.alt}
-                        fallbackTitle={locSlide.titlePrimary}
-                        category={locSlide.image.categoryTag}
-                        iconType={slide.phone.floating3DIcon}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover/showcase:scale-105"
-                        objectPosition={locSlide.image.objectPosition}
-                      />
-                      {/* Category Pill Tag */}
-                      <div className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-slate-900/80 backdrop-blur-xs text-white text-[8px] xl:text-[9px] font-black uppercase tracking-wider flex items-center space-x-1 shadow-sm">
-                        <Sparkles className="w-2.5 h-2.5 text-amber-400" />
-                        <span className="truncate max-w-[120px]">{locSlide.image.categoryTag}</span>
-                      </div>
-                      {/* Verified Pill */}
-                      <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-emerald-600/90 backdrop-blur-xs text-white text-[8px] xl:text-[9px] font-bold flex items-center space-x-1 shadow-sm">
-                        <CheckCircle2 className="w-2.5 h-2.5" />
-                        <span>Verified</span>
-                      </div>
-                      {/* Gradient & Caption Overlay */}
-                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent p-2.5 text-white">
-                        <p className="text-[10px] xl:text-[11px] font-bold leading-tight drop-shadow-sm line-clamp-2">
-                          {locSlide.image.caption}
-                        </p>
-                        <span className="text-[7.5px] xl:text-[8px] text-slate-300 font-medium mt-0.5 block truncate">
-                          {locSlide.image.sourceAttribution}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Card Details & Action */}
-                    <div className="pt-2 px-1 flex flex-col justify-between flex-1 min-h-0">
-                      <div>
-                        <span className="text-[8.5px] font-black text-slate-400 uppercase tracking-widest block">
-                          Verified Scheme Initiative
-                        </span>
-                        <h4 className="text-xs xl:text-sm font-extrabold text-slate-900 line-clamp-1 mt-0.5">
-                          {locSlide.titlePrimary}
-                        </h4>
-                        <p className="text-[9px] xl:text-[9.5px] text-slate-600 line-clamp-2 mt-0.5 leading-snug">
-                          {locSlide.description}
-                        </p>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => handlePrimaryClick(slide)}
-                        className="mt-2 w-full py-2 px-3 rounded-xl bg-[#107c41] hover:bg-[#0c6534] text-white text-[10px] xl:text-[11px] font-bold shadow-xs transition-all hover:scale-102 flex items-center justify-center space-x-1.5 cursor-pointer"
-                        aria-label={`Explore ${locSlide.titlePrimary} details`}
-                      >
-                        <span>Explore Scheme</span>
-                        <ExternalLink className="w-3 h-3" />
-                      </button>
                     </div>
                   </div>
 
@@ -1748,7 +1518,7 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                       key={`progress-${currentSlideIndex}`}
                       className={`h-full ${activeSlide.theme.accentDot} rounded-full`}
                       style={{
-                        animation: settings.pauseAnimation || isPaused
+                        animation: settings.pauseAnimation
                           ? 'none'
                           : `carousel-progress ${SLIDE_DURATION_MS}ms linear forwards`,
                       }}
