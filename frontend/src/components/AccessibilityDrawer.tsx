@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useAccessibility } from '../context/AccessibilityContext';
 import { useLanguage } from '../context/LanguageContext';
-import { RotateCcw, X, Sparkles, Check } from 'lucide-react';
+import { RotateCcw, X, Check } from 'lucide-react';
 
 export const AccessibilityDrawer: React.FC = () => {
   const {
@@ -28,7 +28,6 @@ export const AccessibilityDrawer: React.FC = () => {
 
   const labels = {
     title: language === 'ta' ? 'அணுகல்தன்மை விருப்பங்கள்' : language === 'hi' ? 'सुलभता विकल्प' : 'Accessibility options',
-    upgrade: language === 'ta' ? 'மேம்படுத்து' : language === 'hi' ? 'अपग्रेड' : 'Upgrade',
     biggerText: language === 'ta' ? 'பெரிய எழுத்து' : language === 'hi' ? 'बड़ा टेक्स्ट' : 'Bigger Text',
     smallerText: language === 'ta' ? 'சிறிய எழுத்து' : language === 'hi' ? 'छोटा टेक्स्ट' : 'Smaller Text',
     textSpacing: language === 'ta' ? 'எழுத்து இடைவெளி' : language === 'hi' ? 'अक्षर रिक्ति' : 'Text Spacing',
