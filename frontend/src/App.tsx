@@ -9,7 +9,8 @@ import { ReadinessPassport } from './components/ReadinessPassport';
 import { VoiceAssistant } from './components/VoiceAssistant';
 import { TrustMonitor } from './components/TrustMonitor';
 import { ApplicationTracker } from './components/ApplicationTracker';
-import { DeveloperHandshake } from './components/DeveloperHandshake';
+import { AccessibilityDrawer } from './components/AccessibilityDrawer';
+import { ADHDRuler } from './components/ADHDRuler';
 import { Footer } from './components/Footer';
 import { checkBackendHealth, fetchSchemes, getApiBaseUrl } from './services/api';
 import {
@@ -38,6 +39,7 @@ import {
 
 export function App() {
   const [activeTab, setActiveTab] = useState<NavigationTab>('dashboard');
+  const [isVoiceAssistantOpen, setIsVoiceAssistantOpen] = useState(false);
 
   const [apiState, setApiState] = useState<ApiState>({
     status: 'checking',
@@ -153,6 +155,7 @@ export function App() {
     setProfile(EMPTY_PROFILE);
     setDocuments(INITIAL_DOCUMENT_RECORDS);
     setSelectedSchemeIds([]);
+    setIsVoiceAssistantOpen(false);
   };
 
   const handlePreFillDemoProfile = () => {
@@ -278,17 +281,33 @@ export function App() {
     );
   };
 
+  const handleNavigate = (tab: NavigationTab) => {
+    if (tab === 'voice-assistant') {
+      setIsVoiceAssistantOpen(true);
+      return;
+    }
+    setActiveTab(tab);
+  };
+
+  // If activeTab is ever voice-assistant, open the corner assistant and show dashboard
+  useEffect(() => {
+    if (activeTab === 'voice-assistant') {
+      setIsVoiceAssistantOpen(true);
+      setActiveTab('dashboard');
+    }
+  }, [activeTab]);
+
   const handleSelectSchemeForEligibility = (_scheme: Scheme) => {
     setActiveTab('eligibility');
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 font-sans">
+    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 font-sans relative">
       {/* Universal Header with Tab Navigation & Health Status */}
       <Header
         apiState={apiState}
         activeTab={activeTab}
-        onSelectTab={setActiveTab}
+        onSelectTab={handleNavigate}
         onRefreshHealth={handleCheckHealth}
         eligibleCount={eligibleCount}
         isKioskMode={isKioskMode}
@@ -300,7 +319,7 @@ export function App() {
       <main className="flex-1">
         {activeTab === 'dashboard' && (
           <Dashboard
-            onNavigate={setActiveTab}
+            onNavigate={handleNavigate}
             profile={profile}
             schemes={allSchemes}
             eligibleCount={eligibleCount}
@@ -336,7 +355,7 @@ export function App() {
             profile={profile}
             documents={documents}
             onUpdateProfile={handleUpdateProfile}
-            onNavigate={setActiveTab}
+            onNavigate={handleNavigate}
             onSelectForMapper={handleToggleSchemeSelection}
             selectedSchemeIdsForMapper={selectedSchemeIds}
             isKioskMode={isKioskMode}
@@ -354,7 +373,7 @@ export function App() {
             onToggleSchemeSelection={handleToggleSchemeSelection}
             onResetSchemeSelection={handleResetSchemeSelection}
             onUpdateDocumentStatus={handleUpdateDocumentStatus}
-            onNavigate={setActiveTab}
+            onNavigate={handleNavigate}
           />
         )}
 
@@ -364,22 +383,14 @@ export function App() {
             schemes={allSchemes}
             documents={documents}
             selectedSchemeIds={selectedSchemeIds}
-            onNavigate={setActiveTab}
-          />
-        )}
-
-        {activeTab === 'voice-assistant' && (
-          <VoiceAssistant
-            schemes={allSchemes}
-            onNavigate={setActiveTab}
-            onSelectSchemeForEligibility={handleSelectSchemeForEligibility}
+            onNavigate={handleNavigate}
           />
         )}
 
         {activeTab === 'trust-monitor' && (
           <TrustMonitor
             schemes={allSchemes}
-            onNavigate={setActiveTab}
+            onNavigate={handleNavigate}
             onSelectSchemeForEligibility={handleSelectSchemeForEligibility}
           />
         )}
@@ -388,16 +399,27 @@ export function App() {
           <ApplicationTracker
             schemes={allSchemes}
             initialSchemeId={selectedTrackerSchemeId}
-            onNavigate={setActiveTab}
+            onNavigate={handleNavigate}
             isKioskMode={isKioskMode}
           />
         )}
-
-        {/* Developer Handshake section accessible on dashboard and discover */}
-        {(activeTab === 'dashboard' || activeTab === 'discover' || activeTab === 'trust-monitor') && (
-          <DeveloperHandshake apiState={apiState} />
-        )}
       </main>
+
+      {/* Floating Bottom-Right Corner Voice AI Assistant */}
+      <VoiceAssistant
+        schemes={allSchemes}
+        onNavigate={handleNavigate}
+        onSelectSchemeForEligibility={handleSelectSchemeForEligibility}
+        isOpen={isVoiceAssistantOpen}
+        onToggleOpen={() => setIsVoiceAssistantOpen((prev) => !prev)}
+        onClose={() => setIsVoiceAssistantOpen(false)}
+      />
+
+      {/* UX4G Universal Accessibility Options Slide-over Drawer */}
+      <AccessibilityDrawer />
+
+      {/* ADHD Full-Screen Interactive Reading Focus Ruler */}
+      <ADHDRuler />
 
       <Footer />
     </div>

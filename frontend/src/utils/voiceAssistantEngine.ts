@@ -271,7 +271,7 @@ export function processCitizenQuery(
   // General fallback
   if (language === 'ta') {
     return {
-      text: `உங்கள் கேள்வி தொடர்பாக verified அரசு தரவுத்தளத்தில் ${schemes.length} அதிகாரப்பூர்வ திட்டங்கள் உள்ளன. விவசாயம், மருத்துவம், வீட்டு வசதி, ஓய்வூதியம், அல்லது சிறு தொழில் கடன் ஆகியவற்றில் உங்களுக்கு என்ன உதவி தேவை என்பதை குறிப்பிடவும். அல்லது "திட்டங்களை தேடு" பக்கத்தில் முழு பட்டியலை காணலாம்.`,
+      text: `உங்கள் கேள்வி தொடர்பாக சரிபார்க்கப்பட்ட அரசு தரவுத்தளத்தில் ${schemes.length} அதிகாரப்பூர்வ திட்டங்கள் உள்ளன. விவசாயம், மருத்துவம், வீட்டு வசதி, ஓய்வூதியம், அல்லது சிறு தொழில் கடன் ஆகியவற்றில் உங்களுக்கு என்ன உதவி தேவை என்பதை குறிப்பிடவும். அல்லது "திட்டங்களை தேடு" பக்கத்தில் முழு பட்டியலை காணலாம்.`,
       matchedSchemes: schemes.slice(0, 3),
       suggestedAction: {
         label: 'அனைத்து திட்டங்களையும் காண்க',
@@ -287,4 +287,177 @@ export function processCitizenQuery(
       tab: 'discover',
     },
   };
+}
+
+/**
+ * Normalizes and prepares text for browser Speech Synthesis (TTS).
+ * Specifically converts English acronyms, currency symbols (₹), percentages,
+ * and URLs into authentic, fluent Tamil phonetic words so Tamil speech engines
+ * (e.g. Vani, Google தமிழ், Latha) read out the text clearly without stumbling.
+ */
+export function prepareSpeechText(text: string, language: AssistantLanguage): string {
+  if (!text) return '';
+
+  if (language === 'ta') {
+    let clean = text;
+
+    // 1. Remove parenthesized English translations e.g. (Check Eligibility), (PM-KISAN), (RoR), (NFSA Card)
+    clean = clean.replace(/\([A-Za-z0-9\s\/\-_.,]+\)/g, '');
+
+    // 2. Pronounce platform & common terms in Tamil phonetics
+    clean = clean.replace(/\bSevAIQ\b/gi, 'சேவை ஐ க்யூ');
+    clean = clean.replace(/\be-KYC\b/gi, 'இ-கேஒய்சி');
+    clean = clean.replace(/\bWeb Speech API\b/gi, 'வெப் ஸ்பீச் ஏபிஐ');
+    clean = clean.replace(/\bAadhaar\b/gi, 'ஆதார்');
+    clean = clean.replace(/\bRation Card\b/gi, 'ரேஷன் அட்டை');
+    clean = clean.replace(/\bBank Passbook\b/gi, 'வங்கி கணக்கு புத்தகம்');
+    clean = clean.replace(/\bVoter ID\b/gi, 'வாக்காளர் அடையாள அட்டை');
+
+    // 3. Expand common acronyms to natural Tamil phonetic pronunciations
+    clean = clean.replace(/\bPM-KISAN\b/gi, 'பி எம் கிசான்');
+    clean = clean.replace(/\bAB-PMJAY\b/gi, 'ஆயுஷ்மான் பாரத் திட்டம்');
+    clean = clean.replace(/\bPM-JAY\b/gi, 'ஜன் ஆரோக்கிய திட்டம்');
+    clean = clean.replace(/\bPMAY-G\b/gi, 'பிரதம மந்திரி ஆவாஸ் யோஜனா கிராமப்புற திட்டம்');
+    clean = clean.replace(/\bPMAY-U\b/gi, 'பிரதம மந்திரி ஆவாஸ் யோஜனா நகர்ப்புற திட்டம்');
+    clean = clean.replace(/\bPMAY\b/gi, 'ஆவாஸ் யோஜனா');
+    clean = clean.replace(/\bAPY\b/gi, 'அடல் பென்ஷன் யோஜனா');
+    clean = clean.replace(/\bPM SVANidhi\b/gi, 'பி எம் ஸ்வநிதி திட்டம்');
+    clean = clean.replace(/\bPMMY\b/gi, 'முத்ரா திட்டம்');
+    clean = clean.replace(/\bCSC\b/gi, 'பொது சேவை மையம்');
+    clean = clean.replace(/\bDBT\b/gi, 'நேரடி வங்கி பரிமாற்றம்');
+    clean = clean.replace(/\bNFSA\b/gi, 'ரேஷன் அட்டை');
+    clean = clean.replace(/\bRoR\b/gi, 'பட்டா சிட்டா');
+    clean = clean.replace(/\bCoV\b/gi, 'விற்பனை சான்றிதழ்');
+    clean = clean.replace(/\bLoR\b/gi, 'பரிந்துரை கடிதம்');
+    clean = clean.replace(/\bPAN\b/gi, 'பான் அட்டை');
+
+    // 4. URLs to spoken Tamil
+    clean = clean.replace(/pmkisan\.gov\.in/gi, 'பி எம் கிசான் இணையதளம்');
+    clean = clean.replace(/beneficiary\.nha\.gov\.in/gi, 'ஆயுஷ்மான் பாரத் இணையதளம்');
+    clean = clean.replace(/pmsvanidhi\.mohua\.gov\.in/gi, 'பி எம் ஸ்வநிதி இணையதளம்');
+    clean = clean.replace(/npscra\.nsdl\.co\.in/gi, 'அடல் பென்ஷன் இணையதளம்');
+    clean = clean.replace(/pmjay\.gov\.in/gi, 'ஜன் ஆரோக்கிய இணையதளம்');
+
+    // 5. Currency amounts to fluent spoken Tamil numbers
+    clean = clean.replace(/₹\s*([0-9,.]+)\s*(லட்சம்|கோடி)?/g, (_match, num, unit) => {
+      const cleanNum = num.replace(/,/g, '');
+      if (cleanNum === '500000') return 'ஐந்து லட்சம் ரூபாய்';
+      if (cleanNum === '6000') return 'ஆறாயிரம் ரூபாய்';
+      if (cleanNum === '2000') return 'இரண்டாயிரம் ரூபாய்';
+      if (cleanNum === '1000') return 'ஆயிரம் ரூபாய்';
+      if (cleanNum === '5000') return 'ஐந்தாயிரம் ரூபாய்';
+      if (cleanNum === '120000') return 'ஒரு லட்சத்து இருபதாயிரம் ரூபாய்';
+      if (cleanNum === '130000') return 'ஒரு லட்சத்து முப்பதாயிரம் ரூபாய்';
+      if (cleanNum === '10000') return 'பத்தாயிரம் ரூபாய்';
+      if (cleanNum === '20000') return 'இருபதாயிரம் ரூபாய்';
+      if (cleanNum === '50000') return 'ஐம்பதாயிரம் ரூபாய்';
+      if (cleanNum === '2.5' && unit === 'லட்சம்') return 'இரண்டரை லட்சம் ரூபாய்';
+      if (cleanNum === '3' && unit === 'லட்சம்') return 'மூன்று லட்சம் ரூபாய்';
+      if (cleanNum === '10' && unit === 'லட்சம்') return 'பத்து லட்சம் ரூபாய்';
+      if (cleanNum === '20' && unit === 'லட்சம்') return 'இருபது லட்சம் ரூபாய்';
+      return unit ? `${cleanNum} ${unit} ரூபாய்` : `${cleanNum} ரூபாய்`;
+    });
+    clean = clean.replace(/₹/g, ' ரூபாய் ');
+
+    // 6. Percentages e.g. 7% -> 7 சதவீதம்
+    clean = clean.replace(/([0-9]+)\s*%/g, '$1 சதவீதம்');
+
+    // 7. Age patterns e.g. 70+ -> 70 வயதுக்கு மேற்பட்ட
+    clean = clean.replace(/([0-9]+)\s*\+/g, '$1 வயதுக்கு மேற்பட்ட');
+
+    // 8. Strip markdown characters, quotes, and brackets
+    clean = clean.replace(/[*_#`~"“”'’[\]]/g, '');
+
+    // 9. Normalize spacing
+    clean = clean.replace(/\s+/g, ' ').trim();
+
+    return clean;
+  }
+
+  // English cleanup
+  let cleanEn = text;
+  cleanEn = cleanEn.replace(/₹\s*([0-9,.]+)\s*(Lakh|Crore)?/gi, (_match, num, unit) => {
+    return unit ? `${num} ${unit} Rupees` : `${num} Rupees`;
+  });
+  cleanEn = cleanEn.replace(/₹/g, ' Rupees ');
+  cleanEn = cleanEn.replace(/([0-9]+)%/g, '$1 percent');
+  cleanEn = cleanEn.replace(/[*_#`~"[\]]/g, '');
+  cleanEn = cleanEn.replace(/\s+/g, ' ').trim();
+  return cleanEn;
+}
+
+export interface VoiceCandidate {
+  name: string;
+  lang: string;
+  default?: boolean;
+}
+
+/**
+ * Discovers and selects the optimal native speech synthesis voice for the chosen language.
+ * Prefers natural high-fidelity voices (Google தமிழ், macOS Vani, Windows Latha) for Tamil,
+ * and Indian English voices for English.
+ */
+export function getBestVoice<T extends VoiceCandidate>(
+  voices: T[],
+  language: AssistantLanguage
+): T | null {
+  if (!voices || voices.length === 0) return null;
+
+  if (language === 'ta') {
+    // 1. Preferred high-quality native Tamil voices
+    const preferredTamil = voices.find(
+      (v) =>
+        (v.lang.toLowerCase() === 'ta-in' ||
+          v.lang.toLowerCase() === 'ta_in' ||
+          v.lang.toLowerCase().startsWith('ta')) &&
+        (v.name.includes('Google') ||
+          v.name.includes('Vani') ||
+          v.name.includes('Latha') ||
+          v.name.includes('Valluvar') ||
+          v.name.includes('Tamil') ||
+          v.name.includes('தமிழ்'))
+    );
+    if (preferredTamil) return preferredTamil;
+
+    // 2. Exact match on language tag ta-IN or ta_IN
+    const exactTamil = voices.find(
+      (v) => v.lang.toLowerCase() === 'ta-in' || v.lang.toLowerCase() === 'ta_in'
+    );
+    if (exactTamil) return exactTamil;
+
+    // 3. Any voice starting with ta
+    const anyTamil = voices.find((v) => v.lang.toLowerCase().startsWith('ta'));
+    if (anyTamil) return anyTamil;
+
+    // 4. Any voice with 'tamil' in its name
+    const namedTamil = voices.find((v) => v.name.toLowerCase().includes('tamil'));
+    if (namedTamil) return namedTamil;
+
+    return null;
+  }
+
+  // English: Indian English preferred for authentic local terminology pronunciation
+  const indianEnglish = voices.find(
+    (v) =>
+      (v.lang.toLowerCase() === 'en-in' || v.lang.toLowerCase() === 'en_in') &&
+      (v.name.includes('Google') ||
+        v.name.includes('Rishi') ||
+        v.name.includes('Veena') ||
+        v.name.includes('Heera'))
+  );
+  if (indianEnglish) return indianEnglish;
+
+  const anyIndianEnglish = voices.find(
+    (v) => v.lang.toLowerCase() === 'en-in' || v.lang.toLowerCase() === 'en_in'
+  );
+  if (anyIndianEnglish) return anyIndianEnglish;
+
+  // Fallback: Default or any English voice
+  const defaultEnglish = voices.find(
+    (v) => v.default && v.lang.toLowerCase().startsWith('en')
+  );
+  if (defaultEnglish) return defaultEnglish;
+
+  const anyEnglish = voices.find((v) => v.lang.toLowerCase().startsWith('en'));
+  return anyEnglish || voices[0] || null;
 }

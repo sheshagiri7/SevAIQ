@@ -1,11 +1,14 @@
 import React from 'react';
 import { Sparkles, Shield, CheckCircle, Database, ArrowRight } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 interface HeroProps {
   onExploreClick: () => void;
 }
 
 export const Hero: React.FC<HeroProps> = ({ onExploreClick }) => {
+  const { t } = useLanguage();
+
   return (
     <section className="relative overflow-hidden pt-12 pb-16 lg:pt-16 lg:pb-20 bg-gradient-to-b from-white via-slate-50 to-slate-100 border-b border-slate-200">
       {/* Subtle background decoration */}
@@ -17,23 +20,22 @@ export const Hero: React.FC<HeroProps> = ({ onExploreClick }) => {
         {/* Project Badge */}
         <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-civic-50 border border-civic-200 text-civic-800 text-xs font-semibold mb-6 shadow-sm">
           <Sparkles className="w-3.5 h-3.5 text-civic-600" />
-          <span>Seva First Innovation Challenge 2026</span>
+          <span>{t.hero.badge}</span>
           <span className="text-civic-300">•</span>
-          <span className="text-slate-600 font-normal">Civic Tech Track</span>
+          <span className="text-slate-600 font-normal">{t.hero.track}</span>
         </div>
 
         {/* Heading */}
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 max-w-4xl mx-auto leading-tight sm:leading-tight">
-          Empowering Citizens with{' '}
+          {t.hero.titlePart1}
           <span className="bg-gradient-to-r from-blue-700 via-civic-600 to-indigo-700 bg-clip-text text-transparent">
-            Verifiable Government Schemes
+            {t.hero.titleHighlight}
           </span>
         </h1>
 
         {/* Description */}
         <p className="mt-5 text-lg sm:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
-          <strong className="text-slate-800">SevAIQ</strong> connects citizens directly to central and state
-          welfare programs through verifiable, hallucination-free civic intelligence.
+          {t.hero.description}
         </p>
 
         {/* CTA Actions */}
@@ -42,15 +44,9 @@ export const Hero: React.FC<HeroProps> = ({ onExploreClick }) => {
             onClick={onExploreClick}
             className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-6 py-3.5 rounded-xl bg-civic-600 hover:bg-civic-700 text-white font-semibold text-sm shadow-md hover:shadow-lg transition-all"
           >
-            <span>Discover Government Schemes</span>
+            <span>{t.hero.discoverSchemes}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
-          <a
-            href="#architecture"
-            className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-6 py-3.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-semibold text-sm border border-slate-300 shadow-sm transition-all"
-          >
-            <span>View Architecture & API Contract</span>
-          </a>
         </div>
 
         {/* Key Guarantees */}
@@ -60,9 +56,9 @@ export const Hero: React.FC<HeroProps> = ({ onExploreClick }) => {
               <Shield className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-slate-900">Zero Hallucination</h3>
+              <h3 className="text-sm font-bold text-slate-900">{t.hero.guarantee1Title}</h3>
               <p className="text-xs text-slate-500 mt-0.5">
-                Schemes are added only after verification against official government portals.
+                {t.hero.guarantee1Desc}
               </p>
             </div>
           </div>
@@ -72,9 +68,9 @@ export const Hero: React.FC<HeroProps> = ({ onExploreClick }) => {
               <CheckCircle className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-slate-900">Targeted Eligibility</h3>
+              <h3 className="text-sm font-bold text-slate-900">{t.hero.guarantee2Title}</h3>
               <p className="text-xs text-slate-500 mt-0.5">
-                Matches citizens to schemes tailored to their occupation, location, and demographic profile.
+                {t.hero.guarantee2Desc}
               </p>
             </div>
           </div>
@@ -84,9 +80,9 @@ export const Hero: React.FC<HeroProps> = ({ onExploreClick }) => {
               <Database className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-slate-900">Decoupled Architecture</h3>
+              <h3 className="text-sm font-bold text-slate-900">{t.hero.guarantee3Title}</h3>
               <p className="text-xs text-slate-500 mt-0.5">
-                FastAPI backend + Vite React frontend, built collaboratively for national scale.
+                {t.hero.guarantee3Desc}
               </p>
             </div>
           </div>

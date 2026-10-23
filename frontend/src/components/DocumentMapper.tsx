@@ -27,6 +27,7 @@ import {
   resolveBackendSchemeId,
   adaptProfileToBackend,
 } from '../utils/schemaAdapter';
+import { useLanguage } from '../context/LanguageContext';
 
 interface DocumentMapperProps {
   documents: DocumentRecord[];
@@ -49,6 +50,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
   onUpdateDocumentStatus,
   onNavigate,
 }) => {
+  const { t, getLocalizedScheme, getLocalizedDocument, language } = useLanguage();
   const [filterTab, setFilterTab] = useState<'all' | 'shared' | 'single' | 'missing' | 'have'>('all');
 
   // Backend Mapping API state
@@ -180,13 +182,13 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
         <div>
           <div className="inline-flex items-center space-x-1.5 text-xs font-semibold uppercase tracking-wider text-civic-700 mb-1">
             <Files className="w-4 h-4" />
-            <span>Document Synergy Engine</span>
+            <span>{t.documentMapper.badge}</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
-            Document Mapper & Cross-Scheme Synergies
+            {t.documentMapper.title}
           </h1>
           <p className="text-sm text-slate-600 mt-1">
-            Compare shared, missing, and unconfirmed certificates across your target government schemes.
+            {t.documentMapper.subtitle}
           </p>
         </div>
 
@@ -195,7 +197,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
           className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-civic-700 hover:bg-civic-800 text-white font-semibold text-xs shadow-md transition-all self-start md:self-auto"
         >
           <Award className="w-4 h-4" />
-          <span>Generate Readiness Passport</span>
+          <span>{t.documentMapper.proceedPassport}</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </button>
       </div>
@@ -204,7 +206,11 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
       {isMappingLoading && (
         <div className="p-3 bg-blue-50 border border-blue-200 text-blue-900 rounded-2xl flex items-center space-x-2 text-xs font-medium">
           <RefreshCw className="w-4 h-4 text-civic-600 animate-spin shrink-0" />
-          <span>Computing cross-scheme document synergy via FastAPI <code className="bg-white/80 px-1 py-0.5 rounded font-mono">POST /api/documents/mapper</code>...</span>
+          <span>
+            {language === 'ta'
+              ? 'FastAPI மூலம் பல திட்டங்களுக்கான ஆவண இணைப்பை கணக்கிடுகிறது...'
+              : 'Computing cross-scheme document synergy via FastAPI POST /api/documents/mapper...'}
+          </span>
         </div>
       )}
 
@@ -213,7 +219,12 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
           <div className="flex items-center space-x-2">
             <Server className="w-4 h-4 text-emerald-700 shrink-0" />
             <span>
-              <strong>Server-Computed Document Synergy:</strong> Analyzed across {backendMapping.selected_scheme_ids.length} schemes ({backendMapping.reusable_documents.length} reusable multi-scheme documents, {backendMapping.single_scheme_documents.length} scheme-specific).
+              <strong>
+                {language === 'ta' ? 'சேவையக ஆவண இணைப்பு:' : 'Server-Computed Document Synergy:'}
+              </strong>{' '}
+              {language === 'ta'
+                ? `${backendMapping.selected_scheme_ids.length} திட்டங்களில் பகுப்பாய்வு செய்யப்பட்டது (${backendMapping.reusable_documents.length} மறுபயன்பாட்டு ஆவணங்கள், ${backendMapping.single_scheme_documents.length} தனித்த ஆவணங்கள்).`
+                : `Analyzed across ${backendMapping.selected_scheme_ids.length} schemes (${backendMapping.reusable_documents.length} reusable multi-scheme documents, ${backendMapping.single_scheme_documents.length} scheme-specific).`}
             </span>
           </div>
           <button
@@ -222,7 +233,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
             className="text-emerald-800 underline font-semibold flex items-center space-x-1 hover:text-emerald-900"
           >
             <RefreshCw className="w-3 h-3" />
-            <span>Re-analyze</span>
+            <span>{language === 'ta' ? 'மீண்டும் பகுப்பாய்வு' : 'Re-analyze'}</span>
           </button>
         </div>
       )}
@@ -231,9 +242,13 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
         <div className="p-4 bg-amber-50 border border-amber-200 text-amber-900 rounded-2xl flex items-start space-x-3 text-xs">
           <AlertCircle className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
           <div>
-            <p className="font-semibold">Backend Document Mapper Notice: {mappingError}</p>
+            <p className="font-semibold">
+              {language === 'ta' ? 'பின்தள ஆவண இணைப்பு அறிவிப்பு:' : 'Backend Document Mapper Notice:'} {mappingError}
+            </p>
             <p className="text-amber-800 mt-0.5">
-              Showing local document synergy model as fallback.
+              {language === 'ta'
+                ? 'உள்ளூர் ஆவண இணைப்பு மாதிரி மாற்றாக காட்டப்படுகிறது.'
+                : 'Showing local document synergy model as fallback.'}
             </p>
           </div>
         </div>
@@ -244,10 +259,18 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div className="flex items-center space-x-2">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
-              Target Schemes for Document Preparation:
+              {t.documentMapper.selectedSchemes}
             </span>
             <span className="text-xs text-slate-400">
-              ({selectedSchemeIds.length === 0 ? 'All schemes active' : `${selectedSchemeIds.length} selected`})
+              (
+              {selectedSchemeIds.length === 0
+                ? language === 'ta'
+                  ? 'அனைத்து திட்டங்களும் தேர்வில்'
+                  : 'All schemes active'
+                : language === 'ta'
+                ? `${selectedSchemeIds.length} தேர்வு செய்யப்பட்டுள்ளது`
+                : `${selectedSchemeIds.length} selected`}
+              )
             </span>
           </div>
           {selectedSchemeIds.length > 0 && (
@@ -256,7 +279,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
               onClick={onResetSchemeSelection}
               className="text-xs text-slate-600 hover:text-slate-900 self-start sm:self-auto underline focus:outline-none focus:ring-2 focus:ring-civic-500 rounded px-1"
             >
-              Reset to all schemes
+              {t.documentMapper.resetSelection}
             </button>
           )}
         </div>
@@ -264,6 +287,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
         <div className="flex flex-wrap gap-2 pt-1">
           {schemes.map((s) => {
             const isSelected = selectedSchemeIds.includes(s.id);
+            const locScheme = getLocalizedScheme(s);
             return (
               <button
                 key={s.id}
@@ -274,7 +298,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                     : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
                 }`}
               >
-                <span>{s.title.split('(')[0].trim()}</span>
+                <span>{locScheme.title.split('(')[0].trim()}</span>
                 {isSelected && <span className="text-[10px]">✓</span>}
               </button>
             );
@@ -288,12 +312,16 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
         <div className="p-6 bg-white rounded-3xl border border-slate-200 shadow-xs flex flex-col justify-between md:col-span-1">
           <div>
             <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-              Document Readiness Meter
+              {t.documentMapper.readinessScore}
             </span>
             <div className="mt-3 flex items-baseline space-x-2">
               <span className="text-4xl font-extrabold text-slate-900">{readinessPercent}%</span>
               <span className="text-xs text-slate-500">
-                ({haveCount} of {totalCount} ready)
+                (
+                {language === 'ta'
+                  ? `${totalCount} இல் ${haveCount} தயார்`
+                  : `${haveCount} of ${totalCount} ready`}
+                )
               </span>
             </div>
 
@@ -309,15 +337,21 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
           <div className="mt-4 pt-3 border-t border-slate-100 grid grid-cols-3 text-center text-xs">
             <div>
               <span className="text-emerald-700 font-bold block">{haveCount}</span>
-              <span className="text-slate-500 text-[10px]">Ready</span>
+              <span className="text-slate-500 text-[10px]">
+                {language === 'ta' ? 'தயார்' : 'Ready'}
+              </span>
             </div>
             <div>
               <span className="text-rose-700 font-bold block">{missingCount}</span>
-              <span className="text-slate-500 text-[10px]">Missing</span>
+              <span className="text-slate-500 text-[10px]">
+                {language === 'ta' ? 'விடுபட்டவை' : 'Missing'}
+              </span>
             </div>
             <div>
               <span className="text-amber-700 font-bold block">{unconfirmedCount}</span>
-              <span className="text-slate-500 text-[10px]">Unconfirmed</span>
+              <span className="text-slate-500 text-[10px]">
+                {language === 'ta' ? 'உறுதிப்படுத்தப்படவில்லை' : 'Unconfirmed'}
+              </span>
             </div>
           </div>
 
@@ -336,30 +370,46 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
           <div>
             <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-white/10 text-cyan-200 text-xs font-semibold mb-3 border border-white/10">
               <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-              <span>Cross-Scheme Synergy Unlocked</span>
+              <span>
+                {language === 'ta'
+                  ? 'திட்டங்களுக்கிடையேயான பலன்'
+                  : 'Cross-Scheme Synergy Unlocked'}
+              </span>
             </div>
             <h3 className="text-lg font-bold text-white">
-              {sharedDocsCount} Shared Documents Found
+              {language === 'ta'
+                ? `${sharedDocsCount} பொது ஆவணங்கள் கண்டறியப்பட்டுள்ளன`
+                : `${sharedDocsCount} Shared Documents Found`}
             </h3>
             <p className="text-xs text-slate-300 mt-1 leading-relaxed">
-              Applying for multiple schemes does not mean duplicating paperwork. One verified document
-              (such as an Income Certificate or Domicile Certificate) satisfies eligibility proof
-              across multiple government ministries.
+              {language === 'ta'
+                ? 'பல திட்டங்களுக்கு விண்ணப்பிக்கும்போது ஒவ்வொரு முறையும் ஆவணங்களை புதிதாக பெற வேண்டியதில்லை. ஒரே சான்றிதழ் (வருமானச் சான்றிதழ், இருப்பிடச் சான்றிதழ் போன்றவை) பல அரசு திட்டங்களுக்கு செல்லும்.'
+                : 'Applying for multiple schemes does not mean duplicating paperwork. One verified document (such as an Income Certificate or Domicile Certificate) satisfies eligibility proof across multiple government ministries.'}
             </p>
           </div>
 
           <div className="mt-4 pt-3 border-t border-white/10 flex flex-wrap gap-2">
-            {sharedDocuments.map((doc: DocumentRecord) => (
-              <span
-                key={doc.id}
-                className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-white/15 text-white text-xs font-medium backdrop-blur-xs"
-              >
-                <span>{doc.name}</span>
-                <span className="text-cyan-300 font-mono text-[10px]">
-                  ({doc.applicableSchemeIds.filter((id: string) => activeSchemeIds.includes(id)).length} schemes)
+            {sharedDocuments.map((doc: DocumentRecord) => {
+              const loc = getLocalizedDocument(doc);
+              const schemeOverlapCount = doc.applicableSchemeIds.filter((id: string) =>
+                activeSchemeIds.includes(id)
+              ).length;
+              return (
+                <span
+                  key={doc.id}
+                  className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-white/15 text-white text-xs font-medium backdrop-blur-xs"
+                >
+                  <span>{loc.name}</span>
+                  <span className="text-cyan-300 font-mono text-[10px]">
+                    (
+                    {language === 'ta'
+                      ? `${schemeOverlapCount} திட்டங்கள்`
+                      : `${schemeOverlapCount} schemes`}
+                    )
+                  </span>
                 </span>
-              </span>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
@@ -374,7 +424,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
               : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
           }`}
         >
-          All Required Documents ({totalCount})
+          {language === 'ta' ? `அனைத்து ஆவணங்கள் (${totalCount})` : `All Required Documents (${totalCount})`}
         </button>
 
         <button
@@ -385,7 +435,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
               : 'bg-indigo-50 text-indigo-800 border border-indigo-200 hover:bg-indigo-100'
           }`}
         >
-          Shared Synergies ({sharedDocsCount})
+          {language === 'ta' ? `பொதுவானவை (${sharedDocsCount})` : `Shared Synergies (${sharedDocsCount})`}
         </button>
 
         <button
@@ -396,7 +446,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
               : 'bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200'
           }`}
         >
-          Scheme-Specific ({singleDocsCount})
+          {language === 'ta' ? `குறிப்பிட்டவை (${singleDocsCount})` : `Scheme-Specific (${singleDocsCount})`}
         </button>
 
         <button
@@ -407,7 +457,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
               : 'bg-rose-50 text-rose-800 border border-rose-200 hover:bg-rose-100'
           }`}
         >
-          Missing to Procure ({missingCount})
+          {language === 'ta' ? `விடுபட்டவை (${missingCount})` : `Missing to Procure (${missingCount})`}
         </button>
 
         <button
@@ -418,7 +468,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
               : 'bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100'
           }`}
         >
-          Ready in Hand ({haveCount})
+          {language === 'ta' ? `கையில் உள்ளவை (${haveCount})` : `Ready in Hand (${haveCount})`}
         </button>
       </div>
 
@@ -431,6 +481,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                 doc.applicableSchemeIds.includes(s.id) && activeSchemeIds.includes(s.id)
             );
             const isMultiScheme = applicableInSelection.length > 1;
+            const locDoc = getLocalizedDocument(doc);
 
             return (
               <div
@@ -440,15 +491,23 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                   <div className="space-y-1.5">
                     <div className="flex flex-wrap items-center gap-2">
-                      <h3 className="text-base font-bold text-slate-900">{doc.name}</h3>
+                      <h3 className="text-base font-bold text-slate-900">{locDoc.name}</h3>
                       {isMultiScheme ? (
                         <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
                           <Sparkles className="w-3 h-3 text-indigo-500" />
-                          <span>Shared across {applicableInSelection.length} schemes (reusable once)</span>
+                          <span>
+                            {language === 'ta'
+                              ? `${applicableInSelection.length} திட்டங்களுக்கு பொதுவானது (மறுபயன்பாடு)`
+                              : `Shared across ${applicableInSelection.length} schemes (reusable once)`}
+                          </span>
                         </span>
                       ) : (
                         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-700 border border-slate-200">
-                          <span>Scheme-Specific Requirement</span>
+                          <span>
+                            {language === 'ta'
+                              ? 'குறிப்பிட்ட திட்டத் தேவை'
+                              : 'Scheme-Specific Requirement'}
+                          </span>
                         </span>
                       )}
 
@@ -456,21 +515,21 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                       {doc.status === 'have' ? (
                         <span className="inline-flex items-center space-x-1 text-[11px] font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
                           <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                          <span>Possessed (Ready)</span>
+                          <span>{language === 'ta' ? 'கையில் உள்ளது (தயார்)' : 'Possessed (Ready)'}</span>
                         </span>
                       ) : doc.status === 'missing' ? (
                         <span className="inline-flex items-center space-x-1 text-[11px] font-semibold text-rose-800 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200">
                           <XCircle className="w-3 h-3 text-rose-600" />
-                          <span>Missing (Must Procure)</span>
+                          <span>{language === 'ta' ? 'விடுபட்டது (பெற வேண்டும்)' : 'Missing (Must Procure)'}</span>
                         </span>
                       ) : (
                         <span className="inline-flex items-center space-x-1 text-[11px] font-semibold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
                           <HelpCircle className="w-3 h-3 text-amber-600" />
-                          <span>Unconfirmed</span>
+                          <span>{language === 'ta' ? 'உறுதிப்படுத்தப்படவில்லை' : 'Unconfirmed'}</span>
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-slate-600">{doc.description}</p>
+                    <p className="text-xs text-slate-600">{locDoc.description}</p>
                   </div>
 
                   {/* Interactive Status Selector Pill */}
@@ -484,7 +543,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                       }`}
                     >
                       <CheckCircle2 className="w-3.5 h-3.5" />
-                      <span>I Have This</span>
+                      <span>{language === 'ta' ? 'கையில் உள்ளது' : 'I Have This'}</span>
                     </button>
 
                     <button
@@ -496,7 +555,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                       }`}
                     >
                       <XCircle className="w-3.5 h-3.5" />
-                      <span>Missing</span>
+                      <span>{language === 'ta' ? 'இல்லை' : 'Missing'}</span>
                     </button>
 
                     <button
@@ -508,7 +567,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                       }`}
                     >
                       <HelpCircle className="w-3.5 h-3.5" />
-                      <span>Unconfirmed</span>
+                      <span>{language === 'ta' ? 'தெரியவில்லை' : 'Unconfirmed'}</span>
                     </button>
                   </div>
                 </div>
@@ -518,20 +577,26 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                   <div className="flex items-center space-x-2 text-slate-600">
                     <Building className="w-4 h-4 text-civic-600 shrink-0" />
                     <span>
-                      Issuing Authority: <strong className="text-slate-800">{doc.issuingAuthority}</strong>
+                      {t.documentMapper.issuingAuthority}{' '}
+                      <strong className="text-slate-800">{locDoc.issuingAuthority}</strong>
                     </span>
                   </div>
 
                   <div className="flex flex-wrap items-center gap-1.5">
-                    <span className="text-slate-400">Required by:</span>
-                    {applicableInSelection.map((s) => (
-                      <span
-                        key={s.id}
-                        className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-[11px]"
-                      >
-                        {s.title.split('(')[0].trim()}
-                      </span>
-                    ))}
+                    <span className="text-slate-400">
+                      {language === 'ta' ? 'தேவைப்படும் திட்டங்கள்:' : 'Required by:'}
+                    </span>
+                    {applicableInSelection.map((s) => {
+                      const locScheme = getLocalizedScheme(s);
+                      return (
+                        <span
+                          key={s.id}
+                          className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-[11px]"
+                        >
+                          {locScheme.title.split('(')[0].trim()}
+                        </span>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
@@ -540,9 +605,13 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
         ) : (
           <div className="p-12 bg-white rounded-3xl border border-slate-200 text-center space-y-2">
             <Info className="w-8 h-8 text-slate-400 mx-auto" />
-            <h3 className="text-sm font-bold text-slate-800">No documents in this view</h3>
+            <h3 className="text-sm font-bold text-slate-800">
+              {language === 'ta' ? 'இப்பிரிவில் ஆவணங்கள் எதுவும் இல்லை' : 'No documents in this view'}
+            </h3>
             <p className="text-xs text-slate-500">
-              Change the filter tab above to view all required certificates.
+              {language === 'ta'
+                ? 'அனைத்து ஆவணங்களையும் காண மேலே உள்ள வடிகட்டியை மாற்றவும்.'
+                : 'Change the filter tab above to view all required certificates.'}
             </p>
           </div>
         )}
@@ -553,7 +622,9 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
         <div className="p-6 bg-white rounded-3xl border border-slate-200 shadow-xs space-y-3">
           <div className="flex items-center space-x-2">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-800">
-              Verified Scheme Document Citations & Operational Guidelines
+              {language === 'ta'
+                ? 'சரிபார்க்கப்பட்ட திட்ட ஆவண வழிகாட்டுதல்கள்'
+                : 'Verified Scheme Document Citations & Operational Guidelines'}
             </span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
@@ -564,7 +635,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
               >
                 <span className="font-bold text-slate-900 block">{ref.scheme_title}</span>
                 <p className="text-[11px] text-slate-600 leading-relaxed">
-                  {ref.verification_source || 'Verified Government Scheme Guidelines'}
+                  {ref.verification_source || (language === 'ta' ? 'சரிபார்க்கப்பட்ட அரசு திட்ட வழிகாட்டுதல்கள்' : 'Verified Government Scheme Guidelines')}
                 </p>
                 {ref.official_portal_url && (
                   <a
@@ -573,7 +644,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                     rel="noopener noreferrer"
                     className="inline-flex items-center space-x-1 text-[11px] text-civic-700 font-semibold hover:underline pt-0.5"
                   >
-                    <span>Official Portal</span>
+                    <span>{t.discover.officialPortal}</span>
                     <ExternalLink className="w-3 h-3" />
                   </a>
                 )}

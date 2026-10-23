@@ -8,12 +8,13 @@ import {
   ArrowRight,
   Database,
   Lock,
-  Sparkles,
   Monitor,
   Mic,
   ListChecks,
 } from 'lucide-react';
 import { NavigationTab, CitizenProfile, Scheme, DocumentRecord } from '../types';
+import { useLanguage } from '../context/LanguageContext';
+import { SchemeBannerCarousel } from './SchemeBannerCarousel';
 
 interface DashboardProps {
   onNavigate: (tab: NavigationTab) => void;
@@ -32,6 +33,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
   documents,
   isKioskMode,
 }) => {
+  const { t } = useLanguage();
+
   const profileComplete = Boolean(
     profile.age && profile.gender && profile.state && profile.area && profile.occupation
   );
@@ -49,53 +52,17 @@ export const Dashboard: React.FC<DashboardProps> = ({
           <div className="flex items-center space-x-2">
             <Monitor className="w-4 h-4 text-amber-800 shrink-0" />
             <span className="font-semibold">
-              Public Kiosk Mode Active:
+              {t.dashboard.kioskNoticeTitle}
             </span>
             <span className="text-amber-800">
-              Profile answers and document statuses exist in volatile browser memory only. No data is stored on this computer.
+              {t.dashboard.kioskNoticeDesc}
             </span>
           </div>
         </div>
       )}
 
-      {/* Welcome & Challenge Header (Polished Hero) */}
-      <div className="bg-gradient-to-r from-slate-900 via-civic-950 to-blue-950 rounded-3xl p-6 sm:p-8 md:p-10 text-white shadow-xl relative overflow-hidden">
-        <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-500/10 via-transparent to-transparent pointer-events-none" />
-
-        <div className="relative z-10 max-w-3xl">
-          <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/10 text-blue-200 text-xs font-semibold mb-4 backdrop-blur-xs border border-white/10 shadow-2xs">
-            <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-            <span>Seva First Innovation Challenge 2026</span>
-          </div>
-
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-tight">
-            Civic Intelligence &amp; Scheme Readiness
-          </h1>
-          <p className="mt-3 text-sm sm:text-base text-slate-300 leading-relaxed max-w-2xl">
-            SevAIQ bridges the gap between citizens and welfare entitlements. Discover verified central
-            and state government programs, assess multi-criteria eligibility transparently, and prepare
-            your application documents without data privacy risk.
-          </p>
-
-          <div className="mt-8 flex flex-col sm:flex-row gap-3.5 sm:items-center">
-            <button
-              type="button"
-              onClick={() => onNavigate('eligibility')}
-              className="h-11 px-5 rounded-xl bg-civic-600 hover:bg-civic-700 text-white font-semibold text-sm shadow-md transition-all focus:outline-none focus:ring-2 focus:ring-white inline-flex items-center justify-center space-x-2"
-            >
-              <span>{profileComplete ? 'View Eligibility Results' : 'Check Your Eligibility'}</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-            <button
-              type="button"
-              onClick={() => onNavigate('discover')}
-              className="h-11 px-5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm border border-white/20 transition-all focus:outline-none focus:ring-2 focus:ring-white inline-flex items-center justify-center space-x-2"
-            >
-              <span>Explore Scheme Catalog</span>
-            </button>
-          </div>
-        </div>
-      </div>
+      {/* myScheme-Style Interactive Scheme Banner Carousel (5-Second Auto-Scroll) */}
+      <SchemeBannerCarousel onNavigate={onNavigate} />
 
       {/* Metrics Grid - 4 Summary Cards with equal heights & consistent padding */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -104,12 +71,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
           type="button"
           onClick={() => onNavigate('discover')}
           className="p-5 sm:p-6 bg-white rounded-2xl border border-slate-200 shadow-xs hover:border-civic-300 hover:shadow-md transition-all text-left w-full group focus:outline-none focus:ring-2 focus:ring-civic-500 h-full flex flex-col justify-between"
-          aria-label="View Cataloged Schemes"
+          aria-label={t.dashboard.metricCataloged}
         >
           <div>
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                Cataloged Schemes
+                {t.dashboard.metricCataloged}
               </span>
               <div className="w-10 h-10 rounded-xl bg-blue-50 text-civic-700 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
                 <Compass className="w-5 h-5" />
@@ -118,12 +85,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
             <div className="my-3 flex items-baseline justify-between flex-wrap gap-2">
               <span className="text-3xl font-black text-slate-900 tracking-tight">{schemes.length}</span>
               <span className="text-xs text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200/60">
-                Verified Sources
+                {t.dashboard.metricVerified}
               </span>
             </div>
           </div>
           <p className="text-xs text-slate-500 font-medium pt-2.5 border-t border-slate-100">
-            Official gazette &amp; portal links
+            {t.dashboard.metricGazetteLinks}
           </p>
         </button>
 
@@ -132,12 +99,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
           type="button"
           onClick={() => onNavigate('eligibility')}
           className="p-5 sm:p-6 bg-white rounded-2xl border border-slate-200 shadow-xs hover:border-emerald-300 hover:shadow-md transition-all text-left w-full group focus:outline-none focus:ring-2 focus:ring-emerald-500 h-full flex flex-col justify-between"
-          aria-label="View Eligible Matches"
+          aria-label={t.dashboard.metricEligible}
         >
           <div>
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                Eligible Matches
+                {t.dashboard.metricEligible}
               </span>
               <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
                 <CheckSquare className="w-5 h-5" />
@@ -146,12 +113,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
             <div className="my-3 flex items-baseline justify-between flex-wrap gap-2">
               <span className="text-3xl font-black text-slate-900 tracking-tight">{eligibleCount}</span>
               <span className="text-xs text-slate-600 font-semibold bg-slate-100 px-2 py-0.5 rounded-md">
-                {profileComplete ? 'Fully Met' : 'Profile needed'}
+                {profileComplete ? t.dashboard.metricFullyMet : t.dashboard.metricProfileNeeded}
               </span>
             </div>
           </div>
           <p className="text-xs text-slate-500 font-medium pt-2.5 border-t border-slate-100">
-            Criteria matched against profile
+            {t.dashboard.metricCriteriaMatched}
           </p>
         </button>
 
@@ -160,12 +127,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
           type="button"
           onClick={() => onNavigate('document-mapper')}
           className="p-5 sm:p-6 bg-white rounded-2xl border border-slate-200 shadow-xs hover:border-indigo-300 hover:shadow-md transition-all text-left w-full group focus:outline-none focus:ring-2 focus:ring-indigo-500 h-full flex flex-col justify-between"
-          aria-label="View Document Mapper"
+          aria-label={t.dashboard.metricDocsReady}
         >
           <div>
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                Documents Ready
+                {t.dashboard.metricDocsReady}
               </span>
               <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
                 <Files className="w-5 h-5" />
@@ -181,7 +148,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             </div>
           </div>
           <p className="text-xs text-slate-500 font-medium pt-2.5 border-t border-slate-100">
-            Cross-scheme document overlap
+            {t.dashboard.metricDocOverlap}
           </p>
         </button>
 
@@ -190,12 +157,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
           type="button"
           onClick={() => onNavigate('readiness-passport')}
           className="p-5 sm:p-6 bg-white rounded-2xl border border-slate-200 shadow-xs hover:border-amber-300 hover:shadow-md transition-all text-left w-full group focus:outline-none focus:ring-2 focus:ring-amber-500 h-full flex flex-col justify-between"
-          aria-label="View Readiness Passport"
+          aria-label={t.dashboard.metricPassport}
         >
           <div>
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                Readiness Passport
+                {t.dashboard.metricPassport}
               </span>
               <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
                 <Award className="w-5 h-5" />
@@ -203,15 +170,15 @@ export const Dashboard: React.FC<DashboardProps> = ({
             </div>
             <div className="my-3 flex items-baseline justify-between flex-wrap gap-2">
               <span className="text-3xl font-black text-slate-900 tracking-tight">
-                {eligibleCount > 0 && readyDocsCount > 0 ? 'Active' : 'Draft'}
+                {eligibleCount > 0 && readyDocsCount > 0 ? t.dashboard.metricActive : t.dashboard.metricDraft}
               </span>
               <span className="text-xs text-amber-800 font-semibold bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200/60">
-                Export Ready
+                {t.dashboard.metricExportReady}
               </span>
             </div>
           </div>
           <p className="text-xs text-slate-500 font-medium pt-2.5 border-t border-slate-100">
-            Printable civic dossier
+            {t.dashboard.metricPrintableDossier}
           </p>
         </button>
       </div>
@@ -221,13 +188,13 @@ export const Dashboard: React.FC<DashboardProps> = ({
         <div className="max-w-2xl">
           <div className="inline-flex items-center space-x-1.5 text-xs font-semibold uppercase tracking-wider text-civic-700 mb-1">
             <ShieldCheck className="w-4 h-4" />
-            <span>Structured Citizen Workflow</span>
+            <span>{t.dashboard.workflowBadge}</span>
           </div>
           <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
-            How SevAIQ Empowers Your Application
+            {t.dashboard.workflowTitle}
           </h2>
           <p className="text-xs sm:text-sm text-slate-600 mt-1">
-            Follow the 4-stage readiness pipeline designed to maximize scheme access and minimize rejected applications.
+            {t.dashboard.workflowSubtitle}
           </p>
         </div>
 
@@ -243,13 +210,15 @@ export const Dashboard: React.FC<DashboardProps> = ({
               <div className="w-8 h-8 rounded-lg bg-blue-100 text-civic-800 font-black text-xs flex items-center justify-center mb-3 shrink-0">
                 01
               </div>
-              <h3 className="font-bold text-sm text-slate-900 group-hover:text-civic-800 transition-colors">Discover Schemes</h3>
+              <h3 className="font-bold text-sm text-slate-900 group-hover:text-civic-800 transition-colors">
+                {t.dashboard.step1Title}
+              </h3>
               <p className="text-xs text-slate-600 mt-1.5 leading-relaxed font-normal">
-                Browse verified central and state welfare initiatives with zero simulated data.
+                {t.dashboard.step1Desc}
               </p>
             </div>
             <div className="mt-5 pt-3 border-t border-slate-200/60 flex items-center text-xs font-semibold text-civic-700">
-              <span>Explore catalog</span>
+              <span>{t.dashboard.step1Action}</span>
               <ArrowRight className="w-3.5 h-3.5 ml-1 transition-transform group-hover:translate-x-0.5" />
             </div>
           </button>
@@ -264,13 +233,15 @@ export const Dashboard: React.FC<DashboardProps> = ({
               <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-800 font-black text-xs flex items-center justify-center mb-3 shrink-0">
                 02
               </div>
-              <h3 className="font-bold text-sm text-slate-900 group-hover:text-emerald-800 transition-colors">Check Eligibility</h3>
+              <h3 className="font-bold text-sm text-slate-900 group-hover:text-emerald-800 transition-colors">
+                {t.dashboard.step2Title}
+              </h3>
               <p className="text-xs text-slate-600 mt-1.5 leading-relaxed font-normal">
-                Fill an anonymous profile to evaluate criteria with Met, Not Met, and Unknown explanations.
+                {t.dashboard.step2Desc}
               </p>
             </div>
             <div className="mt-5 pt-3 border-t border-slate-200/60 flex items-center text-xs font-semibold text-emerald-700">
-              <span>Assess profile</span>
+              <span>{t.dashboard.step2Action}</span>
               <ArrowRight className="w-3.5 h-3.5 ml-1 transition-transform group-hover:translate-x-0.5" />
             </div>
           </button>
@@ -285,13 +256,15 @@ export const Dashboard: React.FC<DashboardProps> = ({
               <div className="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-800 font-black text-xs flex items-center justify-center mb-3 shrink-0">
                 03
               </div>
-              <h3 className="font-bold text-sm text-slate-900 group-hover:text-indigo-800 transition-colors">Map Documents</h3>
+              <h3 className="font-bold text-sm text-slate-900 group-hover:text-indigo-800 transition-colors">
+                {t.dashboard.step3Title}
+              </h3>
               <p className="text-xs text-slate-600 mt-1.5 leading-relaxed font-normal">
-                Discover shared documents across schemes, track missing certificates, and locate issuing offices.
+                {t.dashboard.step3Desc}
               </p>
             </div>
             <div className="mt-5 pt-3 border-t border-slate-200/60 flex items-center text-xs font-semibold text-indigo-700">
-              <span>View mapper</span>
+              <span>{t.dashboard.step3Action}</span>
               <ArrowRight className="w-3.5 h-3.5 ml-1 transition-transform group-hover:translate-x-0.5" />
             </div>
           </button>
@@ -306,13 +279,15 @@ export const Dashboard: React.FC<DashboardProps> = ({
               <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-800 font-black text-xs flex items-center justify-center mb-3 shrink-0">
                 04
               </div>
-              <h3 className="font-bold text-sm text-slate-900 group-hover:text-amber-800 transition-colors">Readiness Passport</h3>
+              <h3 className="font-bold text-sm text-slate-900 group-hover:text-amber-800 transition-colors">
+                {t.dashboard.step4Title}
+              </h3>
               <p className="text-xs text-slate-600 mt-1.5 leading-relaxed font-normal">
-                Generate an exportable civic dossier with verified links, checklist, and Seva Kendra next steps.
+                {t.dashboard.step4Desc}
               </p>
             </div>
             <div className="mt-5 pt-3 border-t border-slate-200/60 flex items-center text-xs font-semibold text-amber-700">
-              <span>Generate passport</span>
+              <span>{t.dashboard.step4Action}</span>
               <ArrowRight className="w-3.5 h-3.5 ml-1 transition-transform group-hover:translate-x-0.5" />
             </div>
           </button>
@@ -323,10 +298,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
       <div className="space-y-4">
         <div>
           <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">
-            Specialized Citizen Tools
+            {t.dashboard.toolsBadge}
           </h3>
           <p className="text-sm font-bold text-slate-900 mt-0.5">
-            Voice Access, Government Source Audits &amp; Submission Tracking
+            {t.dashboard.toolsTitle}
           </p>
         </div>
 
@@ -345,14 +320,14 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 Feature 5
               </span>
               <h4 className="text-base font-bold text-slate-900 mt-1">
-                Tamil &amp; English Voice Assistant
+                {t.dashboard.feat5Title}
               </h4>
               <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-                Ask scheme questions verbally or via text in everyday Tamil or English. Web Speech API with zero cloud audio leakage.
+                {t.dashboard.feat5Desc}
               </p>
             </div>
             <div className="mt-5 pt-3 border-t border-slate-100 flex items-center text-xs font-semibold text-civic-700">
-              <span>Open Voice Assistant</span>
+              <span>{t.dashboard.feat5Action}</span>
               <ArrowRight className="w-3.5 h-3.5 ml-1.5 transition-transform group-hover:translate-x-0.5" />
             </div>
           </button>
@@ -371,14 +346,14 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 Feature 6
               </span>
               <h4 className="text-base font-bold text-slate-900 mt-1">
-                Official-Source Trust Monitor
+                {t.dashboard.feat6Title}
               </h4>
               <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-                Inspect government domain authenticity (.gov.in / .nic.in), real verification dates, and gazette citations for every scheme.
+                {t.dashboard.feat6Desc}
               </p>
             </div>
             <div className="mt-5 pt-3 border-t border-slate-100 flex items-center text-xs font-semibold text-emerald-700">
-              <span>View Trust Audit</span>
+              <span>{t.dashboard.feat6Action}</span>
               <ArrowRight className="w-3.5 h-3.5 ml-1.5 transition-transform group-hover:translate-x-0.5" />
             </div>
           </button>
@@ -397,14 +372,14 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 Feature 7
               </span>
               <h4 className="text-base font-bold text-slate-900 mt-1">
-                Application Guidance Tracker
+                {t.dashboard.feat7Title}
               </h4>
               <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-                Interactive step-by-step preparation checklist from document gathering to visiting CSC centers and official portals.
+                {t.dashboard.feat7Desc}
               </p>
             </div>
             <div className="mt-5 pt-3 border-t border-slate-100 flex items-center text-xs font-semibold text-indigo-700">
-              <span>Track Application Guidance</span>
+              <span>{t.dashboard.feat7Action}</span>
               <ArrowRight className="w-3.5 h-3.5 ml-1.5 transition-transform group-hover:translate-x-0.5" />
             </div>
           </button>
@@ -418,11 +393,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
             <Lock className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="font-bold text-base text-white">Privacy-First Architecture</h3>
+            <h3 className="font-bold text-base text-white">{t.dashboard.privacyTitle}</h3>
             <p className="text-xs text-slate-300 mt-1 leading-relaxed">
-              SevAIQ strictly respects citizen privacy: we <strong>never</strong> collect Aadhaar numbers,
-              bank account details, or contact identifiers. Eligibility evaluation is performed
-              locally on anonymous demographic parameters.
+              {t.dashboard.privacyDesc}
             </p>
           </div>
         </div>
@@ -432,10 +405,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
             <Database className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="font-bold text-base text-slate-900">Zero Hallucination Standard</h3>
+            <h3 className="font-bold text-base text-slate-900">{t.dashboard.zeroHallucinationTitle}</h3>
             <p className="text-xs text-slate-600 mt-1 leading-relaxed">
-              Every scheme displayed is referenced from official government gazettes and ministry portals
-              (such as <a href="https://pmkisan.gov.in" target="_blank" rel="noreferrer" className="text-civic-700 font-semibold underline">pmkisan.gov.in</a> and <a href="https://pmjay.gov.in" target="_blank" rel="noreferrer" className="text-civic-700 font-semibold underline">pmjay.gov.in</a>).
+              {t.dashboard.zeroHallucinationDesc}
             </p>
           </div>
         </div>

@@ -33,6 +33,8 @@ import {
   adaptBackendEligibilityResult,
   resolveBackendSchemeId,
 } from '../utils/schemaAdapter';
+import { useLanguage } from '../context/LanguageContext';
+
 
 interface EligibilityScreenProps {
   schemes: Scheme[];
@@ -82,6 +84,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
   onResetProfile,
   onPreFillDemoProfile,
 }) => {
+  const { language, t, getLocalizedScheme, getLocalizedOption } = useLanguage();
   const [profileEditorOpen, setProfileEditorOpen] = useState(
     !profile.age || !profile.occupation
   );
@@ -166,13 +169,13 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
         <div>
           <div className="inline-flex items-center space-x-1.5 text-xs font-semibold uppercase tracking-wider text-civic-700 mb-1">
             <CheckSquare className="w-4 h-4" />
-            <span>Eligibility Engine</span>
+            <span>{t.eligibility.badge}</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
-            Citizen Eligibility Assessment
+            {t.eligibility.title}
           </h1>
           <p className="text-sm text-slate-600 mt-1">
-            Transparent, multi-criteria evaluation with detailed explanations for Met, Unknown, and Not Met criteria.
+            {t.eligibility.subtitle}
           </p>
         </div>
 
@@ -181,7 +184,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
           className="inline-flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 transition-colors shadow-xs self-start md:self-auto"
         >
           <User className="w-4 h-4 text-civic-700" />
-          <span>{profileEditorOpen ? 'Hide Profile Settings' : 'Edit Citizen Profile'}</span>
+          <span>{profileEditorOpen ? t.eligibility.collapseProfile : t.eligibility.editProfile}</span>
           {profileEditorOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
         </button>
       </div>
@@ -191,10 +194,12 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
         <Shield className="w-4 h-4 text-civic-700 shrink-0 mt-0.5" />
         <div className="space-y-1">
           <span className="font-bold text-slate-900 block">
-            Statutory Legal Notice & Transparency Mandate:
+            {language === 'ta' ? 'சட்டப்பூர்வ வெளிப்படைத்தன்மை உத்தரவாதம்:' : 'Statutory Legal Notice & Transparency Mandate:'}
           </span>
           <p className="text-slate-600 leading-relaxed text-[11px]">
-            SevAIQ is a civic intelligence and document-readiness platform. All evaluation outcomes represent an explainable assessment against published statutory guidelines. <strong>SevAIQ does not guarantee scheme approval and does not replace official verification by statutory government authorities.</strong>
+            {language === 'ta'
+              ? 'SevAIQ குடிமக்கள் தகவல் & ஆவண தயார்நிலை தளம். இங்கு காட்டப்படும் மதிப்பீடுகள் அனைத்தும் வெளியிடப்பட்ட அரசிதழ் விதிகளின் அடிப்படையிலானவை. அரசு அதிகாரிகளின் நேரடி சரிபார்ப்பிற்கு பின்னரே முறையான பலன்கள் கிடைக்கும்.'
+              : 'SevAIQ is a civic intelligence and document-readiness platform. All evaluation outcomes represent an explainable assessment against published statutory guidelines. SevAIQ does not guarantee scheme approval and does not replace official verification by statutory government authorities.'}
           </p>
         </div>
       </div>
@@ -209,10 +214,10 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
               </div>
               <div>
                 <h3 className="text-base font-bold text-slate-900">
-                  Citizen Eligibility Profile
+                  {t.eligibility.profileTitle}
                 </h3>
                 <p className="text-xs text-slate-500">
-                  Parameters are processed exclusively in your browser for rule evaluation.
+                  {t.eligibility.privacyNotice}
                 </p>
               </div>
             </div>
@@ -220,7 +225,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
             {/* Privacy Guarantee Pill */}
             <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-medium self-start sm:self-auto">
               <Lock className="w-3.5 h-3.5 text-emerald-600" />
-              <span>No Aadhaar / Bank account required</span>
+              <span>{language === 'ta' ? 'ஆதார் / வங்கி கணக்கு தேவையில்லை' : 'No Aadhaar / Bank account required'}</span>
             </div>
           </div>
 
@@ -229,7 +234,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
             {/* Age */}
             <div>
               <label htmlFor="field-age" className="block font-semibold text-slate-700 mb-1.5">
-                Age (Years)
+                {t.eligibility.ageLabel}
               </label>
               <input
                 id="field-age"
@@ -243,7 +248,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                     e.target.value === '' ? null : parseInt(e.target.value, 10)
                   )
                 }
-                placeholder="e.g. 35"
+                placeholder={t.eligibility.agePlaceholder}
                 className={`w-full px-3 py-2.5 bg-slate-50 border rounded-xl focus:ring-2 focus:ring-civic-500 focus:bg-white text-slate-900 ${
                   profile.age !== null && (profile.age < 0 || profile.age > 130)
                     ? 'border-rose-400 bg-rose-50/50'
@@ -258,7 +263,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
             {/* Gender */}
             <div>
               <label htmlFor="field-gender" className="block font-semibold text-slate-700 mb-1.5">
-                Gender
+                {t.eligibility.genderLabel}
               </label>
               <select
                 id="field-gender"
@@ -266,18 +271,18 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                 onChange={(e) => handleProfileFieldChange('gender', e.target.value)}
                 className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-civic-500 focus:bg-white text-slate-900"
               >
-                <option value="">Select Gender</option>
-                <option value="Female">Female</option>
-                <option value="Male">Male</option>
-                <option value="Transgender">Transgender</option>
-                <option value="Prefer not to say">Prefer not to say</option>
+                <option value="">{t.eligibility.genderSelect}</option>
+                <option value="Female">{getLocalizedOption('genders', 'Female')}</option>
+                <option value="Male">{getLocalizedOption('genders', 'Male')}</option>
+                <option value="Transgender">{getLocalizedOption('genders', 'Transgender')}</option>
+                <option value="Prefer not to say">{getLocalizedOption('genders', 'Prefer not to say')}</option>
               </select>
             </div>
 
             {/* State / UT */}
             <div>
               <label htmlFor="field-state" className="block font-semibold text-slate-700 mb-1.5">
-                State / UT
+                {t.eligibility.stateLabel}
               </label>
               <select
                 id="field-state"
@@ -285,10 +290,10 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                 onChange={(e) => handleProfileFieldChange('state', e.target.value)}
                 className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-civic-500 focus:bg-white text-slate-900"
               >
-                <option value="">Select State / UT</option>
+                <option value="">{t.eligibility.stateSelect}</option>
                 {INDIAN_STATES.map((st) => (
                   <option key={st} value={st}>
-                    {st}
+                    {st === 'Tamil Nadu' && language === 'ta' ? 'தமிழ்நாடு (Tamil Nadu)' : st}
                   </option>
                 ))}
               </select>
@@ -297,7 +302,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
             {/* Residence Area */}
             <div>
               <label htmlFor="field-area" className="block font-semibold text-slate-700 mb-1.5">
-                Residence Area
+                {t.eligibility.areaLabel}
               </label>
               <select
                 id="field-area"
@@ -305,16 +310,16 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                 onChange={(e) => handleProfileFieldChange('area', e.target.value)}
                 className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-civic-500 focus:bg-white text-slate-900"
               >
-                <option value="">Select Area</option>
-                <option value="Rural">Rural</option>
-                <option value="Urban">Urban</option>
+                <option value="">{t.eligibility.areaSelect}</option>
+                <option value="Rural">{getLocalizedOption('areas', 'Rural')}</option>
+                <option value="Urban">{getLocalizedOption('areas', 'Urban')}</option>
               </select>
             </div>
 
             {/* Occupation */}
             <div>
               <label htmlFor="field-occupation" className="block font-semibold text-slate-700 mb-1.5">
-                Primary Occupation
+                {t.eligibility.occupationLabel}
               </label>
               <select
                 id="field-occupation"
@@ -322,10 +327,10 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                 onChange={(e) => handleProfileFieldChange('occupation', e.target.value)}
                 className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-civic-500 focus:bg-white text-slate-900"
               >
-                <option value="">Select Occupation</option>
+                <option value="">{t.eligibility.occupationSelect}</option>
                 {OCCUPATIONS.map((occ) => (
                   <option key={occ} value={occ}>
-                    {occ}
+                    {getLocalizedOption('occupations', occ)}
                   </option>
                 ))}
               </select>
@@ -334,7 +339,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
             {/* Annual Family Income */}
             <div>
               <label htmlFor="field-income" className="block font-semibold text-slate-700 mb-1.5">
-                Annual Family Income
+                {t.eligibility.incomeLabel}
               </label>
               <select
                 id="field-income"
@@ -342,19 +347,19 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                 onChange={(e) => handleProfileFieldChange('incomeBracket', e.target.value)}
                 className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-civic-500 focus:bg-white text-slate-900"
               >
-                <option value="">Select Income Bracket</option>
-                <option value="< 1 Lakh">Below ₹1,00,000</option>
-                <option value="1 - 2.5 Lakh">₹1,00,000 to ₹2,50,000</option>
-                <option value="2.5 - 5 Lakh">₹2,50,000 to ₹5,00,000</option>
-                <option value="5 - 8 Lakh">₹5,00,000 to ₹8,00,000</option>
-                <option value="> 8 Lakh">Above ₹8,00,000</option>
+                <option value="">{t.eligibility.incomeSelect}</option>
+                <option value="< 1 Lakh">{getLocalizedOption('incomes', '< 1 Lakh')}</option>
+                <option value="1 - 2.5 Lakh">{getLocalizedOption('incomes', '1 - 2.5 Lakh')}</option>
+                <option value="2.5 - 5 Lakh">{getLocalizedOption('incomes', '2.5 - 5 Lakh')}</option>
+                <option value="5 - 8 Lakh">{getLocalizedOption('incomes', '5 - 8 Lakh')}</option>
+                <option value="> 8 Lakh">{getLocalizedOption('incomes', '> 8 Lakh')}</option>
               </select>
             </div>
 
             {/* Social Category */}
             <div>
               <label htmlFor="field-category" className="block font-semibold text-slate-700 mb-1.5">
-                Social Category
+                {t.eligibility.categoryLabel}
               </label>
               <select
                 id="field-category"
@@ -362,19 +367,19 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                 onChange={(e) => handleProfileFieldChange('category', e.target.value)}
                 className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-civic-500 focus:bg-white text-slate-900"
               >
-                <option value="">Select Category</option>
-                <option value="General">General</option>
-                <option value="OBC">OBC (Other Backward Class)</option>
-                <option value="SC">SC (Scheduled Caste)</option>
-                <option value="ST">ST (Scheduled Tribe)</option>
-                <option value="EWS">EWS (Economically Weaker Section)</option>
+                <option value="">{t.eligibility.categorySelect}</option>
+                <option value="General">{getLocalizedOption('categories', 'General')}</option>
+                <option value="OBC">{getLocalizedOption('categories', 'OBC')}</option>
+                <option value="SC">{getLocalizedOption('categories', 'SC')}</option>
+                <option value="ST">{getLocalizedOption('categories', 'ST')}</option>
+                <option value="EWS">{getLocalizedOption('categories', 'EWS')}</option>
               </select>
             </div>
 
             {/* Landholding Status */}
             <div>
               <label htmlFor="field-landholding" className="block font-semibold text-slate-700 mb-1.5">
-                Agricultural Landholding
+                {t.eligibility.landholdingLabel}
               </label>
               <select
                 id="field-landholding"
@@ -382,18 +387,18 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                 onChange={(e) => handleProfileFieldChange('landholding', e.target.value)}
                 className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-civic-500 focus:bg-white text-slate-900"
               >
-                <option value="">Select Landholding</option>
-                <option value="None">None (Landless)</option>
-                <option value="Marginal (< 1 ha)">Marginal (Under 1 Hectare)</option>
-                <option value="Small (1-2 ha)">Small (1 to 2 Hectares)</option>
-                <option value="Medium/Large (> 2 ha)">Medium / Large (&gt; 2 Hectares)</option>
+                <option value="">{t.eligibility.landholdingSelect}</option>
+                <option value="None">{getLocalizedOption('landholdings', 'None')}</option>
+                <option value="Marginal (< 1 ha)">{getLocalizedOption('landholdings', 'Marginal (< 1 ha)')}</option>
+                <option value="Small (1-2 ha)">{getLocalizedOption('landholdings', 'Small (1-2 ha)')}</option>
+                <option value="Medium/Large (> 2 ha)">{getLocalizedOption('landholdings', 'Medium/Large (> 2 ha)')}</option>
               </select>
             </div>
 
             {/* Exact Annual Household Income */}
             <div>
               <label htmlFor="field-annual-income" className="block font-semibold text-slate-700 mb-1.5">
-                Exact Annual Income (₹) <span className="text-[10px] text-slate-500 font-normal">(Optional)</span>
+                {language === 'ta' ? 'துல்லிய ஆண்டு வருமானம் (₹)' : 'Exact Annual Income (₹)'} <span className="text-[10px] text-slate-500 font-normal">({language === 'ta' ? 'விருப்பம்' : 'Optional'})</span>
               </label>
               <input
                 id="field-annual-income"
@@ -422,7 +427,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
             {/* Owns Pucca House */}
             <div>
               <label htmlFor="field-pucca-house" className="block font-semibold text-slate-700 mb-1.5">
-                Owns Pucca House? <span className="text-[10px] text-slate-500 font-normal">(Optional)</span>
+                {language === 'ta' ? 'சொந்த கான்கிரீட் வீடு உள்ளதா?' : 'Owns Pucca House?'} <span className="text-[10px] text-slate-500 font-normal">({language === 'ta' ? 'விருப்பம்' : 'Optional'})</span>
               </label>
               <select
                 id="field-pucca-house"
@@ -441,16 +446,16 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                 }
                 className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-civic-500 focus:bg-white text-slate-900"
               >
-                <option value="">Unanswered (Unknown)</option>
-                <option value="false">No (Kutcha / Homeless)</option>
-                <option value="true">Yes (Owns Pucca House)</option>
+                <option value="">{language === 'ta' ? 'குறிப்பிடப்படவில்லை' : 'Unanswered (Unknown)'}</option>
+                <option value="false">{language === 'ta' ? 'இல்லை (குடிசை / வீடற்ற)' : 'No (Kutcha / Homeless)'}</option>
+                <option value="true">{language === 'ta' ? 'ஆம் (சொந்த கான்கிரீட் வீடு உண்டு)' : 'Yes (Owns Pucca House)'}</option>
               </select>
             </div>
 
             {/* Income Tax Payer */}
             <div>
               <label htmlFor="field-tax-payer" className="block font-semibold text-slate-700 mb-1.5">
-                Income Tax Payer? <span className="text-[10px] text-slate-500 font-normal">(Optional)</span>
+                {language === 'ta' ? 'வருமான வரி செலுத்துபவரா?' : 'Income Tax Payer?'} <span className="text-[10px] text-slate-500 font-normal">({language === 'ta' ? 'விருப்பம்' : 'Optional'})</span>
               </label>
               <select
                 id="field-tax-payer"
@@ -469,16 +474,16 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                 }
                 className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-civic-500 focus:bg-white text-slate-900"
               >
-                <option value="">Unanswered (Unknown)</option>
-                <option value="false">No (Non-Taxpayer)</option>
-                <option value="true">Yes (Income Tax Payer)</option>
+                <option value="">{language === 'ta' ? 'குறிப்பிடப்படவில்லை' : 'Unanswered (Unknown)'}</option>
+                <option value="false">{language === 'ta' ? 'இல்லை (வரி செலுத்துவதில்லை)' : 'No (Non-Taxpayer)'}</option>
+                <option value="true">{language === 'ta' ? 'ஆம் (வருமான வரி செலுத்துகிறார்)' : 'Yes (Income Tax Payer)'}</option>
               </select>
             </div>
 
             {/* Government Employee */}
             <div>
               <label htmlFor="field-govt-employee" className="block font-semibold text-slate-700 mb-1.5">
-                Govt Employee? <span className="text-[10px] text-slate-500 font-normal">(Optional)</span>
+                {language === 'ta' ? 'அரசு ஊழியரா?' : 'Govt Employee?'} <span className="text-[10px] text-slate-500 font-normal">({language === 'ta' ? 'விருப்பம்' : 'Optional'})</span>
               </label>
               <select
                 id="field-govt-employee"
@@ -497,9 +502,9 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                 }
                 className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-civic-500 focus:bg-white text-slate-900"
               >
-                <option value="">Unanswered (Unknown)</option>
-                <option value="false">No (Non-Govt Worker)</option>
-                <option value="true">Yes (Serving/Retired Govt Employee)</option>
+                <option value="">{language === 'ta' ? 'குறிப்பிடப்படவில்லை' : 'Unanswered (Unknown)'}</option>
+                <option value="false">{language === 'ta' ? 'இல்லை (அரசு ஊழியர் அல்ல)' : 'No (Non-Govt Worker)'}</option>
+                <option value="true">{language === 'ta' ? 'ஆம் (பணியிலுள்ள/ஓய்வுபெற்ற அரசு ஊழியர்)' : 'Yes (Serving/Retired Govt Employee)'}</option>
               </select>
             </div>
           </div>
@@ -514,7 +519,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                 onChange={(e) => handleProfileFieldChange('isStudent', e.target.checked)}
                 className="w-4 h-4 rounded text-civic-600 focus:ring-civic-500 border-slate-300"
               />
-              <span className="font-semibold">Currently enrolled as an active student</span>
+              <span className="font-semibold">{t.eligibility.isStudent}</span>
             </label>
 
             <label htmlFor="field-disability" className="flex items-center space-x-2 cursor-pointer">
@@ -525,7 +530,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                 onChange={(e) => handleProfileFieldChange('hasDisability', e.target.checked)}
                 className="w-4 h-4 rounded text-civic-600 focus:ring-civic-500 border-slate-300"
               />
-              <span className="font-semibold">Person with Disability (Divyangjan)</span>
+              <span className="font-semibold">{t.eligibility.hasDisability}</span>
             </label>
           </div>
 
@@ -534,7 +539,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
             <div className="text-[11px] text-slate-600 font-medium">
               {isKioskMode && (
                 <span className="font-semibold text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
-                  Public Kiosk Mode: Answers stored in memory only
+                  {language === 'ta' ? 'பொது கியோஸ்க் முறை: விவரங்கள் நினைவகத்தில் மட்டுமே இருக்கும்' : 'Public Kiosk Mode: Answers stored in memory only'}
                 </span>
               )}
             </div>
@@ -545,7 +550,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                   onClick={onResetProfile}
                   className="px-3 py-1.5 text-xs font-semibold text-rose-700 hover:bg-rose-50 border border-rose-200 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-rose-500"
                 >
-                  Clear Profile Answers
+                  {t.eligibility.resetProfile}
                 </button>
               )}
               {onPreFillDemoProfile && (
@@ -554,7 +559,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                   onClick={onPreFillDemoProfile}
                   className="px-3 py-1.5 text-xs font-semibold text-civic-800 hover:bg-civic-50 border border-civic-200 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500"
                 >
-                  Pre-fill Sample Profile
+                  {t.eligibility.loadDemo}
                 </button>
               )}
             </div>
@@ -617,7 +622,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-xs font-semibold text-slate-500 flex items-center space-x-1 pr-1">
             <Filter className="w-3.5 h-3.5" />
-            <span>Outcome:</span>
+            <span>{language === 'ta' ? 'முடிவு:' : 'Outcome:'}</span>
           </span>
 
           <button
@@ -628,7 +633,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                 : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
             }`}
           >
-            All Outcomes ({evaluationResults.length})
+            {t.eligibility.allSchemes} ({evaluationResults.length})
           </button>
 
           <button
@@ -640,7 +645,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
             }`}
           >
             <CheckCircle2 className="w-3.5 h-3.5" />
-            <span>Meets known criteria ({metCount})</span>
+            <span>{t.eligibility.eligibleMet} ({metCount})</span>
           </button>
 
           <button
@@ -652,7 +657,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
             }`}
           >
             <HelpCircle className="w-3.5 h-3.5" />
-            <span>Needs verification ({unknownCount})</span>
+            <span>{t.eligibility.needsVerification} ({unknownCount})</span>
           </button>
 
           <button
@@ -664,7 +669,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
             }`}
           >
             <XCircle className="w-3.5 h-3.5" />
-            <span>Does not meet known criteria ({notMetCount})</span>
+            <span>{t.eligibility.notEligible} ({notMetCount})</span>
           </button>
         </div>
 
@@ -672,7 +677,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
           onClick={() => onNavigate('document-mapper')}
           className="hidden sm:inline-flex items-center space-x-1.5 text-xs font-semibold text-civic-700 hover:underline"
         >
-          <span>Go to Document Mapper</span>
+          <span>{language === 'ta' ? 'ஆவண வரைபடத்திற்கு செல்' : 'Go to Document Mapper'}</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </button>
       </div>
@@ -681,8 +686,9 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
       <div className="space-y-4">
         {filteredResults.length > 0 ? (
           filteredResults.map((result) => {
-            const { scheme, overallStatus, criteriaResults, metCount, totalCriteriaCount } =
-              result;
+            const rawScheme = result.scheme;
+            const scheme = getLocalizedScheme(rawScheme);
+            const { overallStatus, criteriaResults, metCount, totalCriteriaCount } = result;
             const isExpanded = expandedSchemeId === scheme.id;
             const isSelectedForMapper = selectedSchemeIdsForMapper.includes(scheme.id);
 
@@ -715,22 +721,22 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                       {overallStatus === 'met' ? (
                         <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
                           <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                          <span>Meets known criteria</span>
+                          <span>{t.eligibility.met}</span>
                         </span>
                       ) : overallStatus === 'unknown' ? (
                         <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200">
                           <HelpCircle className="w-3.5 h-3.5 text-amber-600" />
-                          <span>Needs verification</span>
+                          <span>{t.eligibility.needsVerification}</span>
                         </span>
                       ) : (
                         <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-100 text-rose-800 border border-rose-200">
                           <XCircle className="w-3.5 h-3.5 text-rose-600" />
-                          <span>Does not meet known criteria</span>
+                          <span>{t.eligibility.notEligible}</span>
                         </span>
                       )}
 
                       <span className="text-xs text-slate-400">
-                        {metCount}/{totalCriteriaCount} criteria evaluated
+                        {language === 'ta' ? `${metCount}/${totalCriteriaCount} தகுதிகள் பூர்த்தி` : `${metCount}/${totalCriteriaCount} criteria evaluated`}
                       </span>
                     </div>
 
@@ -750,7 +756,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                       }`}
                     >
                       <FileText className="w-3.5 h-3.5" />
-                      <span>{isSelectedForMapper ? 'In Document Mapper ✓' : '+ Add to Mapper'}</span>
+                      <span>{isSelectedForMapper ? (language === 'ta' ? 'வரைபடத்தில் உள்ளது ✓' : 'In Document Mapper ✓') : (language === 'ta' ? '+ வரைபடத்தில் சேர்' : '+ Add to Mapper')}</span>
                     </button>
 
                     <button
@@ -759,7 +765,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                       }
                       className="px-3 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 flex items-center space-x-1"
                     >
-                      <span>{isExpanded ? 'Hide Criteria' : 'View Criteria Breakdown'}</span>
+                      <span>{isExpanded ? (language === 'ta' ? 'விதிமுறைகளை மறை' : 'Hide Criteria') : (language === 'ta' ? 'விதிமுறை விவரங்கள்' : 'View Criteria Breakdown')}</span>
                       {isExpanded ? (
                         <ChevronUp className="w-3.5 h-3.5" />
                       ) : (
@@ -773,7 +779,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                 {isExpanded && (
                   <div className="bg-slate-50 border-t border-slate-100 p-6 space-y-3">
                     <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
-                      Official Criteria Breakdown for {scheme.title}
+                      {language === 'ta' ? `${scheme.title} - அதிகாரப்பூர்வ தகுதி விதிகள்` : `Official Criteria Breakdown for ${scheme.title}`}
                     </h4>
 
                     <div className="space-y-2">
@@ -805,10 +811,10 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                                 }`}
                               >
                                 {crit.status === 'met'
-                                  ? 'Met'
+                                  ? (language === 'ta' ? 'பூர்த்தி' : 'Met')
                                   : crit.status === 'unknown'
-                                  ? 'Unknown'
-                                  : 'Not Met'}
+                                  ? (language === 'ta' ? 'சரிபார்ப்பு தேவை' : 'Unknown')
+                                  : (language === 'ta' ? 'தகுதியில்லை' : 'Not Met')}
                               </span>
                             </div>
 
@@ -817,12 +823,12 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                             {crit.expectedRule && (
                               <div className="mt-1 flex items-center space-x-3 text-[11px] text-slate-500">
                                 <span>
-                                  Expected:{' '}
+                                  {language === 'ta' ? 'எதிர்பார்க்கப்படும் விதி:' : 'Expected:'}{' '}
                                   <strong className="text-slate-700">{crit.expectedRule}</strong>
                                 </span>
                                 {crit.citizenValue && (
                                   <span>
-                                    Profile Value:{' '}
+                                    {language === 'ta' ? 'உங்கள் விவரம்:' : 'Profile Value:'}{' '}
                                     <strong className="text-slate-700">
                                       {crit.citizenValue}
                                     </strong>
@@ -837,21 +843,25 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
 
                     {/* Unassessed criteria disclaimer */}
                     <div className="p-3 bg-slate-100/70 rounded-xl text-[11px] text-slate-600 space-y-1">
-                      <span className="font-semibold text-slate-700 block">Criteria Not Evaluated by Scheme Rules:</span>
+                      <span className="font-semibold text-slate-700 block">
+                        {language === 'ta' ? 'திட்ட விதிகளில் தேவையில்லாத காரணிகள்:' : 'Criteria Not Evaluated by Scheme Rules:'}
+                      </span>
                       <p>
-                        Criteria such as gender, student status, disability, or social category were not assessed if not specified in official scheme rules (open to all citizens).
+                        {language === 'ta'
+                          ? 'திட்ட விதிகளில் குறிப்பிடப்படாத பாலினம், ஊனம் அல்லது சமூகப் பிரிவு போன்ற விவரங்கள் அனைத்து குடிமக்களுக்கும் பொதுவானவை.'
+                          : 'Criteria such as gender, student status, disability, or social category were not assessed if not specified in official scheme rules (open to all citizens).'}
                       </p>
                     </div>
 
                     <div className="pt-2 text-[11px] text-slate-500 flex items-center justify-between">
-                      <span>Source: {scheme.verification_source || 'Official Gazette'}</span>
+                      <span>{t.eligibility.officialVerificationSource} {scheme.verification_source || 'Official Gazette'}</span>
                       <a
                         href={scheme.official_portal_url ?? '#'}
                         target="_blank"
                         rel="noreferrer"
                         className="text-civic-700 font-semibold hover:underline inline-flex items-center space-x-1"
                       >
-                        <span>Official Guidelines</span>
+                        <span>{language === 'ta' ? 'அதிகாரப்பூர்வ வழிகாட்டுதல்கள்' : 'Official Guidelines'}</span>
                         <ExternalLink className="w-3 h-3" />
                       </a>
                     </div>
@@ -863,15 +873,15 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
         ) : (
           <div className="p-12 bg-white rounded-3xl border border-slate-200 text-center space-y-3">
             <AlertCircle className="w-10 h-10 text-slate-400 mx-auto" />
-            <h3 className="text-base font-bold text-slate-900">No schemes in this status filter</h3>
+            <h3 className="text-base font-bold text-slate-900">{t.eligibility.noResultsMatching}</h3>
             <p className="text-xs text-slate-500">
-              Try changing the status filter above or updating your citizen profile.
+              {language === 'ta' ? 'வேறு தகுதி வடிகட்டலைத் தேர்ந்தெடுக்கவும் அல்லது உங்கள் விவரங்களை புதுப்பிக்கவும்.' : 'Try changing the status filter above or updating your citizen profile.'}
             </p>
             <button
               onClick={() => setStatusFilter('all')}
               className="px-4 py-2 text-xs font-semibold bg-slate-100 text-slate-700 rounded-xl"
             >
-              Show All Statuses
+              {language === 'ta' ? 'அனைத்து முடிவுகளையும் காட்டு' : 'Show All Statuses'}
             </button>
           </div>
         )}

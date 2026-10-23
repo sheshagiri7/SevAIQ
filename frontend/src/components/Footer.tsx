@@ -1,7 +1,10 @@
 import React from 'react';
 import { ShieldCheck } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export const Footer: React.FC = () => {
+  const { t } = useLanguage();
+
   return (
     <footer className="bg-white border-t border-slate-200 mt-16 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -12,11 +15,11 @@ export const Footer: React.FC = () => {
             </div>
             <span className="text-sm font-bold text-slate-800">SevAIQ</span>
             <span className="text-xs text-slate-400">|</span>
-            <span className="text-xs text-slate-500">Seva First Innovation Challenge 2026</span>
+            <span className="text-xs text-slate-500">{t.header.challengeBadge}</span>
           </div>
 
           <p className="text-xs text-slate-500 text-center sm:text-right">
-            Civic Tech Foundation • Zero Hallucination Guarantee • Official Gazette Data Only
+            {t.footer.disclaimer}
           </p>
         </div>
       </div>

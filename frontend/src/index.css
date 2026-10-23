@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -71,3 +72,120 @@
     color: #026bc9 !important;
   }
 }
+
+/* Audio wave equalizer bars for Voice AI Assistant */
+@keyframes voice-wave-bar {
+  0%, 100% {
+    height: 4px;
+    opacity: 0.45;
+  }
+  50% {
+    height: 18px;
+    opacity: 1;
+  }
+}
+
+.animate-voice-wave-1 {
+  animation: voice-wave-bar 0.75s ease-in-out infinite;
+}
+.animate-voice-wave-2 {
+  animation: voice-wave-bar 0.75s ease-in-out infinite 0.15s;
+}
+.animate-voice-wave-3 {
+  animation: voice-wave-bar 0.75s ease-in-out infinite 0.3s;
+}
+.animate-voice-wave-4 {
+  animation: voice-wave-bar 0.75s ease-in-out infinite 0.45s;
+}
+
+/* Scheme Carousel 5-Second Progress Bar Animation */
+@keyframes carousel-progress {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+.animate-carousel-progress {
+  animation: carousel-progress 5000ms linear forwards;
+}
+
+/* ==========================================================================
+   UX4G & WCAG 2.1 Accessibility Suite Styles
+   ========================================================================== */
+
+/* 1. Text Spacing (WCAG 1.4.12) */
+body.a11y-text-spacing,
+body.a11y-text-spacing *:not(.a11y-exempt):not(.a11y-exempt *) {
+  letter-spacing: 0.12em !important;
+  word-spacing: 0.16em !important;
+}
+
+/* 2. Line Height */
+body.a11y-line-height,
+body.a11y-line-height *:not(.a11y-exempt):not(.a11y-exempt *) {
+  line-height: 2 !important;
+}
+
+/* 3. Dyslexia Friendly Font Stack */
+body.a11y-dyslexia,
+body.a11y-dyslexia *:not(.a11y-exempt):not(.a11y-exempt *) {
+  font-family: 'Lexend', 'OpenDyslexic', 'Comic Sans MS', 'Comic Sans', -apple-system, sans-serif !important;
+  letter-spacing: 0.05em !important;
+}
+
+/* 4. Saturation Controls */
+body.a11y-saturation-high {
+  filter: saturate(200%) !important;
+}
+
+body.a11y-saturation-gray {
+  filter: grayscale(100%) !important;
+}
+
+/* 5. Invert Colors (High Contrast Dark Mode) */
+html.a11y-invert {
+  filter: invert(100%) hue-rotate(180deg) !important;
+  background-color: #121212 !important;
+}
+
+/* Re-invert media so images and accessibility widget don't look weirdly negative */
+html.a11y-invert img,
+html.a11y-invert video,
+html.a11y-invert .a11y-exempt {
+  filter: invert(100%) hue-rotate(180deg) !important;
+}
+
+/* 6. Highlight Links */
+body.a11y-highlight-links a,
+body.a11y-highlight-links button:not(.a11y-exempt):not(.a11y-exempt *) {
+  text-decoration: underline !important;
+  text-decoration-thickness: 2.5px !important;
+  text-underline-offset: 3px !important;
+  outline: 2px solid #eab308 !important;
+  outline-offset: 2px !important;
+}
+
+/* 7. Large Accessibility Cursor */
+body.a11y-big-cursor,
+body.a11y-big-cursor * {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' stroke='%23fff' stroke-width='1.5' stroke-linejoin='round' d='M5.5 3.21V20.8l5.25-5.25h6.39L5.5 3.21z'/%3E%3C/svg%3E"), auto !important;
+}
+
+/* 8. Pause Animations */
+body.a11y-pause-animations,
+body.a11y-pause-animations * {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* 9. Hide Images to reduce distraction */
+body.a11y-hide-images img,
+body.a11y-hide-images svg:not(.a11y-exempt):not(.a11y-exempt *),
+body.a11y-hide-images [role="img"] {
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+

@@ -10,11 +10,13 @@ import {
   LayoutDashboard,
   Monitor,
   Trash2,
-  Mic,
   ListChecks,
-  ChevronDown,
+  Globe,
+  Accessibility,
 } from 'lucide-react';
 import { ApiState, NavigationTab } from '../types';
+import { useLanguage } from '../context/LanguageContext';
+import { useAccessibility } from '../context/AccessibilityContext';
 
 interface HeaderProps {
   apiState?: ApiState;
@@ -44,36 +46,28 @@ export const Header: React.FC<HeaderProps> = ({
   onToggleKioskMode,
   onClearSession,
 }) => {
+  const { language, setLanguage, t } = useLanguage();
+  const { toggleOpen: toggleAccessibility, isOpen: isA11yOpen, activeCount: a11yActiveCount } = useAccessibility();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
-  const [moreDropdownOpen, setMoreDropdownOpen] = useState(false);
 
   const triggerButtonRef = useRef<HTMLButtonElement | null>(null);
   const cancelButtonRef = useRef<HTMLButtonElement | null>(null);
   const confirmButtonRef = useRef<HTMLButtonElement | null>(null);
-  const moreDropdownRef = useRef<HTMLDivElement | null>(null);
 
-  const primaryNavItems: NavItem[] = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'discover', label: 'Schemes', mobileLabel: 'Find Schemes', description: 'Bilingual AI-powered scheme discovery', icon: Compass },
-    { id: 'eligibility', label: 'Eligibility', mobileLabel: 'Explainable Eligibility', description: 'Statutory criteria evaluation engine', icon: CheckSquare, badge: eligibleCount > 0 ? eligibleCount : undefined },
-    { id: 'document-mapper', label: 'Documents', mobileLabel: 'Document Synergy Mapper', description: 'Cross-scheme certificate deduplication', icon: Files },
-    { id: 'readiness-passport', label: 'Passport', mobileLabel: 'Readiness Passport', description: 'Civic entitlement application dossier', icon: Award },
+  const navItems: NavItem[] = [
+    { id: 'dashboard', label: t.header.dashboard, icon: LayoutDashboard },
+    { id: 'discover', label: t.header.schemes, mobileLabel: t.header.schemesMobile, description: t.header.schemesDesc, icon: Compass },
+    { id: 'eligibility', label: t.header.eligibility, mobileLabel: t.header.eligibilityMobile, description: t.header.eligibilityDesc, icon: CheckSquare, badge: eligibleCount > 0 ? eligibleCount : undefined },
+    { id: 'document-mapper', label: t.header.documents, mobileLabel: t.header.documentsMobile, description: t.header.documentsDesc, icon: Files },
+    { id: 'readiness-passport', label: t.header.passport, mobileLabel: t.header.passportMobile, description: t.header.passportDesc, icon: Award },
+    { id: 'trust-monitor', label: t.header.trust, mobileLabel: t.header.trustMobile, description: t.header.trustDesc, icon: ShieldCheck },
+    { id: 'application-tracker', label: t.header.guidance, mobileLabel: t.header.guidanceMobile, description: t.header.guidanceDesc, icon: ListChecks },
   ];
-
-  const secondaryNavItems: NavItem[] = [
-    { id: 'voice-assistant', label: 'Voice AI', mobileLabel: 'Tamil & English Voice Assistant', description: 'Accessible in-browser voice query engine', icon: Mic },
-    { id: 'trust-monitor', label: 'Trust', mobileLabel: 'Official Source Trust Monitor', description: 'Government domain & gazette audits', icon: ShieldCheck },
-    { id: 'application-tracker', label: 'Guidance', mobileLabel: 'Application Guidance Tracker', description: 'Step-by-step submission checklist', icon: ListChecks },
-  ];
-
-  const allNavItems: NavItem[] = [...primaryNavItems, ...secondaryNavItems];
-  const isMoreActive = secondaryNavItems.some((item) => item.id === activeTab);
 
   const handleNavClick = (tab: NavigationTab) => {
     onSelectTab(tab);
     setMobileMenuOpen(false);
-    setMoreDropdownOpen(false);
   };
 
   const handleCloseModal = () => {
@@ -91,30 +85,16 @@ export const Header: React.FC<HeaderProps> = ({
     }, 0);
   };
 
-  // Close "More Tools" dropdown on click outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (moreDropdownRef.current && !moreDropdownRef.current.contains(event.target as Node)) {
-        setMoreDropdownOpen(false);
-      }
-    };
-    if (moreDropdownOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
-    }
-  }, [moreDropdownOpen]);
-
   // Global Escape key listener for open modals/menus
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        if (moreDropdownOpen) setMoreDropdownOpen(false);
         if (mobileMenuOpen) setMobileMenuOpen(false);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [moreDropdownOpen, mobileMenuOpen]);
+  }, [mobileMenuOpen]);
 
   // Keyboard navigation, Escape dismissal, and focus trap for the End Session dialog
   useEffect(() => {
@@ -159,41 +139,64 @@ export const Header: React.FC<HeaderProps> = ({
   }, [showClearConfirm]);
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-slate-200/90 shadow-2xs">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          {/* Brand Identity - Semantic Button with perfectly aligned icon, wordmark, and tagline */}
-          <button
-            type="button"
-            onClick={() => handleNavClick('dashboard')}
-            className="flex items-center space-x-3 text-left group focus:outline-none focus:ring-2 focus:ring-civic-500 rounded-2xl p-1 shrink-0"
-            aria-label="SevAIQ Home Dashboard"
-          >
-            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-blue-800 via-civic-700 to-indigo-900 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform shrink-0">
-              <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.2]" />
-            </div>
-            <div className="flex flex-col justify-center min-w-0">
-              <div className="flex items-center space-x-2">
-                <span className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 leading-none">
+    <header className="sticky top-0 z-50 bg-white border-b border-slate-200/90 shadow-2xs w-full">
+      <div className="w-full px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between xl:grid xl:grid-cols-[auto_1fr_auto] min-h-[4.25rem] sm:min-h-[4.5rem] py-1.5 sm:py-2 w-full gap-2 lg:gap-4">
+          {/* Top Left: Logo & Tagline + Accessibility Options (aligned properly below the logo) */}
+          <div className="flex flex-col justify-center items-start shrink-0 pr-1">
+            <button
+              type="button"
+              onClick={() => handleNavClick('dashboard')}
+              className="flex items-center space-x-2.5 text-left group focus:outline-none focus:ring-2 focus:ring-civic-500 rounded-xl p-0.5"
+              aria-label="SevAIQ - Civic Intelligence & Scheme Readiness Dashboard"
+            >
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-blue-800 via-civic-700 to-indigo-900 flex items-center justify-center text-white shadow-xs group-hover:scale-105 transition-transform shrink-0">
+                <ShieldCheck className="w-4.5 h-4.5 sm:w-5 sm:h-5 stroke-[2.2]" />
+              </div>
+              <div className="flex flex-col justify-center min-w-0">
+                <span className="text-lg sm:text-xl font-black tracking-tight text-slate-900 leading-none">
                   Sev<span className="text-civic-600">AI</span>Q
                 </span>
-                <span className="hidden 2xl:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-900 border border-amber-200/80 leading-none shrink-0 tracking-wide">
-                  Seva First 2026
+                <span className="text-[10px] text-slate-500 font-medium tracking-normal whitespace-nowrap leading-none mt-1">
+                  {t.header.tagline}
                 </span>
               </div>
-              <p className="text-[11px] sm:text-xs text-slate-500 font-medium whitespace-nowrap mt-1 leading-none hidden sm:block">
-                Civic Intelligence &amp; Scheme Readiness
-              </p>
-            </div>
-          </button>
+            </button>
 
-          {/* Desktop Navigation - Centered, comfortable padding, non-cramped */}
+            {/* Accessibility options button positioned cleanly below the logo */}
+            <div className="mt-1 flex items-center space-x-1.5 pl-0.5">
+              <button
+                type="button"
+                onClick={toggleAccessibility}
+                className={`inline-flex items-center space-x-1.5 px-2 py-0.5 rounded-md text-[11px] font-semibold border transition-all focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-2xs group cursor-pointer ${
+                  a11yActiveCount > 0 || isA11yOpen
+                    ? 'bg-purple-100/90 text-purple-900 border-purple-300 font-bold'
+                    : 'bg-purple-50/80 text-purple-800 border-purple-200/90 hover:bg-purple-100 hover:text-purple-900'
+                }`}
+                title="Accessibility options (Ctrl+F2)"
+                aria-label="Open accessibility options (Ctrl+F2)"
+                aria-expanded={isA11yOpen}
+              >
+                <Accessibility className="w-3.5 h-3.5 text-purple-600 group-hover:scale-110 transition-transform" />
+                <span>{language === 'ta' ? 'அணுகல்தன்மை விருப்பங்கள்' : 'Accessibility options'}</span>
+                <span className="hidden sm:inline-block text-[9px] font-mono font-bold bg-white text-purple-700 px-1 py-0.2 rounded border border-purple-200 shadow-2xs">
+                  Ctrl+F2
+                </span>
+                {a11yActiveCount > 0 && (
+                  <span className="inline-flex items-center justify-center px-1.5 py-0.2 text-[9px] font-black bg-purple-600 text-white rounded-full">
+                    {a11yActiveCount}
+                  </span>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Center: All Navigation Options Aligned in Center */}
           <nav
-            className="hidden lg:flex items-center justify-center flex-1 mx-3 xl:mx-6 space-x-1"
+            className="hidden lg:flex items-center justify-center mx-2 xl:mx-0 space-x-1"
             aria-label="Main Navigation"
           >
-            {/* Primary workflow destinations */}
-            {primaryNavItems.map((item) => {
+            {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
               return (
@@ -202,132 +205,84 @@ export const Header: React.FC<HeaderProps> = ({
                   type="button"
                   onClick={() => handleNavClick(item.id)}
                   aria-current={isActive ? 'page' : undefined}
-                  className={`relative flex items-center space-x-1.5 px-2.5 py-2 rounded-xl text-xs xl:text-sm font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 whitespace-nowrap ${
+                  className={`relative flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 whitespace-nowrap ${
                     isActive
-                      ? 'bg-civic-50 text-civic-800 shadow-2xs font-bold'
+                      ? 'bg-civic-50 text-civic-800 shadow-2xs font-bold border border-civic-200/50'
                       : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                   }`}
                 >
-                  <Icon className={`w-4 h-4 ${isActive ? 'text-civic-700' : 'text-slate-500'}`} />
+                  <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-civic-700' : 'text-slate-500'}`} />
                   <span>{item.label}</span>
                   {item.badge !== undefined && (
-                    <span className="inline-flex items-center px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                    <span className="inline-flex items-center px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-emerald-100 text-emerald-800">
                       {item.badge}
                     </span>
                   )}
                   {isActive && (
-                    <span className="absolute bottom-0 left-2.5 right-2.5 h-0.5 bg-civic-600 rounded-full" />
+                    <span className="absolute bottom-0 left-2 right-2 h-0.5 bg-civic-600 rounded-full" />
                   )}
                 </button>
               );
             })}
-
-            {/* Specialized Tools tabs: inline on wide screens (>= 1280px / xl) */}
-            <div className="hidden xl:flex items-center space-x-1">
-              {secondaryNavItems.map((item) => {
-                const Icon = item.icon;
-                const isActive = activeTab === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => handleNavClick(item.id)}
-                    aria-current={isActive ? 'page' : undefined}
-                    className={`relative flex items-center space-x-1.5 px-2.5 py-2 rounded-xl text-xs xl:text-sm font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 whitespace-nowrap ${
-                      isActive
-                        ? 'bg-civic-50 text-civic-800 shadow-2xs font-bold'
-                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-                    }`}
-                  >
-                    <Icon className={`w-4 h-4 ${isActive ? 'text-civic-700' : 'text-slate-500'}`} />
-                    <span>{item.label}</span>
-                    {isActive && (
-                      <span className="absolute bottom-0 left-2.5 right-2.5 h-0.5 bg-civic-600 rounded-full" />
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Overflow Dropdown for Medium Screens (1024px - 1279px) */}
-            <div className="relative xl:hidden" ref={moreDropdownRef}>
-              <button
-                type="button"
-                onClick={() => setMoreDropdownOpen(!moreDropdownOpen)}
-                aria-expanded={moreDropdownOpen}
-                aria-haspopup="true"
-                className={`relative flex items-center space-x-1 px-2.5 py-2 rounded-xl text-xs font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 whitespace-nowrap ${
-                  isMoreActive
-                    ? 'bg-civic-50 text-civic-800 shadow-2xs font-bold'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-                }`}
-              >
-                <span>More Tools</span>
-                <ChevronDown className={`w-3.5 h-3.5 transition-transform ${moreDropdownOpen ? 'rotate-180' : ''}`} />
-                {isMoreActive && (
-                  <span className="absolute bottom-0 left-2.5 right-2.5 h-0.5 bg-civic-600 rounded-full" />
-                )}
-              </button>
-
-              {moreDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-slate-200 py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
-                  <div className="px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-100">
-                    Civic Intelligence Tools
-                  </div>
-                  {secondaryNavItems.map((item) => {
-                    const Icon = item.icon;
-                    const isActive = activeTab === item.id;
-                    return (
-                      <button
-                        key={item.id}
-                        type="button"
-                        onClick={() => {
-                          handleNavClick(item.id);
-                          setMoreDropdownOpen(false);
-                        }}
-                        className={`w-full flex items-center space-x-3 px-3.5 py-2.5 text-xs font-semibold text-left transition-colors ${
-                          isActive
-                            ? 'bg-civic-50 text-civic-800 font-bold'
-                            : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
-                        }`}
-                      >
-                        <div className={`p-1.5 rounded-lg shrink-0 ${isActive ? 'bg-civic-100 text-civic-700' : 'bg-slate-100 text-slate-500'}`}>
-                          <Icon className="w-4 h-4" />
-                        </div>
-                        <div>
-                          <div className="font-bold text-slate-900">{item.mobileLabel || item.label}</div>
-                          <div className="text-[10px] text-slate-500 font-normal leading-tight">{item.description}</div>
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
           </nav>
 
-          {/* Right Controls: Kiosk Mode, Clear Profile & Mobile Toggle - Exact same height & centerline */}
-          <div className="flex items-center space-x-2 shrink-0">
+          {/* Top Right: Language Switcher, Kiosk Mode, End Session & Mobile Menu Toggle */}
+          <div className="flex items-center justify-end space-x-2 shrink-0">
+            {/* Language Switcher Segmented Control: English | தமிழ் */}
+            <div
+              className="flex items-center rounded-lg border border-slate-200 bg-slate-100/80 p-0.5 shadow-2xs shrink-0"
+              role="group"
+              aria-label="Language selection"
+            >
+              <Globe className="w-3.5 h-3.5 text-slate-500 ml-1.5 mr-1 hidden sm:inline" />
+              <button
+                type="button"
+                onClick={() => setLanguage('en')}
+                className={`h-7 px-2.5 rounded-md text-xs font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 ${
+                  language === 'en'
+                    ? 'bg-white text-civic-900 shadow-2xs font-bold border border-slate-200'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+                aria-label="Switch website language to English"
+                aria-pressed={language === 'en'}
+              >
+                English
+              </button>
+              <button
+                type="button"
+                onClick={() => setLanguage('ta')}
+                className={`h-7 px-2.5 rounded-md text-xs font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 ${
+                  language === 'ta'
+                    ? 'bg-civic-700 text-white shadow-2xs font-bold'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+                aria-label="வலைத்தள மொழியை தமிழுக்கு மாற்றவும் (Switch website to Tamil)"
+                aria-pressed={language === 'ta'}
+              >
+                தமிழ்
+              </button>
+            </div>
+
             {/* Ephemeral Public Kiosk Mode Toggle */}
             <button
               type="button"
               onClick={onToggleKioskMode}
-              className={`h-9 px-3 rounded-xl text-xs font-semibold inline-flex items-center gap-1.5 border transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 shrink-0 ${
+              className={`h-8 px-2.5 rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 border transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 shrink-0 ${
                 isKioskMode
                   ? 'bg-amber-50 text-amber-900 border-amber-300 shadow-2xs hover:bg-amber-100'
                   : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50 hover:border-slate-300'
               }`}
               title={
                 isKioskMode
-                  ? 'Public Kiosk Mode is Active: Session profile data exists in memory only'
-                  : 'Toggle Public Kiosk Mode for shared devices'
+                  ? t.header.kioskActiveTooltip
+                  : t.header.kioskOffTooltip
               }
               aria-pressed={isKioskMode}
             >
               <Monitor className={`w-3.5 h-3.5 ${isKioskMode ? 'text-amber-800' : 'text-slate-500'}`} />
-              <span className="hidden md:inline">Kiosk Mode:</span>
+              <span className="hidden md:inline">{t.header.kioskMode}</span>
               <span className={isKioskMode ? 'font-bold text-amber-900' : ''}>
-                {isKioskMode ? 'Active' : 'Off'}
+                {isKioskMode ? t.header.active : t.header.off}
               </span>
             </button>
 
@@ -336,19 +291,19 @@ export const Header: React.FC<HeaderProps> = ({
               ref={triggerButtonRef}
               type="button"
               onClick={() => setShowClearConfirm(true)}
-              className="h-9 px-3 rounded-xl text-xs font-semibold inline-flex items-center gap-1.5 border border-rose-200 text-rose-700 hover:bg-rose-50 hover:border-rose-300 transition-all focus:outline-none focus:ring-2 focus:ring-rose-500 shrink-0"
-              title="Clear all demographic answers and document statuses from this device"
-              aria-label="Clear profile and end session"
+              className="h-8 px-2.5 rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 border border-rose-200 text-rose-700 hover:bg-rose-50 hover:border-rose-300 transition-all focus:outline-none focus:ring-2 focus:ring-rose-500 shrink-0"
+              title={t.header.endSessionTooltip}
+              aria-label={t.header.endSession}
             >
               <Trash2 className="w-3.5 h-3.5 text-rose-600" />
-              <span className="hidden sm:inline">End Session</span>
+              <span className="hidden sm:inline">{t.header.endSession}</span>
             </button>
 
             {/* Mobile Hamburger Button */}
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden h-9 w-9 inline-flex items-center justify-center p-2 text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-civic-500 shrink-0"
+              className="lg:hidden h-8 w-8 inline-flex items-center justify-center p-1.5 text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-civic-500 shrink-0"
               aria-label="Toggle navigation menu"
               aria-expanded={mobileMenuOpen}
             >
@@ -359,15 +314,65 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Mobile Navigation Dropdown */}
         {mobileMenuOpen && (
-          <div className="lg:hidden py-4 px-3 border-t border-slate-200 space-y-1 bg-white shadow-xl max-h-[calc(100vh-5rem)] overflow-y-auto">
+          <div className="lg:hidden py-4 px-3 border-t border-slate-200 space-y-2 bg-white shadow-xl max-h-[calc(100vh-5rem)] overflow-y-auto">
             {/* Challenge badge on mobile drawer */}
-            <div className="px-3 py-2 mb-2 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-between text-xs">
-              <span className="font-bold text-amber-900">Seva First Innovation Challenge 2026</span>
-              <span className="text-[10px] text-amber-700 font-semibold">Civic Dossier</span>
+            <div className="px-3 py-2 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-between text-xs">
+              <span className="font-bold text-amber-900">{t.header.challengeBadge}</span>
+              <span className="text-[10px] text-amber-700 font-semibold">{t.header.civicDossier}</span>
+            </div>
+
+            {/* Mobile Language Switcher */}
+            <div className="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs">
+              <span className="font-semibold text-slate-700 flex items-center gap-1.5">
+                <Globe className="w-3.5 h-3.5 text-slate-500" />
+                <span>{t.header.languageSelect}</span>
+              </span>
+              <div className="flex items-center space-x-1">
+                <button
+                  type="button"
+                  onClick={() => setLanguage('en')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                    language === 'en'
+                      ? 'bg-white text-civic-800 shadow-xs border border-slate-200'
+                      : 'text-slate-600 hover:bg-slate-200/60'
+                  }`}
+                >
+                  English
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLanguage('ta')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                    language === 'ta'
+                      ? 'bg-civic-700 text-white shadow-xs'
+                      : 'text-slate-600 hover:bg-slate-200/60'
+                  }`}
+                >
+                  தமிழ்
+                </button>
+              </div>
+            </div>
+
+            {/* Mobile Accessibility Options Quick Launch */}
+            <div className="px-3 py-2 rounded-xl bg-purple-50 border border-purple-200 flex items-center justify-between text-xs">
+              <span className="font-semibold text-purple-900 flex items-center gap-1.5">
+                <Accessibility className="w-4 h-4 text-purple-700" />
+                <span>{language === 'ta' ? 'அணுகல்தன்மை விருப்பங்கள்' : 'Accessibility options'}</span>
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  toggleAccessibility();
+                }}
+                className="px-2.5 py-1 rounded-lg text-xs font-bold bg-purple-600 hover:bg-purple-700 text-white shadow-xs transition-colors"
+              >
+                {language === 'ta' ? 'திறக்கவும்' : 'Open (Ctrl+F2)'}
+              </button>
             </div>
 
             <div className="space-y-1">
-              {allNavItems.map((item) => {
+              {navItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = activeTab === item.id;
                 return (
@@ -400,9 +405,9 @@ export const Header: React.FC<HeaderProps> = ({
             <div className="pt-3 mt-3 border-t border-slate-100 space-y-2">
               <div className="flex items-center justify-between px-3 py-2 bg-slate-50 rounded-xl text-xs">
                 <div>
-                  <span className="font-semibold text-slate-800 block">Public Kiosk Mode</span>
+                  <span className="font-semibold text-slate-800 block">{t.header.kioskMode}</span>
                   <span className="text-[11px] text-slate-500">
-                    {isKioskMode ? 'Volatile in-memory session' : 'Standard local session'}
+                    {isKioskMode ? t.header.volatileSession : t.header.standardSession}
                   </span>
                 </div>
                 <button
@@ -414,7 +419,7 @@ export const Header: React.FC<HeaderProps> = ({
                       : 'bg-white text-slate-700 border-slate-300'
                   }`}
                 >
-                  {isKioskMode ? 'Active (Turn Off)' : 'Off (Turn On)'}
+                  {isKioskMode ? t.header.active : t.header.off}
                 </button>
               </div>
 
@@ -427,7 +432,7 @@ export const Header: React.FC<HeaderProps> = ({
                 className="w-full flex items-center justify-center space-x-2 py-2.5 text-xs font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl transition-colors"
               >
                 <Trash2 className="w-4 h-4 text-rose-600" />
-                <span>End Session &amp; Clear Profile</span>
+                <span>{t.header.endSession}</span>
               </button>
             </div>
           </div>
@@ -452,17 +457,16 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
               <div>
                 <h3 id="clear-session-title" className="text-base font-bold text-slate-900">
-                  End Session &amp; Clear Profile?
+                  {t.header.endSessionDialogTitle}
                 </h3>
                 <p className="text-xs text-slate-600 mt-1 leading-relaxed">
-                  This will immediately erase your profile demographic answers, document checklist statuses,
-                  and selected schemes from this computer.
+                  {t.header.endSessionDialogDesc}
                 </p>
               </div>
             </div>
 
             <div className="p-3 bg-slate-50 rounded-xl text-[11px] text-slate-600 space-y-1">
-              <p>• Removes <code>sevaiq_citizen_profile</code> from storage</p>
+              <p>• Removes <code>sevaiq_citizen_profile</code></p>
               <p>• Resets all document possession indicators</p>
               <p>• Restores the application to an empty starting state</p>
             </div>
@@ -474,7 +478,7 @@ export const Header: React.FC<HeaderProps> = ({
                 onClick={handleCloseModal}
                 className="px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-civic-500"
               >
-                Cancel
+                {t.header.cancelKeepSession}
               </button>
               <button
                 ref={confirmButtonRef}
@@ -482,7 +486,7 @@ export const Header: React.FC<HeaderProps> = ({
                 onClick={handleConfirmClear}
                 className="px-4 py-2 text-xs font-semibold text-white bg-rose-600 hover:bg-rose-700 rounded-xl shadow-xs focus:outline-none focus:ring-2 focus:ring-rose-500"
               >
-                Yes, Clear All Data
+                {t.header.confirmEndSession}
               </button>
             </div>
           </div>

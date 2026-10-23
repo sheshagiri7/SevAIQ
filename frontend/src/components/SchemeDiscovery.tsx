@@ -21,6 +21,7 @@ import { Scheme, SchemeDetail, CategoryCount } from '../types';
 import { CATEGORY_OPTIONS, matchesCategory } from '../utils/categoryMatcher';
 import { fetchCategories, fetchSchemeById } from '../services/api';
 import { matchesBilingualQuery, QUICK_SEARCH_CHIPS } from '../utils/bilingualSearch';
+import { useLanguage } from '../context/LanguageContext';
 
 interface SchemeDiscoveryProps {
   schemes: Scheme[];
@@ -41,6 +42,7 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
   onNavigateToTracker,
   backendSchemesCount,
 }) => {
+  const { language, t, getLocalizedScheme, getLocalizedOption } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedSchemeDetail, setSelectedSchemeDetail] = useState<Scheme | null>(null);
@@ -103,10 +105,19 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
 
   // Filter schemes using normalized category matcher and bilingual search terms
   const filteredSchemes = schemes.filter((s) => {
-    const matchesSearch = matchesBilingualQuery(s, searchQuery);
+    const localized = getLocalizedScheme(s);
+    const matchesSearch =
+      matchesBilingualQuery(s, searchQuery) ||
+      matchesBilingualQuery(localized, searchQuery);
     const matchesCat = matchesCategory(s.category, selectedCategory);
     return matchesSearch && matchesCat;
   });
+
+  const modalScheme = fullSchemeDetail
+    ? (getLocalizedScheme(fullSchemeDetail as Scheme) as SchemeDetail)
+    : selectedSchemeDetail
+    ? getLocalizedScheme(selectedSchemeDetail)
+    : null;
 
   return (
     <section id="discover" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
@@ -115,13 +126,13 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
         <div>
           <div className="inline-flex items-center space-x-1.5 text-xs font-semibold uppercase tracking-wider text-civic-700 mb-1">
             <Layers className="w-4 h-4" />
-            <span>Scheme Catalog</span>
+            <span>{t.discover.badge}</span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-bold text-slate-900">
-            Find Government Schemes
+            {t.discover.title}
           </h2>
           <p className="text-sm text-slate-600 mt-1">
-            Search verified central and state welfare initiatives backed by official gazette records.
+            {t.discover.subtitle}
           </p>
         </div>
 
@@ -135,7 +146,7 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
             aria-label={`Sync schemes with backend. Currently ${backendSchemesCount} schemes from backend.`}
           >
             <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
-            <span>Sync Backend ({backendSchemesCount})</span>
+            <span>{t.discover.syncBackend} ({backendSchemesCount})</span>
           </button>
         </div>
       </div>
@@ -145,14 +156,21 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
         <Info className="w-4 h-4 text-civic-700 shrink-0 mt-0.5" />
         <div className="space-y-1">
           <p className="font-semibold text-civic-900">
-            Verified Data Guarantee & Backend Status:
+            {language === 'ta' ? 'சரிபார்க்கப்பட்ட தரவு உத்தரவாதம் & பின்தள நிலை:' : 'Verified Data Guarantee & Backend Status:'}
           </p>
           <p className="text-slate-700 leading-relaxed">
             {backendSchemesCount === 0 ? (
-              <>
-                FastAPI endpoint <code className="bg-white/80 px-1 py-0.5 rounded font-mono text-slate-800">GET /api/schemes</code> currently returns <code className="bg-white/80 px-1 py-0.5 rounded font-mono text-slate-800">[]</code> as expected during initial setup.
-                SevAIQ displays official reference models from authentic portals (e.g. <em>pmkisan.gov.in</em>, <em>pmjay.gov.in</em>) so you can evaluate eligibility and document mapping.
-              </>
+              language === 'ta' ? (
+                <>
+                  FastAPI இறுதிப்புள்ளி <code className="bg-white/80 px-1 py-0.5 rounded font-mono text-slate-800">GET /api/schemes</code> தற்போது எதிர்பார்க்கப்பட்டபடி காலியாக உள்ளது.
+                  SevAIQ அதிகாரப்பூர்வ போர்ட்டல்களின் (எ.கா. <em>pmkisan.gov.in</em>, <em>pmjay.gov.in</em>) சரிபார்க்கப்பட்ட மாதிரிகளை காட்டுகிறது.
+                </>
+              ) : (
+                <>
+                  FastAPI endpoint <code className="bg-white/80 px-1 py-0.5 rounded font-mono text-slate-800">GET /api/schemes</code> currently returns <code className="bg-white/80 px-1 py-0.5 rounded font-mono text-slate-800">[]</code> as expected during initial setup.
+                  SevAIQ displays official reference models from authentic portals (e.g. <em>pmkisan.gov.in</em>, <em>pmjay.gov.in</em>) so you can evaluate eligibility and document mapping.
+                </>
+              )
             ) : (
               <>
                 FastAPI backend has returned {backendSchemesCount} verified schemes from <code className="bg-white/80 px-1 py-0.5 rounded font-mono text-slate-800">GET /api/schemes</code>.
@@ -171,22 +189,22 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
             </div>
             <div>
               <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800">
-                AI & Bilingual Natural Language Scheme Finder
+                {language === 'ta' ? 'தமிழ் & ஆங்கில இருமொழி நலத்திட்ட தேடுபொறி' : 'AI & Bilingual Natural Language Scheme Finder'}
               </h3>
               <p className="text-[11px] text-slate-500">
-                Describe citizen needs in simple Tamil or English (e.g. "விவசாயி உதவி", "free healthcare", "வீடு கட்ட", "pension")
+                {language === 'ta' ? 'எளிய தமிழில் அல்லது ஆங்கிலத்தில் உங்கள் தேவையை தட்டச்சு செய்யுங்கள் (எ.கா. "விவசாயி உதவி", "மருத்துவ காப்பீடு", "வீடு கட்ட", "ஓய்வூதியம்")' : 'Describe citizen needs in simple Tamil or English (e.g. "விவசாயி உதவி", "free healthcare", "வீடு கட்ட", "pension")'}
               </p>
             </div>
           </div>
           <span className="text-[11px] font-semibold text-slate-600 bg-slate-100 px-2.5 py-1 rounded-full self-start sm:self-auto">
-            Showing {filteredSchemes.length} of {schemes.length} schemes
+            {language === 'ta' ? `காட்டப்படுவது: ${filteredSchemes.length} / ${schemes.length} திட்டங்கள்` : `Showing ${filteredSchemes.length} of ${schemes.length} schemes`}
           </span>
         </div>
 
         {/* Search Input with Clear Button */}
         <div className="relative">
           <label htmlFor="scheme-search-input" className="sr-only">
-            Search government schemes in Tamil or English
+            {t.discover.searchPlaceholder}
           </label>
           <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
             <Search className="w-5 h-5" />
@@ -196,7 +214,7 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search in Tamil or English (e.g. விவசாயி, farmer, மருத்துவம், health, வீடு, housing, கடன், pension)..."
+            placeholder={t.discover.searchPlaceholder}
             className="w-full pl-11 pr-10 py-3 bg-slate-50 hover:bg-white focus:bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-civic-500 focus:border-civic-500 shadow-xs transition-all"
           />
           {searchQuery && (
@@ -214,7 +232,7 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
         {/* Quick Suggestion Chips (Bilingual Tamil & English) */}
         <div className="space-y-1.5 pt-1">
           <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block">
-            Popular Citizen Needs (பொதுவான தேவைகள்):
+            {t.discover.quickQueries}
           </span>
           <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
             {QUICK_SEARCH_CHIPS.map((chip) => {
@@ -231,7 +249,7 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                   }`}
                   title={`${chip.labelEn} / ${chip.labelTa}`}
                 >
-                  <span>{chip.labelTa}</span>
+                  <span>{language === 'ta' ? chip.labelTa : chip.labelEn}</span>
                 </button>
               );
             })}
@@ -242,7 +260,7 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
         <div className="pt-2.5 border-t border-slate-100 flex flex-wrap items-center gap-2">
           <span className="text-xs font-semibold text-slate-700 flex items-center space-x-1 pr-1 shrink-0">
             <Filter className="w-3.5 h-3.5 text-slate-500" />
-            <span>Sectors:</span>
+            <span>{language === 'ta' ? 'துறைகள்:' : 'Sectors:'}</span>
           </span>
           <button
             type="button"
@@ -254,11 +272,12 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                 : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
             }`}
           >
-            All Sectors ({schemes.length})
+            {t.discover.allCategories} ({schemes.length})
           </button>
           {categories.length > 0
             ? categories.map((cat) => {
                 const isSelected = selectedCategory.toLowerCase() === cat.category.toLowerCase();
+                const localizedCatName = getLocalizedOption('categoryFilters', cat.category.toLowerCase()) || cat.category;
                 return (
                   <button
                     key={cat.category}
@@ -271,7 +290,7 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                         : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                     }`}
                   >
-                    {cat.category} ({cat.count})
+                    {localizedCatName} ({cat.count})
                   </button>
                 );
               })
@@ -287,7 +306,7 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                       : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                   }`}
                 >
-                  {cat.label}
+                  {getLocalizedOption('categoryFilters', cat.id) || cat.label}
                 </button>
               ))}
         </div>
@@ -296,7 +315,11 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
         <div className="pt-2 text-[11px] text-slate-500 flex items-center space-x-1.5 border-t border-slate-100">
           <Info className="w-3.5 h-3.5 text-civic-600 shrink-0" />
           <span>
-            <strong>Engine Transparency:</strong> Bilingual search maps citizen intent in simple Tamil and English directly to verified FastAPI backend scheme records (<code className="font-mono text-[10px] bg-slate-100 px-1 py-0.5 rounded">GET /api/schemes</code>) using client-side semantic matching without transmitting personal queries to external LLMs.
+            {language === 'ta' ? (
+              <><strong>வெளிப்படைத்தன்மை:</strong> இருமொழி தேடலானது குடிமக்களின் தேவைகளை நேரடியாக சரிபார்க்கப்பட்ட அரசு திட்டங்களுடன் இணைக்கிறது. உங்கள் தரவு எங்கும் கசியாமல் சாதனத்திலேயே பாதுகாப்பாக இயங்குகிறது.</>
+            ) : (
+              <><strong>Engine Transparency:</strong> Bilingual search maps citizen intent in simple Tamil and English directly to verified FastAPI backend scheme records (<code className="font-mono text-[10px] bg-slate-100 px-1 py-0.5 rounded">GET /api/schemes</code>) using client-side semantic matching without transmitting personal queries to external LLMs.</>
+            )}
           </span>
         </div>
       </div>
@@ -319,109 +342,112 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
         {isLoading ? (
           <div className="py-20 text-center bg-white rounded-3xl border border-slate-200">
             <RefreshCw className="w-8 h-8 text-civic-600 animate-spin mx-auto mb-3" />
-            <p className="text-sm font-semibold text-slate-800">Connecting to Backend API...</p>
+            <p className="text-sm font-semibold text-slate-800">{language === 'ta' ? 'பின்தள சேவையகத்துடன் இணைகிறது...' : 'Connecting to Backend API...'}</p>
             <p className="text-xs text-slate-600 mt-1">Querying /api/schemes</p>
           </div>
         ) : filteredSchemes.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredSchemes.map((scheme) => (
-              <div
-                key={scheme.id}
-                className="p-6 bg-white rounded-3xl border border-slate-200 shadow-xs hover:shadow-md hover:border-civic-300 transition-all flex flex-col justify-between"
-              >
-                <div>
-                  <div className="flex items-center justify-between gap-2 mb-3">
-                    <span className="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-civic-50 text-civic-800 border border-civic-200">
-                      {scheme.category}
-                    </span>
-                    {scheme.verified && scheme.verification_source ? (
-                      <span className="inline-flex items-center space-x-1 text-[11px] font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                        <FileCheck className="w-3.5 h-3.5 text-emerald-600" />
-                        <span>Verified Source</span>
+            {filteredSchemes.map((rawScheme) => {
+              const scheme = getLocalizedScheme(rawScheme);
+              return (
+                <div
+                  key={scheme.id}
+                  className="p-6 bg-white rounded-3xl border border-slate-200 shadow-xs hover:shadow-md hover:border-civic-300 transition-all flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex items-center justify-between gap-2 mb-3">
+                      <span className="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-civic-50 text-civic-800 border border-civic-200">
+                        {scheme.category}
                       </span>
-                    ) : (
-                      <span className="inline-flex items-center space-x-1 text-[11px] font-semibold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
-                        <span>Unverified Draft</span>
-                      </span>
-                    )}
-                  </div>
-
-                  <h3 className="text-base font-bold text-slate-900 mb-1 leading-snug">
-                    {scheme.title}
-                  </h3>
-                  <p className="text-xs text-slate-600 mb-3 font-medium">{scheme.ministry}</p>
-                  <p className="text-xs text-slate-700 line-clamp-3 leading-relaxed mb-4">
-                    {scheme.short_description}
-                  </p>
-
-                  {scheme.benefits_summary && (
-                    <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-800 mb-4 flex items-center space-x-2">
-                      <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
-                      <span className="font-medium">{scheme.benefits_summary}</span>
+                      {scheme.verified && scheme.verification_source ? (
+                        <span className="inline-flex items-center space-x-1 text-[11px] font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                          <FileCheck className="w-3.5 h-3.5 text-emerald-600" />
+                          <span>{t.discover.verifiedOfficialSource}</span>
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center space-x-1 text-[11px] font-semibold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
+                          <span>Unverified Draft</span>
+                        </span>
+                      )}
                     </div>
-                  )}
-                </div>
 
-                <div className="pt-4 border-t border-slate-100 space-y-3">
-                  <div className="flex items-center justify-between text-xs">
-                    {scheme.official_portal_url ? (
-                      <a
-                        href={scheme.official_portal_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center space-x-1 text-civic-700 font-semibold hover:underline focus:outline-none focus:ring-1 focus:ring-civic-500 rounded"
-                      >
-                        <span>Official Portal</span>
-                        <ExternalLink className="w-3.5 h-3.5" />
-                      </a>
-                    ) : (
-                      <span className="text-slate-500">Portal verification pending</span>
-                    )}
+                    <h3 className="text-base font-bold text-slate-900 mb-1 leading-snug">
+                      {scheme.title}
+                    </h3>
+                    <p className="text-xs text-slate-600 mb-3 font-medium">{scheme.ministry}</p>
+                    <p className="text-xs text-slate-700 line-clamp-3 leading-relaxed mb-4">
+                      {scheme.short_description}
+                    </p>
 
-                    <button
-                      type="button"
-                      onClick={() => handleOpenSchemeDetail(scheme)}
-                      className="text-civic-700 hover:text-civic-900 font-semibold focus:outline-none focus:ring-1 focus:ring-civic-500 rounded px-1 flex items-center space-x-1"
-                    >
-                      <FileText className="w-3.5 h-3.5" />
-                      <span>Full Criteria & Details</span>
-                    </button>
-                  </div>
-
-                  <div className="space-y-2">
-                    {onSelectForEligibility && (
-                      <button
-                        type="button"
-                        onClick={() => onSelectForEligibility(scheme)}
-                        className="w-full flex items-center justify-center space-x-2 py-2 px-3 rounded-xl bg-slate-900 hover:bg-civic-700 text-white font-semibold text-xs shadow-xs transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500"
-                      >
-                        <span>Check Eligibility For This Scheme</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </button>
-                    )}
-                    {onNavigateToTracker && (
-                      <button
-                        type="button"
-                        onClick={() => onNavigateToTracker(scheme.id)}
-                        className="w-full flex items-center justify-center space-x-2 py-1.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500"
-                      >
-                        <ListOrdered className="w-3.5 h-3.5 text-civic-700" />
-                        <span>Application Checklist & Steps</span>
-                      </button>
+                    {scheme.benefits_summary && (
+                      <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-800 mb-4 flex items-center space-x-2">
+                        <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+                        <span className="font-medium">{scheme.benefits_summary}</span>
+                      </div>
                     )}
                   </div>
+
+                  <div className="pt-4 border-t border-slate-100 space-y-3">
+                    <div className="flex items-center justify-between text-xs">
+                      {scheme.official_portal_url ? (
+                        <a
+                          href={scheme.official_portal_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center space-x-1 text-civic-700 font-semibold hover:underline focus:outline-none focus:ring-1 focus:ring-civic-500 rounded"
+                        >
+                          <span>{t.discover.officialPortal}</span>
+                          <ExternalLink className="w-3.5 h-3.5" />
+                        </a>
+                      ) : (
+                        <span className="text-slate-500">Portal verification pending</span>
+                      )}
+
+                      <button
+                        type="button"
+                        onClick={() => handleOpenSchemeDetail(rawScheme)}
+                        className="text-civic-700 hover:text-civic-900 font-semibold focus:outline-none focus:ring-1 focus:ring-civic-500 rounded px-1 flex items-center space-x-1"
+                      >
+                        <FileText className="w-3.5 h-3.5" />
+                        <span>{t.discover.viewFullDetails}</span>
+                      </button>
+                    </div>
+
+                    <div className="space-y-2">
+                      {onSelectForEligibility && (
+                        <button
+                          type="button"
+                          onClick={() => onSelectForEligibility(rawScheme)}
+                          className="w-full flex items-center justify-center space-x-2 py-2 px-3 rounded-xl bg-slate-900 hover:bg-civic-700 text-white font-semibold text-xs shadow-xs transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500"
+                        >
+                          <span>{t.discover.checkEligibility}</span>
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                      {onNavigateToTracker && (
+                        <button
+                          type="button"
+                          onClick={() => onNavigateToTracker(scheme.id)}
+                          className="w-full flex items-center justify-center space-x-2 py-1.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500"
+                        >
+                          <ListOrdered className="w-3.5 h-3.5 text-civic-700" />
+                          <span>{t.discover.trackGuidance}</span>
+                        </button>
+                      )}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <div className="p-12 bg-white rounded-3xl border border-slate-200 text-center max-w-xl mx-auto space-y-3">
             <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-500 flex items-center justify-center mx-auto">
               <Search className="w-6 h-6" />
             </div>
-            <h3 className="text-base font-bold text-slate-900">No schemes matched your search</h3>
+            <h3 className="text-base font-bold text-slate-900">{t.discover.noSchemesFound}</h3>
             <p className="text-xs text-slate-600">
-              Try adjusting your sector filter or search terms.
+              {t.discover.noSchemesDesc}
             </p>
             <button
               type="button"
@@ -431,14 +457,14 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
               }}
               className="px-4 py-2 text-xs font-semibold text-civic-800 bg-civic-50 rounded-xl hover:bg-civic-100 transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500"
             >
-              Reset Filters
+              {t.discover.clearFilters}
             </button>
           </div>
         )}
       </div>
 
       {/* Accessible Full Scheme Detail Modal */}
-      {selectedSchemeDetail && (
+      {modalScheme && (
         <div
           role="dialog"
           aria-modal="true"
@@ -449,14 +475,14 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
             <div className="flex items-start justify-between">
               <div>
                 <span className="px-2.5 py-0.5 rounded text-[11px] font-semibold bg-civic-50 text-civic-800 border border-civic-200">
-                  {selectedSchemeDetail.category}
+                  {modalScheme.category}
                 </span>
                 <h3 id="modal-scheme-title" className="text-xl font-bold text-slate-900 mt-1.5 leading-snug">
-                  {selectedSchemeDetail.title}
+                  {modalScheme.title}
                 </h3>
                 <p className="text-xs text-slate-600 font-medium flex items-center space-x-1.5 mt-0.5">
                   <Building2 className="w-3.5 h-3.5 text-slate-400" />
-                  <span>{selectedSchemeDetail.ministry}</span>
+                  <span>{modalScheme.ministry}</span>
                   {fullSchemeDetail?.nodal_agency && (
                     <span className="text-slate-400">({fullSchemeDetail.nodal_agency})</span>
                   )}
@@ -479,7 +505,7 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
             {isDetailLoading && (
               <div className="py-8 text-center bg-slate-50 rounded-2xl border border-slate-100">
                 <RefreshCw className="w-6 h-6 text-civic-600 animate-spin mx-auto mb-2" />
-                <p className="text-xs font-semibold text-slate-700">Loading verified criteria & instructions from /api/schemes/{selectedSchemeDetail.id}...</p>
+                <p className="text-xs font-semibold text-slate-700">Loading verified criteria & instructions from /api/schemes/{modalScheme.id}...</p>
               </div>
             )}
 
@@ -495,14 +521,14 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
 
             <div className="space-y-4 text-xs">
               {/* Detailed Benefits */}
-              {(fullSchemeDetail?.detailed_benefits || selectedSchemeDetail.short_description) && (
+              {(modalScheme.detailed_benefits || modalScheme.short_description) && (
                 <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-1.5">
                   <span className="font-bold text-slate-900 flex items-center space-x-1.5 text-xs">
                     <CheckCircle className="w-4 h-4 text-emerald-600" />
-                    <span>Verified Benefits Summary</span>
+                    <span>{t.discover.detailedBenefits}</span>
                   </span>
                   <p className="text-slate-700 leading-relaxed text-xs">
-                    {fullSchemeDetail?.detailed_benefits || selectedSchemeDetail.short_description}
+                    {modalScheme.detailed_benefits || modalScheme.short_description}
                   </p>
                 </div>
               )}
@@ -511,7 +537,7 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
               <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-2">
                 <span className="font-bold text-slate-900 flex items-center space-x-1.5 text-xs">
                   <FileCheck className="w-4 h-4 text-civic-700" />
-                  <span>Eligibility Criteria</span>
+                  <span>{t.discover.eligibilityCriteria}</span>
                 </span>
                 {fullSchemeDetail?.eligibility_summary && (
                   <p className="text-slate-700 leading-relaxed text-xs">
@@ -539,7 +565,7 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                 <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-2">
                   <span className="font-bold text-slate-900 flex items-center space-x-1.5 text-xs">
                     <ListOrdered className="w-4 h-4 text-civic-700" />
-                    <span>Application Steps</span>
+                    <span>{t.discover.applicationSteps}</span>
                   </span>
                   <ol className="space-y-1.5 list-decimal list-inside text-slate-700 text-xs">
                     {fullSchemeDetail.application_steps.map((step, idx) => (
@@ -552,11 +578,11 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
               )}
 
               {/* Required Documents */}
-              {(fullSchemeDetail?.required_documents || selectedSchemeDetail.required_documents) && (
+              {(modalScheme.required_documents) && (
                 <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-1.5">
-                  <span className="font-bold text-slate-900 block text-xs">Required Documents:</span>
+                  <span className="font-bold text-slate-900 block text-xs">{t.discover.requiredDocs}</span>
                   <div className="flex flex-wrap gap-1.5">
-                    {(fullSchemeDetail?.required_documents || selectedSchemeDetail.required_documents || []).map((doc) => (
+                    {(modalScheme.required_documents || []).map((doc) => (
                       <span
                         key={doc}
                         className="px-2.5 py-1 bg-white border border-slate-200 rounded-lg text-slate-800 text-[11px] font-medium shadow-2xs"
@@ -570,30 +596,30 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
 
               {/* Provenance & Citation */}
               <div className="p-3.5 bg-blue-50/60 rounded-2xl border border-blue-200/70 space-y-1 text-slate-700">
-                <span className="font-bold text-civic-900 block text-xs">Official Provenance & Verification:</span>
+                <span className="font-bold text-civic-900 block text-xs">{t.discover.sourceCitation}:</span>
                 <p className="text-[11px] text-slate-700">
-                  {fullSchemeDetail?.verification_source || selectedSchemeDetail.verification_source || 'Official government publication citation not recorded'}
+                  {modalScheme.verification_source || 'Official government publication citation not recorded'}
                 </p>
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-slate-600 pt-1 border-t border-blue-200/50">
                   <span className="flex items-center space-x-1">
                     <Calendar className="w-3.5 h-3.5 text-slate-500" />
-                    <span>Catalog Check: <strong>{fullSchemeDetail?.verification_date || selectedSchemeDetail.verification_date || '2026-10-22'}</strong></span>
+                    <span>{t.discover.verifiedOn} <strong>{modalScheme.verification_date || '2026-10-22'}</strong></span>
                   </span>
                   <span>•</span>
-                  <span>Origin: <strong className="capitalize">{selectedSchemeDetail.origin || 'backend'}</strong></span>
+                  <span>Origin: <strong className="capitalize">{modalScheme.origin || 'backend'}</strong></span>
                 </div>
               </div>
             </div>
 
             <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
-              {selectedSchemeDetail.official_portal_url ? (
+              {modalScheme.official_portal_url ? (
                 <a
-                  href={selectedSchemeDetail.official_portal_url}
+                  href={modalScheme.official_portal_url}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center space-x-1.5 px-4 py-2 text-xs font-semibold text-civic-800 bg-civic-50 hover:bg-civic-100 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500"
                 >
-                  <span>Open Official Portal</span>
+                  <span>{t.discover.officialPortal}</span>
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
               ) : <div />}
@@ -606,7 +632,7 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                 }}
                 className="px-4 py-2 text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-500"
               >
-                Close
+                {t.discover.close}
               </button>
             </div>
           </div>

@@ -13,6 +13,7 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { Scheme, NavigationTab } from '../types';
+import { useLanguage } from '../context/LanguageContext';
 
 interface TrustMonitorProps {
   schemes: Scheme[];
@@ -94,6 +95,7 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
   onNavigate,
   onSelectSchemeForEligibility,
 }) => {
+  const { t, getLocalizedScheme, language } = useLanguage();
   const [filter, setFilter] = useState<'all' | 'verified' | 'flagged'>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -108,13 +110,37 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
 
     if (searchQuery.trim() !== '') {
       const q = searchQuery.toLowerCase().trim();
-      const matchTitle = a.scheme.title.toLowerCase().includes(q);
-      const matchMinistry = a.scheme.ministry.toLowerCase().includes(q);
+      const locScheme = getLocalizedScheme(a.scheme);
+      const matchTitle =
+        a.scheme.title.toLowerCase().includes(q) || locScheme.title.toLowerCase().includes(q);
+      const matchMinistry =
+        a.scheme.ministry.toLowerCase().includes(q) || locScheme.ministry.toLowerCase().includes(q);
       const matchDomain = a.domainName ? a.domainName.toLowerCase().includes(q) : false;
       return matchTitle || matchMinistry || matchDomain;
     }
     return true;
   });
+
+  // Helper to translate trust inspection flag messages
+  const getLocalizedFlag = (flag: string): string => {
+    if (language === 'en') return flag;
+    if (flag.includes('Non-standard government domain')) {
+      return 'நிலையான அரசு இணைய முகவரி இல்லை (கூடுதல் ஆய்வு தேவை)';
+    }
+    if (flag.includes('Malformed portal URL')) {
+      return 'தவறான இணைய முகவரி வடிவம்';
+    }
+    if (flag.includes('Official portal URL missing')) {
+      return 'அதிகாரப்பூர்வ இணைய முகவரி விடுபட்டுள்ளது';
+    }
+    if (flag.includes('Last-verification date is not recorded')) {
+      return 'கடைசி சரிபார்ப்பு நாள் பதிவாகவில்லை';
+    }
+    if (flag.includes('Official gazette citation')) {
+      return 'அதிகாரப்பூர்வ அரசிதழ் அல்லது அமைச்சக மேற்கோள் விடுபட்டுள்ளது';
+    }
+    return flag;
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
@@ -123,13 +149,13 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
         <div>
           <div className="inline-flex items-center space-x-1.5 text-xs font-semibold uppercase tracking-wider text-civic-700 mb-1">
             <ShieldCheck className="w-4 h-4" />
-            <span>Civic Provenance Audit</span>
+            <span>{t.trustMonitor.badge}</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
-            Official-Source Trust Monitor
+            {t.trustMonitor.title}
           </h1>
           <p className="text-sm text-slate-600 mt-1">
-            Transparent metadata verification, gazette citations, and authentic government domain checks.
+            {t.trustMonitor.subtitle}
           </p>
         </div>
 
@@ -138,7 +164,7 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
           onClick={() => onNavigate('discover')}
           className="inline-flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 transition-colors shadow-xs self-start md:self-auto"
         >
-          <span>Return to Catalog</span>
+          <span>{language === 'ta' ? 'திட்ட பட்டியலுக்கு திரும்பு' : 'Return to Catalog'}</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </button>
       </div>
@@ -148,10 +174,14 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
         <Info className="w-5 h-5 text-civic-700 shrink-0 mt-0.5" />
         <div className="space-y-1">
           <span className="font-bold text-civic-900 block text-sm">
-            Metadata-Based Official Gazette & Source Integrity Audit:
+            {language === 'ta'
+              ? 'அரசிதழ் தகவல் மற்றும் மூல நம்பகத்தன்மை தணிக்கை:'
+              : 'Metadata-Based Official Gazette & Source Integrity Audit:'}
           </span>
           <p className="text-slate-700 leading-relaxed text-xs">
-            SevAIQ never marks a scheme as verified merely because an external URL exists. Every record is verified against published operational guidelines, nodal ministry gazettes, and official <code className="bg-white/90 px-1 py-0.5 rounded font-mono text-slate-800">.gov.in</code> / <code className="bg-white/90 px-1 py-0.5 rounded font-mono text-slate-800">.nic.in</code> portals. This Trust Monitor displays real metadata dates without claiming automated live scraping.
+            {language === 'ta'
+              ? 'SevAIQ ஒரு திட்டத்தின் இணைய இணைப்பு உள்ளதால் மட்டுமே அதை சரிபார்க்கப்பட்டதாக அறிவிப்பதில்லை. ஒவ்வொரு பதிவும் வெளியிடப்பட்ட வழிகாட்டுதல்கள், அமைச்சக அரசிதழ்கள் மற்றும் அதிகாரப்பூர்வ .gov.in / .nic.in இணையதளங்களுடன் ஒப்பிடப்பட்டு சரிபார்க்கப்படுகிறது. தானியங்கி தரவு என்ற பொய்யான உரிமை கோரலின்றி உண்மையான சரிபார்ப்பு தேதிகள் இங்கு காட்டப்படுகின்றன.'
+              : 'SevAIQ never marks a scheme as verified merely because an external URL exists. Every record is verified against published operational guidelines, nodal ministry gazettes, and official .gov.in / .nic.in portals. This Trust Monitor displays real metadata dates without claiming automated live scraping.'}
           </p>
         </div>
       </div>
@@ -162,21 +192,27 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
         <div className="p-5 bg-white rounded-3xl border border-slate-200 shadow-xs flex flex-col justify-between">
           <div>
             <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
-              Total Schemes Audited
+              {language === 'ta' ? 'தணிக்கை செய்யப்பட்ட மொத்த திட்டங்கள்' : 'Total Schemes Audited'}
             </span>
             <div className="mt-2 flex items-baseline space-x-2">
               <span className="text-3xl font-extrabold text-slate-900">{schemes.length}</span>
-              <span className="text-xs text-slate-600 font-semibold">Active catalog</span>
+              <span className="text-xs text-slate-600 font-semibold">
+                {language === 'ta' ? 'செயலில் உள்ள அட்டவணை' : 'Active catalog'}
+              </span>
             </div>
           </div>
-          <p className="mt-2 text-xs text-slate-500">Cross-verified against FastAPI backend storage</p>
+          <p className="mt-2 text-xs text-slate-500">
+            {language === 'ta'
+              ? 'FastAPI பின்தளத்துடன் ஒப்பிட்டு சரிபார்க்கப்பட்டது'
+              : 'Cross-verified against FastAPI backend storage'}
+          </p>
         </div>
 
         {/* Fully Verified Records */}
         <div className="p-5 bg-white rounded-3xl border border-slate-200 shadow-xs flex flex-col justify-between">
           <div>
             <span className="text-xs font-bold uppercase tracking-wider text-emerald-700">
-              Fully Verified Records
+              {language === 'ta' ? 'முழுமையாக சரிபார்க்கப்பட்ட பதிவுகள்' : 'Fully Verified Records'}
             </span>
             <div className="mt-2 flex items-baseline space-x-2">
               <span className="text-3xl font-extrabold text-emerald-700">{fullyVerifiedCount}</span>
@@ -186,7 +222,9 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
             </div>
           </div>
           <p className="mt-2 text-xs text-slate-500">
-            Backed by authentic .gov.in domain & real gazette date
+            {language === 'ta'
+              ? 'உண்மையான .gov.in முகவரி & அரசிதழ் நாள் கொண்டது'
+              : 'Backed by authentic .gov.in domain & real gazette date'}
           </p>
         </div>
 
@@ -194,15 +232,19 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
         <div className="p-5 bg-white rounded-3xl border border-slate-200 shadow-xs flex flex-col justify-between">
           <div>
             <span className="text-xs font-bold uppercase tracking-wider text-amber-700">
-              Metadata Notices / Pending
+              {language === 'ta' ? 'கூடுதல் ஆய்வு தேவைப்படும் பதிவுகள்' : 'Metadata Notices / Pending'}
             </span>
             <div className="mt-2 flex items-baseline space-x-2">
               <span className="text-3xl font-extrabold text-amber-800">{flaggedCount}</span>
-              <span className="text-xs text-amber-700 font-semibold">Need review</span>
+              <span className="text-xs text-amber-700 font-semibold">
+                {language === 'ta' ? 'ஆய்வு தேவை' : 'Need review'}
+              </span>
             </div>
           </div>
           <p className="mt-2 text-xs text-slate-500">
-            Records missing explicit date or non-standard portal URL
+            {language === 'ta'
+              ? 'சரிபார்ப்பு நாள் விடுபட்ட அல்லது நிலையற்ற அரசு இணைய முகவரி'
+              : 'Records missing explicit date or non-standard portal URL'}
           </p>
         </div>
       </div>
@@ -212,7 +254,7 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-xs font-semibold text-slate-500 flex items-center space-x-1 pr-1">
             <Filter className="w-3.5 h-3.5" />
-            <span>Audit Filter:</span>
+            <span>{language === 'ta' ? 'தணிக்கை வடிகட்டி:' : 'Audit Filter:'}</span>
           </span>
 
           <button
@@ -224,7 +266,7 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
                 : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
             }`}
           >
-            All Schemes ({audits.length})
+            {language === 'ta' ? `அனைத்து திட்டங்கள் (${audits.length})` : `All Schemes (${audits.length})`}
           </button>
 
           <button
@@ -237,7 +279,7 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
             }`}
           >
             <CheckCircle2 className="w-3.5 h-3.5" />
-            <span>Fully Verified ({fullyVerifiedCount})</span>
+            <span>{language === 'ta' ? `முழுமையாக சரிபார்க்கப்பட்டது (${fullyVerifiedCount})` : `Fully Verified (${fullyVerifiedCount})`}</span>
           </button>
 
           <button
@@ -250,7 +292,7 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
             }`}
           >
             <AlertTriangle className="w-3.5 h-3.5" />
-            <span>Flags / Pending ({flaggedCount})</span>
+            <span>{language === 'ta' ? `கூடுதல் ஆய்வு தேவை (${flaggedCount})` : `Flags / Pending (${flaggedCount})`}</span>
           </button>
         </div>
 
@@ -262,7 +304,11 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by scheme or domain..."
+            placeholder={
+              language === 'ta'
+                ? 'திட்டம் அல்லது இணைய முகவரி மூலம் தேடுங்கள்...'
+                : 'Search by scheme or domain...'
+            }
             className="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-civic-500"
           />
         </div>
@@ -273,6 +319,7 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
         {filteredAudits.length > 0 ? (
           filteredAudits.map((audit) => {
             const { scheme, hasOfficialGovDomain, domainName, hasRealDate, verificationDate, hasGazetteCitation, isFullyVerified, flags } = audit;
+            const locScheme = getLocalizedScheme(scheme);
 
             return (
               <div
@@ -284,32 +331,34 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
                   <div className="space-y-1">
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="px-2.5 py-0.5 rounded text-[11px] font-semibold bg-civic-50 text-civic-700">
-                        {scheme.category}
+                        {locScheme.category}
                       </span>
 
                       {isFullyVerified ? (
                         <span className="inline-flex items-center space-x-1 text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
                           <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                          <span>Fully Verified Record</span>
+                          <span>{language === 'ta' ? 'முழுமையாக சரிபார்க்கப்பட்ட பதிவு' : 'Fully Verified Record'}</span>
                         </span>
                       ) : (
                         <span className="inline-flex items-center space-x-1 text-[11px] font-bold text-amber-800 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
                           <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />
-                          <span>Verification Notice Pending</span>
+                          <span>{language === 'ta' ? 'சரிபார்ப்பு அறிவிப்பு நிலுவையில் உள்ளது' : 'Verification Notice Pending'}</span>
                         </span>
                       )}
 
                       {hasOfficialGovDomain && (
                         <span className="inline-flex items-center space-x-1 text-[10px] font-mono font-semibold text-blue-800 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
-                          <span>Official Portal: {domainName}</span>
+                          <span>
+                            {language === 'ta' ? `அதிகாரப்பூர்வ தளம்: ${domainName}` : `Official Portal: ${domainName}`}
+                          </span>
                         </span>
                       )}
                     </div>
 
-                    <h3 className="text-base font-bold text-slate-900">{scheme.title}</h3>
+                    <h3 className="text-base font-bold text-slate-900">{locScheme.title}</h3>
                     <p className="text-xs text-slate-500 font-medium flex items-center space-x-1.5">
                       <Building className="w-3.5 h-3.5 text-slate-400" />
-                      <span>{scheme.ministry}</span>
+                      <span>{locScheme.ministry}</span>
                     </p>
                   </div>
 
@@ -320,7 +369,7 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
                         onClick={() => onSelectSchemeForEligibility(scheme)}
                         className="px-3 py-1.5 rounded-xl bg-civic-50 hover:bg-civic-100 text-civic-800 font-semibold text-xs transition-colors"
                       >
-                        Check Eligibility
+                        {language === 'ta' ? 'தகுதி சரிபார்க்க' : 'Check Eligibility'}
                       </button>
                     )}
                     {scheme.official_portal_url && (
@@ -330,7 +379,7 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
                         rel="noopener noreferrer"
                         className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-civic-50 hover:text-civic-800 text-slate-700 font-semibold text-xs transition-colors"
                       >
-                        <span>Open Official Portal</span>
+                        <span>{t.trustMonitor.openPortal}</span>
                         <ExternalLink className="w-3.5 h-3.5" />
                       </a>
                     )}
@@ -343,13 +392,23 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
                   <div className="p-3 bg-slate-50 rounded-2xl space-y-1">
                     <span className="font-semibold text-slate-500 text-[10px] uppercase tracking-wider block flex items-center space-x-1">
                       <Calendar className="w-3 h-3 text-slate-400" />
-                      <span>Last Gazette Check</span>
+                      <span>{language === 'ta' ? 'கடைசி அரசிதழ் சரிபார்ப்பு' : 'Last Gazette Check'}</span>
                     </span>
                     <p className="font-bold text-slate-800">
-                      {hasRealDate ? verificationDate : 'No Verification Date on Record'}
+                      {hasRealDate
+                        ? verificationDate
+                        : language === 'ta'
+                        ? 'சரிபார்ப்பு நாள் பதிவாகவில்லை'
+                        : 'No Verification Date on Record'}
                     </p>
                     <span className="text-[10px] text-slate-500">
-                      {hasRealDate ? 'Verified against authentic source' : 'Stale or unrecorded check'}
+                      {hasRealDate
+                        ? language === 'ta'
+                          ? 'அதிகாரப்பூர்வ மூலத்தில் சரிபார்க்கப்பட்டது'
+                          : 'Verified against authentic source'
+                        : language === 'ta'
+                        ? 'பழைய அல்லது பதிவாகாத சரிபார்ப்பு'
+                        : 'Stale or unrecorded check'}
                     </span>
                   </div>
 
@@ -357,10 +416,14 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
                   <div className="p-3 bg-slate-50 rounded-2xl space-y-1 md:col-span-2">
                     <span className="font-semibold text-slate-500 text-[10px] uppercase tracking-wider block flex items-center space-x-1">
                       <FileText className="w-3 h-3 text-slate-400" />
-                      <span>Source Provenance Citation</span>
+                      <span>{language === 'ta' ? 'ஆதார அரசிதழ் மேற்கோள்' : 'Source Provenance Citation'}</span>
                     </span>
                     <p className="text-slate-800 font-medium text-xs leading-snug">
-                      {hasGazetteCitation ? scheme.verification_source : 'No official source citation recorded in metadata.'}
+                      {hasGazetteCitation
+                        ? scheme.verification_source
+                        : language === 'ta'
+                        ? 'அதிகாரப்பூர்வ அரசிதழ் மேற்கோள் இல்லை'
+                        : 'No official source citation recorded in metadata.'}
                     </p>
                   </div>
                 </div>
@@ -370,11 +433,15 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
                   <div className="p-3 bg-amber-50 rounded-2xl border border-amber-200 text-amber-900 text-xs space-y-1">
                     <span className="font-bold block flex items-center space-x-1 text-amber-800">
                       <AlertTriangle className="w-3.5 h-3.5" />
-                      <span>Trust Inspection Notices ({flags.length}):</span>
+                      <span>
+                        {language === 'ta'
+                          ? `நம்பகத்தன்மை ஆய்வு அறிவிப்புகள் (${flags.length}):`
+                          : `Trust Inspection Notices (${flags.length}):`}
+                      </span>
                     </span>
                     <ul className="list-disc list-inside text-[11px] text-amber-900 space-y-0.5">
                       {flags.map((flag, idx) => (
-                        <li key={idx}>{flag}</li>
+                        <li key={idx}>{getLocalizedFlag(flag)}</li>
                       ))}
                     </ul>
                   </div>
@@ -385,9 +452,15 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
         ) : (
           <div className="p-12 bg-white rounded-3xl border border-slate-200 text-center space-y-3">
             <ShieldCheck className="w-10 h-10 text-slate-300 mx-auto" />
-            <h3 className="text-base font-bold text-slate-900">No schemes matched the trust filter</h3>
+            <h3 className="text-base font-bold text-slate-900">
+              {language === 'ta'
+                ? 'இந்த வடிகட்டலுக்கு ஏற்ற திட்டங்கள் எதுவும் இல்லை'
+                : 'No schemes matched the trust filter'}
+            </h3>
             <p className="text-xs text-slate-500">
-              Try selecting "All Schemes" or clearing your search term.
+              {language === 'ta'
+                ? '"அனைத்து திட்டங்கள்" என்பதை தேர்வு செய்யவும் அல்லது தேடல் சொல்லை மாற்றவும்.'
+                : 'Try selecting "All Schemes" or clearing your search term.'}
             </p>
           </div>
         )}
