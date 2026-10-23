@@ -780,7 +780,10 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
 
           {/* Real-time Listening Visualizer Banner (When Mic is active) */}
           {isListening && (
-            <div className="mx-3 my-1.5 p-2.5 bg-gradient-to-r from-rose-50 via-rose-100/50 to-amber-50 border border-rose-200 rounded-2xl flex items-center justify-between gap-3 shadow-xs shrink-0 animate-in fade-in">
+            <div
+              className="mx-3 my-1.5 p-2.5 bg-gradient-to-r from-rose-50 via-rose-100/50 to-amber-50 border border-rose-200 rounded-2xl flex items-center justify-between gap-3 shadow-xs shrink-0 animate-in fade-in moving-animation-exempt"
+              data-dark-exempt="true"
+            >
               <div className="flex items-center space-x-2.5 min-w-0">
                 <span className="relative flex h-3 w-3 shrink-0">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75" />
@@ -805,7 +808,12 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
               </div>
 
               {/* Animated Soundwave Equalizer Bars */}
-              <div className="flex items-center space-x-1 shrink-0 h-5 px-2">
+              <div
+                className="flex items-center space-x-1 shrink-0 h-5 px-2 moving-animation-exempt"
+                role="img"
+                aria-label="Soundwave equalizer bars"
+                data-dark-exempt="true"
+              >
                 <span className="w-1 bg-rose-600 rounded-full animate-voice-wave-1" />
                 <span className="w-1 bg-rose-600 rounded-full animate-voice-wave-2" />
                 <span className="w-1 bg-rose-600 rounded-full animate-voice-wave-3" />
