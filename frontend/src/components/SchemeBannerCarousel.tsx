@@ -468,6 +468,186 @@ const FloatingGraphic3D: React.FC<{ type: string }> = ({ type }) => {
   );
 };
 
+// Healthcare Cross with Caring Hands Icon (matching Image 1)
+const HealthcareCrossIcon: React.FC<{ className?: string }> = ({ className = 'w-6 h-6' }) => (
+  <svg viewBox="0 0 24 24" fill="none" className={className} aria-label="Healthcare & Wellness">
+    {/* Central medical cross */}
+    <rect x="10" y="3" width="4" height="10" rx="1" fill="#16a34a" />
+    <rect x="7" y="6" width="10" height="4" rx="1" fill="#16a34a" />
+    {/* Caring hands underneath */}
+    <path
+      d="M3 13C4 17 8 20 12 20C16 20 20 17 21 13C21 13 18 16 12 16C6 16 3 13 3 13Z"
+      fill="#15803d"
+    />
+    <path
+      d="M5 14C3 15 2 17 2 19C4 21 7 22 12 22C17 22 20 21 22 19C22 17 21 15 19 14"
+      stroke="#16a34a"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
+  </svg>
+);
+
+// Green Origami Paper Airplane (matching Image 1 flight path)
+const PaperAirplane: React.FC<{ className?: string }> = ({ className = 'w-6 h-6' }) => (
+  <svg
+    viewBox="0 0 40 40"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+    aria-hidden="true"
+  >
+    <path d="M36 4L4 18L18 24L36 4Z" fill="#16a34a" className="drop-shadow-sm" />
+    <path d="M36 4L22 36L18 24L36 4Z" fill="#15803d" />
+    <path d="M18 24L24 30L22 36L18 24Z" fill="#166534" />
+    <path d="M18 24L36 4" stroke="#bbf7d0" strokeWidth="1.2" />
+  </svg>
+);
+
+// Crisp QR Code Graphic matching Image 1
+const QRCodeGraphic: React.FC<{ className?: string }> = ({ className = 'w-16 h-16' }) => (
+  <div className={`p-1.5 bg-white rounded-xl border border-slate-200/90 shadow-sm flex items-center justify-center ${className}`}>
+    <svg viewBox="0 0 80 80" fill="currentColor" className="w-full h-full text-slate-900" aria-label="QR Code">
+      <rect x="6" y="6" width="22" height="22" rx="3" fill="#0f172a" />
+      <rect x="10" y="10" width="14" height="14" rx="2" fill="white" />
+      <rect x="13" y="13" width="8" height="8" rx="1.5" fill="#0f172a" />
+
+      <rect x="52" y="6" width="22" height="22" rx="3" fill="#0f172a" />
+      <rect x="56" y="10" width="14" height="14" rx="2" fill="white" />
+      <rect x="59" y="13" width="8" height="8" rx="1.5" fill="#0f172a" />
+
+      <rect x="6" y="52" width="22" height="22" rx="3" fill="#0f172a" />
+      <rect x="10" y="56" width="14" height="14" rx="2" fill="white" />
+      <rect x="13" y="59" width="8" height="8" rx="1.5" fill="#0f172a" />
+
+      <rect x="32" y="8" width="4" height="4" rx="1" fill="#0f172a" />
+      <rect x="40" y="8" width="4" height="4" rx="1" fill="#0f172a" />
+      <rect x="36" y="14" width="4" height="4" rx="1" fill="#0f172a" />
+      <rect x="44" y="14" width="4" height="4" rx="1" fill="#0f172a" />
+      <rect x="32" y="20" width="4" height="4" rx="1" fill="#0f172a" />
+      <rect x="40" y="24" width="4" height="4" rx="1" fill="#0f172a" />
+      <rect x="8" y="34" width="4" height="4" rx="1" fill="#0f172a" />
+      <rect x="14" y="40" width="4" height="4" rx="1" fill="#0f172a" />
+      <rect x="22" y="34" width="4" height="4" rx="1" fill="#0f172a" />
+      <rect x="28" y="40" width="4" height="4" rx="1" fill="#0f172a" />
+      <rect x="34" y="34" width="4" height="4" rx="1" fill="#0f172a" />
+      <rect x="42" y="34" width="4" height="4" rx="1" fill="#0f172a" />
+      <rect x="36" y="42" width="4" height="4" rx="1" fill="#0f172a" />
+      <rect x="46" y="42" width="4" height="4" rx="1" fill="#0f172a" />
+      <rect x="54" y="34" width="4" height="4" rx="1" fill="#0f172a" />
+      <rect x="62" y="40" width="4" height="4" rx="1" fill="#0f172a" />
+      <rect x="70" y="34" width="4" height="4" rx="1" fill="#0f172a" />
+      <rect x="34" y="52" width="4" height="4" rx="1" fill="#0f172a" />
+      <rect x="42" y="58" width="4" height="4" rx="1" fill="#0f172a" />
+      <rect x="36" y="66" width="4" height="4" rx="1" fill="#0f172a" />
+      <rect x="54" y="54" width="4" height="4" rx="1" fill="#0f172a" />
+      <rect x="62" y="60" width="4" height="4" rx="1" fill="#0f172a" />
+      <rect x="70" y="54" width="4" height="4" rx="1" fill="#0f172a" />
+      <rect x="58" y="68" width="4" height="4" rx="1" fill="#0f172a" />
+      <rect x="66" y="66" width="4" height="4" rx="1" fill="#0f172a" />
+    </svg>
+  </div>
+);
+
+// Citizen Mobile User Vector Graphic matching Image 1
+const CitizenMobileUser: React.FC<{ className?: string }> = ({ className = '' }) => (
+  <div className={`relative hidden 2xl:flex flex-col items-center justify-end select-none pointer-events-none ${className}`}>
+    <svg viewBox="0 0 160 280" className="w-40 h-72 drop-shadow-xl" fill="none">
+      {/* Hair */}
+      <path
+        d="M50 45 C45 30 65 20 80 20 C95 20 115 30 110 45 C120 50 125 65 120 78 C110 82 105 75 100 80 C95 70 70 70 65 80 C60 75 55 82 45 78 C40 65 45 50 50 45 Z"
+        fill="#1e293b"
+      />
+      {/* Face */}
+      <path
+        d="M55 58 C55 45 105 45 105 58 C105 85 98 100 80 100 C62 100 55 85 55 58 Z"
+        fill="#d4a373"
+      />
+      {/* Smile & Eyes */}
+      <circle cx="68" cy="68" r="2" fill="#78350f" />
+      <circle cx="92" cy="68" r="2" fill="#78350f" />
+      <path d="M72 82 C76 88 84 88 88 82" stroke="#78350f" strokeWidth="2.5" strokeLinecap="round" />
+      {/* Neck */}
+      <rect x="74" y="98" width="12" height="14" fill="#c68a4c" />
+      {/* Blue Shirt Body */}
+      <path
+        d="M40 120 C55 110 105 110 120 120 L135 260 L25 260 Z"
+        fill="#1d4ed8"
+      />
+      {/* Arms holding phone */}
+      <path
+        d="M36 135 C30 165 60 190 70 180"
+        stroke="#d4a373"
+        strokeWidth="14"
+        strokeLinecap="round"
+      />
+      <path
+        d="M124 135 C130 165 100 190 90 180"
+        stroke="#d4a373"
+        strokeWidth="14"
+        strokeLinecap="round"
+      />
+      {/* Phone in hands */}
+      <rect
+        x="68"
+        y="162"
+        width="24"
+        height="42"
+        rx="4"
+        fill="#ea580c"
+        stroke="#c2410c"
+        strokeWidth="1.5"
+      />
+      <rect x="71" y="166" width="18" height="32" rx="2" fill="#fed7aa" />
+    </svg>
+  </div>
+);
+
+// 4 Floating Options Configuration
+interface FloatingCategoryOption {
+  id: string;
+  categoryId: string;
+  titleEn: string;
+  titleTa: string;
+  iconType: 'health' | 'education' | 'agriculture' | 'housing';
+  floatClass: string;
+}
+
+const FLOATING_OPTIONS: FloatingCategoryOption[] = [
+  {
+    id: 'opt-health',
+    categoryId: 'healthcare',
+    titleEn: 'Health & Wellness',
+    titleTa: 'சுகாதாரம் & நல்வாழ்வு',
+    iconType: 'health',
+    floatClass: 'animate-float-1',
+  },
+  {
+    id: 'opt-education',
+    categoryId: 'education',
+    titleEn: 'Education & Learning',
+    titleTa: 'கல்வி & கற்றல்',
+    iconType: 'education',
+    floatClass: 'animate-float-2',
+  },
+  {
+    id: 'opt-agriculture',
+    categoryId: 'agriculture',
+    titleEn: 'Agriculture & Rural',
+    titleTa: 'வேளாண்மை & ஊரகம்',
+    iconType: 'agriculture',
+    floatClass: 'animate-float-3',
+  },
+  {
+    id: 'opt-housing',
+    categoryId: 'housing',
+    titleEn: 'Housing & Shelter',
+    titleTa: 'வீட்டுவசதி & இருப்பிடம்',
+    iconType: 'housing',
+    floatClass: 'animate-float-4',
+  },
+];
+
 export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
   onNavigate,
   onSelectScheme,
