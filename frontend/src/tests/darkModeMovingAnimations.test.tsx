@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { renderToString } from 'react-dom/server';
-import fs from 'fs';
-import path from 'path';
+import cssContent from '../index.css?raw';
 import { SchemeBannerCarousel } from '../components/SchemeBannerCarousel';
 import { LanguageProvider } from '../context/LanguageContext';
 import { AccessibilityProvider } from '../context/AccessibilityContext';
@@ -63,9 +62,6 @@ describe('Dark Mode & Moving Animation Images Exemption', () => {
   });
 
   it('index.css specifies dark mode re-inversion rules for moving animation images and carousel', () => {
-    const cssPath = path.resolve(__dirname, '../index.css');
-    const cssContent = fs.readFileSync(cssPath, 'utf8');
-
     // Verify dark mode base rule
     expect(cssContent).toContain('html.a11y-invert');
 
