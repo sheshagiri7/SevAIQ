@@ -126,6 +126,59 @@
   animation: float-subtle 3.2s ease-in-out infinite;
 }
 
+/* Floating Category Options Animations (Staggered Floating Motion) */
+@keyframes float-1 {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(-1.5deg);
+  }
+}
+
+@keyframes float-2 {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-11px) rotate(1.5deg);
+  }
+}
+
+@keyframes float-3 {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-7px) rotate(-2deg);
+  }
+}
+
+@keyframes float-4 {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(1.5deg);
+  }
+}
+
+.animate-float-1 {
+  animation: float-1 4.2s ease-in-out infinite;
+}
+
+.animate-float-2 {
+  animation: float-2 4.8s ease-in-out infinite 0.4s;
+}
+
+.animate-float-3 {
+  animation: float-3 4.4s ease-in-out infinite 0.8s;
+}
+
+.animate-float-4 {
+  animation: float-4 5s ease-in-out infinite 1.2s;
+}
+
 /* ==========================================================================
    UX4G & WCAG 2.1 Accessibility Suite Styles
    ========================================================================== */
