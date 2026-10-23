@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { Header } from '../components/Header';
 import { AccessibilityDrawer } from '../components/AccessibilityDrawer';
@@ -6,7 +7,7 @@ import { LanguageProvider } from '../context/LanguageContext';
 import { AccessibilityProvider } from '../context/AccessibilityContext';
 import { MemoryStorage } from '../utils/kioskStorage';
 
-describe('Header & Accessibility Layout Set Integration', () => {
+describe('Header & Accessibility Layout Integration', () => {
   beforeEach(() => {
     (globalThis as any).localStorage = new MemoryStorage();
     if (typeof document === 'undefined') {
@@ -21,7 +22,7 @@ describe('Header & Accessibility Layout Set Integration', () => {
     vi.restoreAllMocks();
   });
 
-  it('renders Header without showing Ctrl+F2 text or shortcut badge in UI', () => {
+  it('renders Header with clean End Session button and without below-session accessibility button', () => {
     const html = renderToString(
       <LanguageProvider>
         <AccessibilityProvider>
@@ -41,36 +42,14 @@ describe('Header & Accessibility Layout Set Integration', () => {
     expect(html).not.toContain('Ctrl+F2');
     expect(html).not.toContain('(Ctrl+F2)');
 
-    // Should contain End Session and Accessibility options
+    // Should contain clean End Session button
     expect(html).toContain('End Session');
-    expect(html).toContain('Accessibility');
+
+    // Accessibility button below End Session has been removed in favor of the left-docked purple launcher
+    expect(html).not.toContain('Accessibility options');
   });
 
-  it('renders layout set where Accessibility button is placed below End Session', () => {
-    const html = renderToString(
-      <LanguageProvider>
-        <AccessibilityProvider>
-          <Header
-            activeTab="dashboard"
-            onSelectTab={() => {}}
-            eligibleCount={0}
-            isKioskMode={false}
-            onToggleKioskMode={() => {}}
-            onClearSession={() => {}}
-          />
-        </AccessibilityProvider>
-      </LanguageProvider>
-    );
-
-    // End Session appears before Accessibility in the DOM layout set
-    const endSessionIndex = html.indexOf('End Session');
-    const accessibilityIndex = html.indexOf('Accessibility');
-    expect(endSessionIndex).toBeGreaterThan(-1);
-    expect(accessibilityIndex).toBeGreaterThan(-1);
-    expect(endSessionIndex).toBeLessThan(accessibilityIndex);
-  });
-
-  it('renders Tamil localized labels in the layout set without Ctrl+F2', () => {
+  it('renders Tamil localized End Session label in Header', () => {
     localStorage.setItem('SEVAIQ_APP_LANGUAGE', 'ta');
 
     const html = renderToString(
@@ -90,7 +69,6 @@ describe('Header & Accessibility Layout Set Integration', () => {
 
     expect(html).not.toContain('Ctrl+F2');
     expect(html).toContain('அமர்வை முடி');
-    expect(html).toContain('அணுகல்தன்மை');
   });
 
   it('renders AccessibilityDrawer without displaying Ctrl+F2 banner badge', () => {
