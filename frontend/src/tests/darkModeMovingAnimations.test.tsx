@@ -93,8 +93,9 @@ describe('Dark Mode Removal & Moving Animation Images Exemption', () => {
     // Origami Paper Airplane with floating motion
     expect(html).toContain('animate-float-subtle');
 
-    // QR Code graphic
-    expect(html).toContain('aria-label="Scheme QR Code"');
+    // QR Code graphic removed
+    expect(html).not.toContain('aria-label="Scheme QR Code"');
+    expect(html).not.toContain('Scan the');
 
     // Citizen mobile user graphic
     expect(html).toContain('aria-label="Citizen using smartphone illustration"');
