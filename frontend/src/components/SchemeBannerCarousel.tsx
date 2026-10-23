@@ -531,56 +531,6 @@ const PaperAirplane: React.FC<{ className?: string }> = ({ className = 'w-6 h-6'
   </svg>
 );
 
-// Crisp QR Code Graphic matching Image 1
-const QRCodeGraphic: React.FC<{ className?: string }> = ({ className = 'w-16 h-16' }) => (
-  <div
-    role="img"
-    aria-label="Scheme QR Code"
-    data-dark-exempt="true"
-    className={`p-1.5 bg-white rounded-xl border border-slate-200/90 shadow-sm flex items-center justify-center moving-animation-image ${className}`}
-  >
-    <svg viewBox="0 0 80 80" fill="currentColor" className="w-full h-full text-slate-900" aria-label="QR Code">
-      <rect x="6" y="6" width="22" height="22" rx="3" fill="#0f172a" />
-      <rect x="10" y="10" width="14" height="14" rx="2" fill="white" />
-      <rect x="13" y="13" width="8" height="8" rx="1.5" fill="#0f172a" />
-
-      <rect x="52" y="6" width="22" height="22" rx="3" fill="#0f172a" />
-      <rect x="56" y="10" width="14" height="14" rx="2" fill="white" />
-      <rect x="59" y="13" width="8" height="8" rx="1.5" fill="#0f172a" />
-
-      <rect x="6" y="52" width="22" height="22" rx="3" fill="#0f172a" />
-      <rect x="10" y="56" width="14" height="14" rx="2" fill="white" />
-      <rect x="13" y="59" width="8" height="8" rx="1.5" fill="#0f172a" />
-
-      <rect x="32" y="8" width="4" height="4" rx="1" fill="#0f172a" />
-      <rect x="40" y="8" width="4" height="4" rx="1" fill="#0f172a" />
-      <rect x="36" y="14" width="4" height="4" rx="1" fill="#0f172a" />
-      <rect x="44" y="14" width="4" height="4" rx="1" fill="#0f172a" />
-      <rect x="32" y="20" width="4" height="4" rx="1" fill="#0f172a" />
-      <rect x="40" y="24" width="4" height="4" rx="1" fill="#0f172a" />
-      <rect x="8" y="34" width="4" height="4" rx="1" fill="#0f172a" />
-      <rect x="14" y="40" width="4" height="4" rx="1" fill="#0f172a" />
-      <rect x="22" y="34" width="4" height="4" rx="1" fill="#0f172a" />
-      <rect x="28" y="40" width="4" height="4" rx="1" fill="#0f172a" />
-      <rect x="34" y="34" width="4" height="4" rx="1" fill="#0f172a" />
-      <rect x="42" y="34" width="4" height="4" rx="1" fill="#0f172a" />
-      <rect x="36" y="42" width="4" height="4" rx="1" fill="#0f172a" />
-      <rect x="46" y="42" width="4" height="4" rx="1" fill="#0f172a" />
-      <rect x="54" y="34" width="4" height="4" rx="1" fill="#0f172a" />
-      <rect x="62" y="40" width="4" height="4" rx="1" fill="#0f172a" />
-      <rect x="70" y="34" width="4" height="4" rx="1" fill="#0f172a" />
-      <rect x="34" y="52" width="4" height="4" rx="1" fill="#0f172a" />
-      <rect x="42" y="58" width="4" height="4" rx="1" fill="#0f172a" />
-      <rect x="36" y="66" width="4" height="4" rx="1" fill="#0f172a" />
-      <rect x="54" y="54" width="4" height="4" rx="1" fill="#0f172a" />
-      <rect x="62" y="60" width="4" height="4" rx="1" fill="#0f172a" />
-      <rect x="70" y="54" width="4" height="4" rx="1" fill="#0f172a" />
-      <rect x="58" y="68" width="4" height="4" rx="1" fill="#0f172a" />
-      <rect x="66" y="66" width="4" height="4" rx="1" fill="#0f172a" />
-    </svg>
-  </div>
-);
-
 // Citizen Mobile User Vector Graphic matching Image 1
 const CitizenMobileUser: React.FC<{ className?: string }> = ({ className = '' }) => (
   <div
