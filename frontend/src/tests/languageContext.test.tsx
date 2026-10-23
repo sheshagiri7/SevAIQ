@@ -63,7 +63,7 @@ describe('LanguageContext and Complete Trilingual Support (English, Tamil & Hind
     expect(taTranslation.title).toBe('பிரதான் மந்திரி கிசான் சம்மான் நிதி (PM-KISAN)');
     expect(taTranslation.category).toBe('வேளாண்மை & கிராமப்புறம்');
     expect(taTranslation.ministry).toContain('அமைச்சகம்');
-    expect(taTranslation.benefits_summary).toContain('₹6,00,000');
+    expect(taTranslation.benefits_summary).toContain('₹6,000');
   });
 
   it('localizes scheme details accurately when language is Hindi', () => {

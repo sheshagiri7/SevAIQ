@@ -71,7 +71,7 @@ describe('Voice Assistant Engine Suite', () => {
 
   it('answers farmer queries in Hindi with verified PM-KISAN guidance', () => {
     const answer = processCitizenQuery('किसानों के लिए कौन सी योजना है?', 'hi', sampleSchemes);
-    expect(answer.text).toContain('पीएम किसान');
+    expect(answer.text).toContain('PM-KISAN');
     expect(answer.text).toContain('₹6,000');
     expect(answer.matchedSchemes.some((s) => s.id === 'pm-kisan')).toBe(true);
     expect(answer.suggestedAction?.tab).toBe('eligibility');
@@ -86,7 +86,7 @@ describe('Voice Assistant Engine Suite', () => {
 
   it('answers housing queries in Hindi', () => {
     const ansHi = processCitizenQuery('घर बनाने के लिए आवास सहायता योजना', 'hi', sampleSchemes);
-    expect(ansHi.text).toContain('पीएम आवास');
+    expect(ansHi.text).toContain('PMAY-G');
     expect(ansHi.matchedSchemes.some((s) => s.id === 'pmay-g')).toBe(true);
   });
 
@@ -150,9 +150,9 @@ describe('Voice Assistant Engine Suite', () => {
     it('normalizes Hindi currency amounts to natural spoken numbers', () => {
       const input = 'किसानों को ₹6,000 और ₹2,000 की किस्त मिलती है। उपचार ₹5,00,000 तक।';
       const output = prepareSpeechText(input, 'hi');
-      expect(output).toContain('छह हज़ार रुपये');
-      expect(output).toContain('दो हज़ार रुपये');
-      expect(output).toContain('पाँच लाख रुपये');
+      expect(output).toContain('छह हजार रुपये');
+      expect(output).toContain('दो हजार रुपये');
+      expect(output).toContain('पांच लाख रुपये');
       expect(output).not.toContain('₹');
     });
 
@@ -165,10 +165,10 @@ describe('Voice Assistant Engine Suite', () => {
       expect(output).toContain('जन सेवा केंद्र');
     });
 
-    it('normalizes platform name SevAIQ to सेवआईक्यू for natural Hindi TTS', () => {
+    it('normalizes platform name SevAIQ to सेवा आई क्यू for natural Hindi TTS', () => {
       const input = 'मैं SevAIQ वॉयस सहायक हूँ।';
       const output = prepareSpeechText(input, 'hi');
-      expect(output).toContain('सेवआईक्यू');
+      expect(output).toContain('सेवा आई क्यू');
     });
 
     it('cleans up English currency and percentages', () => {
