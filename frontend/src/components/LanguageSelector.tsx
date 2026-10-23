@@ -236,6 +236,13 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
               </button>
             </div>
 
+            {bhashiniNotice && (
+              <div className="p-2 rounded-xl bg-amber-50 border border-amber-200 text-[11px] text-amber-900 leading-tight">
+                <span className="font-bold">{bhashiniNotice}: </span>
+                Machine translation scaling via Bhashini. Defaulting to English reference.
+              </div>
+            )}
+
             <div className="grid grid-cols-2 gap-1.5 max-h-60 overflow-y-auto pr-0.5">
               {INDIAN_LANGUAGES.map((item) => {
                 const isSelected = language === item.code;
