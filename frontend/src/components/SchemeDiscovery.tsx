@@ -356,8 +356,10 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
           <span>
             {language === 'ta' ? (
               <><strong>வெளிப்படைத்தன்மை:</strong> இருமொழி தேடலானது குடிமக்களின் தேவைகளை நேரடியாக சரிபார்க்கப்பட்ட அரசு திட்டங்களுடன் இணைக்கிறது. உங்கள் தரவு எங்கும் கசியாமல் சாதனத்திலேயே பாதுகாப்பாக இயங்குகிறது.</>
+            ) : language === 'hi' ? (
+              <><strong>इंजन पारदर्शिता:</strong> बहुभाषी खोज नागरिक की आवश्यकता को सीधे सत्यापित सरकारी योजना रिकॉर्ड्स से जोड़ती है। आपका डेटा किसी बाहरी मॉडल को भेजे बिना उपकरण पर ही सुरक्षित रूप से संसाधित होता है।</>
             ) : (
-              <><strong>Engine Transparency:</strong> Bilingual search maps citizen intent in simple Tamil and English directly to verified FastAPI backend scheme records (<code className="font-mono text-[10px] bg-slate-100 px-1 py-0.5 rounded">GET /api/schemes</code>) using client-side semantic matching without transmitting personal queries to external LLMs.</>
+              <><strong>Engine Transparency:</strong> Bilingual search maps citizen intent in simple Tamil, Hindi, and English directly to verified FastAPI backend scheme records (<code className="font-mono text-[10px] bg-slate-100 px-1 py-0.5 rounded">GET /api/schemes</code>) using client-side semantic matching without transmitting personal queries to external LLMs.</>
             )}
           </span>
         </div>
@@ -381,7 +383,7 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
         {isLoading ? (
           <div className="py-20 text-center bg-white rounded-3xl border border-slate-200">
             <RefreshCw className="w-8 h-8 text-civic-600 animate-spin mx-auto mb-3" />
-            <p className="text-sm font-semibold text-slate-800">{language === 'ta' ? 'பின்தள சேவையகத்துடன் இணைகிறது...' : 'Connecting to Backend API...'}</p>
+            <p className="text-sm font-semibold text-slate-800">{language === 'ta' ? 'பின்தள சேவையகத்துடன் இணைகிறது...' : language === 'hi' ? 'बैकएंड एपीआई से जुड़ रहा है...' : 'Connecting to Backend API...'}</p>
             <p className="text-xs text-slate-600 mt-1">Querying /api/schemes</p>
           </div>
         ) : filteredSchemes.length > 0 ? (
