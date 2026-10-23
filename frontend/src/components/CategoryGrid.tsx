@@ -56,7 +56,7 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({ onSelectCategory }) 
               key={cat.id}
               type="button"
               onClick={() => onSelectCategory(cat.categoryFilterId)}
-              className={`group relative flex flex-col items-center justify-between p-4 sm:p-5 bg-slate-50/70 hover:bg-white rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-md ${cat.accentBorder} transition-all duration-200 text-center focus:outline-none focus:ring-2 focus:ring-civic-500 min-h-[170px] sm:min-h-[190px] cursor-pointer`}
+              className={`group relative flex flex-col items-center justify-between p-4 sm:p-5 bg-slate-50/70 hover:bg-white rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-lg hover:-translate-y-1.5 ${cat.accentBorder} transition-all duration-300 text-center focus:outline-none focus:ring-2 focus:ring-civic-500 min-h-[170px] sm:min-h-[190px] cursor-pointer`}
               aria-label={`${title} - ${schemesText}`}
             >
               <div className="flex flex-col items-center w-full">
