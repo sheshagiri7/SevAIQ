@@ -1,16 +1,18 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { renderToString } from 'react-dom/server';
+import { Header } from '../components/Header';
+import { AccessibilityDrawer } from '../components/AccessibilityDrawer';
 import { SchemeBannerCarousel } from '../components/SchemeBannerCarousel';
 import { LanguageProvider } from '../context/LanguageContext';
 import { AccessibilityProvider } from '../context/AccessibilityContext';
 import { MemoryStorage } from '../utils/kioskStorage';
 
-describe('Dark Mode & Moving Animation Images Exemption', () => {
+describe('Dark Mode Removal & Moving Animation Images Exemption', () => {
   beforeEach(() => {
     (globalThis as any).localStorage = new MemoryStorage();
     if (typeof document === 'undefined') {
       (globalThis as any).document = {
-        documentElement: { lang: 'en', style: {} },
+        documentElement: { lang: 'en', style: {}, classList: { add: vi.fn(), remove: vi.fn() } },
         body: { classList: { add: vi.fn(), remove: vi.fn() } },
         getElementById: vi.fn().mockReturnValue({ scrollIntoView: vi.fn() }),
       };
@@ -19,6 +21,44 @@ describe('Dark Mode & Moving Animation Images Exemption', () => {
 
   afterEach(() => {
     vi.restoreAllMocks();
+  });
+
+  it('verifies dark mode option is completely removed from Header', () => {
+    const html = renderToString(
+      <LanguageProvider>
+        <AccessibilityProvider>
+          <Header
+            activeTab="dashboard"
+            onSelectTab={vi.fn()}
+            eligibleCount={0}
+            isKioskMode={false}
+            onToggleKioskMode={vi.fn()}
+            onClearSession={vi.fn()}
+          />
+        </AccessibilityProvider>
+      </LanguageProvider>
+    );
+
+    // Dark mode / High contrast theme toggle button is removed from header
+    expect(html).not.toContain('Switch to high contrast dark theme');
+    expect(html).not.toContain('High Contrast Theme (Dark)');
+    expect(html).not.toContain('Standard Theme');
+  });
+
+  it('verifies dark mode option is completely removed from AccessibilityDrawer', () => {
+    localStorage.setItem('SEVAIQ_A11Y_OPEN', 'true');
+    const html = renderToString(
+      <LanguageProvider>
+        <AccessibilityProvider>
+          <AccessibilityDrawer />
+        </AccessibilityProvider>
+      </LanguageProvider>
+    );
+
+    // Invert colors / dark mode button is removed from drawer
+    expect(html).not.toContain('Invert Colors');
+    expect(html).not.toContain('வண்ணங்களை மாற்று');
+    expect(html).not.toContain('रंग उलटें');
   });
 
   it('renders SchemeBannerCarousel with dark mode exempt classes and data attributes', () => {
