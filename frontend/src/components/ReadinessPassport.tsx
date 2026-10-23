@@ -508,6 +508,8 @@ export const ReadinessPassport: React.FC<ReadinessPassportProps> = ({
             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700 pb-1 border-b border-slate-200">
               {language === 'ta'
                 ? '3. ஆவண சரிபார்ப்பு பட்டியல் & வழிகாட்டுதல்'
+                : language === 'hi'
+                ? '3. दस्तावेज़ चेकलिस्ट एवं मार्गदर्शन'
                 : '3. Document Checklist & Issuance Roadmap'}
             </h3>
 
@@ -519,6 +521,8 @@ export const ReadinessPassport: React.FC<ReadinessPassportProps> = ({
                   <span>
                     {language === 'ta'
                       ? `கையில் தயார் (${readyDocs.length})`
+                      : language === 'hi'
+                      ? `पास में तैयार (${readyDocs.length})`
                       : `Ready in Hand (${readyDocs.length})`}
                   </span>
                 </span>
@@ -536,7 +540,11 @@ export const ReadinessPassport: React.FC<ReadinessPassportProps> = ({
                   </ul>
                 ) : (
                   <p className="text-xs text-slate-400 italic">
-                    {language === 'ta' ? 'தயாரான ஆவணங்கள் எதுவும் இல்லை.' : 'No certificates marked as ready.'}
+                    {language === 'ta'
+                      ? 'தயாரான ஆவணங்கள் எதுவும் இல்லை.'
+                      : language === 'hi'
+                      ? 'कोई दस्तावेज़ तैयार चिह्नित नहीं है।'
+                      : 'No certificates marked as ready.'}
                   </p>
                 )}
               </div>
@@ -548,6 +556,8 @@ export const ReadinessPassport: React.FC<ReadinessPassportProps> = ({
                   <span>
                     {language === 'ta'
                       ? `பெற வேண்டிய சான்றிதழ்கள் (${missingDocs.length + unconfirmedDocs.length})`
+                      : language === 'hi'
+                      ? `प्राप्त करने योग्य प्रमाणपत्र (${missingDocs.length + unconfirmedDocs.length})`
                       : `Certificates to Procure (${missingDocs.length + unconfirmedDocs.length})`}
                   </span>
                 </span>
@@ -564,6 +574,8 @@ export const ReadinessPassport: React.FC<ReadinessPassportProps> = ({
                           <span className="text-[11px] text-slate-500 pl-3">
                             {language === 'ta'
                               ? `வழங்கும் அதிகாரம்: ${locDoc.issuingAuthority}`
+                              : language === 'hi'
+                              ? `जारीकर्ता प्राधिकारी: ${locDoc.issuingAuthority}`
                               : `Issuing Authority: ${doc.issuingAuthority}`}
                           </span>
                         </li>
@@ -574,6 +586,8 @@ export const ReadinessPassport: React.FC<ReadinessPassportProps> = ({
                   <p className="text-xs text-emerald-600 font-semibold">
                     {language === 'ta'
                       ? 'தேவையான அனைத்து சான்றிதழ்களும் தயார் நிலையில் உள்ளன!'
+                      : language === 'hi'
+                      ? 'सभी आवश्यक प्रमाणपत्र तैयार स्थिति में हैं!'
                       : 'All required certificates are ready!'}
                   </p>
                 )}
@@ -588,6 +602,8 @@ export const ReadinessPassport: React.FC<ReadinessPassportProps> = ({
               <span>
                 {language === 'ta'
                   ? '4. அதிகாரப்பூர்வ சமர்ப்பிப்பிற்கான பரிந்துரைக்கப்பட்ட அடுத்த படிகள்'
+                  : language === 'hi'
+                  ? '4. आधिकारिक आवेदन के लिए अनुशंसित अगले कदम'
                   : '4. Recommended Next Steps for Official Submission'}
               </span>
             </h3>
@@ -595,33 +611,51 @@ export const ReadinessPassport: React.FC<ReadinessPassportProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-slate-300">
               <div className="p-3 bg-white/5 rounded-xl border border-white/10 space-y-1">
                 <span className="font-bold text-white block">
-                  {language === 'ta' ? 'படி 1: விடுபட்ட ஆவணங்களை பெறுதல்' : 'Step 1: Procure Missing Documents'}
+                  {language === 'ta'
+                    ? 'படி 1: விடுபட்ட ஆவணங்களை பெறுதல்'
+                    : language === 'hi'
+                    ? 'चरण 1: अनुपलब्ध दस्तावेज़ प्राप्त करना'
+                    : 'Step 1: Procure Missing Documents'}
                 </span>
                 <p className="text-[11px] text-slate-400">
                   {language === 'ta'
                     ? 'உங்கள் உள்ளூர் வருவாய் அலுவலகம், வட்டாட்சியர் அல்லது கிராம ஊராட்சியை அணுகி சான்றிதழ்களைப் பெறவும்.'
+                    : language === 'hi'
+                    ? 'प्रमाणित प्रतियां प्राप्त करने हेतु अपने स्थानीय राजस्व कार्यालय, तहसीलदार अथवा ग्राम पंचायत से संपर्क करें।'
                     : 'Visit your local Revenue Office, Tehsildar, or Gram Panchayat to obtain certified copies.'}
                 </p>
               </div>
 
               <div className="p-3 bg-white/5 rounded-xl border border-white/10 space-y-1">
                 <span className="font-bold text-white block">
-                  {language === 'ta' ? 'படி 2: பொது சேவை மையத்திற்கு (CSC) செல்லுதல்' : 'Step 2: Visit Common Service Centre (CSC)'}
+                  {language === 'ta'
+                    ? 'படி 2: பொது சேவை மையத்திற்கு (CSC) செல்லுதல்'
+                    : language === 'hi'
+                    ? 'चरण 2: जन सेवा केंद्र (CSC) जाएं'
+                    : 'Step 2: Visit Common Service Centre (CSC)'}
                 </span>
                 <p className="text-[11px] text-slate-400">
                   {language === 'ta'
                     ? 'இந்த தயார்நிலை ஆவணக் கோப்புடன் உங்கள் அருகிலுள்ள இ-சேவை மையம் அல்லது CSC கியோஸ்க்கை அணுகவும்.'
+                    : language === 'hi'
+                    ? 'इस तत्परता फ़ाइल के साथ अपने नजदीकी सेवा केंद्र अथवा सीएससी कियोस्क पर जाएं।'
                     : 'Locate your nearest Seva Kendra or CSC kiosk with this readiness dossier.'}
                 </p>
               </div>
 
               <div className="p-3 bg-white/5 rounded-xl border border-white/10 space-y-1">
                 <span className="font-bold text-white block">
-                  {language === 'ta' ? 'படி 3: அதிகாரப்பூர்வ தளத்தில் விண்ணப்பித்தல்' : 'Step 3: Direct Portal Application'}
+                  {language === 'ta'
+                    ? 'படி 3: அதிகாரப்பூர்வ தளத்தில் விண்ணப்பித்தல்'
+                    : language === 'hi'
+                    ? 'चरण 3: आधिकारिक पोर्टल पर आवेदन'
+                    : 'Step 3: Direct Portal Application'}
                 </span>
                 <p className="text-[11px] text-slate-400">
                   {language === 'ta'
                     ? 'மேலே பட்டியலிடப்பட்டுள்ள சரிபார்க்கப்பட்ட அரசு இணையதள இணைப்புகளைப் பயன்படுத்தி ஆன்லைனில் விண்ணப்பிக்கவும்.'
+                    : language === 'hi'
+                    ? 'ऑनलाइन आवेदन करने हेतु ऊपर सूचीबद्ध सत्यापित सरकारी पोर्टल लिंक का उपयोग करें।'
                     : 'Use the verified portal links listed above to submit online with authentic credentials.'}
                 </p>
               </div>
