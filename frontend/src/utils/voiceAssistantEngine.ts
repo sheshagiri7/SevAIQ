@@ -491,6 +491,81 @@ export function prepareSpeechText(text: string, language: AssistantLanguage): st
     return clean;
   }
 
+  if (language === 'hi') {
+    let clean = text;
+
+    // 1. Remove parenthesized English translations e.g. (Check Eligibility), (PM-KISAN), (RoR), (NFSA Card)
+    clean = clean.replace(/\([A-Za-z0-9\s\/\-_.,]+\)/g, '');
+
+    // 2. Pronounce platform & common terms in Hindi phonetics
+    clean = clean.replace(/\bSevAIQ\b/gi, 'सेवा आई क्यू');
+    clean = clean.replace(/\be-KYC\b/gi, 'ई-केवाईसी');
+    clean = clean.replace(/\bWeb Speech API\b/gi, 'वेब स्पीच एपीआई');
+    clean = clean.replace(/\bAadhaar\b/gi, 'आधार');
+    clean = clean.replace(/\bRation Card\b/gi, 'राशन कार्ड');
+    clean = clean.replace(/\bBank Passbook\b/gi, 'बैंक पासबुक');
+
+    // 3. Expand common acronyms to natural Hindi phonetic pronunciations
+    clean = clean.replace(/\bPM-KISAN\b/gi, 'पीएम किसान');
+    clean = clean.replace(/\bAB-PMJAY\b/gi, 'आयुष्मान भारत योजना');
+    clean = clean.replace(/\bPM-JAY\b/gi, 'जन आरोग्य योजना');
+    clean = clean.replace(/\bPMAY-G\b/gi, 'प्रधानमंत्री आवास योजना ग्रामीण');
+    clean = clean.replace(/\bPMAY-U\b/gi, 'प्रधानमंत्री आवास योजना शहरी');
+    clean = clean.replace(/\bPMAY\b/gi, 'आवास योजना');
+    clean = clean.replace(/\bAPY\b/gi, 'अटल पेंशन योजना');
+    clean = clean.replace(/\bPM SVANidhi\b/gi, 'पीएम स्वनिधि योजना');
+    clean = clean.replace(/\bPMMY\b/gi, 'मुद्रा योजना');
+    clean = clean.replace(/\bCSC\b/gi, 'जन सेवा केंद्र');
+    clean = clean.replace(/\bDBT\b/gi, 'प्रत्यक्ष लाभ अंतरण');
+    clean = clean.replace(/\bNFSA\b/gi, 'राशन कार्ड');
+    clean = clean.replace(/\bRoR\b/gi, 'भूलेख खतौनी');
+    clean = clean.replace(/\bCoV\b/gi, 'वेंडिंग प्रमाण पत्र');
+    clean = clean.replace(/\bLoR\b/gi, 'सिफारिश पत्र');
+    clean = clean.replace(/\bPAN\b/gi, 'पैन कार्ड');
+
+    // 4. URLs to spoken Hindi
+    clean = clean.replace(/pmkisan\.gov\.in/gi, 'पीएम किसान पोर्टल');
+    clean = clean.replace(/beneficiary\.nha\.gov\.in/gi, 'आयुष्मान भारत पोर्टल');
+    clean = clean.replace(/pmsvanidhi\.mohua\.gov\.in/gi, 'पीएम स्वनिधि पोर्टल');
+    clean = clean.replace(/npscra\.nsdl\.co\.in/gi, 'अटल पेंशन पोर्टल');
+    clean = clean.replace(/pmjay\.gov\.in/gi, 'जन आरोग्य पोर्टल');
+
+    // 5. Currency amounts to fluent spoken Hindi numbers
+    clean = clean.replace(/₹\s*([0-9,.]+)\s*(लाख|करोड़)?/g, (_match, num, unit) => {
+      const cleanNum = num.replace(/,/g, '');
+      if (cleanNum === '500000') return 'पांच लाख रुपये';
+      if (cleanNum === '6000') return 'छह हजार रुपये';
+      if (cleanNum === '2000') return 'दो हजार रुपये';
+      if (cleanNum === '1000') return 'एक हजार रुपये';
+      if (cleanNum === '5000') return 'पांच हजार रुपये';
+      if (cleanNum === '120000') return 'एक लाख बीस हजार रुपये';
+      if (cleanNum === '130000') return 'एक लाख तीस हजार रुपये';
+      if (cleanNum === '10000') return 'दस हजार रुपये';
+      if (cleanNum === '20000') return 'बीस हजार रुपये';
+      if (cleanNum === '50000') return 'पचास हजार रुपये';
+      if (cleanNum === '2.5' && unit === 'लाख') return 'ढाई लाख रुपये';
+      if (cleanNum === '3' && unit === 'लाख') return 'तीन लाख रुपये';
+      if (cleanNum === '10' && unit === 'लाख') return 'दस लाख रुपये';
+      if (cleanNum === '20' && unit === 'लाख') return 'बीस लाख रुपये';
+      return unit ? `${cleanNum} ${unit} रुपये` : `${cleanNum} रुपये`;
+    });
+    clean = clean.replace(/₹/g, ' रुपये ');
+
+    // 6. Percentages e.g. 7% -> 7 प्रतिशत
+    clean = clean.replace(/([0-9]+)\s*%/g, '$1 प्रतिशत');
+
+    // 7. Age patterns e.g. 70+ -> 70 वर्ष से अधिक उम्र
+    clean = clean.replace(/([0-9]+)\s*\+/g, '$1 वर्ष से अधिक');
+
+    // 8. Strip markdown characters, quotes, and brackets
+    clean = clean.replace(/[*_#`~"“”'’[\]]/g, '');
+
+    // 9. Normalize spacing
+    clean = clean.replace(/\s+/g, ' ').trim();
+
+    return clean;
+  }
+
   // English cleanup
   let cleanEn = text;
   cleanEn = cleanEn.replace(/₹\s*([0-9,.]+)\s*(Lakh|Crore)?/gi, (_match, num, unit) => {
