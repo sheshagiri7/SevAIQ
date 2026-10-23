@@ -439,6 +439,18 @@ export const UI_TRANSLATIONS = {
         'FastAPI backend + Vite React frontend, built collaboratively for national scale.',
     },
 
+    // Banner Showcase & Floating Options
+    banner: {
+      hashtag: '#GOVERNMENTSCHEMES / #SCHEMESFORYOU',
+      findSchemes: 'Find Schemes For You',
+      findSchemesAria: 'Find Schemes For You - scroll to options',
+      scrollDown: 'Scroll down to explore options',
+      prevSlide: 'Previous Scheme Slide',
+      nextSlide: 'Next Scheme Slide',
+      goToSlide: 'Go to slide',
+      isNow: 'is now',
+    },
+
     // Dashboard
     dashboard: {
       kioskNoticeTitle: 'Public Kiosk Mode Active:',
