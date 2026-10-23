@@ -10,6 +10,21 @@ interface CategoryGridProps {
 export const CategoryGrid: React.FC<CategoryGridProps> = ({ onSelectCategory }) => {
   const { language } = useLanguage();
   const isTamil = language === 'ta';
+  const isHindi = language === 'hi';
+
+  const headingText = isTamil
+    ? 'வகைகள் வாரியாக திட்டங்களை கண்டறியவும்'
+    : isHindi
+    ? 'श्रेणियों के आधार पर योजनाएं खोजें'
+    : 'Find schemes based on categories';
+
+  const subText = isTamil
+    ? 'மத்திய மற்றும் மாநில அரசுகளின் 15 முதன்மைத் துறைகளின் கீழ் உள்ள சரிபார்க்கப்பட்ட நலத்திட்டங்களை உடனடியாகக் காணுங்கள்.'
+    : isHindi
+    ? '15 प्रमुख सरकारी क्षेत्रों के अंतर्गत वैधानिक पात्रता व आवेदन दिशानिर्देशों सहित सत्यापित कल्याणकारी योजनाएं देखें।'
+    : 'Browse verified welfare initiatives across 15 government sectors with statutory criteria and application roadmaps.';
+
+  const categoryCountLabel = `15 ${isTamil ? 'துறைகள்' : isHindi ? 'श्रेणियां' : 'Categories'}`;
 
   return (
     <section
@@ -27,19 +42,17 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({ onSelectCategory }) 
             id="categories-heading"
             className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight"
           >
-            {isTamil ? 'வகைகள் வாரியாக திட்டங்களை கண்டறியவும்' : 'Find schemes based on categories'}
+            {headingText}
           </h2>
           <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-2xl leading-relaxed">
-            {isTamil
-              ? 'மத்திய மற்றும் மாநில அரசுகளின் 15 முதன்மைத் துறைகளின் கீழ் உள்ள சரிபார்க்கப்பட்ட நலத்திட்டங்களை உடனடியாகக் காணுங்கள்.'
-              : 'Browse verified welfare initiatives across 15 government sectors with statutory criteria and application roadmaps.'}
+            {subText}
           </p>
         </div>
 
         <div className="flex items-center space-x-2 shrink-0 self-start md:self-auto">
           <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">
             <Layers className="w-3.5 h-3.5 mr-1.5 text-civic-700" />
-            15 {isTamil ? 'துறைகள்' : 'Categories'}
+            {categoryCountLabel}
           </span>
         </div>
       </div>
@@ -48,8 +61,9 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({ onSelectCategory }) 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5 sm:gap-4 lg:gap-5">
         {MY_SCHEME_CATEGORIES.map((cat: CategoryCardData) => {
           const Icon = cat.icon;
-          const title = isTamil ? cat.titleTa : cat.titleEn;
-          const schemesText = isTamil ? `${cat.count} திட்டங்கள்` : `${cat.count} Schemes`;
+          const title = isTamil ? cat.titleTa : isHindi ? (cat.titleHi || cat.titleEn) : cat.titleEn;
+          const schemesText = isTamil ? `${cat.count} திட்டங்கள்` : isHindi ? `${cat.count} योजनाएं` : `${cat.count} Schemes`;
+          const exploreText = isTamil ? 'திட்டங்களை காண்க' : isHindi ? 'योजनाएं देखें' : 'Explore';
 
           return (
             <button
@@ -80,7 +94,7 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({ onSelectCategory }) 
 
               {/* Subdued Arrow cue on hover */}
               <div className="mt-2 text-[10px] font-bold text-civic-700 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-0.5">
-                <span>{isTamil ? 'திட்டங்களை காண்க' : 'Explore'}</span>
+                <span>{exploreText}</span>
                 <ArrowRight className="w-3 h-3" />
               </div>
             </button>
