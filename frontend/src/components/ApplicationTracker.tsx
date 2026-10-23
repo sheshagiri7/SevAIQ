@@ -99,6 +99,8 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
       description:
         language === 'ta'
           ? `${locActiveScheme.title} திட்டத்திற்கான சட்டப்பூர்வ தகுதி விதிகளை சரிபாருங்கள். வயது, வருமானம் மற்றும் தொழில் தேவைகள் பொருந்துகிறதா என்பதை உறுதிப்படுத்தவும்.`
+          : language === 'hi'
+          ? `${locActiveScheme.title} के लिए वैधानिक पात्रता नियमों की समीक्षा करें। सुनिश्चित करें कि नागरिक आयु, आय एवं व्यवसाय की शर्तों को पूरा करता है।`
           : `Review verified eligibility rules for ${activeScheme.title}. Ensure citizen meets age, income, and occupational requirements.`,
       isCompleted: currentCompleted.includes('step-eligibility'),
     });
@@ -109,10 +111,17 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
       const docStepId = `step-doc-${idx}`;
       steps.push({
         id: docStepId,
-        title: language === 'ta' ? `படி 2: ${doc} ஆவணத்தை தயார் செய்தல்` : `Stage 2: Procure ${doc}`,
+        title:
+          language === 'ta'
+            ? `படி 2: ${doc} ஆவணத்தை தயார் செய்தல்`
+            : language === 'hi'
+            ? `चरण 2: ${doc} दस्तावेज़ तैयार करना`
+            : `Stage 2: Procure ${doc}`,
         description:
           language === 'ta'
             ? `${doc} ஆவணத்தின் அசல் அல்லது சுய கையொப்பமிட்ட நகலை கையில் தயாராக வைத்திருக்கவும்.`
+            : language === 'hi'
+            ? `${doc} की प्रमाणित मूल प्रति या स्व-हस्ताक्षरित प्रतिलिपि तैयार रखें।`
             : `Ensure an authentic, self-attested original or photocopy of ${doc} is prepared and ready in hand.`,
         isCompleted: currentCompleted.includes(docStepId),
       });
@@ -125,9 +134,13 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
       description: activeScheme.application_mode
         ? language === 'ta'
           ? `அதிகாரப்பூர்வ முறையில் விண்ணப்பிக்கவும்: ${activeScheme.application_mode}.`
+          : language === 'hi'
+          ? `आधिकारिक माध्यम से आवेदन करें: ${activeScheme.application_mode}।`
           : `Submit application through official mode: ${activeScheme.application_mode}.`
         : language === 'ta'
         ? `அதிகாரப்பூர்வ இணையதளத்தில் நேரடியாக விண்ணப்பிக்கவும் (${activeScheme.official_portal_url || 'இ-சேவை மையம்'}).`
+        : language === 'hi'
+        ? `आधिकारिक पोर्टल पर सीधे आवेदन जमा करें (${activeScheme.official_portal_url || 'सीएससी केंद्र'})।`
         : `Submit application directly on the official portal (${activeScheme.official_portal_url || 'State Kendra'}).`,
       isCompleted: currentCompleted.includes('step-submission'),
     });
@@ -139,6 +152,8 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
       description:
         language === 'ta'
           ? 'இணையதளம் அல்லது பொது சேவை மையம் வழங்கும் அதிகாரப்பூர்வ விண்ணப்ப ரசீது / குறிப்பு எண்ணை குறித்து வைத்து அரசு தளத்தில் நிலையைக் கண்காணிக்கவும்.'
+          : language === 'hi'
+          ? 'पोर्टल अथवा सीएससी केंद्र से प्राप्त आधिकारिक पावती / संदर्भ संख्या को सुरक्षित रखें और सरकारी पोर्टल पर स्थिति को ट्रैक करें।'
           : 'Save your official receipt/acknowledgment number given by the portal or CSC Kendra to track progress on the government portal.',
       isCompleted: currentCompleted.includes('step-tracking'),
     });
