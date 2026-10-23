@@ -356,7 +356,13 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                 <option value="">{t.eligibility.stateSelect}</option>
                 {INDIAN_STATES.map((st) => (
                   <option key={st} value={st}>
-                    {st === 'Tamil Nadu' && language === 'ta' ? 'தமிழ்நாடு (Tamil Nadu)' : st}
+                    {st === 'Tamil Nadu'
+                      ? language === 'ta'
+                        ? 'தமிழ்நாடு (Tamil Nadu)'
+                        : language === 'hi'
+                        ? 'तमिलनाडु (Tamil Nadu)'
+                        : st
+                      : st}
                   </option>
                 ))}
               </select>
