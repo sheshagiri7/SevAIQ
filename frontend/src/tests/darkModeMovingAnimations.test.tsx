@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { renderToString } from 'react-dom/server';
-import cssContent from '../index.css?raw';
 import { SchemeBannerCarousel } from '../components/SchemeBannerCarousel';
 import { LanguageProvider } from '../context/LanguageContext';
 import { AccessibilityProvider } from '../context/AccessibilityContext';
@@ -61,7 +60,14 @@ describe('Dark Mode & Moving Animation Images Exemption', () => {
     expect(html).toContain('aria-label="Citizen using smartphone illustration"');
   });
 
-  it('index.css specifies dark mode re-inversion rules for moving animation images and carousel', () => {
+  it('index.css specifies dark mode re-inversion rules for moving animation images and carousel', async () => {
+    // @ts-ignore
+    const fs = await import('fs');
+    // @ts-ignore
+    const path = await import('path');
+    const cssPath = path.resolve(process.cwd(), 'src/index.css');
+    const cssContent = fs.readFileSync(cssPath, 'utf8');
+
     // Verify dark mode base rule
     expect(cssContent).toContain('html.a11y-invert');
 
