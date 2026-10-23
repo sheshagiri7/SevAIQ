@@ -232,6 +232,8 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
       setSpeechError(
         language === 'ta'
           ? 'இந்த உலாவியில் மைக்ரோஃபோன் குரல் அறிதல் ஆதரிக்கப்படவில்லை. கீழே தட்டச்சு செய்து கேட்கலாம்.'
+          : language === 'hi'
+          ? 'इस ब्राउज़र में माइक्रोफोन वॉइस पहचान समर्थित नहीं है। कृपया नीचे लिखकर पूछें।'
           : 'Browser speech recognition is not supported in this browser. Please use the text input below.'
       );
       return;
@@ -250,7 +252,7 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
       recognitionRef.current = recognition;
       recognition.continuous = false;
       recognition.interimResults = false;
-      recognition.lang = language === 'ta' ? 'ta-IN' : 'en-IN';
+      recognition.lang = language === 'ta' ? 'ta-IN' : language === 'hi' ? 'hi-IN' : 'en-IN';
 
       recognition.onstart = () => {
         setIsListening(true);
@@ -270,17 +272,23 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
         let errorMsg =
           language === 'ta'
             ? 'குரல் அறிதல் தோல்வியடைந்தது. தயவுசெய்து மீண்டும் முயற்சிக்கவும் அல்லது தட்டச்சு செய்யவும்.'
+            : language === 'hi'
+            ? 'वॉइस पहचान विफल रही। कृपया पुनः प्रयास करें या प्रश्न टाइप करें।'
             : 'Speech recognition encountered an issue. Please try again or type your question.';
 
         if (event.error === 'not-allowed') {
           errorMsg =
             language === 'ta'
               ? 'மைக்ரோஃபோன் அனுமதி மறுக்கப்பட்டுள்ளது. உலாவியின் அமைப்பில் மைக்ரோஃபோனை அனுமதிக்கவும் அல்லது தட்டச்சு செய்யவும்.'
+              : language === 'hi'
+              ? 'माइक्रोफोन की अनुमति अस्वीकृत है। ब्राउज़र सेटिंग में माइक्रोफोन की अनुमति दें अथवा लिखकर पूछें।'
               : 'Microphone permission was denied. Please allow microphone access in your browser or use text input.';
         } else if (event.error === 'no-speech') {
           errorMsg =
             language === 'ta'
               ? 'குரல் எதுவும் கேட்கவில்லை. மைக்ரோஃபோன் அருகில் பேசி முயற்சிக்கவும்.'
+              : language === 'hi'
+              ? 'कोई आवाज़ सुनाई नहीं दी। कृपया माइक्रोफोन के पास बोलें।'
               : 'No speech was detected. Please try speaking closer to the microphone.';
         }
         setSpeechError(errorMsg);
@@ -296,6 +304,8 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
       setSpeechError(
         language === 'ta'
           ? 'மைக்ரோஃபோனை துவக்க முடியவில்லை. கீழே உள்ள உரை பெட்டியைப் பயன்படுத்தவும்.'
+          : language === 'hi'
+          ? 'माइक्रोफोन प्रारंभ नहीं हो सका। कृपया नीचे दिए गए टेक्स्ट बॉक्स का उपयोग करें।'
           : 'Could not initialize speech recognition. Please use the text input.'
       );
     }
@@ -315,13 +325,13 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
 
     window.speechSynthesis.cancel();
 
-    // Prepare text with phonetic Tamil expansions for symbols, currency (ரூபாய்), and acronyms
+    // Prepare text with phonetic Tamil/Hindi expansions for symbols, currency (ரூபாய்/रुपये), and acronyms
     const preparedText = prepareSpeechText(text, language);
     const utterance = new SpeechSynthesisUtterance(preparedText);
-    utterance.lang = language === 'ta' ? 'ta-IN' : 'en-IN';
+    utterance.lang = language === 'ta' ? 'ta-IN' : language === 'hi' ? 'hi-IN' : 'en-IN';
 
-    // Tamil speech is most legible at 0.88 rate; English at 0.95
-    utterance.rate = language === 'ta' ? 0.88 : 0.95;
+    // Tamil & Hindi speech are most legible at 0.88-0.90 rate; English at 0.95
+    utterance.rate = language === 'ta' ? 0.88 : language === 'hi' ? 0.90 : 0.95;
     utterance.pitch = 1.0;
 
     // Explicitly set the best native voice (e.g. Vani, Google தமிழ்) so the browser doesn't fallback to English voice
