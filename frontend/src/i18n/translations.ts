@@ -529,7 +529,6 @@ export const UI_TRANSLATIONS = {
       searchPlaceholder:
         'Search schemes by title, ministry, benefit, or Tamil keyword (e.g. விவசாயி, மருத்துவம், கடன்)...',
       allCategories: 'All Sectors',
-      quickQueries: 'Quick Queries:',
       noSchemesFound: 'No schemes found matching your criteria',
       noSchemesDesc: 'Try adjusting your search query or selecting a different sector filter.',
       clearFilters: 'Clear Filters',
@@ -886,7 +885,6 @@ export const UI_TRANSLATIONS = {
       searchPlaceholder:
         'திட்டப் பெயர், அமைச்சகம், பயன் அல்லது தமிழ் வார்த்தை மூலம் தேடுங்கள் (எ.கா: விவசாயி, மருத்துவம், கடன்)...',
       allCategories: 'அனைத்து துறைகள்',
-      quickQueries: 'விரைவு தேடல்கள்:',
       noSchemesFound: 'உங்கள் தேடலுக்குரிய திட்டங்கள் எதுவும் காணப்படவில்லை',
       noSchemesDesc: 'உங்கள் தேடல் சொல்லை மாற்றவும் அல்லது வேறு துறையை தேர்ந்தெடுக்கவும்.',
       clearFilters: 'வடிகட்டிகளை நீக்கு',
@@ -1243,7 +1241,6 @@ export const UI_TRANSLATIONS = {
       searchPlaceholder:
         'योजना के नाम, मंत्रालय, लाभ या हिंदी कीवर्ड (जैसे किसान, इलाज, मकान, ऋण, पेंशन) द्वारा खोजें...',
       allCategories: 'सभी क्षेत्र',
-      quickQueries: 'त्वरित खोज:',
       noSchemesFound: 'आपके खोज मानदंडों से मेल खाती कोई योजना नहीं मिली',
       noSchemesDesc: 'कृपया अपना खोज शब्द बदलें या कोई अन्य क्षेत्र फ़िल्टर चुनें।',
       clearFilters: 'फ़िल्टर हटाएं',
