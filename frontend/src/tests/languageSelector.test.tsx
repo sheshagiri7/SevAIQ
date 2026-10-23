@@ -100,26 +100,19 @@ describe('Official myScheme Language Option & Indic Selector', () => {
     expect(html).toContain('aria-haspopup="listbox"');
   });
 
-  it('supports major official Indian languages in INDIAN_LANGUAGES list', () => {
+  it('supports exactly English, Tamil, and Hindi in INDIAN_LANGUAGES list', () => {
     const codes = INDIAN_LANGUAGES.map((l) => l.code);
-    expect(codes).toContain('en');
-    expect(codes).toContain('hi');
-    expect(codes).toContain('ta');
-    expect(codes).toContain('te');
-    expect(codes).toContain('kn');
-    expect(codes).toContain('ml');
-    expect(codes).toContain('mr');
-    expect(codes).toContain('gu');
-    expect(codes).toContain('bn');
-    expect(codes).toContain('pa');
-    expect(codes).toContain('or');
-    expect(codes).toContain('as');
+    expect(codes).toEqual(['en', 'ta', 'hi']);
+    expect(codes).toHaveLength(3);
 
-    // English, Tamil, and Hindi are marked as fully localized
+    // English, Tamil, and Hindi are configured with complete translations
     const en = INDIAN_LANGUAGES.find((l) => l.code === 'en')!;
     const ta = INDIAN_LANGUAGES.find((l) => l.code === 'ta')!;
     const hi = INDIAN_LANGUAGES.find((l) => l.code === 'hi')!;
 
+    expect(en.name).toBe('English');
+    expect(ta.name).toBe('தமிழ்');
+    expect(hi.name).toBe('हिन्दी');
     expect(en.isFullyLocalized).toBe(true);
     expect(ta.isFullyLocalized).toBe(true);
     expect(hi.isFullyLocalized).toBe(true);
