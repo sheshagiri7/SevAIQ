@@ -1136,7 +1136,7 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
           type="button"
           onClick={prevSlide}
           className="absolute left-0 sm:left-2 top-1/2 -translate-y-1/2 z-40 w-7 sm:w-8.5 lg:w-9 h-14 sm:h-18 lg:h-20 rounded-r-xl bg-[#166534] hover:bg-[#14532d] text-white shadow-xl flex items-center justify-center transition-all hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer"
-          aria-label="Previous Scheme Slide"
+          aria-label={t.banner?.prevSlide || (isTamil ? 'முந்தைய திட்டம்' : isHindi ? 'पिछली योजना' : 'Previous Scheme Slide')}
         >
           <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 stroke-[3]" />
         </button>
@@ -1146,7 +1146,7 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
           type="button"
           onClick={nextSlide}
           className="absolute right-0 sm:right-2 top-1/2 -translate-y-1/2 z-40 w-7 sm:w-8.5 lg:w-9 h-14 sm:h-18 lg:h-20 rounded-l-xl bg-[#166534] hover:bg-[#14532d] text-white shadow-xl flex items-center justify-center transition-all hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer"
-          aria-label="Next Scheme Slide"
+          aria-label={t.banner?.nextSlide || (isTamil ? 'அடுத்த திட்டம்' : isHindi ? 'अगली योजना' : 'Next Scheme Slide')}
         >
           <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 stroke-[3]" />
         </button>
@@ -1156,11 +1156,13 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
           className="flex-1 flex transition-transform duration-500 ease-in-out w-full h-full"
           style={{ transform: `translateX(-${currentSlideIndex * 100}%)` }}
         >
-          {SLIDES.map((slide) => (
-            <div
-              key={slide.id}
-              className={`w-full h-full shrink-0 bg-gradient-to-r ${slide.theme.bgGradient} px-4 sm:px-8 lg:px-12 py-4 sm:py-6 relative flex items-center justify-center overflow-hidden`}
-            >
+          {SLIDES.map((slide) => {
+            const locSlide = getLocalizedSlide(slide, language);
+            return (
+              <div
+                key={slide.id}
+                className={`w-full h-full shrink-0 bg-gradient-to-r ${slide.theme.bgGradient} px-4 sm:px-8 lg:px-12 py-4 sm:py-6 relative flex items-center justify-center overflow-hidden`}
+              >
               {/* Subtle background decorative shapes */}
               <div
                 className={`absolute -right-20 -bottom-20 w-96 h-96 rounded-full ${slide.theme.decorCircle} blur-3xl pointer-events-none`}
