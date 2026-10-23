@@ -217,21 +217,6 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Official Indian Governance / myScheme-Style Language Option */}
             <LanguageSelector variant="header" />
 
-            {/* High Contrast / Dark Theme Toggle matching myScheme header */}
-            <button
-              type="button"
-              onClick={toggleInvertColors}
-              aria-label={settings.invertColors ? "Switch to standard theme" : "Switch to high contrast dark theme"}
-              title={settings.invertColors ? "Standard Theme" : "High Contrast Theme (Dark)"}
-              className={`h-8 w-8 xl:h-8.5 xl:w-8.5 rounded-lg flex items-center justify-center shrink-0 border transition-all focus:outline-none focus:ring-2 focus:ring-amber-400 cursor-pointer ${
-                settings.invertColors
-                  ? 'bg-amber-400 text-slate-950 border-amber-300 shadow-sm'
-                  : 'bg-slate-900 text-amber-300 border-slate-700 hover:bg-slate-800 shadow-2xs'
-              }`}
-            >
-              <Sun className="w-4 h-4 stroke-[2.2]" />
-            </button>
-
             {/* Ephemeral Public Kiosk Mode Toggle */}
             <button
               type="button"
