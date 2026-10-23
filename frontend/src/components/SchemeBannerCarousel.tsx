@@ -47,6 +47,14 @@ interface SchemeSlide {
   primaryCtaText: string;
   secondaryCtaText: string;
   officialUrl: string;
+  image: {
+    src: string;
+    alt: string;
+    caption: string;
+    categoryTag: string;
+    sourceAttribution: string;
+    objectPosition?: string;
+  };
   theme: {
     bgGradient: string;
     headlineColor: string;
@@ -100,6 +108,14 @@ const SLIDES: SchemeSlide[] = [
     primaryCtaText: 'Apply Now',
     secondaryCtaText: 'Check Eligibility',
     officialUrl: 'https://scholarships.gov.in',
+    image: {
+      src: '/schemes/nsp-post-matric.jpg',
+      alt: 'Indian school students studying in classroom for National Scholarship Portal',
+      caption: 'Empowering Indian Students with Direct Scholarships & Fee Support',
+      categoryTag: 'Education & Skilling',
+      sourceAttribution: 'Wikimedia Commons (CC-BY-SA 2.0)',
+      objectPosition: 'object-center',
+    },
     theme: {
       bgGradient: 'from-[#eef9f2] via-[#e5f4ea] to-[#d8ede0]',
       headlineColor: 'text-[#155e3b]',
@@ -151,6 +167,14 @@ const SLIDES: SchemeSlide[] = [
     primaryCtaText: 'Apply Now',
     secondaryCtaText: 'Check Beneficiary',
     officialUrl: 'https://pmkisan.gov.in',
+    image: {
+      src: '/schemes/pm-kisan.jpg',
+      alt: 'Indian farmers working in agricultural field for PM-KISAN Samman Nidhi',
+      caption: 'Direct Income Support of ₹6,000/year for Indian Farmer Families',
+      categoryTag: 'Agriculture & Rural',
+      sourceAttribution: 'Unsplash Verified Media (Free License)',
+      objectPosition: 'object-center',
+    },
     theme: {
       bgGradient: 'from-[#fefcf2] via-[#f9f5e2] to-[#ecf8eb]',
       headlineColor: 'text-[#1b6b3e]',
@@ -202,6 +226,14 @@ const SLIDES: SchemeSlide[] = [
     primaryCtaText: 'Apply Now',
     secondaryCtaText: 'Find Hospitals',
     officialUrl: 'https://pmjay.gov.in',
+    image: {
+      src: '/schemes/ab-pmjay.jpg',
+      alt: 'Healthcare medical doctor with stethoscope providing clinical care for Ayushman Bharat PM-JAY',
+      caption: 'Cashless Hospitalization Cover up to ₹5 Lakh Across 28,000+ Hospitals',
+      categoryTag: 'Healthcare & Wellness',
+      sourceAttribution: 'Unsplash Verified Media (Free License)',
+      objectPosition: 'object-center',
+    },
     theme: {
       bgGradient: 'from-[#f0f9ff] via-[#e2f2fe] to-[#d8eefd]',
       headlineColor: 'text-[#0355a3]',
@@ -253,6 +285,14 @@ const SLIDES: SchemeSlide[] = [
     primaryCtaText: 'Apply Now',
     secondaryCtaText: 'Check Loan Status',
     officialUrl: 'https://pmsvanidhi.mohua.gov.in',
+    image: {
+      src: '/schemes/pm-svanidhi.jpg',
+      alt: 'Indian street vendor smiling at produce stall for PM SVANidhi Micro-Credit Scheme',
+      caption: 'Working Capital Micro-Credit Loans for Urban Street Vendors',
+      categoryTag: 'Urban Livelihoods',
+      sourceAttribution: 'Unsplash Verified Media (Free License)',
+      objectPosition: 'object-center',
+    },
     theme: {
       bgGradient: 'from-[#fff8f0] via-[#feeedd] to-[#fae8ff]',
       headlineColor: 'text-[#9a3412]',
@@ -304,6 +344,14 @@ const SLIDES: SchemeSlide[] = [
     primaryCtaText: 'Apply Now',
     secondaryCtaText: 'Gram Panchayat List',
     officialUrl: 'https://pmayg.nic.in',
+    image: {
+      src: '/schemes/pmay-g.jpg',
+      alt: 'Permanent rural pucca masonry house in India under Pradhan Mantri Awas Yojana',
+      caption: 'Permanent All-Weather Pucca Housing for Rural Indian Families',
+      categoryTag: 'Housing & Shelter',
+      sourceAttribution: 'Wikimedia Commons (CC-BY-SA 3.0)',
+      objectPosition: 'object-center',
+    },
     theme: {
       bgGradient: 'from-[#ecfdf5] via-[#e3faf0] to-[#e0f2fe]',
       headlineColor: 'text-[#0f5132]',
