@@ -5,7 +5,7 @@ import { LanguageProvider } from '../context/LanguageContext';
 import { AccessibilityProvider } from '../context/AccessibilityContext';
 import { MemoryStorage } from '../utils/kioskStorage';
 
-describe('Real Official Banner Images & Animation Removal', () => {
+describe('Distinct Moving Image Animations', () => {
   beforeEach(() => {
     (globalThis as any).localStorage = new MemoryStorage();
     if (typeof document === 'undefined') {
@@ -21,7 +21,7 @@ describe('Real Official Banner Images & Animation Removal', () => {
     vi.restoreAllMocks();
   });
 
-  it('renders distinct real official banner images for all 5 government schemes without cartoon graphics', () => {
+  it('renders distinct animation classes for each different 3D moving image icon', () => {
     const html = renderToString(
       <LanguageProvider>
         <AccessibilityProvider>
@@ -30,38 +30,39 @@ describe('Real Official Banner Images & Animation Removal', () => {
       </LanguageProvider>
     );
 
-    // 1. National Scholarship Portal banner
-    expect(html).toContain('/banners/banner-nsp.png');
+    // 1. Education: Graduation Cap has academic cap float & tilt
+    expect(html).toContain('animate-cap-float');
+    expect(html).toContain('animate-icon-graduation');
 
-    // 2. Hon'ble PM Modi Digital India quote banner
-    expect(html).toContain('/banners/banner-modi.png');
+    // 2. Agriculture: Sprout has organic growth & breeze sway
+    expect(html).toContain('animate-sprout-pulse');
+    expect(html).toContain('animate-icon-sprout');
 
-    // 3. Celebrating 11 Years of Digital India banner
-    expect(html).toContain('/banners/banner-digital-india.png');
+    // 3. Healthcare: Heart has rhythmic vital dual heartbeat throb
+    expect(html).toContain('animate-heart-throb');
+    expect(html).toContain('animate-icon-heart');
 
-    // 4. Pradhan Mantri Suraksha Bima Yojana banner
-    expect(html).toContain('/banners/banner-suraksha-bima.png');
+    // 4. Finance: Coins has 3D perspective spin and sparkle jingle
+    expect(html).toContain('animate-coin-spin');
+    expect(html).toContain('animate-icon-coins');
 
-    // 5. myScheme on UMANG mobile app banner
-    expect(html).toContain('/banners/banner-myscheme-umang.png');
+    // 5. Housing: Home has permanent masonry hover glide & foundation stability
+    expect(html).toContain('animate-home-glide');
+    expect(html).toContain('animate-icon-home');
 
-    // Verify all 5 real banner images are distinct and use dark-mode-exempt classes
-    expect(html).toContain('real-banner-image');
-    expect(html).toContain('moving-animation-image');
-    expect(html).toContain('data-dark-exempt="true"');
-
-    const bannerPaths = [
-      '/banners/banner-nsp.png',
-      '/banners/banner-modi.png',
-      '/banners/banner-digital-india.png',
-      '/banners/banner-suraksha-bima.png',
-      '/banners/banner-myscheme-umang.png',
+    // Verify all 5 image animations are mutually distinct
+    const animationClasses = [
+      'animate-cap-float',
+      'animate-sprout-pulse',
+      'animate-heart-throb',
+      'animate-coin-spin',
+      'animate-home-glide',
     ];
-    const uniqueBanners = new Set(bannerPaths);
-    expect(uniqueBanners.size).toBe(5);
+    const uniqueAnimations = new Set(animationClasses);
+    expect(uniqueAnimations.size).toBe(5);
   });
 
-  it('removes cartoon avatar illustration and bouncy animations as requested by user', () => {
+  it('renders different moving animations for paper airplane, citizen, and action badges', () => {
     const html = renderToString(
       <LanguageProvider>
         <AccessibilityProvider>
@@ -70,19 +71,18 @@ describe('Real Official Banner Images & Animation Removal', () => {
       </LanguageProvider>
     );
 
-    // Citizen cartoon avatar illustration is removed
-    expect(html).not.toContain('aria-label="Citizen using smartphone illustration"');
-    expect(html).not.toContain('animate-citizen-sway');
+    // Origami paper airplane has aerodynamic banking glide
+    expect(html).toContain('animate-airplane-glide');
 
-    // Cartoon bouncy / wobbly animations removed from moving presentation
-    expect(html).not.toContain('animate-cap-float');
-    expect(html).not.toContain('animate-sprout-pulse');
-    expect(html).not.toContain('animate-heart-throb');
-    expect(html).not.toContain('animate-coin-spin');
-    expect(html).not.toContain('animate-moving-phone-1');
+    // Citizen mobile user illustration has natural human breathing sway
+    expect(html).toContain('animate-citizen-sway');
+
+    // Action Badges have parallax floating movements
+    expect(html).toContain('animate-badge-float-1');
+    expect(html).toContain('animate-badge-float-2');
   });
 
-  it('renders next-slide thumbnail preview card matching official myscheme portal layout', () => {
+  it('renders distinct slide-specific smartphone mockup floating animations', () => {
     const html = renderToString(
       <LanguageProvider>
         <AccessibilityProvider>
@@ -91,13 +91,15 @@ describe('Real Official Banner Images & Animation Removal', () => {
       </LanguageProvider>
     );
 
-    // Next slide preview card contains next scheme thumbnail and title
-    expect(html).toContain('Next Slide Preview:');
-    expect(html).toContain('Next Scheme');
-    expect(html).toContain('Next slide thumbnail');
+    // Each slide's phone mockup has its own animation profile
+    expect(html).toContain('animate-moving-phone-1');
+    expect(html).toContain('animate-moving-phone-2');
+    expect(html).toContain('animate-moving-phone-3');
+    expect(html).toContain('animate-moving-phone-4');
+    expect(html).toContain('animate-moving-phone-5');
   });
 
-  it('index.css declares dark mode exemption rules for real banner images and floating animations', async () => {
+  it('index.css declares all distinct keyframe animations for moving images', async () => {
     // @ts-ignore
     const fs = await import('fs');
     // @ts-ignore
@@ -106,14 +108,22 @@ describe('Real Official Banner Images & Animation Removal', () => {
     const cssPath = path.resolve(cwd, 'src/index.css');
     const cssContent = fs.readFileSync(cssPath, 'utf8');
 
-    // Verify dark mode exemption rules
-    expect(cssContent).toContain('html.a11y-invert .moving-animation-exempt');
-    expect(cssContent).toContain('html.a11y-invert .scheme-banner-carousel');
-    expect(cssContent).toContain('html.a11y-invert .moving-animation-image');
-    expect(cssContent).toContain('html.a11y-invert [data-dark-exempt="true"]');
+    // Verify 3D image keyframes
+    expect(cssContent).toContain('@keyframes cap-float');
+    expect(cssContent).toContain('@keyframes sprout-sway');
+    expect(cssContent).toContain('@keyframes heart-pulse-float');
+    expect(cssContent).toContain('@keyframes coin-flip-float');
+    expect(cssContent).toContain('@keyframes home-glide');
 
-    // Verify keyframes for carousel timer and paper airplane
-    expect(cssContent).toContain('@keyframes carousel-progress');
+    // Verify illustration & element keyframes
     expect(cssContent).toContain('@keyframes airplane-glide');
+    expect(cssContent).toContain('@keyframes citizen-sway');
+    expect(cssContent).toContain('@keyframes moving-phone-1');
+    expect(cssContent).toContain('@keyframes moving-phone-2');
+    expect(cssContent).toContain('@keyframes moving-phone-3');
+    expect(cssContent).toContain('@keyframes moving-phone-4');
+    expect(cssContent).toContain('@keyframes moving-phone-5');
+    expect(cssContent).toContain('@keyframes badge-float-1');
+    expect(cssContent).toContain('@keyframes badge-float-2');
   });
 });

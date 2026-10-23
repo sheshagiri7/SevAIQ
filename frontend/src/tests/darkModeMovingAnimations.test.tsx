@@ -77,7 +77,7 @@ describe('Dark Mode Removal & Moving Animation Images Exemption', () => {
     expect(html).toContain('data-moving-animation="true"');
   });
 
-  it('renders real banner images with moving-animation-image and data-dark-exempt tags and removes cartoon avatar', () => {
+  it('renders moving animated graphics with moving-animation-image and data-dark-exempt tags', () => {
     const html = renderToString(
       <LanguageProvider>
         <AccessibilityProvider>
@@ -86,11 +86,9 @@ describe('Dark Mode Removal & Moving Animation Images Exemption', () => {
       </LanguageProvider>
     );
 
-    // Real official banner image with dark mode exemption
+    // Animated 3D Floating Graphic
     expect(html).toContain('moving-animation-image');
-    expect(html).toContain('real-banner-image');
-    expect(html).toContain('banner-nsp.png');
-    expect(html).toContain('data-dark-exempt="true"');
+    expect(html).toContain('3D Floating Graduation Cap');
 
     // Origami Paper Airplane with floating motion
     expect(html).toContain('animate-float-subtle');
@@ -99,8 +97,8 @@ describe('Dark Mode Removal & Moving Animation Images Exemption', () => {
     expect(html).not.toContain('aria-label="Scheme QR Code"');
     expect(html).not.toContain('Scan the');
 
-    // Cartoon citizen avatar removed as explicitly requested by user
-    expect(html).not.toContain('aria-label="Citizen using smartphone illustration"');
+    // Citizen mobile user graphic
+    expect(html).toContain('aria-label="Citizen using smartphone illustration"');
   });
 
   it('index.css specifies dark mode re-inversion rules for moving animation images and carousel', async () => {
