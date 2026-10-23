@@ -467,6 +467,7 @@ const FloatingGraphic3D: React.FC<{ type: string }> = ({ type }) => {
 export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
   onNavigate,
   onSelectScheme,
+  onSelectSchemeForEligibility,
 }) => {
   const { settings } = useAccessibility();
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
@@ -520,7 +521,11 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
   };
 
   const handleSecondaryClick = () => {
-    onNavigate('eligibility');
+    if (onSelectSchemeForEligibility && activeSlide) {
+      onSelectSchemeForEligibility(activeSlide.schemeId);
+    } else {
+      onNavigate('eligibility');
+    }
   };
 
   return (
