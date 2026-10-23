@@ -1748,7 +1748,7 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                       key={`progress-${currentSlideIndex}`}
                       className={`h-full ${activeSlide.theme.accentDot} rounded-full`}
                       style={{
-                        animation: settings.pauseAnimation
+                        animation: settings.pauseAnimation || isPaused
                           ? 'none'
                           : `carousel-progress ${SLIDE_DURATION_MS}ms linear forwards`,
                       }}
