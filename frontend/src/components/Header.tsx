@@ -143,8 +143,8 @@ export const Header: React.FC<HeaderProps> = ({
     <header className="sticky top-0 z-50 bg-white border-b border-slate-200/90 shadow-2xs w-full">
       <div className="w-full px-2 sm:px-4 lg:px-5 xl:px-6 2xl:px-8">
         <div className="flex items-center justify-between min-h-[3.75rem] sm:min-h-[4.25rem] py-1 sm:py-1.5 w-full gap-1.5 sm:gap-2 lg:gap-3">
-          {/* Top Left: Logo & Tagline + Accessibility Options (aligned properly below the logo) */}
-          <div className="flex flex-col justify-center items-start shrink-0 pr-1">
+          {/* Top Left: Logo & Tagline */}
+          <div className="flex items-center shrink-0 pr-1">
             <button
               type="button"
               onClick={() => handleNavClick('dashboard')}
@@ -163,35 +163,6 @@ export const Header: React.FC<HeaderProps> = ({
                 </span>
               </div>
             </button>
-
-            {/* Accessibility options button positioned cleanly below the logo */}
-            <div className="mt-1 flex items-center space-x-1 pl-0.5">
-              <button
-                type="button"
-                onClick={toggleAccessibility}
-                className={`inline-flex items-center gap-1 xl:gap-1.5 px-1.5 xl:px-2 py-0.5 rounded-md ${
-                  isTamil ? 'text-[10px] xl:text-[11px]' : 'text-[11px]'
-                } font-semibold border transition-all focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-2xs group cursor-pointer ${
-                  a11yActiveCount > 0 || isA11yOpen
-                    ? 'bg-purple-100/90 text-purple-900 border-purple-300 font-bold'
-                    : 'bg-purple-50/80 text-purple-800 border-purple-200/90 hover:bg-purple-100 hover:text-purple-900'
-                }`}
-                title="Accessibility options (Ctrl+F2)"
-                aria-label="Open accessibility options (Ctrl+F2)"
-                aria-expanded={isA11yOpen}
-              >
-                <Accessibility className="w-3 h-3 xl:w-3.5 xl:h-3.5 text-purple-600 group-hover:scale-110 transition-transform shrink-0" />
-                <span>{language === 'ta' ? 'அணுகல்தன்மை விருப்பங்கள்' : 'Accessibility options'}</span>
-                <span className="hidden sm:inline-block text-[8px] xl:text-[9px] font-mono font-bold bg-white text-purple-700 px-1 py-0.2 rounded border border-purple-200 shadow-2xs">
-                  Ctrl+F2
-                </span>
-                {a11yActiveCount > 0 && (
-                  <span className="inline-flex items-center justify-center px-1.5 py-0.2 text-[8px] xl:text-[9px] font-black bg-purple-600 text-white rounded-full">
-                    {a11yActiveCount}
-                  </span>
-                )}
-              </button>
-            </div>
           </div>
 
           {/* Center: All Navigation Options Aligned in Center */}
