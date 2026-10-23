@@ -775,16 +775,6 @@ const getLocalizedSlide = (slide: SchemeSlide, lang: string): SchemeSlide => {
       caption: trans.imageCaption || slide.image.caption,
     },
     phone: {
-    ministryBadge: trans.ministryBadge,
-    ministrySub: trans.ministrySub,
-    titlePrimary: trans.titlePrimary,
-    statusBadge: trans.statusBadge,
-    partnerText: trans.partnerText,
-    description: trans.description,
-    benefitPill: trans.benefitPill,
-    primaryCtaText: trans.primaryCtaText,
-    secondaryCtaText: trans.secondaryCtaText,
-    phone: {
       ...slide.phone,
       title: trans.phone.title,
       tagline: trans.phone.tagline,
