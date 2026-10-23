@@ -1057,7 +1057,7 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                     </div>
 
                     {/* Smartphone Outer Shell */}
-                    <div className="w-[220px] sm:w-[250px] lg:w-[270px] h-[380px] sm:h-[430px] lg:h-[460px] bg-slate-950 rounded-[36px] p-2.5 shadow-2xl border-[5px] sm:border-[6px] border-slate-800/95 relative overflow-hidden flex flex-col justify-between">
+                    <div className="w-[220px] sm:w-[250px] lg:w-[270px] h-[380px] sm:h-[430px] lg:h-[460px] bg-slate-950 rounded-[36px] p-2.5 shadow-2xl border-[5px] sm:border-[6px] border-slate-800/95 relative overflow-hidden flex flex-col justify-between animate-moving-image">
                       {/* Dynamic Island / Speaker Pill */}
                       <div className="absolute top-3 left-1/2 -translate-x-1/2 w-18 h-3.5 bg-slate-950 rounded-full z-30 flex items-center justify-end pr-2 space-x-1">
                         <div className="w-1.5 h-1.5 rounded-full bg-slate-900" />
