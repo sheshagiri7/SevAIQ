@@ -467,7 +467,14 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
             {/* Exact Annual Household Income */}
             <div>
               <label htmlFor="field-annual-income" className="block font-semibold text-slate-700 mb-1.5">
-                {language === 'ta' ? 'துல்லிய ஆண்டு வருமானம் (₹)' : 'Exact Annual Income (₹)'} <span className="text-[10px] text-slate-500 font-normal">({language === 'ta' ? 'விருப்பம்' : 'Optional'})</span>
+                {language === 'ta'
+                  ? 'துல்லிய ஆண்டு வருமானம் (₹)'
+                  : language === 'hi'
+                  ? 'सटीक वार्षिक आय (₹)'
+                  : 'Exact Annual Income (₹)'}{' '}
+                <span className="text-[10px] text-slate-500 font-normal">
+                  ({language === 'ta' ? 'விருப்பம்' : language === 'hi' ? 'वैकल्पिक' : 'Optional'})
+                </span>
               </label>
               <input
                 id="field-annual-income"
@@ -496,7 +503,14 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
             {/* Owns Pucca House */}
             <div>
               <label htmlFor="field-pucca-house" className="block font-semibold text-slate-700 mb-1.5">
-                {language === 'ta' ? 'சொந்த கான்கிரீட் வீடு உள்ளதா?' : 'Owns Pucca House?'} <span className="text-[10px] text-slate-500 font-normal">({language === 'ta' ? 'விருப்பம்' : 'Optional'})</span>
+                {language === 'ta'
+                  ? 'சொந்த கான்கிரீட் வீடு உள்ளதா?'
+                  : language === 'hi'
+                  ? 'क्या पक्का मकान है?'
+                  : 'Owns Pucca House?'}{' '}
+                <span className="text-[10px] text-slate-500 font-normal">
+                  ({language === 'ta' ? 'விருப்பம்' : language === 'hi' ? 'वैकल्पिक' : 'Optional'})
+                </span>
               </label>
               <select
                 id="field-pucca-house"
@@ -515,16 +529,23 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                 }
                 className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-civic-500 focus:bg-white text-slate-900"
               >
-                <option value="">{language === 'ta' ? 'குறிப்பிடப்படவில்லை' : 'Unanswered (Unknown)'}</option>
-                <option value="false">{language === 'ta' ? 'இல்லை (குடிசை / வீடற்ற)' : 'No (Kutcha / Homeless)'}</option>
-                <option value="true">{language === 'ta' ? 'ஆம் (சொந்த கான்கிரீட் வீடு உண்டு)' : 'Yes (Owns Pucca House)'}</option>
+                <option value="">{language === 'ta' ? 'குறிப்பிடப்படவில்லை' : language === 'hi' ? 'उत्तर नहीं दिया (अज्ञात)' : 'Unanswered (Unknown)'}</option>
+                <option value="false">{language === 'ta' ? 'இல்லை (குடிசை / வீடற்ற)' : language === 'hi' ? 'नहीं (कच्चा मकान / बेघर)' : 'No (Kutcha / Homeless)'}</option>
+                <option value="true">{language === 'ta' ? 'ஆம் (சொந்த கான்கிரீட் வீடு உண்டு)' : language === 'hi' ? 'हाँ (स्वयं का पक्का मकान है)' : 'Yes (Owns Pucca House)'}</option>
               </select>
             </div>
 
             {/* Income Tax Payer */}
             <div>
               <label htmlFor="field-tax-payer" className="block font-semibold text-slate-700 mb-1.5">
-                {language === 'ta' ? 'வருமான வரி செலுத்துபவரா?' : 'Income Tax Payer?'} <span className="text-[10px] text-slate-500 font-normal">({language === 'ta' ? 'விருப்பம்' : 'Optional'})</span>
+                {language === 'ta'
+                  ? 'வருமான வரி செலுத்துபவரா?'
+                  : language === 'hi'
+                  ? 'क्या आयकर दाता हैं?'
+                  : 'Income Tax Payer?'}{' '}
+                <span className="text-[10px] text-slate-500 font-normal">
+                  ({language === 'ta' ? 'விருப்பம்' : language === 'hi' ? 'वैकल्पिक' : 'Optional'})
+                </span>
               </label>
               <select
                 id="field-tax-payer"
@@ -543,16 +564,23 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                 }
                 className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-civic-500 focus:bg-white text-slate-900"
               >
-                <option value="">{language === 'ta' ? 'குறிப்பிடப்படவில்லை' : 'Unanswered (Unknown)'}</option>
-                <option value="false">{language === 'ta' ? 'இல்லை (வரி செலுத்துவதில்லை)' : 'No (Non-Taxpayer)'}</option>
-                <option value="true">{language === 'ta' ? 'ஆம் (வருமான வரி செலுத்துகிறார்)' : 'Yes (Income Tax Payer)'}</option>
+                <option value="">{language === 'ta' ? 'குறிப்பிடப்படவில்லை' : language === 'hi' ? 'उत्तर नहीं दिया (अज्ञात)' : 'Unanswered (Unknown)'}</option>
+                <option value="false">{language === 'ta' ? 'இல்லை (வரி செலுத்துவதில்லை)' : language === 'hi' ? 'नहीं (गैर-करदाता)' : 'No (Non-Taxpayer)'}</option>
+                <option value="true">{language === 'ta' ? 'ஆம் (வருமான வரி செலுத்துகிறார்)' : language === 'hi' ? 'हाँ (आयकर दाता)' : 'Yes (Income Tax Payer)'}</option>
               </select>
             </div>
 
             {/* Government Employee */}
             <div>
               <label htmlFor="field-govt-employee" className="block font-semibold text-slate-700 mb-1.5">
-                {language === 'ta' ? 'அரசு ஊழியரா?' : 'Govt Employee?'} <span className="text-[10px] text-slate-500 font-normal">({language === 'ta' ? 'விருப்பம்' : 'Optional'})</span>
+                {language === 'ta'
+                  ? 'அரசு ஊழியரா?'
+                  : language === 'hi'
+                  ? 'क्या सरकारी कर्मचारी हैं?'
+                  : 'Govt Employee?'}{' '}
+                <span className="text-[10px] text-slate-500 font-normal">
+                  ({language === 'ta' ? 'விருப்பம்' : language === 'hi' ? 'वैकल्पिक' : 'Optional'})
+                </span>
               </label>
               <select
                 id="field-govt-employee"
@@ -571,9 +599,9 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                 }
                 className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-civic-500 focus:bg-white text-slate-900"
               >
-                <option value="">{language === 'ta' ? 'குறிப்பிடப்படவில்லை' : 'Unanswered (Unknown)'}</option>
-                <option value="false">{language === 'ta' ? 'இல்லை (அரசு ஊழியர் அல்ல)' : 'No (Non-Govt Worker)'}</option>
-                <option value="true">{language === 'ta' ? 'ஆம் (பணியிலுள்ள/ஓய்வுபெற்ற அரசு ஊழியர்)' : 'Yes (Serving/Retired Govt Employee)'}</option>
+                <option value="">{language === 'ta' ? 'குறிப்பிடப்படவில்லை' : language === 'hi' ? 'उत्तर नहीं दिया (अज्ञात)' : 'Unanswered (Unknown)'}</option>
+                <option value="false">{language === 'ta' ? 'இல்லை (அரசு ஊழியர் அல்ல)' : language === 'hi' ? 'नहीं (गैर-सरकारी)' : 'No (Non-Govt Worker)'}</option>
+                <option value="true">{language === 'ta' ? 'ஆம் (பணியிலுள்ள/ஓய்வுபெற்ற அரசு ஊழியர்)' : language === 'hi' ? 'हाँ (कार्यरत/सेवानिवृत्त सरकारी कर्मचारी)' : 'Yes (Serving/Retired Govt Employee)'}</option>
               </select>
             </div>
           </div>
@@ -608,7 +636,11 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
             <div className="text-[11px] text-slate-600 font-medium">
               {isKioskMode && (
                 <span className="font-semibold text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
-                  {language === 'ta' ? 'பொது கியோஸ்க் முறை: விவரங்கள் நினைவகத்தில் மட்டுமே இருக்கும்' : 'Public Kiosk Mode: Answers stored in memory only'}
+                  {language === 'ta'
+                    ? 'பொது கியோஸ்க் முறை: விவரங்கள் நினைவகத்தில் மட்டுமே இருக்கும்'
+                    : language === 'hi'
+                    ? 'सार्वजनिक कियोस्क मोड: उत्तर केवल मेमोरी में सुरक्षित रहते हैं'
+                    : 'Public Kiosk Mode: Answers stored in memory only'}
                 </span>
               )}
             </div>
