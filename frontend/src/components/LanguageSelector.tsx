@@ -52,8 +52,20 @@ export const IndicLanguageEmblem: React.FC<{ className?: string }> = ({ classNam
   </div>
 );
 
+export type SupportedLangCode =
+  | AppLanguage
+  | 'te'
+  | 'kn'
+  | 'ml'
+  | 'mr'
+  | 'gu'
+  | 'bn'
+  | 'pa'
+  | 'or'
+  | 'as';
+
 export interface SupportedLanguageInfo {
-  code: AppLanguage;
+  code: SupportedLangCode;
   name: string; // Native script
   englishName: string;
   isFullyLocalized: boolean;
@@ -86,6 +98,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   const { language, setLanguage, t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [bhashiniNotice, setBhashiniNotice] = useState<string | null>(null);
 
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
