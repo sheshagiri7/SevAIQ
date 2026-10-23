@@ -276,7 +276,7 @@ export const Header: React.FC<HeaderProps> = ({
     }
   }, [showClearConfirm]);
 
-  const hasCitizenProfile = profile && (profile.age > 0 || profile.state !== '' || profile.occupation !== '');
+  const hasCitizenProfile = profile && ((profile.age !== null && profile.age > 0) || profile.state !== '' || profile.occupation !== '');
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-slate-200/90 shadow-2xs w-full">
