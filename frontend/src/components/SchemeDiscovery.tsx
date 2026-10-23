@@ -8,7 +8,6 @@ import {
   RefreshCw,
   Layers,
   ArrowRight,
-  Info,
   CheckCircle,
   Calendar,
   Building2,
@@ -30,7 +29,6 @@ interface SchemeDiscoveryProps {
   error?: string | null;
   onSelectForEligibility?: (scheme: Scheme) => void;
   onNavigateToTracker?: (schemeId: string) => void;
-  backendSchemesCount: number;
   selectedCategory?: string;
   onSelectCategory?: (category: string) => void;
 }
@@ -42,7 +40,6 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
   error,
   onSelectForEligibility,
   onNavigateToTracker,
-  backendSchemesCount,
   selectedCategory: propCategory,
   onSelectCategory: propOnSelectCategory,
 }) => {
