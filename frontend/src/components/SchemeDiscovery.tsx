@@ -151,23 +151,8 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
 
       </div>
 
-      {/* AI & Bilingual Search Card */}
-      <div className="bg-white rounded-3xl border border-slate-200 p-5 shadow-xs space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-          <div className="flex items-center space-x-2">
-            <div className="p-1.5 rounded-lg bg-civic-50 text-civic-700">
-              <Sparkles className="w-4 h-4 text-civic-600" />
-            </div>
-
-          </div>
-          <span className="text-[11px] font-semibold text-slate-600 bg-slate-100 px-2.5 py-1 rounded-full self-start sm:self-auto">
-            {language === 'ta'
-              ? `காட்டப்படுவது: ${filteredSchemes.length} / ${schemes.length} திட்டங்கள்`
-              : language === 'hi'
-              ? `प्रदर्शित: ${filteredSchemes.length} / ${schemes.length} योजनाएं`
-              : `Showing ${filteredSchemes.length} of ${schemes.length} schemes`}
-          </span>
-        </div>
+      {/* Search & Sector Filter Card */}
+      <div className="bg-white rounded-3xl border border-slate-200 p-5 shadow-xs space-y-3">
 
         {/* Search Input with Clear Button */}
         <div className="relative">
@@ -197,9 +182,8 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
           )}
         </div>
 
-
         {/* Sector Filter Pills */}
-        <div className="pt-2.5 border-t border-slate-100 flex flex-wrap items-center gap-2">
+        <div className="pt-1 border-t border-slate-100 flex flex-wrap items-center gap-2">
           <span className="text-xs font-semibold text-slate-700 flex items-center space-x-1 pr-1 shrink-0">
             <Filter className="w-3.5 h-3.5 text-slate-500" />
             <span>{language === 'ta' ? 'துறைகள்:' : language === 'hi' ? 'क्षेत्र:' : 'Sectors:'}</span>
@@ -214,7 +198,7 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                 : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
             }`}
           >
-            {t.discover.allCategories} ({schemes.length})
+            {t.discover.allCategories}
           </button>
           {categories.length > 0
             ? categories.map((cat) => {
@@ -232,7 +216,7 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                         : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                     }`}
                   >
-                    {localizedCatName} ({cat.count})
+                    {localizedCatName}
                   </button>
                 );
               })
