@@ -179,7 +179,7 @@
   animation: float-4 5s ease-in-out infinite 1.2s;
 }
 
-/* 3D Floating Icon Smooth Bounce Animation */
+/* 3D Floating Icon Smooth Bounce Animation (Legacy fallback) */
 @keyframes icon-bounce-float {
   0%, 100% {
     transform: translateY(0);
@@ -193,7 +193,218 @@
   animation: icon-bounce-float 2s ease-in-out infinite;
 }
 
-/* Moving Image / Phone Mockup Floating Animation */
+/* ==========================================================================
+   Distinct Moving Image Animations (Custom motion for each individual image)
+   ========================================================================== */
+
+/* 1. Education / Graduation Cap: Academic cap loft, tilt flutter, and celebratory drift */
+@keyframes cap-float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg) scale(1);
+  }
+  28% {
+    transform: translateY(-16px) rotate(-7deg) scale(1.05);
+  }
+  60% {
+    transform: translateY(-7px) rotate(4deg) scale(0.98);
+  }
+  82% {
+    transform: translateY(-2px) rotate(-2deg) scale(1.01);
+  }
+}
+
+.animate-icon-graduation,
+.animate-cap-float {
+  animation: cap-float 2.8s ease-in-out infinite;
+}
+
+/* 2. Agriculture / Sprout: Organic growth sway, natural breeze, and photosynthetic pulse */
+@keyframes sprout-sway {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg) scale(1, 1);
+  }
+  25% {
+    transform: translateY(-7px) rotate(5deg) scale(1.04, 1.08);
+  }
+  50% {
+    transform: translateY(-14px) rotate(0deg) scale(1.08, 1.04);
+  }
+  75% {
+    transform: translateY(-5px) rotate(-5deg) scale(1.02, 1.06);
+  }
+}
+
+.animate-icon-sprout,
+.animate-sprout-pulse {
+  animation: sprout-sway 3.4s ease-in-out infinite;
+}
+
+/* 3. Healthcare / Heart: Vital dual heartbeat throb ("lub-dub") & hovering levitation */
+@keyframes heart-pulse-float {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  14% {
+    transform: translateY(-4px) scale(1.16);
+  }
+  26% {
+    transform: translateY(-7px) scale(1.03);
+  }
+  40% {
+    transform: translateY(-13px) scale(1.22);
+  }
+  65% {
+    transform: translateY(-8px) scale(0.98);
+  }
+  85% {
+    transform: translateY(-2px) scale(1.02);
+  }
+}
+
+.animate-icon-heart,
+.animate-heart-throb {
+  animation: heart-pulse-float 2.2s ease-in-out infinite;
+}
+
+/* 4. Micro-Credit & Finance / Coins: 3D perspective coin spin, tilt, and metallic jingle */
+@keyframes coin-flip-float {
+  0%, 100% {
+    transform: perspective(600px) translateY(0px) rotateY(0deg) rotateZ(0deg);
+  }
+  25% {
+    transform: perspective(600px) translateY(-10px) rotateY(90deg) rotateZ(4deg) scale(1.06);
+  }
+  50% {
+    transform: perspective(600px) translateY(-16px) rotateY(180deg) rotateZ(-3deg) scale(1.12);
+  }
+  75% {
+    transform: perspective(600px) translateY(-8px) rotateY(270deg) rotateZ(2deg) scale(1.04);
+  }
+}
+
+.animate-icon-coins,
+.animate-coin-spin {
+  animation: coin-flip-float 3.2s ease-in-out infinite;
+}
+
+/* 5. Housing & Shelter / Home: Rock-solid foundation glide, hover reassurance & steady shelter */
+@keyframes home-glide {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px) scale(1);
+  }
+  30% {
+    transform: translateY(-8px) translateX(6px) scale(1.03);
+  }
+  65% {
+    transform: translateY(-13px) translateX(-6px) scale(1.04);
+  }
+  85% {
+    transform: translateY(-4px) translateX(-2px) scale(1.01);
+  }
+}
+
+.animate-icon-home,
+.animate-home-glide {
+  animation: home-glide 4.2s ease-in-out infinite;
+}
+
+/* 6. Green Origami Paper Airplane: Aerodynamic flight banking along flight path */
+@keyframes airplane-glide {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px) rotate(12deg);
+  }
+  28% {
+    transform: translateY(-11px) translateX(-6px) rotate(4deg);
+  }
+  55% {
+    transform: translateY(-5px) translateX(8px) rotate(20deg);
+  }
+  80% {
+    transform: translateY(3px) translateX(2px) rotate(14deg);
+  }
+}
+
+.animate-airplane-glide {
+  animation: airplane-glide 3.6s ease-in-out infinite;
+}
+
+/* 7. Citizen Illustration: Natural human idle posture and breathing rhythm */
+@keyframes citizen-sway {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  45% {
+    transform: translateY(-6px) scale(1.015, 1.01);
+  }
+  75% {
+    transform: translateY(-2px) scale(0.995, 1);
+  }
+}
+
+.animate-citizen-sway {
+  animation: citizen-sway 4.6s ease-in-out infinite;
+}
+
+/* 8. Slide-Specific Smartphone Mockup Hover Motions (Different movement per slide) */
+@keyframes moving-phone-1 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-9px) rotate(0.8deg); }
+}
+.animate-moving-phone-1 {
+  animation: moving-phone-1 3.6s ease-in-out infinite;
+}
+
+@keyframes moving-phone-2 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-7px) rotate(-1deg); }
+}
+.animate-moving-phone-2 {
+  animation: moving-phone-2 4.4s ease-in-out infinite;
+}
+
+@keyframes moving-phone-3 {
+  0%, 100% { transform: translateY(0px) scale(1); }
+  50% { transform: translateY(-11px) scale(1.01); }
+}
+.animate-moving-phone-3 {
+  animation: moving-phone-3 3.1s ease-in-out infinite;
+}
+
+@keyframes moving-phone-4 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  40% { transform: translateY(-8px) rotate(1.2deg); }
+  80% { transform: translateY(-4px) rotate(-0.6deg); }
+}
+.animate-moving-phone-4 {
+  animation: moving-phone-4 3.8s ease-in-out infinite;
+}
+
+@keyframes moving-phone-5 {
+  0%, 100% { transform: translateY(0px) translateX(0px); }
+  50% { transform: translateY(-10px) translateX(4px); }
+}
+.animate-moving-phone-5 {
+  animation: moving-phone-5 4.8s ease-in-out infinite;
+}
+
+/* 9. Floating Action Badges Parallax Floating */
+@keyframes badge-float-1 {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+.animate-badge-float-1 {
+  animation: badge-float-1 3.2s ease-in-out infinite;
+}
+
+@keyframes badge-float-2 {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-7px); }
+}
+.animate-badge-float-2 {
+  animation: badge-float-2 3.9s ease-in-out infinite 0.5s;
+}
+
+/* Moving Image / Phone Mockup Floating Animation (Base / fallback) */
 @keyframes moving-image-float {
   0%, 100% {
     transform: translateY(0px) rotate(0deg);
