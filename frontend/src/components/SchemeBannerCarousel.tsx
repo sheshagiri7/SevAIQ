@@ -417,7 +417,7 @@ const FloatingBadgeIcon: React.FC<{ type: string; className?: string }> = ({ typ
   }
 };
 
-// 3D Isometric Floating Graphics
+// 3D Isometric Floating Graphics with Distinct Movement Per Image
 const FloatingGraphic3D: React.FC<{ type: string }> = ({ type }) => {
   if (type === 'graduation') {
     return (
@@ -425,7 +425,7 @@ const FloatingGraphic3D: React.FC<{ type: string }> = ({ type }) => {
         role="img"
         aria-label="3D Floating Graduation Cap"
         data-dark-exempt="true"
-        className="relative animate-bounce animate-icon-bounce moving-animation-image"
+        className="relative animate-icon-graduation animate-cap-float moving-animation-image"
       >
         <svg viewBox="0 0 100 80" className="w-16 h-14 drop-shadow-2xl">
           <polygon points="50,10 92,28 50,46 8,28" fill="#1e293b" stroke="#334155" strokeWidth="2" />
@@ -446,7 +446,7 @@ const FloatingGraphic3D: React.FC<{ type: string }> = ({ type }) => {
         role="img"
         aria-label="3D Floating Sprout"
         data-dark-exempt="true"
-        className="relative animate-bounce animate-icon-bounce moving-animation-image"
+        className="relative animate-icon-sprout animate-sprout-pulse moving-animation-image"
       >
         <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-emerald-600 to-green-400 text-white flex items-center justify-center shadow-xl border-2 border-white/80">
           <Sprout className="w-8 h-8 stroke-[2.2]" />
@@ -461,7 +461,7 @@ const FloatingGraphic3D: React.FC<{ type: string }> = ({ type }) => {
         role="img"
         aria-label="3D Floating Heart"
         data-dark-exempt="true"
-        className="relative animate-bounce animate-icon-bounce moving-animation-image"
+        className="relative animate-icon-heart animate-heart-throb moving-animation-image"
       >
         <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-sky-500 to-blue-600 text-white flex items-center justify-center shadow-xl border-2 border-white/80">
           <HeartPulse className="w-8 h-8 stroke-[2.2]" />
@@ -476,7 +476,7 @@ const FloatingGraphic3D: React.FC<{ type: string }> = ({ type }) => {
         role="img"
         aria-label="3D Floating Coins"
         data-dark-exempt="true"
-        className="relative animate-bounce animate-icon-bounce moving-animation-image"
+        className="relative animate-icon-coins animate-coin-spin moving-animation-image"
       >
         <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 text-white flex items-center justify-center shadow-xl border-2 border-white/80">
           <Coins className="w-8 h-8 stroke-[2.2]" />
@@ -490,7 +490,7 @@ const FloatingGraphic3D: React.FC<{ type: string }> = ({ type }) => {
       role="img"
       aria-label="3D Floating Home"
       data-dark-exempt="true"
-      className="relative animate-bounce animate-icon-bounce moving-animation-image"
+      className="relative animate-icon-home animate-home-glide moving-animation-image"
     >
       <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-teal-500 to-emerald-600 text-white flex items-center justify-center shadow-xl border-2 border-white/80">
         <Home className="w-8 h-8 stroke-[2.2]" />
@@ -525,7 +525,7 @@ const PaperAirplane: React.FC<{ className?: string }> = ({ className = 'w-6 h-6'
     viewBox="0 0 40 40"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
-    className={`moving-animation-image ${className}`}
+    className={`moving-animation-image animate-airplane-glide ${className}`}
     aria-hidden="true"
     role="img"
     data-dark-exempt="true"
@@ -543,7 +543,7 @@ const CitizenMobileUser: React.FC<{ className?: string }> = ({ className = '' })
     role="img"
     aria-label="Citizen using smartphone illustration"
     data-dark-exempt="true"
-    className={`relative hidden xl:flex flex-col items-center justify-end select-none pointer-events-none moving-animation-image animate-float-subtle ${className}`}
+    className={`relative hidden xl:flex flex-col items-center justify-end select-none pointer-events-none moving-animation-image animate-citizen-sway ${className}`}
   >
     <svg viewBox="0 0 160 280" className="w-40 h-72 drop-shadow-xl" fill="none">
       {/* Hair */}
