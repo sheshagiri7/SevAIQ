@@ -494,8 +494,10 @@ const PaperAirplane: React.FC<{ className?: string }> = ({ className = 'w-6 h-6'
     viewBox="0 0 40 40"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
-    className={className}
+    className={`moving-animation-image ${className}`}
     aria-hidden="true"
+    role="img"
+    data-dark-exempt="true"
   >
     <path d="M36 4L4 18L18 24L36 4Z" fill="#16a34a" className="drop-shadow-sm" />
     <path d="M36 4L22 36L18 24L36 4Z" fill="#15803d" />
@@ -506,7 +508,12 @@ const PaperAirplane: React.FC<{ className?: string }> = ({ className = 'w-6 h-6'
 
 // Crisp QR Code Graphic matching Image 1
 const QRCodeGraphic: React.FC<{ className?: string }> = ({ className = 'w-16 h-16' }) => (
-  <div className={`p-1.5 bg-white rounded-xl border border-slate-200/90 shadow-sm flex items-center justify-center ${className}`}>
+  <div
+    role="img"
+    aria-label="Scheme QR Code"
+    data-dark-exempt="true"
+    className={`p-1.5 bg-white rounded-xl border border-slate-200/90 shadow-sm flex items-center justify-center moving-animation-image ${className}`}
+  >
     <svg viewBox="0 0 80 80" fill="currentColor" className="w-full h-full text-slate-900" aria-label="QR Code">
       <rect x="6" y="6" width="22" height="22" rx="3" fill="#0f172a" />
       <rect x="10" y="10" width="14" height="14" rx="2" fill="white" />
@@ -551,7 +558,12 @@ const QRCodeGraphic: React.FC<{ className?: string }> = ({ className = 'w-16 h-1
 
 // Citizen Mobile User Vector Graphic matching Image 1
 const CitizenMobileUser: React.FC<{ className?: string }> = ({ className = '' }) => (
-  <div className={`relative hidden 2xl:flex flex-col items-center justify-end select-none pointer-events-none ${className}`}>
+  <div
+    role="img"
+    aria-label="Citizen using smartphone illustration"
+    data-dark-exempt="true"
+    className={`relative hidden 2xl:flex flex-col items-center justify-end select-none pointer-events-none moving-animation-image ${className}`}
+  >
     <svg viewBox="0 0 160 280" className="w-40 h-72 drop-shadow-xl" fill="none">
       {/* Hair */}
       <path
