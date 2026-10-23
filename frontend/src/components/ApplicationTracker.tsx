@@ -223,7 +223,13 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
             type="button"
             onClick={handleResetProgress}
             className="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition-colors"
-            title={language === 'ta' ? 'இத்திட்டத்திற்கான வழிகாட்டலை மீட்டமை' : 'Reset checklist progress for this scheme'}
+            title={
+              language === 'ta'
+                ? 'இத்திட்டத்திற்கான வழிகாட்டலை மீட்டமை'
+                : language === 'hi'
+                ? 'इस योजना की चेकलिस्ट रीसेट करें'
+                : 'Reset checklist progress for this scheme'
+            }
             aria-label="Reset checklist progress"
           >
             <RotateCcw className="w-4 h-4" />
@@ -238,11 +244,15 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
           <span className="font-bold text-slate-900 block text-sm">
             {language === 'ta'
               ? 'அதிகாரப்பூர்வ இணையதள ஆய்வு & விண்ணப்ப நிலை கொள்கை:'
+              : language === 'hi'
+              ? 'आधिकारिक पोर्टल सत्यापन एवं आवेदन स्थिति नीति:'
               : 'Official Portal Scrutiny & Status Policy:'}
           </span>
           <p className="text-slate-600 leading-relaxed text-xs">
             {language === 'ta'
               ? 'விண்ணப்ப செயலாக்கம், சரிபார்ப்பு மற்றும் வங்கி கணக்கு சரிபார்த்தல் ஆகியவை அதிகாரப்பூர்வ அரசு அமைப்புகளில் மட்டுமே நடைபெறும். SevAIQ தயார்நிலை சரிபார்ப்பு பட்டியல் மற்றும் நேரடி இணையதள இணைப்புகளை மட்டுமே வழங்குகிறது. போலியான கண்காணிப்பு எண்களையோ ஒப்புதல் நிலைகளையோ உருவாக்குவதில்லை. விண்ணப்பதாரர்கள் தங்கள் நேரடி நிலையை அதிகாரப்பூர்வ அரசு தளத்திலேயே சரிபார்க்க வேண்டும்.'
+              : language === 'hi'
+              ? 'आवेदन की लाइव प्रोसेसिंग, जांच व बैंक सत्यापन केवल आधिकारिक सरकारी प्रणालियों पर होता है। SevAIQ तैयारी चेकलिस्ट और सीधे पोर्टल लिंक प्रदान करता है, कोई नकली ट्रैकिंग नंबर या अनुमोदन स्थिति नहीं बनाता। नागरिक अपनी वास्तविक स्थिति सीधे अधिकृत सरकारी पोर्टल पर जांचें।'
               : 'Live application processing, scrutiny, and bank verification occur exclusively on official government systems. SevAIQ provides preparation checklists and direct portal links, but does not fabricate tracking numbers or simulate government approval statuses. Users must check live progress directly on the authorized government portal.'}
           </p>
         </div>
