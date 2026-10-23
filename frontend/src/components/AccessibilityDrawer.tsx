@@ -66,9 +66,6 @@ export const AccessibilityDrawer: React.FC = () => {
                 <span className="text-base font-bold tracking-tight">
                   {language === 'ta' ? 'அணுகல்தன்மை விருப்பங்கள்' : 'Accessibility options'}
                 </span>
-                <span className="bg-white/20 text-white text-[11px] font-mono font-bold px-2 py-0.5 rounded-full border border-white/25 shadow-2xs">
-                  Ctrl+F2
-                </span>
               </div>
 
               <div className="flex items-center space-x-2">

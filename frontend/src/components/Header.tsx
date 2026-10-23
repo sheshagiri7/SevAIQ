@@ -429,16 +429,36 @@ export const Header: React.FC<HeaderProps> = ({
                 </button>
               </div>
 
+              {/* Clear Profile / End Session */}
               <button
                 type="button"
                 onClick={() => {
                   setMobileMenuOpen(false);
                   setShowClearConfirm(true);
                 }}
-                className="w-full flex items-center justify-center space-x-2 py-2.5 text-xs font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl transition-colors"
+                className="w-full flex items-center justify-center space-x-2 py-2.5 text-xs font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl transition-colors cursor-pointer"
               >
                 <Trash2 className="w-4 h-4 text-rose-600" />
                 <span>{t.header.endSession}</span>
+              </button>
+
+              {/* Accessibility Options below End Session */}
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  toggleAccessibility();
+                }}
+                className="w-full flex items-center justify-center space-x-2 py-2.5 text-xs font-bold text-purple-700 bg-purple-50 hover:bg-purple-100 border border-purple-200 rounded-xl transition-colors cursor-pointer"
+                aria-label={language === 'ta' ? 'அணுகல்தன்மை விருப்பங்கள்' : 'Accessibility options'}
+              >
+                <Accessibility className="w-4 h-4 text-purple-700" />
+                <span>{language === 'ta' ? 'அணுகல்தன்மை விருப்பங்கள்' : 'Accessibility options'}</span>
+                {a11yActiveCount > 0 && (
+                  <span className="ml-1 inline-flex items-center justify-center px-1.5 py-0.2 text-[9px] font-black bg-purple-600 text-white rounded-full">
+                    {a11yActiveCount}
+                  </span>
+                )}
               </button>
             </div>
           </div>
