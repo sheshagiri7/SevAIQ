@@ -965,7 +965,7 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                     </div>
 
                     {/* Floating Action Badge 1 (overlapping the phone) */}
-                    <div className="absolute top-16 sm:top-20 -right-2 sm:right-2 z-20 bg-white/95 backdrop-blur-md rounded-2xl p-2 sm:p-2.5 shadow-xl border border-slate-100 flex items-center space-x-2 hover:scale-105 transition-transform max-w-[190px] sm:max-w-[220px]">
+                    <div className="absolute top-16 sm:top-20 -right-2 sm:right-2 z-20 bg-white/95 backdrop-blur-md rounded-2xl p-2 sm:p-2.5 shadow-xl border border-slate-100 flex items-center space-x-2 hover:scale-105 transition-transform max-w-[190px] sm:max-w-[220px] animate-badge-float-1">
                       <div
                         className={`w-8 h-8 rounded-xl ${slide.phone.floatingBadge1.color} text-white flex items-center justify-center shrink-0 shadow-xs`}
                       >
@@ -982,7 +982,7 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                     </div>
 
                     {/* Floating Action Badge 2 (overlapping lower phone edge) */}
-                    <div className="absolute top-32 sm:top-36 -right-3 sm:right-0 z-20 bg-white/95 backdrop-blur-md rounded-2xl p-2 sm:p-2.5 shadow-xl border border-slate-100 flex items-center space-x-2 hover:scale-105 transition-transform max-w-[180px] sm:max-w-[210px]">
+                    <div className="absolute top-32 sm:top-36 -right-3 sm:right-0 z-20 bg-white/95 backdrop-blur-md rounded-2xl p-2 sm:p-2.5 shadow-xl border border-slate-100 flex items-center space-x-2 hover:scale-105 transition-transform max-w-[180px] sm:max-w-[210px] animate-badge-float-2">
                       <div
                         className={`w-8 h-8 rounded-xl ${slide.phone.floatingBadge2.color} text-white flex items-center justify-center shrink-0 shadow-xs`}
                       >
@@ -999,7 +999,7 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                     </div>
 
                     {/* Smartphone Outer Shell */}
-                    <div className="w-[220px] sm:w-[250px] lg:w-[270px] h-[380px] sm:h-[430px] lg:h-[460px] bg-slate-950 rounded-[36px] p-2.5 shadow-2xl border-[5px] sm:border-[6px] border-slate-800/95 relative overflow-hidden flex flex-col justify-between animate-moving-image">
+                    <div className={`w-[220px] sm:w-[250px] lg:w-[270px] h-[380px] sm:h-[430px] lg:h-[460px] bg-slate-950 rounded-[36px] p-2.5 shadow-2xl border-[5px] sm:border-[6px] border-slate-800/95 relative overflow-hidden flex flex-col justify-between animate-moving-image ${slide.phone.phoneAnimationClass || 'animate-moving-phone-1'}`}>
                       {/* Dynamic Island / Speaker Pill */}
                       <div className="absolute top-3 left-1/2 -translate-x-1/2 w-18 h-3.5 bg-slate-950 rounded-full z-30 flex items-center justify-end pr-2 space-x-1">
                         <div className="w-1.5 h-1.5 rounded-full bg-slate-900" />
