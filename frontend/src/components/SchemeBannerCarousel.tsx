@@ -27,6 +27,7 @@ interface SchemeBannerCarouselProps {
   onNavigate: (tab: NavigationTab) => void;
   onSelectScheme?: (schemeId: string) => void;
   onSelectSchemeForEligibility?: (schemeId: string) => void;
+  onScrollToOptions?: () => void;
 }
 
 interface SchemeSlide {
