@@ -627,7 +627,7 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
               </div>
             </div>
 
-            <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
+            <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
               {modalScheme.official_portal_url ? (
                 <a
                   href={modalScheme.official_portal_url}
@@ -640,16 +640,36 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                 </a>
               ) : <div />}
 
-              <button
-                type="button"
-                onClick={() => {
-                  setSelectedSchemeDetail(null);
-                  setFullSchemeDetail(null);
-                }}
-                className="px-4 py-2 text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-500"
-              >
-                {t.discover.close}
-              </button>
+              <div className="flex items-center space-x-2">
+                {onSelectForEligibility && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const schemeToSelect = selectedSchemeDetail;
+                      setSelectedSchemeDetail(null);
+                      setFullSchemeDetail(null);
+                      if (schemeToSelect) {
+                        onSelectForEligibility(schemeToSelect);
+                      }
+                    }}
+                    className="inline-flex items-center space-x-1.5 px-4 py-2 text-xs font-semibold text-white bg-slate-900 hover:bg-civic-700 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500 cursor-pointer shadow-xs"
+                  >
+                    <span>{t.discover.checkEligibility}</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedSchemeDetail(null);
+                    setFullSchemeDetail(null);
+                  }}
+                  className="px-4 py-2 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-500 cursor-pointer"
+                >
+                  {t.discover.close}
+                </button>
+              </div>
             </div>
           </div>
         </div>

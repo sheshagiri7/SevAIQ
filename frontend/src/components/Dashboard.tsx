@@ -66,7 +66,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
       )}
 
       {/* myScheme-Style Interactive Scheme Banner Carousel (5-Second Auto-Scroll) */}
-      <SchemeBannerCarousel onNavigate={onNavigate} />
+      <SchemeBannerCarousel
+        onNavigate={onNavigate}
+        onSelectSchemeForEligibility={onSelectSchemeForEligibility}
+      />
 
       {/* Metrics Grid - 4 Summary Cards with equal heights & consistent padding */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
