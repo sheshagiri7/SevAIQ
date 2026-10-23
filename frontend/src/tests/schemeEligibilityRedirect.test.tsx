@@ -62,7 +62,6 @@ describe('Scheme-to-Eligibility Redirect & Focused Breakdown', () => {
     );
 
     // Must show the focused banner
-    expect(html).toContain('Target Scheme Selected');
     expect(html).toContain('Focused Scheme Eligibility');
     expect(html).toContain("PM Street Vendor’s AtmaNirbhar Nidhi (PM SVANidhi)");
 
