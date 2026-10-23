@@ -424,6 +424,14 @@ export const UI_TRANSLATIONS = {
       officialVerificationSource: 'Verified Source:',
       noResultsMatching: 'No schemes match the selected filter',
       backendEvaluatorBadge: 'FastAPI Backend Synchronized',
+      targetSchemeBannerTitle: 'Focused Scheme Eligibility',
+      targetSchemeBannerDesc:
+        'Displaying statutory criteria and explainable outcome for the selected scheme below. You can adjust your profile values above in real-time.',
+      targetSchemeBadge: 'Selected Scheme',
+      viewAllSchemes: 'View All Schemes',
+      filterByScheme: 'Scheme:',
+      allSchemesOption: 'All Schemes',
+      clearSchemeFilter: 'Clear Scheme Filter',
     },
 
     // Document Mapper
@@ -758,6 +766,14 @@ export const UI_TRANSLATIONS = {
       officialVerificationSource: 'சரிபார்க்கப்பட்ட மூலம்:',
       noResultsMatching: 'தேர்ந்தெடுக்கப்பட்ட வடிகட்டலுக்கு திட்டங்கள் எதுவும் இல்லை',
       backendEvaluatorBadge: 'FastAPI பின்தளத்துடன் ஒத்திசைக்கப்பட்டது',
+      targetSchemeBannerTitle: 'தேர்ந்தெடுக்கப்பட்ட திட்டத்தின் தகுதி விவரம்',
+      targetSchemeBannerDesc:
+        'தேர்ந்தெடுக்கப்பட்ட திட்டத்திற்கான தகுதி நிலையை கீழே காணலாம். உங்கள் விவரங்களை மேலே மாற்றி தகுதியை உடனுக்குடன் பரிசோதிக்கலாம்.',
+      targetSchemeBadge: 'தேர்ந்தெடுக்கப்பட்டது',
+      viewAllSchemes: 'அனைத்து திட்டங்களையும் காட்டு',
+      filterByScheme: 'திட்டம்:',
+      allSchemesOption: 'அனைத்து திட்டங்கள்',
+      clearSchemeFilter: 'வடிகட்டலை நீக்கு',
     },
 
     // Document Mapper
