@@ -59,7 +59,7 @@ app = FastAPI(
 # Configure CORS origins for local development and deployed frontend
 cors_origins_env = os.getenv(
     "CORS_ORIGINS",
-    "http://localhost:5173,http://127.0.0.1:5173,http://localhost:3000,https://frontend-seven-virid-65.vercel.app",
+    "http://localhost:5173,http://127.0.0.1:5173,http://localhost:3000,https://sevaiq.vercel.app,https://frontend-seven-virid-65.vercel.app",
 )
 allowed_origins: List[str] = []
 for origin in cors_origins_env.split(","):
