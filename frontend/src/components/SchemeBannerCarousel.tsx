@@ -47,7 +47,6 @@ interface SchemeSlide {
   primaryCtaText: string;
   secondaryCtaText: string;
   officialUrl: string;
-  realBannerImage: string;
   theme: {
     bgGradient: string;
     headlineColor: string;
@@ -57,7 +56,7 @@ interface SchemeSlide {
     accentDot: string;
     decorCircle: string;
   };
-  phone?: {
+  phone: {
     title: string;
     shortCode: string;
     tagline: string;
@@ -82,6 +81,7 @@ interface SchemeSlide {
       icon: 'file' | 'shield' | 'check' | 'award';
     };
     floating3DIcon: 'graduation' | 'sprout' | 'heart' | 'coins' | 'home';
+    phoneAnimationClass?: string;
   };
 }
 
@@ -100,7 +100,6 @@ const SLIDES: SchemeSlide[] = [
     primaryCtaText: 'Apply Now',
     secondaryCtaText: 'Check Eligibility',
     officialUrl: 'https://scholarships.gov.in',
-    realBannerImage: '/banners/banner-nsp.png',
     theme: {
       bgGradient: 'from-[#eef9f2] via-[#e5f4ea] to-[#d8ede0]',
       headlineColor: 'text-[#155e3b]',
@@ -135,106 +134,211 @@ const SLIDES: SchemeSlide[] = [
         icon: 'file',
       },
       floating3DIcon: 'graduation',
+      phoneAnimationClass: 'animate-moving-phone-1',
     },
   },
   {
-    id: 'digital-india-modi',
-    schemeId: 'digital-india',
-    ministryBadge: 'MINISTRY OF ELECTRONICS & INFORMATION TECHNOLOGY',
+    id: 'pm-kisan',
+    schemeId: 'pm-kisan',
+    ministryBadge: 'MINISTRY OF AGRICULTURE & FARMERS WELFARE',
     ministrySub: 'GOVERNMENT OF INDIA',
-    partnerTag: 'DIGITAL INDIA',
-    titlePrimary: 'Digital India - Hon’ble Prime Minister',
-    statusBadge: 'VISION',
-    partnerText: 'Narendra Modi',
-    description: 'Digital India means opportunity for all, facility for all and participation of all.',
-    benefitPill: 'Hon’ble Prime Minister Narendra Modi',
-    primaryCtaText: 'Explore Digital India',
-    secondaryCtaText: 'Find Schemes',
-    officialUrl: 'https://digitalindia.gov.in',
-    realBannerImage: '/banners/banner-modi.png',
+    partnerTag: 'DBT BHARAT',
+    titlePrimary: 'PM-KISAN Samman Nidhi',
+    statusBadge: 'ACTIVE',
+    partnerText: '17th Installment',
+    description: 'Direct income support of ₹6,000/year credited directly into bank accounts of verified farmers.',
+    benefitPill: '₹6,000 Per Annum via Direct Benefit Transfer (DBT)',
+    primaryCtaText: 'Apply Now',
+    secondaryCtaText: 'Check Beneficiary',
+    officialUrl: 'https://pmkisan.gov.in',
     theme: {
-      bgGradient: 'from-[#eef6fa] via-[#e8f2f9] to-[#fcf7ed]',
-      headlineColor: 'text-[#0d47a1]',
+      bgGradient: 'from-[#fefcf2] via-[#f9f5e2] to-[#ecf8eb]',
+      headlineColor: 'text-[#1b6b3e]',
+      badgeBg: 'bg-[#16a34a]',
+      arrowBg: 'bg-[#16a34a] hover:bg-[#15803d]',
+      buttonText: 'text-[#16a34a]',
+      accentDot: 'bg-[#16a34a]',
+      decorCircle: 'bg-amber-300/20',
+    },
+    phone: {
+      title: 'PM-KISAN Farmer Portal',
+      shortCode: 'KISAN',
+      tagline: 'Farmer Welfare & DBT Disbursal',
+      searchPlaceholder: 'Enter Aadhaar or Mobile No...',
+      highlightCard: {
+        title: '17th Installment DBT Payment',
+        btnText: 'CHECK DBT',
+        btnColor: 'bg-emerald-600',
+      },
+      service1: 'e-KYC Biometric Verification',
+      service2: 'Land Seeding & Bank Account Link',
+      floatingBadge1: {
+        title: '₹2,000 Installment DBT',
+        tag: 'CREDITED',
+        color: 'bg-emerald-600',
+        icon: 'sprout',
+      },
+      floatingBadge2: {
+        title: 'e-KYC Biometrics',
+        tag: 'VERIFIED',
+        color: 'bg-amber-600',
+        icon: 'shield',
+      },
+      floating3DIcon: 'sprout',
+      phoneAnimationClass: 'animate-moving-phone-2',
+    },
+  },
+  {
+    id: 'ab-pmjay',
+    schemeId: 'ab-pmjay',
+    ministryBadge: 'NATIONAL HEALTH AUTHORITY & MOHFW',
+    ministrySub: 'GOVERNMENT OF INDIA',
+    partnerTag: 'AYUSHMAN',
+    titlePrimary: 'Ayushman Bharat PM-JAY',
+    statusBadge: 'CASHLESS',
+    partnerText: '₹5 Lakh Health Cover',
+    description: 'World’s largest health assurance scheme providing free hospitalization across 28,000+ hospitals.',
+    benefitPill: '₹5,00,000 Annual Hospitalization Cover Per Family',
+    primaryCtaText: 'Apply Now',
+    secondaryCtaText: 'Find Hospitals',
+    officialUrl: 'https://pmjay.gov.in',
+    theme: {
+      bgGradient: 'from-[#f0f9ff] via-[#e2f2fe] to-[#d8eefd]',
+      headlineColor: 'text-[#0355a3]',
       badgeBg: 'bg-[#0284c7]',
       arrowBg: 'bg-[#0284c7] hover:bg-[#0369a1]',
       buttonText: 'text-[#0284c7]',
       accentDot: 'bg-[#0284c7]',
       decorCircle: 'bg-sky-300/20',
     },
-  },
-  {
-    id: 'digital-india-11',
-    schemeId: 'digital-india',
-    ministryBadge: 'MINISTRY OF ELECTRONICS & INFORMATION TECHNOLOGY',
-    ministrySub: 'GOVERNMENT OF INDIA',
-    partnerTag: '11 YEARS',
-    titlePrimary: 'Celebrating 11 Years of Digital India',
-    statusBadge: 'TRANSFORMATION',
-    partnerText: 'Digital Bharat',
-    description: 'Empowering every citizen through Digital Transformation, Innovation and Inclusive Growth across digital infrastructure and economy.',
-    benefitPill: '11 Years of Citizen Empowerment',
-    primaryCtaText: 'Explore Initiatives',
-    secondaryCtaText: 'Find Schemes',
-    officialUrl: 'https://digitalindia.gov.in',
-    realBannerImage: '/banners/banner-digital-india.png',
-    theme: {
-      bgGradient: 'from-[#ebf5fc] via-[#e2effa] to-[#d8e8f8]',
-      headlineColor: 'text-[#0f4c81]',
-      badgeBg: 'bg-[#0369a1]',
-      arrowBg: 'bg-[#0369a1] hover:bg-[#075985]',
-      buttonText: 'text-[#0369a1]',
-      accentDot: 'bg-[#0369a1]',
-      decorCircle: 'bg-blue-300/20',
+    phone: {
+      title: 'Ayushman Bharat PM-JAY',
+      shortCode: 'PM-JAY',
+      tagline: 'National Health Authority Digital Portal',
+      searchPlaceholder: 'Search hospitals, treatments...',
+      highlightCard: {
+        title: 'Ayushman Card Generation',
+        btnText: 'DOWNLOAD',
+        btnColor: 'bg-sky-600',
+      },
+      service1: 'Find 28,000+ Empanelled Hospitals',
+      service2: 'Cashless Treatment History',
+      floatingBadge1: {
+        title: 'Ayushman Golden Card',
+        tag: 'NEW',
+        color: 'bg-cyan-600',
+        icon: 'heart',
+      },
+      floatingBadge2: {
+        title: '₹5,00,000 Health Cover',
+        tag: 'ACTIVE',
+        color: 'bg-blue-600',
+        icon: 'shield',
+      },
+      floating3DIcon: 'heart',
+      phoneAnimationClass: 'animate-moving-phone-3',
     },
   },
   {
-    id: 'pmsby',
-    schemeId: 'pmsby',
-    ministryBadge: 'MINISTRY OF FINANCE',
+    id: 'pm-svanidhi',
+    schemeId: 'pm-svanidhi',
+    ministryBadge: 'MINISTRY OF HOUSING & URBAN AFFAIRS',
     ministrySub: 'GOVERNMENT OF INDIA',
-    partnerTag: 'SURAKSHA',
-    titlePrimary: 'Pradhan Mantri Suraksha Bima Yojana',
-    statusBadge: 'ACTIVE',
-    partnerText: '₹20/Year',
-    description: 'Accidental death and disability insurance worth up to ₹2,00,000/- at just ₹20/- per annum for all bank account holders.',
-    benefitPill: '₹2,00,000 Accidental Cover for ₹20/Year',
-    primaryCtaText: 'Know More',
-    secondaryCtaText: 'Check Eligibility',
-    officialUrl: 'https://financialservices.gov.in',
-    realBannerImage: '/banners/banner-suraksha-bima.png',
+    partnerTag: 'SVANIDHI',
+    titlePrimary: 'PM SVANidhi Micro-Credit',
+    statusBadge: 'INSTANT',
+    partnerText: '7% Interest Subsidy',
+    description: 'Collateral-free working capital loan up to ₹50,000 with monthly digital cashback incentives.',
+    benefitPill: '₹10,000 to ₹50,000 Micro-Credit with 7% Interest Subsidy',
+    primaryCtaText: 'Apply Now',
+    secondaryCtaText: 'Check Loan Status',
+    officialUrl: 'https://pmsvanidhi.mohua.gov.in',
     theme: {
-      bgGradient: 'from-[#f0fbf4] via-[#e5f8ec] to-[#dcf4e6]',
-      headlineColor: 'text-[#166534]',
-      badgeBg: 'bg-[#15803d]',
-      arrowBg: 'bg-[#15803d] hover:bg-[#166534]',
-      buttonText: 'text-[#15803d]',
-      accentDot: 'bg-[#15803d]',
-      decorCircle: 'bg-emerald-300/20',
-    },
-  },
-  {
-    id: 'myscheme-umang',
-    schemeId: 'umang-myscheme',
-    ministryBadge: 'DIGITAL INDIA CORPORATION',
-    ministrySub: 'GOVERNMENT OF INDIA',
-    partnerTag: 'UMANG',
-    titlePrimary: 'myScheme is now on UMANG',
-    statusBadge: 'LIVE',
-    partnerText: 'One Platform',
-    description: 'One Platform, Endless Opportunities. Explore new features and Government Schemes/Services exclusively on UMANG.',
-    benefitPill: 'Exclusive Citizen Services on UMANG Mobile App',
-    primaryCtaText: 'Visit UMANG',
-    secondaryCtaText: 'Check Eligibility',
-    officialUrl: 'https://web.umang.gov.in',
-    realBannerImage: '/banners/banner-myscheme-umang.png',
-    theme: {
-      bgGradient: 'from-[#fffaf0] via-[#fef4e2] to-[#faebd7]',
+      bgGradient: 'from-[#fff8f0] via-[#feeedd] to-[#fae8ff]',
       headlineColor: 'text-[#9a3412]',
       badgeBg: 'bg-[#ea580c]',
       arrowBg: 'bg-[#ea580c] hover:bg-[#c2410c]',
       buttonText: 'text-[#ea580c]',
       accentDot: 'bg-[#ea580c]',
       decorCircle: 'bg-orange-300/20',
+    },
+    phone: {
+      title: 'PM SVANidhi Mobile',
+      shortCode: 'SVANIDHI',
+      tagline: 'Urban Vendors Micro-Credit Scheme',
+      searchPlaceholder: 'Search loan or vending ID...',
+      highlightCard: {
+        title: 'Working Capital Loan Tranche',
+        btnText: 'APPLY ₹10K',
+        btnColor: 'bg-orange-600',
+      },
+      service1: 'Certificate of Vending (CoV) Sync',
+      service2: 'Monthly Digital UPI Cashback: ₹100',
+      floatingBadge1: {
+        title: 'Instant Loan Disbursal',
+        tag: 'NEW',
+        color: 'bg-orange-600',
+        icon: 'coins',
+      },
+      floatingBadge2: {
+        title: '7% Interest Subsidy',
+        tag: 'ACTIVE',
+        color: 'bg-amber-600',
+        icon: 'award',
+      },
+      floating3DIcon: 'coins',
+      phoneAnimationClass: 'animate-moving-phone-4',
+    },
+  },
+  {
+    id: 'pmay-g',
+    schemeId: 'pmay-g',
+    ministryBadge: 'MINISTRY OF RURAL DEVELOPMENT',
+    ministrySub: 'GOVERNMENT OF INDIA',
+    partnerTag: 'AWAAS',
+    titlePrimary: 'Pradhan Mantri Awas Yojana',
+    statusBadge: 'APPROVED',
+    partnerText: 'Pucca House',
+    description: 'Financial assistance of ₹1.30 Lakh + 90 days MGNREGS wages for constructing a permanent house.',
+    benefitPill: '₹1.30 Lakh Financial Assistance for Pucca House',
+    primaryCtaText: 'Apply Now',
+    secondaryCtaText: 'Gram Panchayat List',
+    officialUrl: 'https://pmayg.nic.in',
+    theme: {
+      bgGradient: 'from-[#ecfdf5] via-[#e3faf0] to-[#e0f2fe]',
+      headlineColor: 'text-[#0f5132]',
+      badgeBg: 'bg-[#059669]',
+      arrowBg: 'bg-[#059669] hover:bg-[#047857]',
+      buttonText: 'text-[#059669]',
+      accentDot: 'bg-[#059669]',
+      decorCircle: 'bg-teal-300/20',
+    },
+    phone: {
+      title: 'AwaasSoft Rural Housing',
+      shortCode: 'PMAY-G',
+      tagline: 'Ministry of Rural Development DBT',
+      searchPlaceholder: 'Search registration or village...',
+      highlightCard: {
+        title: 'Housing Sanction Order',
+        btnText: 'DOWNLOAD',
+        btnColor: 'bg-teal-700',
+      },
+      service1: 'House Geo-tag Inspection Verification',
+      service2: 'Stage-wise Direct DBT Bank Disbursal',
+      floatingBadge1: {
+        title: 'Pucca House Sanction',
+        tag: 'NEW',
+        color: 'bg-teal-600',
+        icon: 'home',
+      },
+      floatingBadge2: {
+        title: 'DBT Bank Disbursal',
+        tag: 'VERIFIED',
+        color: 'bg-emerald-600',
+        icon: 'check',
+      },
+      floating3DIcon: 'home',
+      phoneAnimationClass: 'animate-moving-phone-5',
     },
   },
 ];
@@ -431,6 +535,65 @@ const PaperAirplane: React.FC<{ className?: string }> = ({ className = 'w-6 h-6'
     <path d="M18 24L24 30L22 36L18 24Z" fill="#166534" />
     <path d="M18 24L36 4" stroke="#bbf7d0" strokeWidth="1.2" />
   </svg>
+);
+
+// Citizen Mobile User Vector Graphic matching Image 1
+const CitizenMobileUser: React.FC<{ className?: string }> = ({ className = '' }) => (
+  <div
+    role="img"
+    aria-label="Citizen using smartphone illustration"
+    data-dark-exempt="true"
+    className={`relative hidden xl:flex flex-col items-center justify-end select-none pointer-events-none moving-animation-image animate-citizen-sway ${className}`}
+  >
+    <svg viewBox="0 0 160 280" className="w-40 h-72 drop-shadow-xl" fill="none">
+      {/* Hair */}
+      <path
+        d="M50 45 C45 30 65 20 80 20 C95 20 115 30 110 45 C120 50 125 65 120 78 C110 82 105 75 100 80 C95 70 70 70 65 80 C60 75 55 82 45 78 C40 65 45 50 50 45 Z"
+        fill="#1e293b"
+      />
+      {/* Face */}
+      <path
+        d="M55 58 C55 45 105 45 105 58 C105 85 98 100 80 100 C62 100 55 85 55 58 Z"
+        fill="#d4a373"
+      />
+      {/* Smile & Eyes */}
+      <circle cx="68" cy="68" r="2" fill="#78350f" />
+      <circle cx="92" cy="68" r="2" fill="#78350f" />
+      <path d="M72 82 C76 88 84 88 88 82" stroke="#78350f" strokeWidth="2.5" strokeLinecap="round" />
+      {/* Neck */}
+      <rect x="74" y="98" width="12" height="14" fill="#c68a4c" />
+      {/* Blue Shirt Body */}
+      <path
+        d="M40 120 C55 110 105 110 120 120 L135 260 L25 260 Z"
+        fill="#1d4ed8"
+      />
+      {/* Arms holding phone */}
+      <path
+        d="M36 135 C30 165 60 190 70 180"
+        stroke="#d4a373"
+        strokeWidth="14"
+        strokeLinecap="round"
+      />
+      <path
+        d="M124 135 C130 165 100 190 90 180"
+        stroke="#d4a373"
+        strokeWidth="14"
+        strokeLinecap="round"
+      />
+      {/* Phone in hands */}
+      <rect
+        x="68"
+        y="162"
+        width="24"
+        height="42"
+        rx="4"
+        fill="#ea580c"
+        stroke="#c2410c"
+        strokeWidth="1.5"
+      />
+      <rect x="71" y="166" width="18" height="32" rx="2" fill="#fed7aa" />
+    </svg>
+  </div>
 );
 
 // 4 Floating Options Configuration
