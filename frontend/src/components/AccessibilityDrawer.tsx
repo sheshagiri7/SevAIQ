@@ -83,29 +83,16 @@ export const AccessibilityDrawer: React.FC = () => {
                 </span>
               </div>
 
-              <div className="flex items-center space-x-2">
-                {/* Upgrade Button matching screenshot */}
-                <button
-                  type="button"
-                  onClick={() => alert('UX4G Accessibility Suite: All standard & pro features are fully unlocked for SevAIQ citizens.')}
-                  className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-full bg-white text-[#6342E8] text-xs font-bold shadow-xs hover:bg-purple-50 transition-all focus:outline-none focus:ring-2 focus:ring-white"
-                  title="Accessibility Features Tier: Government Enterprise Unlocked"
-                >
-                  <Sparkles className="w-3 h-3 text-[#6342E8] fill-current" />
-                  <span>{labels.upgrade}</span>
-                </button>
-
-                {/* Close Button */}
-                <button
-                  ref={closeButtonRef}
-                  type="button"
-                  onClick={() => setIsOpen(false)}
-                  className="p-1.5 rounded-lg text-white/90 hover:text-white hover:bg-white/15 transition-colors focus:outline-none focus:ring-2 focus:ring-white"
-                  aria-label="Close accessibility options"
-                >
-                  <X className="w-5 h-5 stroke-[2.5]" />
-                </button>
-              </div>
+              {/* Close Button */}
+              <button
+                ref={closeButtonRef}
+                type="button"
+                onClick={() => setIsOpen(false)}
+                className="p-1.5 rounded-lg text-white/90 hover:text-white hover:bg-white/15 transition-colors focus:outline-none focus:ring-2 focus:ring-white"
+                aria-label="Close accessibility options"
+              >
+                <X className="w-5 h-5 stroke-[2.5]" />
+              </button>
             </div>
 
             {/* 3x4 Grid of 12 Accessibility Tools */}
