@@ -401,6 +401,8 @@ interface SlideTextTranslation {
   benefitPill: string;
   primaryCtaText: string;
   secondaryCtaText: string;
+  imageAlt?: string;
+  imageCaption?: string;
   phone: {
     title: string;
     tagline: string;
@@ -434,6 +436,8 @@ const SLIDE_TRANSLATIONS: Record<'ta' | 'hi', Record<string, SlideTextTranslatio
       benefitPill: '100% கட்டாய கல்விக் கட்டண திருப்பிச் செலுத்துதல் & பராமரிப்பு உதவித்தொகை',
       primaryCtaText: 'விண்ணப்பிக்கவும்',
       secondaryCtaText: 'தகுதியை சரிபார்க்கவும்',
+      imageAlt: 'தேசிய கல்வி உதவித்தொகை தளம் - வகுப்பறையில் கற்கும் இந்திய பள்ளி மாணவர்கள்',
+      imageCaption: 'நேரடி கல்வி உதவித்தொகை மூலம் இந்திய மாணவர்களுக்கு அதிகாரமளித்தல்',
       phone: {
         title: 'தேசிய கல்வி உதவித்தொகை தளம்',
         tagline: 'கல்வி & சமூக நீதி அமைச்சகம்',
@@ -464,6 +468,8 @@ const SLIDE_TRANSLATIONS: Record<'ta' | 'hi', Record<string, SlideTextTranslatio
       benefitPill: 'நேரடி பயன் பரிமாற்றம் (DBT) மூலம் ஆண்டுக்கு ₹6,000',
       primaryCtaText: 'விண்ணப்பிக்கவும்',
       secondaryCtaText: 'பயனாளியை சரிபார்க்கவும்',
+      imageAlt: 'பிஎம்-கிசான் சம்மான் நிதி - விவசாய நிலத்தில் உழைக்கும் இந்திய விவசாயிகள்',
+      imageCaption: 'இந்திய விவசாய குடும்பங்களுக்கு ஆண்டுக்கு ₹6,000 நேரடி வருமான ஆதரவு',
       phone: {
         title: 'PM-KISAN உழவர் தளம்',
         tagline: 'விவசாயிகள் நலம் & DBT பரிமாற்றம்',
@@ -494,6 +500,8 @@ const SLIDE_TRANSLATIONS: Record<'ta' | 'hi', Record<string, SlideTextTranslatio
       benefitPill: 'ஆண்டுக்கு குடும்பத்திற்கு ₹5,00,000 வரை ரொக்கமில்லா மருத்துவ சிகிச்சை',
       primaryCtaText: 'விண்ணப்பிக்கவும்',
       secondaryCtaText: 'மருத்துவமனைகளைக் கண்டறியவும்',
+      imageAlt: 'ஆயுஷ்மான் பாரத் PM-JAY - மருத்துவ சிகிச்சை அளிக்கும் சுகாதார மருத்துவர்',
+      imageCaption: '28,000+ மருத்துவமனைகளில் ₹5 லட்சம் வரை கட்டணமில்லா சிகிச்சை',
       phone: {
         title: 'ஆயுஷ்மான் பாரத் PM-JAY',
         tagline: 'தேசிய சுகாதார ஆணைய டிஜிட்டல் தளம்',
@@ -524,6 +532,8 @@ const SLIDE_TRANSLATIONS: Record<'ta' | 'hi', Record<string, SlideTextTranslatio
       benefitPill: '7% வட்டி மானியத்துடன் ₹10,000 முதல் ₹50,000 வரை நுண்கடன்',
       primaryCtaText: 'விண்ணப்பிக்கவும்',
       secondaryCtaText: 'கடன் நிலையை சரிபார்க்கவும்',
+      imageAlt: 'பிஎம் ஸ்வநிதி திட்டம் - கடையில் புன்னகைக்கும் இந்திய சாலையோர வியாபாரி',
+      imageCaption: 'நகர்ப்புற சாலையோர வியாபாரிகளுக்கான பிணையில்லா செயல்பாட்டு மூலதனக் கடன்',
       phone: {
         title: 'PM SVANidhi மொபைல்',
         tagline: 'நகர்ப்புற வியாபாரிகள் நுண்கடன் திட்டம்',
@@ -554,6 +564,8 @@ const SLIDE_TRANSLATIONS: Record<'ta' | 'hi', Record<string, SlideTextTranslatio
       benefitPill: 'பக்கா வீடு கட்ட ₹1.30 லட்சம் நேரடி நிதி உதவி',
       primaryCtaText: 'விண்ணப்பிக்கவும்',
       secondaryCtaText: 'கிராம பஞ்சாயத்து பட்டியல்',
+      imageAlt: 'பிரதான் மந்திரி ஆவாஸ் திட்டம் - கிராமப்புறத்தில் கட்டப்பட்ட நிரந்தர பக்கா வீடு',
+      imageCaption: 'கிராமப்புற குடும்பங்களுக்கு அனைத்து காலநிலைகளுக்கும் ஏற்ற நிரந்தர பக்கா வீடு',
       phone: {
         title: 'ஆவாஸ்சாஃப்ட் கிராமப்புற வீட்டுவசதி',
         tagline: 'ஊரக வளர்ச்சி அமைச்சக DBT',
@@ -586,6 +598,8 @@ const SLIDE_TRANSLATIONS: Record<'ta' | 'hi', Record<string, SlideTextTranslatio
       benefitPill: '100% अनिवार्य शुल्क प्रतिपूर्ति और रखरखाव सहायता',
       primaryCtaText: 'अभी आवेदन करें',
       secondaryCtaText: 'पात्रता जांचें',
+      imageAlt: 'राष्ट्रीय छात्रवृत्ति पोर्टल - कक्षा में अध्ययनरत भारतीय स्कूली छात्र',
+      imageCaption: 'प्रत्यक्ष छात्रवृत्ति द्वारा देश भर के छात्रों का सशक्तिकरण',
       phone: {
         title: 'राष्ट्रीय छात्रवृत्ति पोर्टल',
         tagline: 'शिक्षा एवं सामाजिक न्याय मंत्रालय',
@@ -616,6 +630,8 @@ const SLIDE_TRANSLATIONS: Record<'ta' | 'hi', Record<string, SlideTextTranslatio
       benefitPill: 'प्रत्यक्ष लाभ अंतरण (DBT) के माध्यम से ₹6,000 प्रति वर्ष',
       primaryCtaText: 'अभी आवेदन करें',
       secondaryCtaText: 'लाभार्थी स्थिति जांचें',
+      imageAlt: 'पीएम किसान सम्मान निधि - कृषि क्षेत्र में कार्यरत भारतीय किसान',
+      imageCaption: 'भारतीय किसान परिवारों को ₹6,000/वर्ष की प्रत्यक्ष आय सहायता',
       phone: {
         title: 'पीएम-किसान किसान पोर्टल',
         tagline: 'किसान कल्याण और डीबीटी वितरण',
@@ -646,6 +662,8 @@ const SLIDE_TRANSLATIONS: Record<'ta' | 'hi', Record<string, SlideTextTranslatio
       benefitPill: 'प्रति परिवार ₹5,00,000 वार्षिक निःशुल्क अस्पताल उपचार',
       primaryCtaText: 'अभी आवेदन करें',
       secondaryCtaText: 'अस्पताल खोजें',
+      imageAlt: 'आयुष्मान भारत पीएम-जेएवाई - स्टेथोस्कोप के साथ रोगी का उपचार करते चिकित्सक',
+      imageCaption: '28,000+ अस्पतालों में ₹5 लाख तक का कैशलेस स्वास्थ्य सुरक्षा कवर',
       phone: {
         title: 'आयुष्मान भारत पीएम-जेएवाई',
         tagline: 'राष्ट्रीय स्वास्थ्य प्राधिकरण डिजिटल पोर्टल',
@@ -676,6 +694,8 @@ const SLIDE_TRANSLATIONS: Record<'ta' | 'hi', Record<string, SlideTextTranslatio
       benefitPill: '7% ब्याज सब्सिडी के साथ ₹10,000 से ₹50,000 तक सूक्ष्म ऋण',
       primaryCtaText: 'अभी आवेदन करें',
       secondaryCtaText: 'ऋण स्थिति जांचें',
+      imageAlt: 'पीएम स्वनिधि योजना - दुकान पर मुस्कुराते भारतीय स्ट्रीट वेंडर',
+      imageCaption: 'शहरी पथ विक्रेताओं के लिए संपार्श्विक-मुक्त कार्यशील पूंजी ऋण',
       phone: {
         title: 'पीएम स्वनिधि मोबाइल',
         tagline: 'शहरी विक्रेता सूक्ष्म ऋण योजना',
@@ -706,6 +726,8 @@ const SLIDE_TRANSLATIONS: Record<'ta' | 'hi', Record<string, SlideTextTranslatio
       benefitPill: 'पक्के मकान हेतु ₹1.30 लाख की प्रत्यक्ष वित्तीय सहायता',
       primaryCtaText: 'अभी आवेदन करें',
       secondaryCtaText: 'ग्राम पंचायत सूची',
+      imageAlt: 'प्रधानमंत्री आवास योजना - ग्रामीण भारत में निर्मित स्थायी पक्का मकान',
+      imageCaption: 'ग्रामीण परिवारों हेतु सर्व-ऋतु अनुकूल स्थायी पक्का आवास',
       phone: {
         title: 'आवाससॉफ्ट ग्रामीण आवास',
         tagline: 'ग्रामीण विकास मंत्रालय डीबीटी',
@@ -738,6 +760,21 @@ const getLocalizedSlide = (slide: SchemeSlide, lang: string): SchemeSlide => {
 
   return {
     ...slide,
+    ministryBadge: trans.ministryBadge,
+    ministrySub: trans.ministrySub,
+    titlePrimary: trans.titlePrimary,
+    statusBadge: trans.statusBadge,
+    partnerText: trans.partnerText,
+    description: trans.description,
+    benefitPill: trans.benefitPill,
+    primaryCtaText: trans.primaryCtaText,
+    secondaryCtaText: trans.secondaryCtaText,
+    image: {
+      ...slide.image,
+      alt: trans.imageAlt || slide.image.alt,
+      caption: trans.imageCaption || slide.image.caption,
+    },
+    phone: {
     ministryBadge: trans.ministryBadge,
     ministrySub: trans.ministrySub,
     titlePrimary: trans.titlePrimary,
