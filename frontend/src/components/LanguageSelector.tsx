@@ -156,10 +156,16 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     }
   }, [isOpen]);
 
-  const handleSelectLanguage = (langCode: AppLanguage) => {
-    setLanguage(langCode);
-    setIsOpen(false);
-    triggerRef.current?.focus();
+  const handleSelectLanguage = (langCode: SupportedLangCode) => {
+    if (langCode === 'en' || langCode === 'ta' || langCode === 'hi') {
+      setLanguage(langCode);
+      setBhashiniNotice(null);
+      setIsOpen(false);
+      triggerRef.current?.focus();
+    } else {
+      const info = INDIAN_LANGUAGES.find((l) => l.code === langCode);
+      setBhashiniNotice(info ? `${info.name} (${info.englishName})` : String(langCode));
+    }
   };
 
   const filteredLanguages = INDIAN_LANGUAGES.filter((item) => {

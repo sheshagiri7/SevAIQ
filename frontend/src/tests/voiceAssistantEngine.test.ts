@@ -69,6 +69,33 @@ describe('Voice Assistant Engine Suite', () => {
     expect(ansEn.text).toContain('₹5 Lakh');
   });
 
+  it('answers farmer queries in Hindi with verified PM-KISAN guidance', () => {
+    const answer = processCitizenQuery('किसानों के लिए कौन सी योजना है?', 'hi', sampleSchemes);
+    expect(answer.text).toContain('पीएम किसान');
+    expect(answer.text).toContain('₹6,000');
+    expect(answer.matchedSchemes.some((s) => s.id === 'pm-kisan')).toBe(true);
+    expect(answer.suggestedAction?.tab).toBe('eligibility');
+  });
+
+  it('answers healthcare queries in Hindi', () => {
+    const ansHi = processCitizenQuery('मुफ्त इलाज और स्वास्थ्य बीमा कैसे मिलेगा?', 'hi', sampleSchemes);
+    expect(ansHi.text).toContain('आयुष्मान भारत');
+    expect(ansHi.text).toContain('₹5,00,000');
+    expect(ansHi.matchedSchemes.some((s) => s.id === 'pm-jay')).toBe(true);
+  });
+
+  it('answers housing queries in Hindi', () => {
+    const ansHi = processCitizenQuery('घर बनाने के लिए आवास सहायता योजना', 'hi', sampleSchemes);
+    expect(ansHi.text).toContain('पीएम आवास');
+    expect(ansHi.matchedSchemes.some((s) => s.id === 'pmay-g')).toBe(true);
+  });
+
+  it('answers pension queries in Hindi', () => {
+    const ansHi = processCitizenQuery('बुढ़ापे के लिए पेंशन योजना चाहिए', 'hi', sampleSchemes);
+    expect(ansHi.text).toContain('अटल पेंशन योजना');
+    expect(ansHi.matchedSchemes.some((s) => s.id === 'atal-pension-yojana')).toBe(true);
+  });
+
   it('answers housing queries with PMAY details', () => {
     const ans = processCitizenQuery('வீடு கட்ட உதவி கிடைக்குமா?', 'ta', sampleSchemes);
     expect(ans.text).toContain('PMAY-G');
@@ -81,8 +108,9 @@ describe('Voice Assistant Engine Suite', () => {
     expect(ans.suggestedAction?.tab).toBe('discover');
   });
 
-  it('has sample prompts available in both Tamil and English', () => {
+  it('has sample prompts available in Tamil, Hindi and English', () => {
     expect(SAMPLE_PROMPTS.ta.length).toBeGreaterThanOrEqual(4);
+    expect(SAMPLE_PROMPTS.hi.length).toBeGreaterThanOrEqual(4);
     expect(SAMPLE_PROMPTS.en.length).toBeGreaterThanOrEqual(4);
   });
 
