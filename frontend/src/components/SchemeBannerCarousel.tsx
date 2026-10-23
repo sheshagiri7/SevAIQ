@@ -1198,10 +1198,10 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                       <StateEmblemOfIndia className="w-9 h-11 sm:w-10 sm:h-12 text-slate-800" />
                       <div className="flex flex-col leading-tight border-l-2 border-slate-400/50 pl-2.5 sm:pl-3">
                         <span className="text-[10px] sm:text-xs font-black tracking-wider text-slate-900 uppercase">
-                          {slide.ministryBadge}
+                          {locSlide.ministryBadge}
                         </span>
                         <span className="text-[9px] sm:text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-0.5">
-                          {slide.ministrySub}
+                          {locSlide.ministrySub}
                         </span>
                       </div>
                     </div>
@@ -1217,29 +1217,29 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                     <h2
                       className={`text-2xl sm:text-3.5xl lg:text-[40px] xl:text-[44px] font-black tracking-tight leading-[1.12] ${slide.theme.headlineColor}`}
                     >
-                      {slide.titlePrimary}
+                      {locSlide.titlePrimary}
                     </h2>
 
                     <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 text-xl sm:text-2xl lg:text-[28px] font-extrabold text-slate-900 leading-none">
-                      <span>is now</span>
+                      <span>{t.banner?.isNow || (isTamil ? 'தற்போது' : isHindi ? 'अब है' : 'is now')}</span>
                       <span
                         className={`${slide.theme.badgeBg} text-white font-black text-xs sm:text-sm px-2.5 py-0.5 rounded-md tracking-wider shadow-sm uppercase animate-pulse inline-flex items-center`}
                       >
-                        {slide.statusBadge}
+                        {locSlide.statusBadge}
                       </span>
-                      <span>{slide.partnerText}</span>
+                      <span>{locSlide.partnerText}</span>
                     </div>
                   </div>
 
                   {/* Scheme Description */}
                   <p className="text-xs sm:text-sm lg:text-base text-slate-700 font-medium leading-relaxed max-w-lg">
-                    {slide.description}
+                    {locSlide.description}
                   </p>
 
                   {/* Key Guarantee Benefit Tag */}
                   <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/85 border border-slate-200/90 text-xs sm:text-[13px] font-semibold text-slate-800 shadow-2xs backdrop-blur-xs w-fit">
                     <Sparkles className="w-3.5 h-3.5 text-amber-500 shrink-0" />
-                    <span>{slide.benefitPill}</span>
+                    <span>{locSlide.benefitPill}</span>
                   </div>
 
                   {/* CTA Buttons */}
@@ -1249,7 +1249,7 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                       onClick={() => handlePrimaryClick(slide)}
                       className={`px-7 sm:px-8 py-2.5 sm:py-3 rounded-full bg-white hover:bg-slate-50 ${slide.theme.buttonText} font-black text-xs sm:text-sm shadow-md hover:shadow-xl border border-slate-200/90 transition-all hover:scale-105 active:scale-95 inline-flex items-center space-x-2 focus:outline-none focus:ring-2 focus:ring-emerald-600 cursor-pointer`}
                     >
-                      <span>{slide.primaryCtaText}</span>
+                      <span>{locSlide.primaryCtaText}</span>
                       <ExternalLink className="w-4 h-4 shrink-0" />
                     </button>
 
@@ -1258,7 +1258,7 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                       onClick={handleSecondaryClick}
                       className="px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-slate-900/10 hover:bg-slate-900/15 text-slate-800 font-bold text-xs sm:text-sm border border-slate-400/30 transition-all hover:scale-105 active:scale-95 inline-flex items-center space-x-1.5 focus:outline-none focus:ring-2 focus:ring-slate-700 cursor-pointer"
                     >
-                      <span>{slide.secondaryCtaText}</span>
+                      <span>{locSlide.secondaryCtaText}</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </button>
                   </div>
