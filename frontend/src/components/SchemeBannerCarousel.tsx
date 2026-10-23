@@ -788,8 +788,6 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
       {/* Outer Banner Carousel Container: Occupies Full Frame Viewport */}
       <div
         className="relative w-full h-[calc(100vh-4.25rem)] min-h-[640px] max-h-[960px] flex flex-col justify-between overflow-hidden select-none group border-b border-slate-200/80 bg-slate-50 moving-animation-exempt"
-        onMouseEnter={() => setIsPaused(true)}
-        onMouseLeave={() => setIsPaused(false)}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
         aria-roledescription="carousel"
@@ -972,11 +970,11 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                             : 'translate-x-1 sm:translate-x-2';
 
                         return (
-                          <div key={opt.id} className={`relative group ${offsetClass}`}>
+                          <div key={opt.id} className={`relative group ${offsetClass} ${opt.floatClass}`}>
                             <button
                               type="button"
                               onClick={() => handleSelectFloatingCategory(opt.categoryId)}
-                              className={`w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-white/95 backdrop-blur-sm border border-slate-200/90 shadow-lg hover:shadow-2xl hover:border-emerald-400 flex items-center justify-center transition-all duration-300 hover:scale-115 active:scale-95 cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500 ${opt.floatClass}`}
+                              className={`w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-white/95 backdrop-blur-sm border border-slate-200/90 shadow-lg hover:shadow-2xl hover:border-emerald-400 flex items-center justify-center transition-transform duration-200 hover:scale-115 active:scale-95 cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500 ${opt.floatClass}`}
                               title={title}
                               aria-label={`Explore ${opt.titleEn} floating option`}
                             >
