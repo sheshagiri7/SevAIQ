@@ -855,7 +855,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                       {/* Focused Scheme Badge */}
                       {isTargetScheme && (
                         <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-civic-700 text-white shadow-2xs">
-                          <span>🎯 {t.eligibility.targetSchemeBadge}</span>
+                          <span>{`🎯 ${t.eligibility.targetSchemeBadge}`}</span>
                         </span>
                       )}
 

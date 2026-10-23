@@ -876,5 +876,3 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
     </div>
   );
 };
-  );
-};
