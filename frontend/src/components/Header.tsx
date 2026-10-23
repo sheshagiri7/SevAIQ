@@ -279,20 +279,49 @@ export const Header: React.FC<HeaderProps> = ({
               </span>
             </button>
 
-            {/* Clear Profile / End Session */}
-            <button
-              ref={triggerButtonRef}
-              type="button"
-              onClick={() => setShowClearConfirm(true)}
-              className={`h-7 xl:h-8 px-2 xl:px-2.5 rounded-lg ${
-                isTamil ? 'text-[11px] xl:text-xs' : 'text-xs'
-              } font-semibold inline-flex items-center gap-1 xl:gap-1.5 border border-rose-200 text-rose-700 hover:bg-rose-50 hover:border-rose-300 transition-all focus:outline-none focus:ring-2 focus:ring-rose-500 shrink-0`}
-              title={t.header.endSessionTooltip}
-              aria-label={t.header.endSession}
-            >
-              <Trash2 className="w-3 h-3 xl:w-3.5 xl:h-3.5 text-rose-600 shrink-0" />
-              <span className="hidden sm:inline">{t.header.endSession}</span>
-            </button>
+            {/* Session & Accessibility Controls Layout Set */}
+            <div className="flex flex-col items-stretch justify-center gap-1 p-0.5 rounded-lg border border-slate-200/90 bg-slate-50/60 shadow-2xs shrink-0">
+              {/* Top: Clear Profile / End Session */}
+              <button
+                ref={triggerButtonRef}
+                type="button"
+                onClick={() => setShowClearConfirm(true)}
+                className={`h-6 xl:h-6.5 px-2 xl:px-2.5 rounded-md ${
+                  isTamil ? 'text-[10px] xl:text-[11px]' : 'text-[11px]'
+                } font-semibold inline-flex items-center justify-center gap-1 xl:gap-1.5 border border-rose-200/80 text-rose-700 bg-white hover:bg-rose-50 hover:border-rose-300 transition-all focus:outline-none focus:ring-2 focus:ring-rose-500 shadow-2xs shrink-0 cursor-pointer`}
+                title={t.header.endSessionTooltip}
+                aria-label={t.header.endSession}
+              >
+                <Trash2 className="w-3 h-3 xl:w-3.5 xl:h-3.5 text-rose-600 shrink-0" />
+                <span className="hidden sm:inline whitespace-nowrap">{t.header.endSession}</span>
+              </button>
+
+              {/* Bottom: Accessibility Options (Below End Session) */}
+              <button
+                type="button"
+                onClick={toggleAccessibility}
+                className={`h-6 xl:h-6.5 px-2 xl:px-2.5 rounded-md ${
+                  isTamil ? 'text-[10px] xl:text-[11px]' : 'text-[11px]'
+                } font-semibold inline-flex items-center justify-center gap-1 xl:gap-1.5 border transition-all focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-2xs group cursor-pointer shrink-0 ${
+                  a11yActiveCount > 0 || isA11yOpen
+                    ? 'bg-purple-100 text-purple-900 border-purple-300 font-bold'
+                    : 'bg-white text-purple-800 border-purple-200 hover:bg-purple-50 hover:text-purple-900'
+                }`}
+                title={language === 'ta' ? 'அணுகல்தன்மை விருப்பங்கள்' : 'Accessibility options'}
+                aria-label={language === 'ta' ? 'அணுகல்தன்மை விருப்பங்கள்' : 'Accessibility options'}
+                aria-expanded={isA11yOpen}
+              >
+                <Accessibility className="w-3 h-3 xl:w-3.5 xl:h-3.5 text-purple-600 group-hover:scale-110 transition-transform shrink-0" />
+                <span className="hidden sm:inline whitespace-nowrap">
+                  {language === 'ta' ? 'அணுகல்தன்மை' : 'Accessibility'}
+                </span>
+                {a11yActiveCount > 0 && (
+                  <span className="inline-flex items-center justify-center px-1.5 py-0.2 text-[8px] xl:text-[9px] font-black bg-purple-600 text-white rounded-full">
+                    {a11yActiveCount}
+                  </span>
+                )}
+              </button>
+            </div>
 
             {/* Mobile Hamburger Button */}
             <button
@@ -346,24 +375,6 @@ export const Header: React.FC<HeaderProps> = ({
                   தமிழ்
                 </button>
               </div>
-            </div>
-
-            {/* Mobile Accessibility Options Quick Launch */}
-            <div className="px-3 py-2 rounded-xl bg-purple-50 border border-purple-200 flex items-center justify-between text-xs">
-              <span className="font-semibold text-purple-900 flex items-center gap-1.5">
-                <Accessibility className="w-4 h-4 text-purple-700" />
-                <span>{language === 'ta' ? 'அணுகல்தன்மை விருப்பங்கள்' : 'Accessibility options'}</span>
-              </span>
-              <button
-                type="button"
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  toggleAccessibility();
-                }}
-                className="px-2.5 py-1 rounded-lg text-xs font-bold bg-purple-600 hover:bg-purple-700 text-white shadow-xs transition-colors"
-              >
-                {language === 'ta' ? 'திறக்கவும்' : 'Open (Ctrl+F2)'}
-              </button>
             </div>
 
             <div className="space-y-1">
