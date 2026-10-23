@@ -11,6 +11,7 @@ import { VoiceAssistant } from './components/VoiceAssistant';
 import { TrustMonitor } from './components/TrustMonitor';
 import { ApplicationTracker } from './components/ApplicationTracker';
 import { AccessibilityDrawer } from './components/AccessibilityDrawer';
+import { FloatingAccessibilityButton } from './components/FloatingAccessibilityButton';
 import { ADHDRuler } from './components/ADHDRuler';
 import { AboutModal } from './components/AboutModal';
 import { Footer } from './components/Footer';
@@ -492,6 +493,9 @@ export function App() {
 
       {/* UX4G Universal Accessibility Options Slide-over Drawer */}
       <AccessibilityDrawer />
+
+      {/* myScheme-Style Left Docked Purple Accessibility Launcher */}
+      <FloatingAccessibilityButton />
 
       {/* ADHD Full-Screen Interactive Reading Focus Ruler */}
       <ADHDRuler />

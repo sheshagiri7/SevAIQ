@@ -80,6 +80,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
           onNavigate={onNavigate}
           onSelectSchemeForEligibility={onSelectSchemeForEligibility}
           onScrollToOptions={handleScrollToOptions}
+          onSelectCategory={onSelectCategory}
         />
       </section>
 
