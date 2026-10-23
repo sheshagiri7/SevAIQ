@@ -47,7 +47,7 @@ export const Header: React.FC<HeaderProps> = ({
   onToggleKioskMode,
   onClearSession,
 }) => {
-  const { language, setLanguage, t } = useLanguage();
+  const { language, t } = useLanguage();
   const { settings, toggleInvertColors } = useAccessibility();
   const isIndic = language === 'ta' || language === 'hi';
   const isTamil = isIndic;

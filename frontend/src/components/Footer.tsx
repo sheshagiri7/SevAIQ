@@ -28,7 +28,11 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAbout }) => {
                   onClick={onOpenAbout}
                   className="text-xs font-semibold text-civic-700 hover:text-civic-900 hover:underline cursor-pointer"
                 >
-                  {language === 'ta' ? 'அம்சங்கள் & வழிமுறைகள்' : 'About & Features'}
+                  {language === 'ta'
+                    ? 'அம்சங்கள் & வழிமுறைகள்'
+                    : language === 'hi'
+                    ? 'सुविधाएं और विवरण'
+                    : 'About & Features'}
                 </button>
               </>
             )}
