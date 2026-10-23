@@ -282,7 +282,7 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-xs font-semibold text-slate-500 flex items-center space-x-1 pr-1">
             <Filter className="w-3.5 h-3.5" />
-            <span>{language === 'ta' ? 'தணிக்கை வடிகட்டி:' : 'Audit Filter:'}</span>
+            <span>{language === 'ta' ? 'தணிக்கை வடிகட்டி:' : language === 'hi' ? 'ऑडिट फ़िल्टर:' : 'Audit Filter:'}</span>
           </span>
 
           <button
@@ -294,7 +294,11 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
                 : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
             }`}
           >
-            {language === 'ta' ? `அனைத்து திட்டங்கள் (${audits.length})` : `All Schemes (${audits.length})`}
+            {language === 'ta'
+              ? `அனைத்து திட்டங்கள் (${audits.length})`
+              : language === 'hi'
+              ? `सभी योजनाएं (${audits.length})`
+              : `All Schemes (${audits.length})`}
           </button>
 
           <button
@@ -307,7 +311,13 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
             }`}
           >
             <CheckCircle2 className="w-3.5 h-3.5" />
-            <span>{language === 'ta' ? `முழுமையாக சரிபார்க்கப்பட்டது (${fullyVerifiedCount})` : `Fully Verified (${fullyVerifiedCount})`}</span>
+            <span>
+              {language === 'ta'
+                ? `முழுமையாக சரிபார்க்கப்பட்டது (${fullyVerifiedCount})`
+                : language === 'hi'
+                ? `पूर्णतः सत्यापित (${fullyVerifiedCount})`
+                : `Fully Verified (${fullyVerifiedCount})`}
+            </span>
           </button>
 
           <button
@@ -320,7 +330,13 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
             }`}
           >
             <AlertTriangle className="w-3.5 h-3.5" />
-            <span>{language === 'ta' ? `கூடுதல் ஆய்வு தேவை (${flaggedCount})` : `Flags / Pending (${flaggedCount})`}</span>
+            <span>
+              {language === 'ta'
+                ? `கூடுதல் ஆய்வு தேவை (${flaggedCount})`
+                : language === 'hi'
+                ? `समीक्षाधीन (${flaggedCount})`
+                : `Flags / Pending (${flaggedCount})`}
+            </span>
           </button>
         </div>
 
@@ -335,6 +351,8 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
             placeholder={
               language === 'ta'
                 ? 'திட்டம் அல்லது இணைய முகவரி மூலம் தேடுங்கள்...'
+                : language === 'hi'
+                ? 'योजना या डोमेन द्वारा खोजें...'
                 : 'Search by scheme or domain...'
             }
             className="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-civic-500"
@@ -365,7 +383,13 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
                       {isFullyVerified ? (
                         <span className="inline-flex items-center space-x-1 text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
                           <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                          <span>{language === 'ta' ? 'முழுமையாக சரிபார்க்கப்பட்ட பதிவு' : 'Fully Verified Record'}</span>
+                          <span>
+                            {language === 'ta'
+                              ? 'முழுமையாக சரிபார்க்கப்பட்ட பதிவு'
+                              : language === 'hi'
+                              ? 'पूर्णतः सत्यापित रिकॉर्ड'
+                              : 'Fully Verified Record'}
+                          </span>
                         </span>
                       ) : (
                         <span className="inline-flex items-center space-x-1 text-[11px] font-bold text-amber-800 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
