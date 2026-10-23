@@ -1,5 +1,4 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { FloatingAccessibilityButton } from '../components/FloatingAccessibilityButton';
 import { LanguageProvider } from '../context/LanguageContext';
