@@ -48,6 +48,36 @@ describe('Full-Frame Scheme Carousel Banner & Floating Options Section', () => {
     expect(html).toContain('National Scholarship Portal');
   });
 
+  it('renders the 4 floating category options along the flight path matching the official portal layout', () => {
+    const html = renderToString(
+      <LanguageProvider>
+        <AccessibilityProvider>
+          <SchemeBannerCarousel onNavigate={vi.fn()} />
+        </AccessibilityProvider>
+      </LanguageProvider>
+    );
+
+    // 4 Floating Option Buttons with staggered float animation classes
+    expect(html).toContain('animate-float-1');
+    expect(html).toContain('animate-float-2');
+    expect(html).toContain('animate-float-3');
+    expect(html).toContain('animate-float-4');
+
+    // Category options tooltips / accessible labels
+    expect(html).toContain('Health &amp; Wellness');
+    expect(html).toContain('Education &amp; Learning');
+    expect(html).toContain('Agriculture &amp; Rural');
+    expect(html).toContain('Housing &amp; Shelter');
+
+    // QR code section
+    expect(html).toContain('Scan the');
+    expect(html).toContain('QR Code');
+
+    // Navigation arrows matching green rounded rectangles
+    expect(html).toContain('Previous Scheme Slide');
+    expect(html).toContain('Next Scheme Slide');
+  });
+
   it('Dashboard renders the full-frame carousel followed by the separate #options-section layout', () => {
     const html = renderToString(
       <LanguageProvider>
