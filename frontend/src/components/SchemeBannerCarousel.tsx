@@ -609,6 +609,7 @@ interface FloatingCategoryOption {
   categoryId: string;
   titleEn: string;
   titleTa: string;
+  titleHi: string;
   iconType: 'health' | 'education' | 'agriculture' | 'housing';
   floatClass: string;
 }
@@ -619,6 +620,7 @@ const FLOATING_OPTIONS: FloatingCategoryOption[] = [
     categoryId: 'healthcare',
     titleEn: 'Health & Wellness',
     titleTa: 'சுகாதாரம் & நல்வாழ்வு',
+    titleHi: 'स्वास्थ्य एवं कल्याण',
     iconType: 'health',
     floatClass: 'animate-float-1',
   },
@@ -627,6 +629,7 @@ const FLOATING_OPTIONS: FloatingCategoryOption[] = [
     categoryId: 'education',
     titleEn: 'Education & Learning',
     titleTa: 'கல்வி & கற்றல்',
+    titleHi: 'शिक्षा एवं शिक्षण',
     iconType: 'education',
     floatClass: 'animate-float-2',
   },
@@ -635,6 +638,7 @@ const FLOATING_OPTIONS: FloatingCategoryOption[] = [
     categoryId: 'agriculture',
     titleEn: 'Agriculture & Rural',
     titleTa: 'வேளாண்மை & ஊரகம்',
+    titleHi: 'कृषि एवं ग्रामीण',
     iconType: 'agriculture',
     floatClass: 'animate-float-3',
   },
@@ -643,6 +647,7 @@ const FLOATING_OPTIONS: FloatingCategoryOption[] = [
     categoryId: 'housing',
     titleEn: 'Housing & Shelter',
     titleTa: 'வீட்டுவசதி & இருப்பிடம்',
+    titleHi: 'आवास एवं आश्रय',
     iconType: 'housing',
     floatClass: 'animate-float-4',
   },
@@ -911,7 +916,11 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                       aria-label="Floating Scheme Category Options"
                     >
                       {FLOATING_OPTIONS.map((opt, idx) => {
-                        const title = isTamil ? opt.titleTa : opt.titleEn;
+                        const title = isTamil
+                          ? opt.titleTa
+                          : language === 'hi'
+                          ? opt.titleHi
+                          : opt.titleEn;
                         const offsetClass =
                           idx === 0
                             ? 'translate-x-0'
@@ -957,10 +966,10 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                     <div className="flex items-center space-x-2 pt-2 sm:pt-3 relative z-20">
                       <div className="flex flex-col text-left leading-none">
                         <span className="text-[10px] sm:text-[11px] font-black text-slate-800 tracking-tight uppercase">
-                          {isTamil ? 'ஸ்கேன்' : 'Scan the'}
+                          {isTamil ? 'ஸ்கேன்' : language === 'hi' ? 'स्कैन करें' : 'Scan the'}
                         </span>
                         <span className="text-[9px] sm:text-[10px] font-extrabold text-slate-900 tracking-tight uppercase mt-0.5">
-                          {isTamil ? 'QR குறியீடு' : 'QR Code'}
+                          {isTamil ? 'QR குறியீடு' : language === 'hi' ? 'QR कोड' : 'QR Code'}
                         </span>
                       </div>
                       <QRCodeGraphic className="w-12 h-12 sm:w-13 sm:h-13 shrink-0" />
