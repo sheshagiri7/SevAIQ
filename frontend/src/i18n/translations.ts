@@ -793,6 +793,18 @@ export const UI_TRANSLATIONS = {
         'FastAPI பின்தளம் + Vite React முகப்பு, தேசிய அளவில் பயன்படக்கூடிய வகையில் வடிவமைக்கப்பட்டுள்ளது.',
     },
 
+    // Banner Showcase & Floating Options
+    banner: {
+      hashtag: '#அரசுதிட்டங்கள் / #உங்களுக்கானதிட்டங்கள்',
+      findSchemes: 'உங்களுக்கான திட்டங்களைக் கண்டறியவும்',
+      findSchemesAria: 'உங்களுக்கான திட்டங்களைக் கண்டறியவும் - விருப்பங்களை ஆராய கீழே உருட்டவும்',
+      scrollDown: 'விருப்பங்களை ஆராய கீழே உருட்டவும்',
+      prevSlide: 'முந்தைய திட்டம்',
+      nextSlide: 'அடுத்த திட்டம்',
+      goToSlide: 'திட்டம்',
+      isNow: 'தற்போது',
+    },
+
     // Dashboard
     dashboard: {
       kioskNoticeTitle: 'பொது கியோஸ்க் முறை இயக்கத்தில் உள்ளது:',
@@ -1133,6 +1145,18 @@ export const UI_TRANSLATIONS = {
       guarantee3Title: 'डीकपल्ड आर्किटेक्चर',
       guarantee3Desc:
         'FastAPI बैकएंड + Vite React फ्रंटएंड, राष्ट्रीय स्तर पर स्केलेबल सहयोग के साथ निर्मित।',
+    },
+
+    // Banner Showcase & Floating Options
+    banner: {
+      hashtag: '#सरकारीयोजनाएं / #आपकेलिएयोजनाएं',
+      findSchemes: 'आपके लिए योजनाएं खोजें',
+      findSchemesAria: 'आपके लिए योजनाएं खोजें - विकल्प देखने के लिए नीचे स्क्रॉल करें',
+      scrollDown: 'विकल्प देखने के लिए नीचे स्क्रॉल करें',
+      prevSlide: 'पिछली योजना',
+      nextSlide: 'अगली योजना',
+      goToSlide: 'योजना पर जाएं',
+      isNow: 'अब है',
     },
 
     // Dashboard
