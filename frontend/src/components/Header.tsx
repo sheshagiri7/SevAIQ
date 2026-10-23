@@ -339,7 +339,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <button
                   type="button"
                   onClick={() => setLanguage('en')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  className={`px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
                     language === 'en'
                       ? 'bg-white text-civic-800 shadow-xs border border-slate-200'
                       : 'text-slate-600 hover:bg-slate-200/60'
@@ -350,13 +350,24 @@ export const Header: React.FC<HeaderProps> = ({
                 <button
                   type="button"
                   onClick={() => setLanguage('ta')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  className={`px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
                     language === 'ta'
                       ? 'bg-civic-700 text-white shadow-xs'
                       : 'text-slate-600 hover:bg-slate-200/60'
                   }`}
                 >
                   தமிழ்
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLanguage('hi')}
+                  className={`px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                    language === 'hi'
+                      ? 'bg-civic-700 text-white shadow-xs'
+                      : 'text-slate-600 hover:bg-slate-200/60'
+                  }`}
+                >
+                  हिंदी
                 </button>
               </div>
             </div>
