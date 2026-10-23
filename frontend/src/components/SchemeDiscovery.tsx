@@ -20,7 +20,7 @@ import {
 import { Scheme, SchemeDetail, CategoryCount } from '../types';
 import { CATEGORY_OPTIONS, matchesCategory } from '../utils/categoryMatcher';
 import { fetchCategories, fetchSchemeById } from '../services/api';
-import { matchesBilingualQuery, QUICK_SEARCH_CHIPS } from '../utils/bilingualSearch';
+import { matchesBilingualQuery } from '../utils/bilingualSearch';
 import { useLanguage } from '../context/LanguageContext';
 
 interface SchemeDiscoveryProps {
@@ -172,7 +172,11 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
         <Info className="w-4 h-4 text-civic-700 shrink-0 mt-0.5" />
         <div className="space-y-1">
           <p className="font-semibold text-civic-900">
-            {language === 'ta' ? 'சரிபார்க்கப்பட்ட தரவு உத்தரவாதம் & பின்தள நிலை:' : 'Verified Data Guarantee & Backend Status:'}
+            {language === 'ta'
+              ? 'சரிபார்க்கப்பட்ட தரவு உத்தரவாதம் & பின்தள நிலை:'
+              : language === 'hi'
+              ? 'सत्यापित डेटा गारंटी एवं बैकएंड स्थिति:'
+              : 'Verified Data Guarantee & Backend Status:'}
           </p>
           <p className="text-slate-700 leading-relaxed">
             {backendSchemesCount === 0 ? (
@@ -180,6 +184,11 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                 <>
                   FastAPI இறுதிப்புள்ளி <code className="bg-white/80 px-1 py-0.5 rounded font-mono text-slate-800">GET /api/schemes</code> தற்போது எதிர்பார்க்கப்பட்டபடி காலியாக உள்ளது.
                   SevAIQ அதிகாரப்பூர்வ போர்ட்டல்களின் (எ.கா. <em>pmkisan.gov.in</em>, <em>pmjay.gov.in</em>) சரிபார்க்கப்பட்ட மாதிரிகளை காட்டுகிறது.
+                </>
+              ) : language === 'hi' ? (
+                <>
+                  FastAPI एंडपॉइंट <code className="bg-white/80 px-1 py-0.5 rounded font-mono text-slate-800">GET /api/schemes</code> वर्तमान में खाली है।
+                  SevAIQ आधिकारिक सरकारी पोर्टलों (उदा. <em>pmkisan.gov.in</em>, <em>pmjay.gov.in</em>) के सत्यापित मॉडल प्रदर्शित करता है।
                 </>
               ) : (
                 <>
@@ -205,15 +214,27 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
             </div>
             <div>
               <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800">
-                {language === 'ta' ? 'தமிழ் & ஆங்கில இருமொழி நலத்திட்ட தேடுபொறி' : 'AI & Bilingual Natural Language Scheme Finder'}
+                {language === 'ta'
+                  ? 'தமிழ் & ஆங்கில இருமொழி நலத்திட்ட தேடுபொறி'
+                  : language === 'hi'
+                  ? 'बहुभाषी कल्याणकारी योजना खोज इंजन'
+                  : 'AI & Bilingual Natural Language Scheme Finder'}
               </h3>
               <p className="text-[11px] text-slate-500">
-                {language === 'ta' ? 'எளிய தமிழில் அல்லது ஆங்கிலத்தில் உங்கள் தேவையை தட்டச்சு செய்யுங்கள் (எ.கா. "விவசாயி உதவி", "மருத்துவ காப்பீடு", "வீடு கட்ட", "ஓய்வூதியம்")' : 'Describe citizen needs in simple Tamil or English (e.g. "விவசாயி உதவி", "free healthcare", "வீடு கட்ட", "pension")'}
+                {language === 'ta'
+                  ? 'எளிய தமிழில் அல்லது ஆங்கிலத்தில் உங்கள் தேவையை தட்டச்சு செய்யுங்கள் (எ.கா. "விவசாயி உதவி", "மருத்துவ காப்பீடு", "வீடு கட்ட", "ஓய்வூதியம்")'
+                  : language === 'hi'
+                  ? 'सरल हिंदी या अंग्रेजी में अपनी आवश्यकता लिखें (जैसे "किसान सहायता", "आयुष्मान इलाज", "मकान", "पेंशन")'
+                  : 'Describe citizen needs in simple Tamil or English (e.g. "விவசாயி உதவி", "free healthcare", "வீடு கட்ட", "pension")'}
               </p>
             </div>
           </div>
           <span className="text-[11px] font-semibold text-slate-600 bg-slate-100 px-2.5 py-1 rounded-full self-start sm:self-auto">
-            {language === 'ta' ? `காட்டப்படுவது: ${filteredSchemes.length} / ${schemes.length} திட்டங்கள்` : `Showing ${filteredSchemes.length} of ${schemes.length} schemes`}
+            {language === 'ta'
+              ? `காட்டப்படுவது: ${filteredSchemes.length} / ${schemes.length} திட்டங்கள்`
+              : language === 'hi'
+              ? `प्रदर्शित: ${filteredSchemes.length} / ${schemes.length} योजनाएं`
+              : `Showing ${filteredSchemes.length} of ${schemes.length} schemes`}
           </span>
         </div>
 
@@ -245,38 +266,12 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
           )}
         </div>
 
-        {/* Quick Suggestion Chips (Bilingual Tamil & English) */}
-        <div className="space-y-1.5 pt-1">
-          <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block">
-            {t.discover.quickQueries}
-          </span>
-          <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
-            {QUICK_SEARCH_CHIPS.map((chip) => {
-              const isActive = searchQuery === chip.query;
-              return (
-                <button
-                  key={chip.id}
-                  type="button"
-                  onClick={() => setSearchQuery(isActive ? '' : chip.query)}
-                  className={`px-3 py-1 rounded-xl text-xs font-medium whitespace-nowrap transition-all flex items-center space-x-1 ${
-                    isActive
-                      ? 'bg-civic-700 text-white shadow-xs'
-                      : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
-                  }`}
-                  title={`${chip.labelEn} / ${chip.labelTa}`}
-                >
-                  <span>{language === 'ta' ? chip.labelTa : chip.labelEn}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
 
         {/* Sector Filter Pills */}
         <div className="pt-2.5 border-t border-slate-100 flex flex-wrap items-center gap-2">
           <span className="text-xs font-semibold text-slate-700 flex items-center space-x-1 pr-1 shrink-0">
             <Filter className="w-3.5 h-3.5 text-slate-500" />
-            <span>{language === 'ta' ? 'துறைகள்:' : 'Sectors:'}</span>
+            <span>{language === 'ta' ? 'துறைகள்:' : language === 'hi' ? 'क्षेत्र:' : 'Sectors:'}</span>
           </span>
           <button
             type="button"
@@ -333,8 +328,10 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
           <span>
             {language === 'ta' ? (
               <><strong>வெளிப்படைத்தன்மை:</strong> இருமொழி தேடலானது குடிமக்களின் தேவைகளை நேரடியாக சரிபார்க்கப்பட்ட அரசு திட்டங்களுடன் இணைக்கிறது. உங்கள் தரவு எங்கும் கசியாமல் சாதனத்திலேயே பாதுகாப்பாக இயங்குகிறது.</>
+            ) : language === 'hi' ? (
+              <><strong>इंजन पारदर्शिता:</strong> बहुभाषी खोज नागरिक की आवश्यकता को सीधे सत्यापित सरकारी योजना रिकॉर्ड्स से जोड़ती है। आपका डेटा किसी बाहरी मॉडल को भेजे बिना उपकरण पर ही सुरक्षित रूप से संसाधित होता है।</>
             ) : (
-              <><strong>Engine Transparency:</strong> Bilingual search maps citizen intent in simple Tamil and English directly to verified FastAPI backend scheme records (<code className="font-mono text-[10px] bg-slate-100 px-1 py-0.5 rounded">GET /api/schemes</code>) using client-side semantic matching without transmitting personal queries to external LLMs.</>
+              <><strong>Engine Transparency:</strong> Bilingual search maps citizen intent in simple Tamil, Hindi, and English directly to verified FastAPI backend scheme records (<code className="font-mono text-[10px] bg-slate-100 px-1 py-0.5 rounded">GET /api/schemes</code>) using client-side semantic matching without transmitting personal queries to external LLMs.</>
             )}
           </span>
         </div>
@@ -358,7 +355,7 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
         {isLoading ? (
           <div className="py-20 text-center bg-white rounded-3xl border border-slate-200">
             <RefreshCw className="w-8 h-8 text-civic-600 animate-spin mx-auto mb-3" />
-            <p className="text-sm font-semibold text-slate-800">{language === 'ta' ? 'பின்தள சேவையகத்துடன் இணைகிறது...' : 'Connecting to Backend API...'}</p>
+            <p className="text-sm font-semibold text-slate-800">{language === 'ta' ? 'பின்தள சேவையகத்துடன் இணைகிறது...' : language === 'hi' ? 'बैकएंड एपीआई से जुड़ रहा है...' : 'Connecting to Backend API...'}</p>
             <p className="text-xs text-slate-600 mt-1">Querying /api/schemes</p>
           </div>
         ) : filteredSchemes.length > 0 ? (

@@ -80,6 +80,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
           onNavigate={onNavigate}
           onSelectSchemeForEligibility={onSelectSchemeForEligibility}
           onScrollToOptions={handleScrollToOptions}
+          onSelectCategory={onSelectCategory}
         />
       </section>
 
@@ -99,16 +100,22 @@ export const Dashboard: React.FC<DashboardProps> = ({
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-200/80">
             <div>
               <h3 className="text-lg sm:text-xl font-black text-slate-900 tracking-tight">
-                {language === 'ta' ? 'அரசின் தகுதி நிலை & கண்காணிப்பு மேலோட்டம்' : 'Citizen Readiness & Scheme Intelligence'}
+                {language === 'ta'
+                  ? 'அரசின் தகுதி நிலை & கண்காணிப்பு மேலோட்டம்'
+                  : language === 'hi'
+                  ? 'नागरिक तत्परता एवं योजना विश्लेषण'
+                  : 'Citizen Readiness & Scheme Intelligence'}
               </h3>
               <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
                 {language === 'ta'
                   ? 'உங்கள் சுயவிவரம் மற்றும் ஆவணங்களின் அடிப்படையில் நேரடி தகுதி பகுப்பாய்வு'
+                  : language === 'hi'
+                  ? 'आपकी सक्रिय प्रोफ़ाइल और वैधानिक दस्तावेजों के आधार पर वास्तविक समय मूल्यांकन'
                   : 'Real-time assessment based on your active profile and statutory documents'}
               </p>
             </div>
             <span className="text-xs font-bold text-civic-700 bg-civic-50 px-3 py-1 rounded-full border border-civic-200/80 w-fit">
-              {language === 'ta' ? '4 முக்கிய நிலைகள்' : '4 Readiness Milestones'}
+              {language === 'ta' ? '4 முக்கிய நிலைகள்' : language === 'hi' ? '4 तत्परता चरण' : '4 Readiness Milestones'}
             </span>
           </div>
 
@@ -252,7 +259,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
               onClick={onOpenAbout}
               className="w-full sm:w-auto px-4 py-2 rounded-xl bg-white hover:bg-slate-50 text-civic-800 hover:text-civic-900 border border-civic-300 text-xs font-bold shadow-2xs transition-colors shrink-0 cursor-pointer"
             >
-              {language === 'ta' ? 'அம்சங்கள் & வழிமுறைகள்' : 'View Features & Working'}
+              {language === 'ta'
+                ? 'அம்சங்கள் & வழிமுறைகள்'
+                : language === 'hi'
+                ? 'विशेषताएं और कार्यप्रणाली देखें'
+                : 'View Features & Working'}
             </button>
           </div>
         )}

@@ -17,7 +17,7 @@ export interface AssistantAnswer {
   };
 }
 
-export const SAMPLE_PROMPTS = {
+export const SAMPLE_PROMPTS: Record<AssistantLanguage, Array<{ label: string; query: string }>> = {
   ta: [
     { label: '🌾 விவசாயி உதவி', query: 'விவசாயிகளுக்கு என்னென்ன அரசு திட்டங்கள் உள்ளன?' },
     { label: '🏥 இலவச மருத்துவ காப்பீடு', query: 'ஆயுஷ்மான் பாரத் அட்டை பெறுவது எப்படி?' },
@@ -31,6 +31,13 @@ export const SAMPLE_PROMPTS = {
     { label: '🏠 Housing Subsidy', query: 'Who is eligible for PMAY housing grant?' },
     { label: '👴 Senior Pension', query: 'What documents are required for Atal Pension Yojana?' },
     { label: '🛒 Street Vendor Loan', query: 'How can street vendors apply for PM SVANidhi loan?' },
+  ],
+  hi: [
+    { label: '🌾 किसान वित्तीय सहायता', query: 'किसानों के लिए कौन सी सरकारी योजनाएं उपलब्ध हैं?' },
+    { label: '🏥 मुफ्त स्वास्थ्य कार्ड', query: 'आयुष्मान भारत स्वास्थ्य कार्ड कैसे प्राप्त करें?' },
+    { label: '🏠 आवास निर्माण अनुदान', query: 'पीएम आवास योजना के तहत मकान के लिए कौन पात्र है?' },
+    { label: '👴 वरिष्ठ नागरिक पेंशन', query: 'अटल पेंशन योजना के लिए कौन से दस्तावेज आवश्यक हैं?' },
+    { label: '🛒 रेहड़ी-पटरी ऋण', query: 'स्ट्रीट वेंडर पीएम स्वनिधि लोन के लिए कैसे आवेदन करें?' },
   ],
 };
 
@@ -48,7 +55,10 @@ export function processCitizenQuery(
     query.includes('farmer') ||
     query.includes('kisan') ||
     query.includes('agriculture') ||
-    query.includes('பயிர்')
+    query.includes('பயிர்') ||
+    query.includes('किसान') ||
+    query.includes('खेती') ||
+    query.includes('कृषि')
   ) {
     const kisan = schemes.find((s) => s.id === 'pm-kisan');
     if (language === 'ta') {
@@ -57,6 +67,17 @@ export function processCitizenQuery(
         matchedSchemes: kisan ? [kisan] : [],
         suggestedAction: {
           label: 'விவசாயி தகுதி சரிபார்க்கவும் (Check Eligibility)',
+          tab: 'eligibility',
+          schemeId: 'pm-kisan',
+        },
+      };
+    }
+    if (language === 'hi') {
+      return {
+        text: 'किसानों के लिए सरकार द्वारा "प्रधानमंत्री किसान सम्मान निधि (PM-KISAN)" योजना संचालित है। इसके तहत पात्र भूमिधारक किसान परिवारों को प्रति वर्ष ₹6,000 की वित्तीय सहायता, ₹2,000 की तीन 4-मासिक किस्तों में सीधे आधार से जुड़े बैंक खाते में DBT के माध्यम से प्रदान की जाती है। आवश्यक दस्तावेज: आधार कार्ड, भूमि स्वामित्व अभिलेख (खतौनी / RoR), बैंक पासबुक, और सक्रिय मोबाइल नंबर। आप pmkisan.gov.in पोर्टल अथवा नजदीकी जन सेवा केंद्र (CSC) से आवेदन कर सकते हैं।',
+        matchedSchemes: kisan ? [kisan] : [],
+        suggestedAction: {
+          label: 'पीएम किसान पात्रता जांचें',
           tab: 'eligibility',
           schemeId: 'pm-kisan',
         },
@@ -83,7 +104,13 @@ export function processCitizenQuery(
     query.includes('medical') ||
     query.includes('hospital') ||
     query.includes('ayushman') ||
-    query.includes('pmjay')
+    query.includes('pmjay') ||
+    query.includes('स्वास्थ्य') ||
+    query.includes('इलाज') ||
+    query.includes('चिकित्सा') ||
+    query.includes('अस्पताल') ||
+    query.includes('आयुष्मान') ||
+    query.includes('बीमार')
   ) {
     const pmjay = schemes.find((s) => s.id === 'pm-jay' || s.id === 'ab-pmjay');
     if (language === 'ta') {
@@ -92,6 +119,17 @@ export function processCitizenQuery(
         matchedSchemes: pmjay ? [pmjay] : [],
         suggestedAction: {
           label: 'ஆயுஷ்மான் பாரத் தகுதி சரிபார்க்கவும்',
+          tab: 'eligibility',
+          schemeId: 'pm-jay',
+        },
+      };
+    }
+    if (language === 'hi') {
+      return {
+        text: 'पात्र परिवारों को "आयुष्मान भारत - प्रधानमंत्री जन आरोग्य योजना (AB-PMJAY)" के अंतर्गत सूचीबद्ध सरकारी व निजी अस्पतालों में प्रति वर्ष प्रति परिवार ₹5,00,000 तक का निःशुल्क कैशलेस इलाज मिलता है। 70 वर्ष से अधिक उम्र के सभी वरिष्ठ नागरिकों को भी आयुष्मान वय वंदना कार्ड के तहत यह सुरक्षा उपलब्ध है। आवश्यक दस्तावेज: आधार कार्ड, राशन कार्ड (NFSA Card) और सक्रिय मोबाइल नंबर। beneficiary.nha.gov.in पर या नजदीकी अस्पताल के आयुष्मान मित्र केंद्र पर जाकर कार्ड बनवा सकते हैं।',
+        matchedSchemes: pmjay ? [pmjay] : [],
+        suggestedAction: {
+          label: 'आयुष्मान भारत पात्रता जांचें',
           tab: 'eligibility',
           schemeId: 'pm-jay',
         },
@@ -115,7 +153,10 @@ export function processCitizenQuery(
     query.includes('house') ||
     query.includes('housing') ||
     query.includes('pmay') ||
-    query.includes('pucca')
+    query.includes('pucca') ||
+    query.includes('मकान') ||
+    query.includes('आवास') ||
+    query.includes('घर')
   ) {
     const pmayg = schemes.find((s) => s.id === 'pmay-g');
     const pmayu = schemes.find((s) => s.id === 'pmay-u');
@@ -127,6 +168,16 @@ export function processCitizenQuery(
         matchedSchemes: matched,
         suggestedAction: {
           label: 'வீட்டு வசதி திட்டங்கள் பார்க்கவும்',
+          tab: 'discover',
+        },
+      };
+    }
+    if (language === 'hi') {
+      return {
+        text: 'पक्के मकान हेतु दो प्रमुख सरकारी योजनाएं हैं: 1) ग्रामीण क्षेत्रों के लिए "प्रधानमंत्री आवास योजना - ग्रामीण (PMAY-G)" जिसके तहत कच्चे घर में रहने वाले बेघर परिवारों को ₹1.20 लाख से ₹1.30 लाख का प्रत्यक्ष सरकारी अनुदान मिलता है। 2) शहरी क्षेत्रों के लिए "PMAY-U" जिसके तहत ब्याज सब्सिडी या ₹2.67 लाख तक की सहायता मिलती है। भारत में कहीं भी पक्का मकान नहीं होना चाहिए। आवश्यक दस्तावेज: आधार कार्ड, बैंक पासबुक, भूमि पट्टा/स्वामित्व प्रमाण पत्र और जॉब कार्ड।',
+        matchedSchemes: matched,
+        suggestedAction: {
+          label: 'आवास योजनाएं देखें',
           tab: 'discover',
         },
       };
@@ -149,7 +200,11 @@ export function processCitizenQuery(
     query.includes('pension') ||
     query.includes('atal') ||
     query.includes('apy') ||
-    query.includes('retirement')
+    query.includes('retirement') ||
+    query.includes('पेंशन') ||
+    query.includes('वृद्ध') ||
+    query.includes('रिटायर') ||
+    query.includes('बुढ़ापा')
   ) {
     const apy = schemes.find((s) => s.id === 'atal-pension-yojana');
     if (language === 'ta') {
@@ -158,6 +213,17 @@ export function processCitizenQuery(
         matchedSchemes: apy ? [apy] : [],
         suggestedAction: {
           label: 'ஓய்வூதிய தகுதி பார்க்கவும்',
+          tab: 'eligibility',
+          schemeId: 'atal-pension-yojana',
+        },
+      };
+    }
+    if (language === 'hi') {
+      return {
+        text: '"अटल पेंशन योजना (APY)" के तहत 18 से 40 वर्ष के भारतीय नागरिक 60 वर्ष की आयु के बाद ₹1,000 से ₹5,000 प्रतिमाह की आजीवन गारंटीड पेंशन प्राप्त कर सकते हैं। अपनी आयु के अनुसार न्यूनतम मासिक अंशदान देकर किसी भी बैंक शाखा या डाकघर में खाता खुलवाया जा सकता है। आवश्यक दस्तावेज: आधार कार्ड, बचत बैंक खाता और मोबाइल नंबर। ध्यान दें: आयकर दाता इसके पात्र नहीं हैं।',
+        matchedSchemes: apy ? [apy] : [],
+        suggestedAction: {
+          label: 'अटल पेंशन पात्रता जांचें',
           tab: 'eligibility',
           schemeId: 'atal-pension-yojana',
         },
@@ -180,7 +246,12 @@ export function processCitizenQuery(
     query.includes('தெருவோர') ||
     query.includes('vendor') ||
     query.includes('svanidhi') ||
-    query.includes('street vendor')
+    query.includes('street vendor') ||
+    query.includes('रेहड़ी') ||
+    query.includes('पटरी') ||
+    query.includes('फेरीवाले') ||
+    query.includes('वेंडर') ||
+    query.includes('स्वनिधि')
   ) {
     const svanidhi = schemes.find((s) => s.id === 'pm-svanidhi');
     if (language === 'ta') {
@@ -189,6 +260,17 @@ export function processCitizenQuery(
         matchedSchemes: svanidhi ? [svanidhi] : [],
         suggestedAction: {
           label: 'ஸ்வநிதி ஆவணங்களை சரிபார்க்கவும்',
+          tab: 'document-mapper',
+          schemeId: 'pm-svanidhi',
+        },
+      };
+    }
+    if (language === 'hi') {
+      return {
+        text: 'शहरी रेहड़ी-पटरी वालों के लिए "पीएम स्वनिधि (PM SVANidhi)" योजना बिना किसी गारंटी के कार्यशील पूंजी ऋण प्रदान करती है। पहले चरण में ₹10,000, समय पर चुकाने पर दूसरे चरण में ₹20,000 और तीसरे चरण में ₹50,000 तक का ऋण मिलता है। साथ ही 7% वार्षिक ब्याज सब्सिडी और डिजिटल लेनदेन पर ₹1,200 तक कैशबैक मिलता है। आवश्यक दस्तावेज: आधार कार्ड, स्थानीय निकाय द्वारा जारी वेंडिंग प्रमाण पत्र (CoV) या सिफारिश पत्र (LoR), और बैंक पासबुक।',
+        matchedSchemes: svanidhi ? [svanidhi] : [],
+        suggestedAction: {
+          label: 'स्वनिधि दस्तावेज मैपर देखें',
           tab: 'document-mapper',
           schemeId: 'pm-svanidhi',
         },
@@ -213,7 +295,13 @@ export function processCitizenQuery(
     query.includes('craft') ||
     query.includes('vishwakarma') ||
     query.includes('தச்சர்') ||
-    query.includes('தையல்')
+    query.includes('தையல்') ||
+    query.includes('विश्वकर्मा') ||
+    query.includes('कारीगर') ||
+    query.includes('शिल्पकार') ||
+    query.includes('दर्जी') ||
+    query.includes('बढ़ई') ||
+    query.includes('लोहार')
   ) {
     const vishwa = schemes.find((s) => s.id === 'pm-vishwakarma');
     if (language === 'ta') {
@@ -222,6 +310,17 @@ export function processCitizenQuery(
         matchedSchemes: vishwa ? [vishwa] : [],
         suggestedAction: {
           label: 'விஸ்வகர்மா தகுதி பார்க்கவும்',
+          tab: 'eligibility',
+          schemeId: 'pm-vishwakarma',
+        },
+      };
+    }
+    if (language === 'hi') {
+      return {
+        text: '"पीएम विश्वकर्मा योजना" 18 पारंपरिक शिल्पों एवं व्यवसायों (बढ़ई, लोहार, सुनार, कुम्हार, दर्जी, राजमिस्त्री आदि) के कारीगरों को विश्वकर्मा प्रमाण पत्र, निःशुल्क आधुनिक कौशल प्रशिक्षण, ₹15,000 का टूलकिट ई-वाउचर अनुदान, और 5% रियायती ब्याज दर पर ₹3 लाख तक का संपार्श्विक-मुक्त ऋण देती है। आवश्यक दस्तावेज: आधार कार्ड, पारंपरिक व्यवसाय स्व-घोषणा, और बैंक पासबुक।',
+        matchedSchemes: vishwa ? [vishwa] : [],
+        suggestedAction: {
+          label: 'विश्वकर्मा पात्रता जांचें',
           tab: 'eligibility',
           schemeId: 'pm-vishwakarma',
         },
@@ -245,7 +344,12 @@ export function processCitizenQuery(
     query.includes('தொழில் கடன்') ||
     query.includes('loan') ||
     query.includes('mudra') ||
-    query.includes('business')
+    query.includes('business') ||
+    query.includes('मुद्रा') ||
+    query.includes('ऋण') ||
+    query.includes('लोन') ||
+    query.includes('कारोबार') ||
+    query.includes('उद्योग')
   ) {
     const mudra = schemes.find((s) => s.id === 'pm-mudra-yojana');
     if (language === 'ta') {
@@ -254,6 +358,16 @@ export function processCitizenQuery(
         matchedSchemes: mudra ? [mudra] : [],
         suggestedAction: {
           label: 'முத்ரா திட்ட விவரங்களை பார்க்கவும்',
+          tab: 'discover',
+        },
+      };
+    }
+    if (language === 'hi') {
+      return {
+        text: '"प्रधानमंत्री मुद्रा योजना (PMMY)" गैर-कॉर्पोरेट छोटे कारोबारियों, विनिर्माण एवं सेवा क्षेत्र के उद्यमियों को बिना किसी गारंटी के ₹10 लाख से ₹20 लाख तक का व्यवसाय ऋण प्रदान करती है। तीन श्रेणियां हैं: शिशु (₹50,000 तक), किशोर (₹50,000 से ₹5 लाख), और तरुण (₹5 लाख से ₹10 लाख)। आवश्यक दस्तावेज: पहचान प्रमाण (आधार/पैन कार्ड), निवास प्रमाण, व्यवसाय पता प्रमाण और पिछले 6 माह का बैंक विवरण।',
+        matchedSchemes: mudra ? [mudra] : [],
+        suggestedAction: {
+          label: 'मुद्रा योजना विवरण देखें',
           tab: 'discover',
         },
       };
@@ -275,6 +389,16 @@ export function processCitizenQuery(
       matchedSchemes: schemes.slice(0, 3),
       suggestedAction: {
         label: 'அனைத்து திட்டங்களையும் காண்க',
+        tab: 'discover',
+      },
+    };
+  }
+  if (language === 'hi') {
+    return {
+      text: `आपके प्रश्न के संदर्भ में सत्यापित सरकारी कैटलॉग में ${schemes.length} आधिकारिक योजनाएं उपलब्ध हैं। आप किसान सहायता, मुफ्त अस्पताल इलाज (आयुष्मान), पक्का आवास, वरिष्ठ पेंशन, या सूक्ष्म व्यवसाय/मुद्रा ऋण के बारे में विशेष रूप से पूछ सकते हैं। आप "योजनाएं खोजें" पृष्ठ पर पूरा कैटलॉग भी देख सकते हैं।`,
+      matchedSchemes: schemes.slice(0, 3),
+      suggestedAction: {
+        label: 'सभी योजनाएं देखें',
         tab: 'discover',
       },
     };
@@ -378,6 +502,81 @@ export function prepareSpeechText(text: string, language: AssistantLanguage): st
     return clean;
   }
 
+  if (language === 'hi') {
+    let clean = text;
+
+    // 1. Remove parenthesized English translations e.g. (Check Eligibility), (PM-KISAN), (RoR), (NFSA Card)
+    clean = clean.replace(/\([A-Za-z0-9\s\/\-_.,]+\)/g, '');
+
+    // 2. Pronounce platform & common terms in Hindi phonetics
+    clean = clean.replace(/\bSevAIQ\b/gi, 'सेवा आई क्यू');
+    clean = clean.replace(/\be-KYC\b/gi, 'ई-केवाईसी');
+    clean = clean.replace(/\bWeb Speech API\b/gi, 'वेब स्पीच एपीआई');
+    clean = clean.replace(/\bAadhaar\b/gi, 'आधार');
+    clean = clean.replace(/\bRation Card\b/gi, 'राशन कार्ड');
+    clean = clean.replace(/\bBank Passbook\b/gi, 'बैंक पासबुक');
+
+    // 3. Expand common acronyms to natural Hindi phonetic pronunciations
+    clean = clean.replace(/\bPM-KISAN\b/gi, 'पीएम किसान');
+    clean = clean.replace(/\bAB-PMJAY\b/gi, 'आयुष्मान भारत योजना');
+    clean = clean.replace(/\bPM-JAY\b/gi, 'जन आरोग्य योजना');
+    clean = clean.replace(/\bPMAY-G\b/gi, 'प्रधानमंत्री आवास योजना ग्रामीण');
+    clean = clean.replace(/\bPMAY-U\b/gi, 'प्रधानमंत्री आवास योजना शहरी');
+    clean = clean.replace(/\bPMAY\b/gi, 'आवास योजना');
+    clean = clean.replace(/\bAPY\b/gi, 'अटल पेंशन योजना');
+    clean = clean.replace(/\bPM SVANidhi\b/gi, 'पीएम स्वनिधि योजना');
+    clean = clean.replace(/\bPMMY\b/gi, 'मुद्रा योजना');
+    clean = clean.replace(/\bCSC\b/gi, 'जन सेवा केंद्र');
+    clean = clean.replace(/\bDBT\b/gi, 'प्रत्यक्ष लाभ अंतरण');
+    clean = clean.replace(/\bNFSA\b/gi, 'राशन कार्ड');
+    clean = clean.replace(/\bRoR\b/gi, 'भूलेख खतौनी');
+    clean = clean.replace(/\bCoV\b/gi, 'वेंडिंग प्रमाण पत्र');
+    clean = clean.replace(/\bLoR\b/gi, 'सिफारिश पत्र');
+    clean = clean.replace(/\bPAN\b/gi, 'पैन कार्ड');
+
+    // 4. URLs to spoken Hindi
+    clean = clean.replace(/pmkisan\.gov\.in/gi, 'पीएम किसान पोर्टल');
+    clean = clean.replace(/beneficiary\.nha\.gov\.in/gi, 'आयुष्मान भारत पोर्टल');
+    clean = clean.replace(/pmsvanidhi\.mohua\.gov\.in/gi, 'पीएम स्वनिधि पोर्टल');
+    clean = clean.replace(/npscra\.nsdl\.co\.in/gi, 'अटल पेंशन पोर्टल');
+    clean = clean.replace(/pmjay\.gov\.in/gi, 'जन आरोग्य पोर्टल');
+
+    // 5. Currency amounts to fluent spoken Hindi numbers
+    clean = clean.replace(/₹\s*([0-9,.]+)\s*(लाख|करोड़)?/g, (_match, num, unit) => {
+      const cleanNum = num.replace(/,/g, '');
+      if (cleanNum === '500000') return 'पांच लाख रुपये ';
+      if (cleanNum === '6000') return 'छह हजार रुपये ';
+      if (cleanNum === '2000') return 'दो हजार रुपये ';
+      if (cleanNum === '1000') return 'एक हजार रुपये ';
+      if (cleanNum === '5000') return 'पांच हजार रुपये ';
+      if (cleanNum === '120000') return 'एक लाख बीस हजार रुपये ';
+      if (cleanNum === '130000') return 'एक लाख तीस हजार रुपये ';
+      if (cleanNum === '10000') return 'दस हजार रुपये ';
+      if (cleanNum === '20000') return 'बीस हजार रुपये ';
+      if (cleanNum === '50000') return 'पचास हजार रुपये ';
+      if (cleanNum === '2.5' && unit === 'लाख') return 'ढाई लाख रुपये ';
+      if (cleanNum === '3' && unit === 'लाख') return 'तीन लाख रुपये ';
+      if (cleanNum === '10' && unit === 'लाख') return 'दस लाख रुपये ';
+      if (cleanNum === '20' && unit === 'लाख') return 'बीस लाख रुपये ';
+      return unit ? `${cleanNum} ${unit} रुपये ` : `${cleanNum} रुपये `;
+    });
+    clean = clean.replace(/₹/g, ' रुपये ');
+
+    // 6. Percentages e.g. 7% -> 7 प्रतिशत
+    clean = clean.replace(/([0-9]+)\s*%/g, '$1 प्रतिशत');
+
+    // 7. Age patterns e.g. 70+ -> 70 वर्ष से अधिक उम्र
+    clean = clean.replace(/([0-9]+)\s*\+/g, '$1 वर्ष से अधिक');
+
+    // 8. Strip markdown characters, quotes, and brackets
+    clean = clean.replace(/[*_#`~"“”'’[\]]/g, '');
+
+    // 9. Normalize spacing
+    clean = clean.replace(/\s+/g, ' ').trim();
+
+    return clean;
+  }
+
   // English cleanup
   let cleanEn = text;
   cleanEn = cleanEn.replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1');
@@ -438,6 +637,40 @@ export function getBestVoice<T extends VoiceCandidate>(
     // 4. Any voice with 'tamil' in its name
     const namedTamil = voices.find((v) => v.name.toLowerCase().includes('tamil'));
     if (namedTamil) return namedTamil;
+
+    return null;
+  }
+
+  if (language === 'hi') {
+    // 1. Preferred high-quality native Hindi voices
+    const preferredHindi = voices.find(
+      (v) =>
+        (v.lang.toLowerCase() === 'hi-in' ||
+          v.lang.toLowerCase() === 'hi_in' ||
+          v.lang.toLowerCase().startsWith('hi')) &&
+        (v.name.includes('Google') ||
+          v.name.includes('Kalpana') ||
+          v.name.includes('Lekha') ||
+          v.name.includes('Hemant') ||
+          v.name.includes('Neerja') ||
+          v.name.includes('Hindi') ||
+          v.name.includes('हिन्दी'))
+    );
+    if (preferredHindi) return preferredHindi;
+
+    // 2. Exact match on language tag hi-IN or hi_IN
+    const exactHindi = voices.find(
+      (v) => v.lang.toLowerCase() === 'hi-in' || v.lang.toLowerCase() === 'hi_in'
+    );
+    if (exactHindi) return exactHindi;
+
+    // 3. Any voice starting with hi
+    const anyHindi = voices.find((v) => v.lang.toLowerCase().startsWith('hi'));
+    if (anyHindi) return anyHindi;
+
+    // 4. Any voice with 'hindi' in its name
+    const namedHindi = voices.find((v) => v.name.toLowerCase().includes('hindi'));
+    if (namedHindi) return namedHindi;
 
     return null;
   }

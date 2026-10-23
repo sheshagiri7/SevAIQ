@@ -25,6 +25,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({
 }) => {
   const { language, t } = useLanguage();
   const isTamil = language === 'ta';
+  const isHindi = language === 'hi';
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
 
   // Close on Escape key
@@ -78,7 +79,11 @@ export const AboutModal: React.FC<AboutModalProps> = ({
                   id="about-modal-title"
                   className="text-lg sm:text-xl font-black text-slate-900 tracking-tight leading-tight"
                 >
-                  {isTamil ? 'SevAIQ பற்றி: அம்சங்கள் & செயல்படும் முறை' : 'About SevAIQ: Features & Working'}
+                  {isTamil
+                    ? 'SevAIQ பற்றி: அம்சங்கள் & செயல்படும் முறை'
+                    : isHindi
+                    ? 'SevAIQ के बारे में: विशेषताएं और कार्यप्रणाली'
+                    : 'About SevAIQ: Features & Working'}
                 </h2>
                 <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-civic-100 text-civic-800 border border-civic-200">
                   {t.header.challengeBadge}
@@ -109,6 +114,8 @@ export const AboutModal: React.FC<AboutModalProps> = ({
             <div className="text-xs sm:text-sm text-civic-900 leading-relaxed">
               <strong>SevAIQ</strong> {isTamil
                 ? 'என்பது இந்திய குடிமக்கள் தங்களுக்குரிய மத்திய மற்றும் மாநில நலத்திட்டங்களை துல்லியமாக கண்டறிந்து, தகுதியை சோதித்து, தேவையான ஆவணங்களை தயார் செய்து, நிராகரிப்பு இல்லாத விண்ணப்பங்களை சமர்ப்பிக்க உதவும் அரசு-நம்பகத்தன்மை கொண்ட டிஜிட்டல் தளமாகும்.'
+                : isHindi
+                ? 'एक पारदर्शी नागरिक बुद्धिमत्ता मंच है जो भारतीय नागरिकों और वैधानिक सरकारी कल्याण योजनाओं के बीच सूचना अंतराल को समाप्त करता है। यह खोज से लेकर सत्यापित आवेदन तत्परता तक बिना किसी भ्रांति (zero hallucinations) के आपका मार्गदर्शन करता है।'
                 : 'is an explainable civic intelligence platform designed to eliminate the information asymmetry between Indian citizens and statutory government welfare programs. It guides you from discovery to verified submission readiness with zero hallucinations.'}
             </div>
           </div>
@@ -348,6 +355,8 @@ export const AboutModal: React.FC<AboutModalProps> = ({
           <span className="text-[11px] text-slate-500 text-center sm:text-left">
             {isTamil
               ? 'அனைத்து தரவுகளும் உங்கள் உலாவியில் மட்டுமே பாதுகாப்பாக சேமிக்கப்படுகின்றன.'
+              : isHindi
+              ? 'सभी डेटा केवल आपके ब्राउज़र में सुरक्षित रूप से स्थानीय रूप से संग्रहीत होते हैं • शून्य सर्वर भंडारण'
               : 'Zero server-side persistence of citizen profiles • Ephemeral in-memory execution'}
           </span>
           <button
@@ -355,7 +364,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({
             onClick={onClose}
             className="w-full sm:w-auto px-5 py-2 text-xs font-bold text-white bg-civic-700 hover:bg-civic-800 rounded-xl shadow-xs transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500"
           >
-            {isTamil ? 'மூடவும்' : 'Got it, Close'}
+            {isTamil ? 'மூடவும்' : isHindi ? 'समझ गए, बंद करें' : 'Got it, Close'}
           </button>
         </div>
       </div>

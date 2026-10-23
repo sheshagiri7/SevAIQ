@@ -69,6 +69,33 @@ describe('Voice Assistant Engine Suite', () => {
     expect(ansEn.text).toContain('₹5 Lakh');
   });
 
+  it('answers farmer queries in Hindi with verified PM-KISAN guidance', () => {
+    const answer = processCitizenQuery('किसानों के लिए कौन सी योजना है?', 'hi', sampleSchemes);
+    expect(answer.text).toContain('PM-KISAN');
+    expect(answer.text).toContain('₹6,000');
+    expect(answer.matchedSchemes.some((s) => s.id === 'pm-kisan')).toBe(true);
+    expect(answer.suggestedAction?.tab).toBe('eligibility');
+  });
+
+  it('answers healthcare queries in Hindi', () => {
+    const ansHi = processCitizenQuery('मुफ्त इलाज और स्वास्थ्य बीमा कैसे मिलेगा?', 'hi', sampleSchemes);
+    expect(ansHi.text).toContain('आयुष्मान भारत');
+    expect(ansHi.text).toContain('₹5,00,000');
+    expect(ansHi.matchedSchemes.some((s) => s.id === 'pm-jay')).toBe(true);
+  });
+
+  it('answers housing queries in Hindi', () => {
+    const ansHi = processCitizenQuery('घर बनाने के लिए आवास सहायता योजना', 'hi', sampleSchemes);
+    expect(ansHi.text).toContain('PMAY-G');
+    expect(ansHi.matchedSchemes.some((s) => s.id === 'pmay-g')).toBe(true);
+  });
+
+  it('answers pension queries in Hindi', () => {
+    const ansHi = processCitizenQuery('बुढ़ापे के लिए पेंशन योजना चाहिए', 'hi', sampleSchemes);
+    expect(ansHi.text).toContain('अटल पेंशन योजना');
+    expect(ansHi.matchedSchemes.some((s) => s.id === 'atal-pension-yojana')).toBe(true);
+  });
+
   it('answers housing queries with PMAY details', () => {
     const ans = processCitizenQuery('வீடு கட்ட உதவி கிடைக்குமா?', 'ta', sampleSchemes);
     expect(ans.text).toContain('PMAY-G');
@@ -81,8 +108,9 @@ describe('Voice Assistant Engine Suite', () => {
     expect(ans.suggestedAction?.tab).toBe('discover');
   });
 
-  it('has sample prompts available in both Tamil and English', () => {
+  it('has sample prompts available in Tamil, Hindi and English', () => {
     expect(SAMPLE_PROMPTS.ta.length).toBeGreaterThanOrEqual(4);
+    expect(SAMPLE_PROMPTS.hi.length).toBeGreaterThanOrEqual(4);
     expect(SAMPLE_PROMPTS.en.length).toBeGreaterThanOrEqual(4);
   });
 
@@ -119,6 +147,30 @@ describe('Voice Assistant Engine Suite', () => {
       expect(output).toContain('சேவை ஐ க்யூ');
     });
 
+    it('normalizes Hindi currency amounts to natural spoken numbers', () => {
+      const input = 'किसानों को ₹6,000 और ₹2,000 की किस्त मिलती है। उपचार ₹5,00,000 तक।';
+      const output = prepareSpeechText(input, 'hi');
+      expect(output).toContain('छह हजार रुपये');
+      expect(output).toContain('दो हजार रुपये');
+      expect(output).toContain('पांच लाख रुपये');
+      expect(output).not.toContain('₹');
+    });
+
+    it('expands English acronyms to Hindi phonetic Devanagari', () => {
+      const input = 'PM-KISAN और AB-PMJAY में DBT व CSC केंद्र से सहायता लें।';
+      const output = prepareSpeechText(input, 'hi');
+      expect(output).toContain('पीएम किसान');
+      expect(output).toContain('आयुष्मान भारत योजना');
+      expect(output).toContain('प्रत्यक्ष लाभ अंतरण');
+      expect(output).toContain('जन सेवा केंद्र');
+    });
+
+    it('normalizes platform name SevAIQ to सेवा आई क्यू for natural Hindi TTS', () => {
+      const input = 'मैं SevAIQ वॉयस सहायक हूँ।';
+      const output = prepareSpeechText(input, 'hi');
+      expect(output).toContain('सेवा आई क्यू');
+    });
+
     it('cleans up English currency and percentages', () => {
       const input = 'Annual support of ₹6,000 with 7% interest subsidy.';
       const output = prepareSpeechText(input, 'en');
@@ -136,6 +188,8 @@ describe('Voice Assistant Engine Suite', () => {
       { name: 'Rishi', lang: 'en-IN' },
       { name: 'Vani', lang: 'ta-IN' },
       { name: 'Google தமிழ்', lang: 'ta-IN' },
+      { name: 'Google हिन्दी', lang: 'hi-IN' },
+      { name: 'Kalpana', lang: 'hi-IN' },
     ];
 
     it('selects preferred Tamil voice (Google தமிழ் or Vani) when available', () => {
@@ -143,6 +197,13 @@ describe('Voice Assistant Engine Suite', () => {
       expect(selected).toBeDefined();
       expect(selected?.lang).toBe('ta-IN');
       expect(['Vani', 'Google தமிழ்'].includes(selected?.name || '')).toBe(true);
+    });
+
+    it('selects preferred Hindi voice (Google हिन्दी or Kalpana) when available', () => {
+      const selected = getBestVoice(mockVoices, 'hi');
+      expect(selected).toBeDefined();
+      expect(selected?.lang).toBe('hi-IN');
+      expect(['Kalpana', 'Google हिन्दी'].includes(selected?.name || '')).toBe(true);
     });
 
     it('returns null if no Tamil voice exists in voice list', () => {

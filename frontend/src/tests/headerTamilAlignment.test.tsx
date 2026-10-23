@@ -100,4 +100,40 @@ describe('Header Tamil Transition Alignment and Sizing', () => {
     expect(html).toContain('நிறுத்தம்');
     expect(html).toContain('அமர்வை முடி');
   });
+
+  it('renders Hindi header with authentic Hindi labels and zero Tamil residual words', () => {
+    // Set localStorage language to Hindi
+    localStorage.setItem('SEVAIQ_APP_LANGUAGE', 'hi');
+
+    const html = renderToString(
+      <LanguageProvider>
+        <AccessibilityProvider>
+          <Header
+            activeTab="dashboard"
+            onSelectTab={() => {}}
+            eligibleCount={3}
+            isKioskMode={false}
+            onToggleKioskMode={() => {}}
+            onClearSession={() => {}}
+          />
+        </AccessibilityProvider>
+      </LanguageProvider>
+    );
+
+    // Hindi navigation labels
+    expect(html).toContain('डैशबोर्ड');
+    expect(html).toContain('योजनाएं');
+    expect(html).toContain('पात्रता');
+    expect(html).toContain('दस्तावेज');
+    expect(html).toContain('पासपोर्ट');
+    expect(html).toContain('विश्वसनीयता');
+    expect(html).toContain('मार्गदर्शन');
+
+    // Must NOT contain any Tamil words on Hindi page
+    expect(html).not.toContain('தகுதி');
+    expect(html).not.toContain('சரிபார்ப்பு');
+    expect(html).not.toContain('முகப்பு');
+    expect(html).not.toContain('திட்டங்கள்');
+    expect(html).not.toContain('ஆவணங்கள்');
+  });
 });

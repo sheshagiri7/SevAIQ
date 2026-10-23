@@ -70,7 +70,11 @@ export const DeveloperHandshake: React.FC<DeveloperHandshakeProps> = ({ apiState
                   <span className="font-mono font-bold text-emerald-700 mr-2">GET</span>
                   <code className="font-mono text-slate-800 font-semibold">/api/health</code>
                   <span className="text-slate-400 block text-[11px] mt-0.5">
-                    {language === 'ta' ? 'இயக்கநேர சுகாதார சோதனை பதில்' : 'Runtime health check response'}
+                    {language === 'ta'
+                      ? 'இயக்கநேர சுகாதார சோதனை பதில்'
+                      : language === 'hi'
+                      ? 'रनटाइम स्वास्थ्य जांच प्रतिक्रिया'
+                      : 'Runtime health check response'}
                   </span>
                 </div>
                 <button
@@ -88,7 +92,11 @@ export const DeveloperHandshake: React.FC<DeveloperHandshakeProps> = ({ apiState
                   <span className="font-mono font-bold text-emerald-700 mr-2">GET</span>
                   <code className="font-mono text-slate-800 font-semibold">/api/schemes</code>
                   <span className="text-slate-400 block text-[11px] mt-0.5">
-                    {language === 'ta' ? 'சரிபார்க்கப்பட்ட திட்ட சேகரிப்பு' : 'Verified scheme collection'}
+                    {language === 'ta'
+                      ? 'சரிபார்க்கப்பட்ட திட்ட சேகரிப்பு'
+                      : language === 'hi'
+                      ? 'सत्यापित योजना संग्रह'
+                      : 'Verified scheme collection'}
                   </span>
                 </div>
                 <button
@@ -105,12 +113,18 @@ export const DeveloperHandshake: React.FC<DeveloperHandshakeProps> = ({ apiState
             {testResult && (
               <div className="mt-4">
                 <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center justify-between">
-                  <span>{language === 'ta' ? 'நேரடி சோதனை முடிவு:' : 'Live Test Result:'}</span>
+                  <span>
+                    {language === 'ta'
+                      ? 'நேரடி சோதனை முடிவு:'
+                      : language === 'hi'
+                      ? 'लाइव परीक्षण परिणाम:'
+                      : 'Live Test Result:'}
+                  </span>
                   <button
                     onClick={() => setTestResult(null)}
                     className="text-slate-400 hover:text-slate-600 text-[10px]"
                   >
-                    {language === 'ta' ? 'அழி' : 'Clear'}
+                    {language === 'ta' ? 'அழி' : language === 'hi' ? 'साफ़ करें' : 'Clear'}
                   </button>
                 </div>
                 <pre className="p-3 bg-slate-900 text-emerald-400 rounded-xl text-xs font-mono overflow-x-auto max-h-40">
@@ -121,7 +135,10 @@ export const DeveloperHandshake: React.FC<DeveloperHandshakeProps> = ({ apiState
           </div>
 
           <div className="mt-5 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-            <span>{language === 'ta' ? 'ஆவணங்கள்:' : 'Documentation:'} <code className="text-slate-700">docs/API_CONTRACT.md</code></span>
+            <span>
+              {language === 'ta' ? 'ஆவணங்கள்:' : language === 'hi' ? 'दस्तावेज़ीकरण:' : 'Documentation:'}{' '}
+              <code className="text-slate-700">docs/API_CONTRACT.md</code>
+            </span>
             <span>FastAPI Docs: <a href={`${apiState.baseUrl}/docs`} target="_blank" rel="noreferrer" className="text-civic-600 hover:underline">/docs</a></span>
           </div>
         </div>
@@ -132,10 +149,20 @@ export const DeveloperHandshake: React.FC<DeveloperHandshakeProps> = ({ apiState
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-bold text-white flex items-center space-x-2">
                 <Cpu className="w-4 h-4 text-emerald-400" />
-                <span>{language === 'ta' ? 'உள்ளூர் இயக்கம் (macOS)' : 'Local Execution (macOS)'}</span>
+                <span>
+                  {language === 'ta'
+                    ? 'உள்ளூர் இயக்கம் (macOS)'
+                    : language === 'hi'
+                    ? 'स्थानीय निष्पादन (macOS)'
+                    : 'Local Execution (macOS)'}
+                </span>
               </h3>
               <span className="text-[11px] text-slate-400">
-                {language === 'ta' ? 'தனித்தனி இயக்கங்கள்' : 'Independent runtimes'}
+                {language === 'ta'
+                  ? 'தனித்தனி இயக்கங்கள்'
+                  : language === 'hi'
+                  ? 'स्वतंत्र रनटाइम'
+                  : 'Independent runtimes'}
               </span>
             </div>
 
@@ -185,6 +212,8 @@ export const DeveloperHandshake: React.FC<DeveloperHandshakeProps> = ({ apiState
           <div className="mt-4 pt-3 border-t border-slate-800/80 text-[11px] text-slate-400">
             {language === 'ta'
               ? 'முன்தளம் மற்றும் பின்தளம் ஆகிய இரண்டையும் ஒரே நேரத்தில் இரு டெர்மினல் தாவல்களில் இயக்க முடியும்.'
+              : language === 'hi'
+              ? 'फ़्रंटएंड और बैकएंड बिना किसी पोर्ट टकराव के दो अलग-अलग टर्मिनल टैब में एक साथ चल सकते हैं।'
               : 'Frontend and Backend can run simultaneously in two terminal tabs without port conflicts.'}
           </div>
         </div>

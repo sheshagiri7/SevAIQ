@@ -3,7 +3,7 @@
  * Covers all screens, components, modals, filters, options, schemes, and documents.
  */
 
-export type AppLanguage = 'en' | 'ta';
+export type AppLanguage = 'en' | 'ta' | 'hi';
 
 export interface SchemeTranslation {
   title: string;
@@ -21,7 +21,7 @@ export interface DocumentTranslation {
   issuingAuthority: string;
 }
 
-export const SCHEME_TRANSLATIONS: Record<'ta', Record<string, SchemeTranslation>> = {
+export const SCHEME_TRANSLATIONS: Record<'ta' | 'hi', Record<string, SchemeTranslation>> = {
   ta: {
     'pm-kisan': {
       title: 'பிரதான் மந்திரி கிசான் சம்மான் நிதி (PM-KISAN)',
@@ -134,9 +134,121 @@ export const SCHEME_TRANSLATIONS: Record<'ta', Record<string, SchemeTranslation>
         'அடிப்படை மற்றும் மேம்பட்ட திறன் பயிற்சி, நாளொன்றுக்கு ₹500 உதவித்தொகை, ₹15,000 மதிப்புள்ள நவீன கருவித்தொகுப்பு மானியம் மற்றும் 5% சலுகை வட்டியில் ₹3 லட்சம் வரை பிணையில்லா கடன்.',
     },
   },
+  hi: {
+    'pm-kisan': {
+      title: 'प्रधानमंत्री किसान सम्मान निधि (PM-KISAN)',
+      short_description:
+        'पात्र भूमिधारक किसान परिवारों को प्रति वर्ष ₹6,000 की वित्तीय सहायता, हर चार माह में ₹2,000 की तीन समान किस्तों में सीधे बैंक खाते में दी जाती है।',
+      category: 'कृषि एवं ग्रामीण विकास',
+      ministry: 'कृषि एवं किसान कल्याण मंत्रालय',
+      beneficiary_type: 'छोटे एवं सीमांत भूमिधारक किसान परिवार',
+      benefits_summary: 'प्रत्यक्ष लाभ अंतरण (DBT) द्वारा ₹6,000 प्रति वर्ष',
+      detailed_benefits:
+        'चार माह के अंतराल पर ₹2,000 की तीन किस्तों में वार्षिक ₹6,000 आधार से जुड़े बैंक खाते में सीधे स्थानांतरित किए जाते हैं।',
+    },
+    'ab-pmjay': {
+      title: 'आयुष्मान भारत - प्रधानमंत्री जन आरोग्य योजना (AB-PMJAY)',
+      short_description:
+        'पात्र गरीब परिवारों को द्वितीयक एवं तृतीयक स्तर के अस्पताल में भर्ती एवं इलाज हेतु प्रति वर्ष प्रति परिवार ₹5 लाख तक का निःशुल्क कैशलेस स्वास्थ्य कवर।',
+      category: 'स्वास्थ्य एवं परिवार कल्याण',
+      ministry: 'स्वास्थ्य एवं परिवार कल्याण मंत्रालय / राष्ट्रीय स्वास्थ्य प्राधिकरण (NHA)',
+      beneficiary_type: 'सामाजिक-आर्थिक रूप से वंचित गरीब परिवार एवं 70 वर्ष से अधिक उम्र के वरिष्ठ नागरिक',
+      benefits_summary: 'प्रति परिवार प्रति वर्ष ₹5,00,000 तक कैशलेस उपचार',
+      detailed_benefits:
+        'सूचीबद्ध सरकारी एवं निजी अस्पतालों में 1,900 से अधिक चिकित्सीय प्रक्रियाओं व गंभीर बीमारियों हेतु ₹5 लाख तक का कैशलेस एवं पेपरलेस उपचार।',
+    },
+    'pm-jay': {
+      title: 'आयुष्मान भारत - प्रधानमंत्री जन आरोग्य योजना (PM-JAY)',
+      short_description:
+        'पात्र गरीब परिवारों को द्वितीयक एवं तृतीयक स्तर के अस्पताल में भर्ती एवं इलाज हेतु प्रति वर्ष प्रति परिवार ₹5 लाख तक का निःशुल्क कैशलेस स्वास्थ्य कवर।',
+      category: 'स्वास्थ्य एवं परिवार कल्याण',
+      ministry: 'स्वास्थ्य एवं परिवार कल्याण मंत्रालय / राष्ट्रीय स्वास्थ्य प्राधिकरण (NHA)',
+      beneficiary_type: 'सामाजिक-आर्थिक रूप से वंचित गरीब परिवार एवं 70 वर्ष से अधिक उम्र के वरिष्ठ नागरिक',
+      benefits_summary: 'प्रति परिवार प्रति वर्ष ₹5,00,000 तक कैशलेस उपचार',
+      detailed_benefits:
+        'सूचीबद्ध सरकारी एवं निजी अस्पतालों में 1,900 से अधिक चिकित्सीय प्रक्रियाओं व गंभीर बीमारियों हेतु ₹5 लाख तक का कैशलेस एवं पेपरलेस उपचार।',
+    },
+    'pm-svanidhi': {
+      title: 'पीएम स्ट्रीट वेंडर्स आत्मनिर्भर निधि (PM SVANidhi)',
+      short_description:
+        'शहरी पथ विक्रेताओं (रेहड़ी-पटरी वालों) को बिना किसी जमानत के ₹10,000 से ₹50,000 तक कार्यशील पूंजी ऋण एवं 7% ब्याज सब्सिडी।',
+      category: 'वित्तीय समावेशन एवं आजीविका',
+      ministry: 'आवासन और शहरी कार्य मंत्रालय',
+      beneficiary_type: 'शहरी रेहड़ी-पटरी वेंडर्स एवं फेरीवाले',
+      benefits_summary: '₹10,000 से ₹50,000 तक आसान ऋण, 7% ब्याज सब्सिडी व डिजिटल कैशबैक',
+      detailed_benefits:
+        'प्रथम चरण में ₹10,000, समय पर अदायगी पर द्वितीय चरण में ₹20,000 एवं तृतीय चरण में ₹50,000 तक का कोलैटरल-फ्री ऋण, 7% ब्याज अनुदान तथा प्रति वर्ष ₹1,200 तक कैशबैक।',
+    },
+    'nsp-post-matric': {
+      title: 'पोस्ट-मैट्रिक छात्रवृत्ति योजना (NSP)',
+      short_description:
+        'कक्षा 10वीं से आगे उच्च शिक्षा प्राप्त कर रहे अनुसूचित जाति (SC), जनजाति (ST), अन्य पिछड़ा वर्ग (OBC) एवं आर्थिक रूप से कमजोर छात्रों को वित्तीय सहायता।',
+      category: 'शिक्षा एवं छात्र कल्याण',
+      ministry: 'सामाजिक न्याय एवं अधिकारिता मंत्रालय',
+      beneficiary_type: '11वीं कक्षा से उच्च शिक्षा व व्यावसायिक पाठ्यक्रमों के पात्र छात्र',
+      benefits_summary: 'पूर्ण शिक्षण शुल्क प्रतिपूर्ति एवं मासिक रख-रखाव भत्ता',
+      detailed_benefits:
+        'अनिवार्य गैर-वापसी योग्य शिक्षण शुल्क की प्रतिपूर्ति तथा पाठ्यक्रम के आधार पर ₹550 से ₹1,200 प्रतिमाह तक का रख-रखाव भत्ता।',
+    },
+    'pmay-g': {
+      title: 'प्रधानमंत्री आवास योजना - ग्रामीण (PMAY-G)',
+      short_description:
+        'ग्रामीण क्षेत्रों के बेघर या कच्चे/जीर्ण-शीर्ण घरों में रह रहे गरीब परिवारों को पक्का मकान बनाने हेतु ₹1.20 लाख से ₹1.30 लाख की सीधी वित्तीय सहायता।',
+      category: 'आवास एवं अवसंरचना',
+      ministry: 'ग्रामीण विकास मंत्रालय',
+      beneficiary_type: 'ग्रामीण बेघर एवं कच्चे मकानों में रहने वाले पात्र परिवार',
+      benefits_summary: 'पक्के मकान निर्माण हेतु ₹1.20 लाख से ₹1.30 लाख प्रत्यक्ष अनुदान + मनरेगा मजदूरी',
+      detailed_benefits:
+        'मैदानी क्षेत्रों में ₹1.20 लाख तथा पहाड़ी/कठिन क्षेत्रों में ₹1.30 लाख का प्रत्यक्ष अनुदान। शौचालय निर्माण हेतु अतिरिक्त ₹12,000 एवं मनरेगा के अंतर्गत 90-95 दिनों की अकुशल मजदूरी सहायता।',
+    },
+    'pmay-u': {
+      title: 'प्रधानमंत्री आवास योजना - शहरी (PMAY-U)',
+      short_description:
+        'शहरी गरीबों, झुग्गीवासियों और निम्न आय वर्ग के परिवारों को पक्का मकान बनाने अथवा खरीदने हेतु ब्याज सब्सिडी (CLSS) एवं केंद्रीय वित्तीय सहायता।',
+      category: 'आवास एवं अवसंरचना',
+      ministry: 'आवासन और शहरी कार्य मंत्रालय',
+      beneficiary_type: 'शहरी आर्थिक रूप से कमजोर वर्ग (EWS) एवं निम्न आय वर्ग (LIG)',
+      benefits_summary: 'गृह ऋण पर ₹2.67 लाख तक की अग्रिम ब्याज सब्सिडी',
+      detailed_benefits:
+        'गृह ऋणों पर 6.5% तक ब्याज सब्सिडी (अधिकतम ₹2.67 लाख तक की अग्रिम ब्याज छूट) तथा किफायती आवास साझेदारी के तहत वित्तीय सहायता।',
+    },
+    'atal-pension-yojana': {
+      title: 'अटल पेंशन योजना (APY)',
+      short_description:
+        'असंगठित क्षेत्र के श्रमिकों को 60 वर्ष की आयु के पश्चात जीवनभर ₹1,000 से ₹5,000 प्रतिमाह तक की गारंटीड पेंशन।',
+      category: 'सामाजिक सुरक्षा एवं पेंशन',
+      ministry: 'वित्त मंत्रालय / PFRDA',
+      beneficiary_type: '18 से 40 वर्ष की आयु के भारतीय नागरिक (असंगठित क्षेत्र के कामगार)',
+      benefits_summary: '60 वर्ष की आयु के बाद ₹1,000 से ₹5,000 मासिक आजीवन पेंशन',
+      detailed_benefits:
+        'जुड़ने की उम्र के अनुसार अल्प मासिक अंशदान। अंशधारक और जीवनसाथी को आजीवन मासिक पेंशन की गारंटी, तत्पश्चात संपूर्ण संचित निधि नामित वारिस (नॉमिनी) को।',
+    },
+    'pm-mudra-yojana': {
+      title: 'प्रधानमंत्री मुद्रा योजना (PMMY)',
+      short_description:
+        'छोटे व्यवसाय, दुकानदारों, विनिर्माण और सेवा क्षेत्र के उद्यमियों को बिना किसी गारंटी के ₹50,000 से ₹20 लाख तक का व्यवसाय ऋण (शिशु, किशोर, तरुण)।',
+      category: 'वित्तीय समावेशन एवं आजीविका',
+      ministry: 'वित्त मंत्रालय (वित्तीय सेवाएं विभाग)',
+      beneficiary_type: 'सूक्ष्म, लघु व्यापारी, दुकानदार, निर्माता एवं उद्यमी',
+      benefits_summary: 'बिना किसी बंधक/जमानत के ₹50,000 से ₹20 लाख तक संस्थागत ऋण',
+      detailed_benefits:
+        'शिशु (₹50,000 तक), किशोर (₹50,000 से ₹5 लाख तक), तरुण (₹5 लाख से ₹10 लाख तक), एवं तरुण प्लस (₹20 लाख तक) संपार्श्विक-मुक्त व्यावसायिक ऋण।',
+    },
+    'pm-vishwakarma': {
+      title: 'प्रधानमंत्री विश्वकर्मा योजना',
+      short_description:
+        'पारंपरिक 18 शिल्पों एवं कारीगरों को पहचान पत्र, कौशल प्रशिक्षण, ₹15,000 टूलकिट अनुदान तथा 5% रियायती ब्याज पर ऋण सहायता।',
+      category: 'कौशल विकास एवं आजीविका',
+      ministry: 'सूक्ष्म, लघु एवं मध्यम उद्यम मंत्रालय (MSME)',
+      beneficiary_type: '18 पारंपरिक व्यवसायों से जुड़े शिल्पकार व कारीगर (बढ़ई, लोहार, दर्जी, कुम्हार आदि)',
+      benefits_summary: 'विश्वकर्मा प्रमाण पत्र, ₹15,000 आधुनिक औजार प्रोत्साहन व ₹3 लाख तक रियायती ऋण',
+      detailed_benefits:
+        'बुनियादी और उन्नत कौशल प्रशिक्षण, ₹500 प्रतिदिन का वजीफा, ₹15,000 का आधुनिक टूलकिट ई-वाउचर अनुदान, तथा 5% रियायती ब्याज दर पर ₹3 लाख तक का कोलैटरल-फ्री उद्यम ऋण।',
+    },
+  },
 };
 
-export const DOCUMENT_TRANSLATIONS: Record<'ta', Record<string, DocumentTranslation>> = {
+export const DOCUMENT_TRANSLATIONS: Record<'ta' | 'hi', Record<string, DocumentTranslation>> = {
   ta: {
     'aadhaar-card': {
       name: 'ஆதார் அட்டை',
@@ -197,6 +309,68 @@ export const DOCUMENT_TRANSLATIONS: Record<'ta', Record<string, DocumentTranslat
       name: 'கிராம ஊராட்சி குடியிருப்பு சான்றிதழ்',
       description: 'குடிசை வீட்டில் வசிப்பதையும் கிராம வசிப்பிடத்தையும் உறுதிப்படுத்தும் உள்ளாட்சி சான்றிதழ்.',
       issuingAuthority: 'கிராம ஊராட்சி / ஊராட்சி மன்ற தலைவர் / வட்டார வளர்ச்சி அலுவலர் (BDO)',
+    },
+  },
+  hi: {
+    'aadhaar-card': {
+      name: 'आधार कार्ड (Aadhaar Card)',
+      description: 'नागरिकों की पहचान एवं पते को प्रमाणित करने वाला 12-अंकों का राष्ट्रीय बायोमेट्रिक पहचान पत्र।',
+      issuingAuthority: 'भारतीय विशिष्ट पहचान प्राधिकरण (UIDAI)',
+    },
+    'bank-passbook': {
+      name: 'बैंक पासबुक / खाता विवरण',
+      description: 'डीबीटी सक्षम आधार से जुड़ा बैंक खाता पासबुक अथवा आईएफएससी कोड युक्त बैंक स्टेटमेंट।',
+      issuingAuthority: 'मान्यता प्राप्त वाणिज्यिक बैंक / क्षेत्रीय ग्रामीण बैंक / डाकघर बैंक',
+    },
+    'mobile-number': {
+      name: 'आधार से जुड़ा मोबाइल नंबर',
+      description: 'ओटीपी सत्यापन और सरकारी सूचनाओं हेतु आधार से लिंक सक्रिय मोबाइल नंबर।',
+      issuingAuthority: 'दूरसंचार प्रदाता / UIDAI',
+    },
+    'pan-card': {
+      name: 'पैन कार्ड (PAN Card)',
+      description: 'आयकर एवं वित्तीय लेनदेन सत्यापन हेतु जारी स्थायी खाता संख्या कार्ड।',
+      issuingAuthority: 'आयकर विभाग / NSDL / UTIITSL',
+    },
+    'income-certificate': {
+      name: 'आय प्रमाण पत्र (Income Certificate)',
+      description: 'परिवार की कुल वार्षिक आय को सत्यापित करने वाला सक्षम राजस्व अधिकारी द्वारा जारी आधिकारिक प्रमाण पत्र।',
+      issuingAuthority: 'राजस्व विभाग / तहसीलदार / उप-जिलाधिकारी (SDM)',
+    },
+    'domicile-certificate': {
+      name: 'मूल निवास प्रमाण पत्र (Domicile / Residence Certificate)',
+      description: 'संबंधित राज्य या केंद्र शासित प्रदेश में स्थायी निवास की पुष्टि करने वाला आधिकारिक दस्तावेज।',
+      issuingAuthority: 'तहसीलदार / जिला मजिस्ट्रेट कार्यालय / राजस्व विभाग',
+    },
+    'ration-card': {
+      name: 'राशन कार्ड (Ration Card)',
+      description: 'सार्वजनिक वितरण प्रणाली परिवार राशन कार्ड (एनएफएसए / अंत्योदय / बीपीएल / पीएचएच)।',
+      issuingAuthority: 'खाद्य, नागरिक आपूर्ति एवं उपभोक्ता मामले विभाग',
+    },
+    'caste-certificate': {
+      name: 'जाति प्रमाण पत्र (SC / ST / OBC)',
+      description: 'संवैधानिक आरक्षण व कल्याणकारी योजनाओं के लाभ हेतु वैध सामाजिक वर्ग प्रमाण पत्र।',
+      issuingAuthority: 'राजस्व विभाग / तहसीलदार / सक्षम राजस्व प्राधिकारी',
+    },
+    'land-records': {
+      name: 'भूलेख / खतौनी / जमाबंदी (RoR)',
+      description: 'आवेदक के नाम पर दर्ज कृषि योग्य भूमि स्वामित्व का आधिकारिक राजस्व अभिलेख।',
+      issuingAuthority: 'भू-अभिलेख एवं राजस्व विभाग / पटवारी / लेखपाल',
+    },
+    'education-marksheet': {
+      name: 'पिछली कक्षा की अंकतालिका एवं प्रमाण पत्र',
+      description: 'शैक्षणिक योग्यता एवं मान्यता प्राप्त संस्थान में वर्तमान नामांकन का प्रमाण।',
+      issuingAuthority: 'मान्यता प्राप्त शिक्षा बोर्ड / विश्वविद्यालय / संस्थान',
+    },
+    'vending-id': {
+      name: 'स्ट्रीट वेंडर पहचान पत्र / वेंडिंग प्रमाण पत्र (CoV)',
+      description: 'शहरी स्थानीय निकाय द्वारा पथ विक्रेताओं को जारी किया गया वेंडिंग कार्ड या अनुशंसा पत्र।',
+      issuingAuthority: 'शहरी स्थानीय निकाय (ULB) / नगर पालिका / टाउन वेंडिंग कमेटी (TVC)',
+    },
+    'gram-panchayat-residence': {
+      name: 'ग्राम पंचायत निवास प्रमाण पत्र',
+      description: 'ग्रामीण क्षेत्र में निवास एवं कच्चे आवास की पुष्टि करने वाला स्थानीय स्वशासन प्रमाण पत्र।',
+      issuingAuthority: 'ग्राम पंचायत / ग्राम प्रधान / खंड विकास अधिकारी (BDO)',
     },
   },
 };
@@ -263,6 +437,18 @@ export const UI_TRANSLATIONS = {
       guarantee3Title: 'Decoupled Architecture',
       guarantee3Desc:
         'FastAPI backend + Vite React frontend, built collaboratively for national scale.',
+    },
+
+    // Banner Showcase & Floating Options
+    banner: {
+      hashtag: '#GOVERNMENTSCHEMES / #SCHEMESFORYOU',
+      findSchemes: 'Find Schemes For You',
+      findSchemesAria: 'Find Schemes For You - scroll to options',
+      scrollDown: 'Scroll down to explore options',
+      prevSlide: 'Previous Scheme Slide',
+      nextSlide: 'Next Scheme Slide',
+      goToSlide: 'Go to slide',
+      isNow: 'is now',
     },
 
     // Dashboard
@@ -343,7 +529,6 @@ export const UI_TRANSLATIONS = {
       searchPlaceholder:
         'Search schemes by title, ministry, benefit, or Tamil keyword (e.g. விவசாயி, மருத்துவம், கடன்)...',
       allCategories: 'All Sectors',
-      quickQueries: 'Quick Queries:',
       noSchemesFound: 'No schemes found matching your criteria',
       noSchemesDesc: 'Try adjusting your search query or selecting a different sector filter.',
       clearFilters: 'Clear Filters',
@@ -356,6 +541,9 @@ export const UI_TRANSLATIONS = {
       trackGuidance: 'Track Guidance',
       officialPortal: 'Official Portal',
       viewFullDetails: 'View Full Details & Application Steps',
+      viewScheme: 'View Scheme',
+      eligibilitySummary: 'Eligible Beneficiaries',
+      keyBenefit: 'Key Benefit',
       schemeOverview: 'Scheme Overview & Verification',
       nodalAgency: 'Nodal Agency',
       verifiedOn: 'Verified On',
@@ -607,6 +795,18 @@ export const UI_TRANSLATIONS = {
         'FastAPI பின்தளம் + Vite React முகப்பு, தேசிய அளவில் பயன்படக்கூடிய வகையில் வடிவமைக்கப்பட்டுள்ளது.',
     },
 
+    // Banner Showcase & Floating Options
+    banner: {
+      hashtag: '#அரசுதிட்டங்கள் / #உங்களுக்கானதிட்டங்கள்',
+      findSchemes: 'உங்களுக்கான திட்டங்களைக் கண்டறியவும்',
+      findSchemesAria: 'உங்களுக்கான திட்டங்களைக் கண்டறியவும் - விருப்பங்களை ஆராய கீழே உருட்டவும்',
+      scrollDown: 'விருப்பங்களை ஆராய கீழே உருட்டவும்',
+      prevSlide: 'முந்தைய திட்டம்',
+      nextSlide: 'அடுத்த திட்டம்',
+      goToSlide: 'திட்டம்',
+      isNow: 'தற்போது',
+    },
+
     // Dashboard
     dashboard: {
       kioskNoticeTitle: 'பொது கியோஸ்க் முறை இயக்கத்தில் உள்ளது:',
@@ -685,7 +885,6 @@ export const UI_TRANSLATIONS = {
       searchPlaceholder:
         'திட்டப் பெயர், அமைச்சகம், பயன் அல்லது தமிழ் வார்த்தை மூலம் தேடுங்கள் (எ.கா: விவசாயி, மருத்துவம், கடன்)...',
       allCategories: 'அனைத்து துறைகள்',
-      quickQueries: 'விரைவு தேடல்கள்:',
       noSchemesFound: 'உங்கள் தேடலுக்குரிய திட்டங்கள் எதுவும் காணப்படவில்லை',
       noSchemesDesc: 'உங்கள் தேடல் சொல்லை மாற்றவும் அல்லது வேறு துறையை தேர்ந்தெடுக்கவும்.',
       clearFilters: 'வடிகட்டிகளை நீக்கு',
@@ -698,6 +897,9 @@ export const UI_TRANSLATIONS = {
       trackGuidance: 'விண்ணப்ப வழிகாட்டி',
       officialPortal: 'அதிகாரப்பூர்வ தளம்',
       viewFullDetails: 'முழு விவரங்கள் & விண்ணப்ப முறைகள்',
+      viewScheme: 'திட்ட விவரம்',
+      eligibilitySummary: 'தகுதியான பயனாளிகள்',
+      keyBenefit: 'திட்டப் பயன்',
       schemeOverview: 'திட்ட கண்ணோட்டம் & சரிபார்ப்பு',
       nodalAgency: 'முதன்மை முகமை',
       verifiedOn: 'சரிபார்க்கப்பட்ட நாள்',
@@ -885,6 +1087,362 @@ export const UI_TRANSLATIONS = {
       rights: 'SevAIQ • சரிபார்க்கப்பட்ட அரசு நலத்திட்டங்கள் மூலம் குடிமக்களை வலுப்படுத்துதல்',
     },
   },
+
+  hi: {
+    // Header
+    header: {
+      tagline: 'नागरिक सूचना बुद्धिमत्ता एवं योजना तत्परता मंच',
+      dashboard: 'डैशबोर्ड',
+      schemes: 'योजनाएं',
+      schemesMobile: 'सरकारी योजनाएं खोजें',
+      schemesDesc: 'द्विभाषी कल्याणकारी योजना खोज',
+      eligibility: 'पात्रता',
+      eligibilityMobile: 'पारदर्शी पात्रता जांच',
+      eligibilityDesc: 'नियम-आधारित पात्रता मूल्यांकन',
+      documents: 'दस्तावेज',
+      documentsMobile: 'दस्तावेज तालमेल मैपर',
+      documentsDesc: 'योजनाओं के साझा प्रमाण पत्र',
+      passport: 'पासपोर्ट',
+      passportMobile: 'तत्परता पासपोर्ट',
+      passportDesc: 'सत्यापित नागरिक आवेदन डोजियर',
+      trust: 'विश्वसनीयता',
+      trustMobile: 'सरकारी स्रोत ऑडिट',
+      trustDesc: 'सरकारी पोर्टल व राजपत्र सत्यापन',
+      guidance: 'मार्गदर्शन',
+      guidanceMobile: 'आवेदन मार्गदर्शन ट्रैकर',
+      guidanceDesc: 'चरण-दर-चरण आवेदन चेकलिस्ट',
+      kioskMode: 'कियोस्क मोड:',
+      active: 'सक्रिय',
+      off: 'बंद',
+      kioskActiveTooltip: 'सार्वजनिक कियोस्क मोड सक्रिय है: सत्र डेटा केवल मेमोरी में रहेगा',
+      kioskOffTooltip: 'साझा उपकरणों के लिए सार्वजनिक कियोस्क मोड चालू करें',
+      endSession: 'सत्र समाप्त करें',
+      endSessionTooltip: 'इस उपकरण से सभी दर्ज जानकारी और दस्तावेज स्थिति हटाएं',
+      languageSelect: 'भाषा',
+      endSessionDialogTitle: 'क्या नागरिक सत्र समाप्त करना चाहते हैं?',
+      endSessionDialogDesc:
+        'यह इस कंप्यूटर से आपके सभी जनसांख्यिकीय उत्तर, पात्रता परिणाम और दस्तावेज स्थितियां तुरंत मिटा देगा।',
+      cancelKeepSession: 'रद्द करें (सत्र जारी रखें)',
+      confirmEndSession: 'हाँ, सत्र समाप्त करें और सब मिटाएं',
+      challengeBadge: 'सेवा फर्स्ट इनोवेशन चैलेंज 2026',
+      civicDossier: 'नागरिक डोजियर',
+      volatileSession: 'अस्थायी इन-मेमोरी सत्र',
+      standardSession: 'स्थानीय ब्राउज़र सत्र',
+    },
+
+    // Hero
+    hero: {
+      badge: 'सेवा फर्स्ट इनोवेशन चैलेंज 2026',
+      track: 'सिविक टेक ट्रैक',
+      titlePart1: 'सत्यापित सरकारी योजनाओं से ',
+      titleHighlight: 'नागरिकों का सशक्तिकरण',
+      description:
+        'SevAIQ नागरिकों को केंद्रीय और राज्य कल्याणकारी योजनाओं से सीधे सत्यापित, भ्रम-मुक्त नागरिक बुद्धिमत्ता के माध्यम से जोड़ता है।',
+      discoverSchemes: 'सरकारी योजनाएं खोजें',
+      viewArchitecture: 'आर्किटेक्चर और एपीआई अनुबंध देखें',
+      guarantee1Title: 'शून्य भ्रम (सत्यता गारंटी)',
+      guarantee1Desc:
+        'योजनाएं केवल आधिकारिक सरकारी पोर्टलों और राजपत्रों से सत्यापन के बाद ही शामिल की जाती हैं।',
+      guarantee2Title: 'सटीक लक्षित पात्रता',
+      guarantee2Desc:
+        'व्यवसाय, स्थान और जनसांख्यिकीय प्रोफाइल के अनुसार नागरिक को सही योजनाओं से मिलाता है।',
+      guarantee3Title: 'डीकपल्ड आर्किटेक्चर',
+      guarantee3Desc:
+        'FastAPI बैकएंड + Vite React फ्रंटएंड, राष्ट्रीय स्तर पर स्केलेबल सहयोग के साथ निर्मित।',
+    },
+
+    // Banner Showcase & Floating Options
+    banner: {
+      hashtag: '#सरकारीयोजनाएं / #आपकेलिएयोजनाएं',
+      findSchemes: 'आपके लिए योजनाएं खोजें',
+      findSchemesAria: 'आपके लिए योजनाएं खोजें - विकल्प देखने के लिए नीचे स्क्रॉल करें',
+      scrollDown: 'विकल्प देखने के लिए नीचे स्क्रॉल करें',
+      prevSlide: 'पिछली योजना',
+      nextSlide: 'अगली योजना',
+      goToSlide: 'योजना पर जाएं',
+      isNow: 'अब है',
+    },
+
+    // Dashboard
+    dashboard: {
+      kioskNoticeTitle: 'सार्वजनिक कियोस्क मोड सक्रिय है:',
+      kioskNoticeDesc:
+        'प्रोफाइल उत्तर और दस्तावेज स्थिति केवल ब्राउज़र मेमोरी में रहेगी। इस कंप्यूटर पर कोई डेटा स्थायी रूप से संग्रहीत नहीं होता है।',
+      welcomeBadge: 'सेवा फर्स्ट इनोवेशन चैलेंज 2026',
+      welcomeTitle: 'नागरिक सूचना बुद्धिमत्ता एवं योजना तत्परता',
+      welcomeDesc:
+        'SevAIQ नागरिकों और सरकारी कल्याणकारी योजनाओं के बीच की दूरी को मिटाता है। सत्यापित केंद्रीय और राज्य सरकारी योजनाओं को खोजें, बहु-मानदंडीय पात्रता का पारदर्शी मूल्यांकन करें, और बिना किसी डेटा गोपनीयता जोखिम के अपने आवेदन दस्तावेज तैयार करें।',
+      viewEligibilityResults: 'पात्रता परिणाम देखें',
+      checkEligibility: 'अपनी पात्रता जांचें',
+      exploreCatalog: 'योजना कैटलॉग देखें',
+      metricCataloged: 'कैटलॉग में योजनाएं',
+      metricVerified: 'सत्यापित स्रोत',
+      metricGazetteLinks: 'सरकारी राजपत्र और पोर्टल लिंक',
+      metricEligible: 'पात्र योजनाएं',
+      metricFullyMet: 'पूर्णतः पात्र',
+      metricProfileNeeded: 'प्रोफाइल आवश्यक',
+      metricCriteriaMatched: 'प्रोफाइल से मेल खाते नियम',
+      metricDocsReady: 'तैयार दस्तावेज',
+      metricDocOverlap: 'योजनाओं में साझा दस्तावेज',
+      metricPassport: 'तत्परता पासपोर्ट',
+      metricActive: 'सक्रिय',
+      metricDraft: 'प्रारूप',
+      metricExportReady: 'डाउनलोड हेतु तैयार',
+      metricPrintableDossier: 'प्रिंट करने योग्य नागरिक डोजियर',
+      workflowBadge: 'व्यवस्थित नागरिक कार्यप्रणाली',
+      workflowTitle: 'SevAIQ आपके आवेदन को कैसे सशक्त बनाता है',
+      workflowSubtitle:
+        'आवेदन अस्वीकृति से बचने और योजना लाभ प्राप्त करने के लिए इस 4-चरणीय प्रक्रिया का पालन करें।',
+      step1Title: 'योजनाएं खोजें',
+      step1Desc:
+        'बिना किसी भ्रामक जानकारी के, सत्यापित केंद्रीय और राज्य सरकारी योजनाओं को ब्राउज़ करें।',
+      step1Action: 'कैटलॉग देखें',
+      step2Title: 'पात्रता जांचें',
+      step2Desc:
+        'गुमनाम प्रोफाइल भरकर नियमों के आधार पर स्पष्ट कारणों के साथ पात्रता परिणाम प्राप्त करें।',
+      step2Action: 'प्रोफाइल जांचें',
+      step3Title: 'दस्तावेज तालमेल',
+      step3Desc:
+        'योजनाओं के बीच साझा दस्तावेजों की पहचान करें, लापता प्रमाणपत्रों को तैयार करें और जारीकर्ता कार्यालय खोजें।',
+      step3Action: 'मैपर देखें',
+      step4Title: 'तत्परता पासपोर्ट',
+      step4Desc:
+        'सत्यापित लिंक, चेकलिस्ट और सेवा केंद्र अगले कदमों के साथ आधिकारिक नागरिक डोजियर बनाएं।',
+      step4Action: 'पासपोर्ट बनाएं',
+      toolsBadge: 'विशेष नागरिक सुविधाएं',
+      toolsTitle: 'वॉइस एक्सेस, सरकारी स्रोत ऑडिट एवं आवेदन ट्रैकिंग',
+      feat5Title: 'हिंदी, तमिल और अंग्रेजी वॉइस असिस्टेंट',
+      feat5Desc:
+        'अपनी मातृभाषा में बोलकर या लिखकर योजनाओं के बारे में पूछें। 100% ऑन-डिवाइस वेब स्पीच एपीआई, बिना किसी क्लाउड लीकेज के।',
+      feat5Action: 'वॉइस असिस्टेंट खोलें (निचले दाएं)',
+      feat6Title: 'आधिकारिक स्रोत ट्रस्ट मॉनिटर',
+      feat6Desc:
+        'सरकारी डोमेन प्रामाणिकता (.gov.in / .nic.in), सत्यापन तिथि और आधिकारिक राजपत्र अधिसूचनाओं की जांच करें।',
+      feat6Action: 'ट्रस्ट ऑडिट देखें',
+      feat7Title: 'आवेदन मार्गदर्शन ट्रैकर',
+      feat7Desc:
+        'दस्तावेज जुटाने से लेकर सीएससी केंद्र जाने और आधिकारिक पोर्टल पर जमा करने तक की चेकलिस्ट।',
+      feat7Action: 'आवेदन मार्गदर्शन ट्रैक करें',
+      privacyTitle: 'गोपनीयता-प्रथम आर्किटेक्चर',
+      privacyDesc:
+        'SevAIQ नागरिक गोपनीयता का पूर्ण सम्मान करता है: हम आधार नंबर, बैंक खाता या संपर्क नंबर कभी एकत्र नहीं करते। पात्रता मूल्यांकन केवल आपके उपकरण पर गुमनाम नियमों के तहत होता है।',
+      zeroHallucinationTitle: 'शून्य भ्रम (सत्यता गारंटी)',
+      zeroHallucinationDesc:
+        'प्रदर्शित प्रत्येक योजना आधिकारिक सरकारी राजपत्रों और मंत्रालयों के पोर्टलों (जैसे pmkisan.gov.in एवं pmjay.gov.in) से सत्यापित है।',
+    },
+
+    // Scheme Discovery
+    discover: {
+      badge: 'योजना कैटलॉग',
+      title: 'सरकारी कल्याणकारी योजनाएं खोजें',
+      subtitle:
+        'आधिकारिक राजपत्र अभिलेखों द्वारा समर्थित सत्यापित केंद्रीय और राज्य कल्याणकारी योजनाओं को खोजें।',
+      syncBackend: 'बैकएंड सिंक',
+      searchPlaceholder:
+        'योजना के नाम, मंत्रालय, लाभ या हिंदी कीवर्ड (जैसे किसान, इलाज, मकान, ऋण, पेंशन) द्वारा खोजें...',
+      allCategories: 'सभी क्षेत्र',
+      noSchemesFound: 'आपके खोज मानदंडों से मेल खाती कोई योजना नहीं मिली',
+      noSchemesDesc: 'कृपया अपना खोज शब्द बदलें या कोई अन्य क्षेत्र फ़िल्टर चुनें।',
+      clearFilters: 'फ़िल्टर हटाएं',
+      verifiedOfficialSource: 'सत्यापित आधिकारिक स्रोत',
+      ministry: 'मंत्रालय:',
+      targetBeneficiary: 'लक्षित लाभार्थी:',
+      benefits: 'योजना लाभ:',
+      requiredDocs: 'आवश्यक दस्तावेज:',
+      checkEligibility: 'पात्रता जांचें',
+      trackGuidance: 'मार्गदर्शन ट्रैक करें',
+      officialPortal: 'आधिकारिक पोर्टल',
+      viewFullDetails: 'पूर्ण विवरण एवं आवेदन प्रक्रिया',
+      viewScheme: 'योजना विवरण',
+      eligibilitySummary: 'लक्षित लाभार्थी',
+      keyBenefit: 'मुख्य लाभ',
+      schemeOverview: 'योजना अवलोकन एवं सत्यापन',
+      nodalAgency: 'नोडल एजेंसी',
+      verifiedOn: 'सत्यापन तिथि',
+      sourceCitation: 'स्रोत उद्धरण',
+      detailedBenefits: 'विस्तृत लाभ एवं अधिकार',
+      eligibilityCriteria: 'संवैधानिक पात्रता मानदंड',
+      applicationSteps: 'आधिकारिक आवेदन चरण',
+      close: 'बंद करें',
+      applicationMode: 'आवेदन माध्यम:',
+    },
+
+    // Eligibility Screen
+    eligibility: {
+      badge: 'नागरिक पात्रता इंजन',
+      title: 'पारदर्शी सरकारी योजना पात्रता',
+      subtitle:
+        'संवैधानिक नियमों के आधार पर स्पष्ट, नियम-दर-नियम स्पष्टीकरण के साथ पात्रता जांचने हेतु बुनियादी जानकारी दर्ज करें।',
+      profileTitle: 'नागरिक जनसांख्यिकीय प्रोफाइल',
+      privacyNotice:
+        'शून्य व्यक्तिगत पहचान संग्रह: कोई आधार या फोन नंबर संग्रहीत नहीं किया जाता। मूल्यांकन पूरी तरह से गुमनाम नियमों पर चलता है।',
+      loadDemo: 'डेमो प्रोफाइल लोड करें',
+      resetProfile: 'उत्तर रीसेट करें',
+      ageLabel: 'आयु (वर्ष)',
+      agePlaceholder: 'उदा. 42',
+      genderLabel: 'लिंग',
+      genderSelect: 'लिंग चुनें',
+      female: 'महिला',
+      male: 'पुरुष',
+      transgender: 'ट्रांसजेंडर / तृतीय लिंग',
+      preferNotToSay: 'बताना नहीं चाहते',
+      areaLabel: 'निवास क्षेत्र',
+      areaSelect: 'क्षेत्र चुनें',
+      rural: 'ग्रामीण',
+      urban: 'शहरी',
+      stateLabel: 'राज्य / केंद्र शासित प्रदेश',
+      stateSelect: 'राज्य / यूटी चुनें',
+      occupationLabel: 'व्यवसाय / आजीविका',
+      occupationSelect: 'व्यवसाय चुनें',
+      incomeLabel: 'वार्षिक पारिवारिक आय',
+      incomeSelect: 'आय सीमा चुनें',
+      categoryLabel: 'सामाजिक वर्ग',
+      categorySelect: 'वर्ग चुनें',
+      landholdingLabel: 'कृषि भूमि स्वामित्व',
+      landholdingSelect: 'भूमि का आकार चुनें',
+      isStudent: 'वर्तमान में विद्यार्थी के रूप में नामांकित हैं',
+      hasDisability: 'दिव्यांगजन (PwD प्रमाण पत्र धारक)',
+      ownsPuccaHouse: 'परिवार के पास अपना पक्का मकान है',
+      isTaxPayer: 'परिवार का कोई सदस्य आयकर देता है',
+      isGovtEmployee: 'परिवार का कोई सदस्य नियमित सरकारी कर्मचारी है',
+      collapseProfile: 'प्रोफाइल संपादक छुपाएं',
+      editProfile: 'प्रोफाइल संपादित करें',
+      allSchemes: 'सभी योजनाएं',
+      eligibleMet: 'पात्र (शर्तें पूरी)',
+      needsVerification: 'अतिरिक्त सत्यापन आवश्यक',
+      notEligible: 'अपात्र',
+      met: 'पात्र',
+      notMet: 'अपात्र',
+      unknown: 'अज्ञात',
+      matchedCriteria: 'पूर्ण मानदंड',
+      missingInfo: 'आवश्यक अतिरिक्त जानकारी / सत्यापन',
+      criteriaNotMet: 'अपूरित शर्तें',
+      addToMapper: 'दस्तावेज मैपर में जोड़ें',
+      inMapper: 'मैपर में चुना गया',
+      criteriaResults: 'पात्रता नियमों का विवरण',
+      whyEligible: 'पात्रता मूल्यांकन एवं संवैधानिक कारण',
+      officialVerificationSource: 'सत्यापित स्रोत:',
+      noResultsMatching: 'चुने गए फ़िल्टर के अनुसार कोई योजना नहीं मिली',
+      backendEvaluatorBadge: 'FastAPI बैकएंड के साथ समन्वयित',
+      targetSchemeBannerTitle: 'चयनित योजना का पात्रता विवरण',
+      targetSchemeBannerDesc:
+        'नीचे चयनित योजना के लिए पात्रता परिणाम और नियम प्रदर्शित हैं। आप ऊपर अपनी प्रोफाइल में बदलाव कर तुरंत परिणाम देख सकते हैं।',
+      targetSchemeBadge: 'चयनित योजना',
+      viewAllSchemes: 'सभी योजनाएं देखें',
+      filterByScheme: 'योजना:',
+      allSchemesOption: 'सभी योजनाएं',
+      clearSchemeFilter: 'योजना फ़िल्टर हटाएं',
+    },
+
+    // Document Mapper
+    documentMapper: {
+      badge: 'दस्तावेज तालमेल मैपर',
+      title: 'योजनाओं के साझा दस्तावेज तालमेल',
+      subtitle:
+        'बार-बार सरकारी कार्यालयों के चक्कर काटने से बचने के लिए अपनी चुनी गई योजनाओं में आवश्यक साझा प्रमाणपत्र खोजें।',
+      readinessScore: 'दस्तावेज तत्परता स्कोर',
+      allDocs: 'सभी दस्तावेज',
+      sharedDocs: 'कई योजनाओं में साझा',
+      singleDocs: 'केवल एक योजना में',
+      haveDocs: 'उपलब्ध दस्तावेज',
+      missingDocs: 'लापता / आवश्यक दस्तावेज',
+      selectedSchemes: 'दस्तावेज तालमेल हेतु चयनित योजनाएं:',
+      noSchemesSelected: 'दस्तावेजों का मिलान करने के लिए कम से कम एक योजना चुनें।',
+      issuingAuthority: 'जारीकर्ता प्राधिकारी:',
+      usedInSchemes: 'आवश्यक योजनाएं:',
+      haveIt: 'उपलब्ध है',
+      needed: 'लापता / बनवाना आवश्यक',
+      unconfirmed: 'अपुष्ट स्थिति',
+      proceedPassport: 'तत्परता पासपोर्ट पर जाएं',
+      resetSelection: 'चयन रीसेट करें',
+      reusableBadge: 'पुनः प्रयोज्य प्रमाण पत्र',
+    },
+
+    // Readiness Passport
+    readinessPassport: {
+      badge: 'नागरिक प्रमाणपत्र डोजियर',
+      title: 'योजना तत्परता पासपोर्ट',
+      subtitle:
+        'सेवा केंद्रों और सरकारी कार्यालयों में जमा करने हेतु आपका समेकित, सत्यापित नागरिक आवेदन डोजियर।',
+      printDossier: 'प्रिंट करें / पीडीएफ सहेजें',
+      downloadPdf: 'आधिकारिक पीडीएफ डाउनलोड करें',
+      downloadingPdf: 'पीडीएफ तैयार हो रहा है...',
+      passportId: 'पासपोर्ट आईडी:',
+      readinessIndex: 'नागरिक तत्परता सूचकांक',
+      profileSnapshot: 'जनसांख्यिकीय प्रोफाइल सारांश',
+      targetSchemes: 'लक्षित कल्याणकारी योजनाएं',
+      docsChecklist: 'दस्तावेज तत्परता चेकलिस्ट',
+      readyDocuments: 'हाथ में उपलब्ध',
+      missingDocuments: 'लापता / आवश्यक कार्रवाई',
+      nextSteps: 'सेवा केंद्र / सीएससी पर अगले कदम',
+      step1Action: 'सत्यापित मूल पहचान पत्र तथा आय/भूमि दस्तावेज साथ लेकर जाएं।',
+      step2Action: 'अपने निकटतम कॉमन सर्विस सेंटर (CSC) या ग्राम पंचायत कार्यालय जाएं।',
+      step3Action: 'आवेदन संदर्भ संख्या प्रस्तुत करें और बायोमेट्रिक अथवा ओटीपी द्वारा प्रमाणीकरण करें।',
+      qrNote: 'सीएससी केंद्रों पर ऑफलाइन सत्यापन हेतु छेड़छाड़-मुक्त सुरक्षा कोड।',
+      privacyGuarantee:
+        'नागरिक गोपनीयता गारंटी: बिना आधार नंबर या बैंक विवरण सहेजे सीधे आपके ब्राउज़र में जनरेट किया गया।',
+    },
+
+    // Trust Monitor
+    trustMonitor: {
+      badge: 'सरकारी स्रोत प्रामाणिकता ऑडिट',
+      title: 'आधिकारिक स्रोत ट्रस्ट मॉनिटर',
+      subtitle:
+        'पारदर्शी मेटाडेटा सत्यापन, आधिकारिक राजपत्र संदर्भ और प्रामाणिक सरकारी डोमेन ऑडिट।',
+      verifiedPortals: 'सत्यापित सरकारी पोर्टल',
+      zeroHallucination: 'शून्य भ्रामक दावे',
+      officialGovDomains: 'प्रामाणिक .gov.in / .nic.in डोमेन',
+      filterAll: 'सभी योजनाएं',
+      filterVerified: 'पूर्णतः सत्यापित (100%)',
+      filterFlagged: 'पुनरावलोकन आवश्यक',
+      searchPlaceholder: 'योजना, मंत्रालय या डोमेन नाम से खोजें...',
+      gazetteSource: 'आधिकारिक राजपत्र / अधिसूचना संदर्भ',
+      verifiedDate: 'अंतिम सत्यापन तिथि:',
+      domainStatus: 'डोमेन प्रामाणिकता:',
+      openPortal: 'आधिकारिक पोर्टल खोलें',
+      domainValid: 'वैध सरकारी डोमेन',
+      domainInvalid: 'अमानक डोमेन',
+    },
+
+    // Application Tracker
+    tracker: {
+      badge: 'आवेदन मार्गदर्शन',
+      title: 'आवेदन मार्गदर्शन ट्रैकर',
+      subtitle:
+        'दस्तावेज जुटाने से लेकर आधिकारिक पोर्टल पर जमा करने तक आपके आवेदन को निर्देशित करने वाली इंटरएक्टिव चेकलिस्ट।',
+      selectScheme: 'ट्रैक करने हेतु योजना चुनें:',
+      overallProgress: 'आवेदन तत्परता प्रगति',
+      completed: 'पूर्ण',
+      resetSteps: 'चेकलिस्ट रीसेट करें',
+      notesTitle: 'व्यक्तिगत नागरिक नोट्स (केवल आपके उपकरण पर स्थानीय रूप से संग्रहीत)',
+      notesPlaceholder:
+        'अपनी आवेदन पावती संख्या, सीएससी टोकन या अधिकारी संपर्क विवरण यहाँ दर्ज करें...',
+      savedLocalNotice:
+        'नोट्स केवल आपके ब्राउज़र मेमोरी में सहेजे जाते हैं और कभी किसी सर्वर पर अपलोड नहीं होते।',
+      visitPortal: 'आधिकारिक आवेदन पोर्टल खोलें',
+      stage1Title: 'चरण 1: संवैधानिक पात्रता शर्तों का सत्यापन करें',
+      stage2Title: 'चरण 2: आवश्यक दस्तावेज तैयार करें',
+      stage3Title: 'चरण 3: आधिकारिक सरकारी पोर्टल / केंद्र पर आवेदन जमा करें',
+      stage4Title: 'चरण 4: पावती संख्या (Ack ID) नोट करें और स्थिति ट्रैक करें',
+    },
+
+    // Developer Handshake
+    developer: {
+      badge: 'परियोजना साझा आधार',
+      title: 'आर्किटेक्चर एवं डेवलपर एकीकरण',
+      subtitle: 'डेवलपर 1 (फ्रंटएंड) और डेवलपर 2 (बैकएंड) के मध्य सहयोगात्मक ढांचा।',
+      apiContract: 'एपीआई अनुबंध स्थिति',
+      activeBase: 'सक्रिय बेस यूआरएल:',
+      test: 'परीक्षण',
+      testing: 'परीक्षण जारी...',
+    },
+
+    // Footer
+    footer: {
+      disclaimer: 'नागरिक तकनीकी मंच • शून्य भ्रम गारंटी • केवल आधिकारिक सरकारी राजपत्र डेटा',
+      rights: 'SevAIQ • सत्यापित सरकारी योजनाओं द्वारा नागरिकों का सशक्तिकरण',
+    },
+  },
 };
 
 /**
@@ -904,6 +1462,12 @@ export const LOCALIZED_OPTIONS = {
       Transgender: 'திருநங்கை / மூன்றாம் பாலினம் (Transgender)',
       'Prefer not to say': 'குறிப்பிட விரும்பவில்லை (Prefer not to say)',
     },
+    hi: {
+      Female: 'महिला (Female)',
+      Male: 'पुरुष (Male)',
+      Transgender: 'ट्रांसजेंडर / तृतीय लिंग (Transgender)',
+      'Prefer not to say': 'बताना नहीं चाहते (Prefer not to say)',
+    },
   },
   areas: {
     en: {
@@ -913,6 +1477,10 @@ export const LOCALIZED_OPTIONS = {
     ta: {
       Rural: 'கிராமப்புறம் (Rural / ஊராட்சி)',
       Urban: 'நகர்ப்புறம் (Urban / நகராட்சி)',
+    },
+    hi: {
+      Rural: 'ग्रामीण (Rural / ग्राम पंचायत)',
+      Urban: 'शहरी (Urban / नगर पालिका)',
     },
   },
   incomes: {
@@ -930,6 +1498,13 @@ export const LOCALIZED_OPTIONS = {
       '5 - 8 Lakh': '₹5 - ₹8 லட்சம் (உயர் நடுத்தர வருவாய்)',
       '> 8 Lakh': '₹8 லட்சத்திற்கு மேல் (உயர் வருவாய்)',
     },
+    hi: {
+      '< 1 Lakh': '₹1 लाख से कम (बीपीएल / अंत्योदय वर्ग)',
+      '1 - 2.5 Lakh': '₹1 - ₹2.5 लाख (निम्न आय / EWS)',
+      '2.5 - 5 Lakh': '₹2.5 - ₹5 लाख (मध्यम आय वर्ग)',
+      '5 - 8 Lakh': '₹5 - ₹8 लाख (उच्च मध्यम आय)',
+      '> 8 Lakh': '₹8 लाख से अधिक (उच्च आय वर्ग)',
+    },
   },
   categories: {
     en: {
@@ -946,6 +1521,13 @@ export const LOCALIZED_OPTIONS = {
       ST: 'பழங்குடியினர் (ST)',
       EWS: 'பொருளாதாரத்தில் பின்தங்கியோர் (EWS)',
     },
+    hi: {
+      General: 'सामान्य वर्ग (General Category)',
+      OBC: 'अन्य पिछड़ा वर्ग (OBC)',
+      SC: 'अनुसूचित जाति (SC)',
+      ST: 'अनुसूचित जनजाति (ST)',
+      EWS: 'आर्थिक रूप से कमजोर वर्ग (EWS)',
+    },
   },
   landholdings: {
     en: {
@@ -959,6 +1541,12 @@ export const LOCALIZED_OPTIONS = {
       'Marginal (< 1 ha)': 'குறு விவசாயி (< 1 ஹெக்டேர் / 2.5 ஏக்கருக்குள்)',
       'Small (1-2 ha)': 'சிறு விவசாயி (1-2 ஹெக்டேர் / 2.5 - 5 ஏக்கர்)',
       'Medium/Large (> 2 ha)': 'நடுத்தர / பெரிய விவசாயி (> 2 ஹெக்டேர்)',
+    },
+    hi: {
+      None: 'भूमिहीन (कोई कृषि भूमि नहीं)',
+      'Marginal (< 1 ha)': 'सीमांत किसान (< 1 हेक्टेयर / 2.5 एकड़ तक)',
+      'Small (1-2 ha)': 'लघु किसान (1-2 हेक्टेयर / 2.5 से 5 एकड़)',
+      'Medium/Large (> 2 ha)': 'मध्यम या बड़ा किसान (> 2 हेक्टेयर / 5+ एकड़)',
     },
   },
   occupations: {
@@ -988,6 +1576,19 @@ export const LOCALIZED_OPTIONS = {
       'Senior Citizen / Retired': 'மூத்த குடிமக்கள் / ஓய்வுபெற்றவர் (Senior Citizen)',
       'Unemployed / Jobseeker': 'வேலை தேடுபவர் (Jobseeker)',
     },
+    hi: {
+      'Farmer / Cultivator': 'किसान / काश्तकार (Farmer / Cultivator)',
+      'Agricultural Worker': 'खेतिहर मजदूर (Agricultural Labour)',
+      'Street Vendor / Hawker': 'रेहड़ी-पटरी / फेरीवाले (Street Vendor)',
+      'Small Business / Artisan': 'छोटा व्यापारी / पारंपरिक कारीगर (Artisan / Business)',
+      'Daily Wage / Informal Worker': 'दैनिक वेतनभोगी / निर्माण श्रमिक (Daily Wage)',
+      'Self-Employed': 'स्व-नियोजित पेशेवर (Self-Employed)',
+      'Student / Scholar': 'विद्यार्थी / शोधार्थी (Student / Scholar)',
+      'Salaried Employee (Private)': 'निजी क्षेत्र कर्मचारी (Private Employee)',
+      Homemaker: 'गृहणी (Homemaker)',
+      'Senior Citizen / Retired': 'वरिष्ठ नागरिक / सेवानिवृत्त (Senior Citizen)',
+      'Unemployed / Jobseeker': 'बेरोजगार / नौकरी तलाशकर्ता (Jobseeker)',
+    },
   },
   categoryFilters: {
     en: {
@@ -1005,6 +1606,14 @@ export const LOCALIZED_OPTIONS = {
       livelihood: 'வாழ்வாதாரம் & குறுந்தொழில்',
       education: 'கல்வி & திறன்மேம்பாடு',
       housing: 'வீட்டுவசதி & உள்கட்டமைப்பு',
+    },
+    hi: {
+      all: 'सभी क्षेत्र',
+      agriculture: 'कृषि एवं ग्रामीण विकास',
+      healthcare: 'स्वास्थ्य एवं कल्याण',
+      livelihood: 'शहरी आजीविका एवं सूक्ष्म उद्यम',
+      education: 'शिक्षा एवं कौशल विकास',
+      housing: 'आवास एवं अवसंरचना',
     },
   },
 };

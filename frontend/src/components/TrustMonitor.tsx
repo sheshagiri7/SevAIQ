@@ -124,6 +124,24 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
   // Helper to translate trust inspection flag messages
   const getLocalizedFlag = (flag: string): string => {
     if (language === 'en') return flag;
+    if (language === 'hi') {
+      if (flag.includes('Non-standard government domain')) {
+        return 'गैर-मानक सरकारी डोमेन (अतिरिक्त समीक्षा आवश्यक)';
+      }
+      if (flag.includes('Malformed portal URL')) {
+        return 'अमान्य पोर्टल यूआरएल प्रारूप';
+      }
+      if (flag.includes('Official portal URL missing')) {
+        return 'आधिकारिक पोर्टल यूआरएल अनुपलब्ध';
+      }
+      if (flag.includes('Last-verification date is not recorded')) {
+        return 'अंतिम सत्यापन तिथि दर्ज नहीं है';
+      }
+      if (flag.includes('Official gazette citation')) {
+        return 'आधिकारिक राजपत्र अथवा मंत्रालय संदर्भ अनुपलब्ध';
+      }
+      return flag;
+    }
     if (flag.includes('Non-standard government domain')) {
       return 'நிலையான அரசு இணைய முகவரி இல்லை (கூடுதல் ஆய்வு தேவை)';
     }
@@ -164,7 +182,7 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
           onClick={() => onNavigate('discover')}
           className="inline-flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 transition-colors shadow-xs self-start md:self-auto"
         >
-          <span>{language === 'ta' ? 'திட்ட பட்டியலுக்கு திரும்பு' : 'Return to Catalog'}</span>
+          <span>{language === 'ta' ? 'திட்ட பட்டியலுக்கு திரும்பு' : language === 'hi' ? 'कैटलॉग पर लौटें' : 'Return to Catalog'}</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </button>
       </div>
@@ -176,11 +194,15 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
           <span className="font-bold text-civic-900 block text-sm">
             {language === 'ta'
               ? 'அரசிதழ் தகவல் மற்றும் மூல நம்பகத்தன்மை தணிக்கை:'
+              : language === 'hi'
+              ? 'मेटाडेटा-आधारित राजपत्र एवं स्रोत सत्यनिष्ठा ऑडिट:'
               : 'Metadata-Based Official Gazette & Source Integrity Audit:'}
           </span>
           <p className="text-slate-700 leading-relaxed text-xs">
             {language === 'ta'
               ? 'SevAIQ ஒரு திட்டத்தின் இணைய இணைப்பு உள்ளதால் மட்டுமே அதை சரிபார்க்கப்பட்டதாக அறிவிப்பதில்லை. ஒவ்வொரு பதிவும் வெளியிடப்பட்ட வழிகாட்டுதல்கள், அமைச்சக அரசிதழ்கள் மற்றும் அதிகாரப்பூர்வ .gov.in / .nic.in இணையதளங்களுடன் ஒப்பிடப்பட்டு சரிபார்க்கப்படுகிறது. தானியங்கி தரவு என்ற பொய்யான உரிமை கோரலின்றி உண்மையான சரிபார்ப்பு தேதிகள் இங்கு காட்டப்படுகின்றன.'
+              : language === 'hi'
+              ? 'SevAIQ किसी योजना को केवल इसलिए सत्यापित नहीं मानता क्योंकि कोई बाहरी URL उपलब्ध है। प्रत्येक रिकॉर्ड का प्रकाशित दिशानिर्देशों, मंत्रालय राजपत्रों एवं आधिकारिक .gov.in / .nic.in पोर्टलों के आधार पर मिलान किया जाता है। यह ट्रस्ट मॉनिटर बिना किसी स्वचालित स्क्रैपिंग के वास्तविक मेटाडेटा तिथियां प्रदर्शित करता है।'
               : 'SevAIQ never marks a scheme as verified merely because an external URL exists. Every record is verified against published operational guidelines, nodal ministry gazettes, and official .gov.in / .nic.in portals. This Trust Monitor displays real metadata dates without claiming automated live scraping.'}
           </p>
         </div>
@@ -192,18 +214,20 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
         <div className="p-5 bg-white rounded-3xl border border-slate-200 shadow-xs flex flex-col justify-between">
           <div>
             <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
-              {language === 'ta' ? 'தணிக்கை செய்யப்பட்ட மொத்த திட்டங்கள்' : 'Total Schemes Audited'}
+              {language === 'ta' ? 'தணிக்கை செய்யப்பட்ட மொத்த திட்டங்கள்' : language === 'hi' ? 'ऑडिट की गई कुल योजनाएं' : 'Total Schemes Audited'}
             </span>
             <div className="mt-2 flex items-baseline space-x-2">
               <span className="text-3xl font-extrabold text-slate-900">{schemes.length}</span>
               <span className="text-xs text-slate-600 font-semibold">
-                {language === 'ta' ? 'செயலில் உள்ள அட்டவணை' : 'Active catalog'}
+                {language === 'ta' ? 'செயலில் உள்ள அட்டவணை' : language === 'hi' ? 'सक्रिय कैटलॉग' : 'Active catalog'}
               </span>
             </div>
           </div>
           <p className="mt-2 text-xs text-slate-500">
             {language === 'ta'
               ? 'FastAPI பின்தளத்துடன் ஒப்பிட்டு சரிபார்க்கப்பட்டது'
+              : language === 'hi'
+              ? 'FastAPI बैकएंड के साथ सत्यापित'
               : 'Cross-verified against FastAPI backend storage'}
           </p>
         </div>
@@ -212,7 +236,7 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
         <div className="p-5 bg-white rounded-3xl border border-slate-200 shadow-xs flex flex-col justify-between">
           <div>
             <span className="text-xs font-bold uppercase tracking-wider text-emerald-700">
-              {language === 'ta' ? 'முழுமையாக சரிபார்க்கப்பட்ட பதிவுகள்' : 'Fully Verified Records'}
+              {language === 'ta' ? 'முழுமையாக சரிபார்க்கப்பட்ட பதிவுகள்' : language === 'hi' ? 'पूर्णतः सत्यापित रिकॉर्ड' : 'Fully Verified Records'}
             </span>
             <div className="mt-2 flex items-baseline space-x-2">
               <span className="text-3xl font-extrabold text-emerald-700">{fullyVerifiedCount}</span>
@@ -224,6 +248,8 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
           <p className="mt-2 text-xs text-slate-500">
             {language === 'ta'
               ? 'உண்மையான .gov.in முகவரி & அரசிதழ் நாள் கொண்டது'
+              : language === 'hi'
+              ? 'प्रामाणिक .gov.in डोमेन एवं वास्तविक राजपत्र तिथि युक्त'
               : 'Backed by authentic .gov.in domain & real gazette date'}
           </p>
         </div>
@@ -232,18 +258,20 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
         <div className="p-5 bg-white rounded-3xl border border-slate-200 shadow-xs flex flex-col justify-between">
           <div>
             <span className="text-xs font-bold uppercase tracking-wider text-amber-700">
-              {language === 'ta' ? 'கூடுதல் ஆய்வு தேவைப்படும் பதிவுகள்' : 'Metadata Notices / Pending'}
+              {language === 'ta' ? 'கூடுதல் ஆய்வு தேவைப்படும் பதிவுகள்' : language === 'hi' ? 'समीक्षाधीन / नोटिस युक्त रिकॉर्ड' : 'Metadata Notices / Pending'}
             </span>
             <div className="mt-2 flex items-baseline space-x-2">
               <span className="text-3xl font-extrabold text-amber-800">{flaggedCount}</span>
               <span className="text-xs text-amber-700 font-semibold">
-                {language === 'ta' ? 'ஆய்வு தேவை' : 'Need review'}
+                {language === 'ta' ? 'ஆய்வு தேவை' : language === 'hi' ? 'समीक्षा आवश्यक' : 'Need review'}
               </span>
             </div>
           </div>
           <p className="mt-2 text-xs text-slate-500">
             {language === 'ta'
               ? 'சரிபார்ப்பு நாள் விடுபட்ட அல்லது நிலையற்ற அரசு இணைய முகவரி'
+              : language === 'hi'
+              ? 'अस्पष्ट तिथि अथवा गैर-मानक पोर्टल यूआरएल युक्त रिकॉर्ड'
               : 'Records missing explicit date or non-standard portal URL'}
           </p>
         </div>
@@ -254,7 +282,7 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-xs font-semibold text-slate-500 flex items-center space-x-1 pr-1">
             <Filter className="w-3.5 h-3.5" />
-            <span>{language === 'ta' ? 'தணிக்கை வடிகட்டி:' : 'Audit Filter:'}</span>
+            <span>{language === 'ta' ? 'தணிக்கை வடிகட்டி:' : language === 'hi' ? 'ऑडिट फ़िल्टर:' : 'Audit Filter:'}</span>
           </span>
 
           <button
@@ -266,7 +294,11 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
                 : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
             }`}
           >
-            {language === 'ta' ? `அனைத்து திட்டங்கள் (${audits.length})` : `All Schemes (${audits.length})`}
+            {language === 'ta'
+              ? `அனைத்து திட்டங்கள் (${audits.length})`
+              : language === 'hi'
+              ? `सभी योजनाएं (${audits.length})`
+              : `All Schemes (${audits.length})`}
           </button>
 
           <button
@@ -279,7 +311,13 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
             }`}
           >
             <CheckCircle2 className="w-3.5 h-3.5" />
-            <span>{language === 'ta' ? `முழுமையாக சரிபார்க்கப்பட்டது (${fullyVerifiedCount})` : `Fully Verified (${fullyVerifiedCount})`}</span>
+            <span>
+              {language === 'ta'
+                ? `முழுமையாக சரிபார்க்கப்பட்டது (${fullyVerifiedCount})`
+                : language === 'hi'
+                ? `पूर्णतः सत्यापित (${fullyVerifiedCount})`
+                : `Fully Verified (${fullyVerifiedCount})`}
+            </span>
           </button>
 
           <button
@@ -292,7 +330,13 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
             }`}
           >
             <AlertTriangle className="w-3.5 h-3.5" />
-            <span>{language === 'ta' ? `கூடுதல் ஆய்வு தேவை (${flaggedCount})` : `Flags / Pending (${flaggedCount})`}</span>
+            <span>
+              {language === 'ta'
+                ? `கூடுதல் ஆய்வு தேவை (${flaggedCount})`
+                : language === 'hi'
+                ? `समीक्षाधीन (${flaggedCount})`
+                : `Flags / Pending (${flaggedCount})`}
+            </span>
           </button>
         </div>
 
@@ -307,6 +351,8 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
             placeholder={
               language === 'ta'
                 ? 'திட்டம் அல்லது இணைய முகவரி மூலம் தேடுங்கள்...'
+                : language === 'hi'
+                ? 'योजना या डोमेन द्वारा खोजें...'
                 : 'Search by scheme or domain...'
             }
             className="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-civic-500"
@@ -337,19 +383,35 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
                       {isFullyVerified ? (
                         <span className="inline-flex items-center space-x-1 text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
                           <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                          <span>{language === 'ta' ? 'முழுமையாக சரிபார்க்கப்பட்ட பதிவு' : 'Fully Verified Record'}</span>
+                          <span>
+                            {language === 'ta'
+                              ? 'முழுமையாக சரிபார்க்கப்பட்ட பதிவு'
+                              : language === 'hi'
+                              ? 'पूर्णतः सत्यापित रिकॉर्ड'
+                              : 'Fully Verified Record'}
+                          </span>
                         </span>
                       ) : (
                         <span className="inline-flex items-center space-x-1 text-[11px] font-bold text-amber-800 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
                           <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />
-                          <span>{language === 'ta' ? 'சரிபார்ப்பு அறிவிப்பு நிலுவையில் உள்ளது' : 'Verification Notice Pending'}</span>
+                          <span>
+                            {language === 'ta'
+                              ? 'சரிபார்ப்பு அறிவிப்பு நிலுவையில் உள்ளது'
+                              : language === 'hi'
+                              ? 'सत्यापन सूचना लंबित'
+                              : 'Verification Notice Pending'}
+                          </span>
                         </span>
                       )}
 
                       {hasOfficialGovDomain && (
                         <span className="inline-flex items-center space-x-1 text-[10px] font-mono font-semibold text-blue-800 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
                           <span>
-                            {language === 'ta' ? `அதிகாரப்பூர்வ தளம்: ${domainName}` : `Official Portal: ${domainName}`}
+                            {language === 'ta'
+                              ? `அதிகாரப்பூர்வ தளம்: ${domainName}`
+                              : language === 'hi'
+                              ? `आधिकारिक पोर्टल: ${domainName}`
+                              : `Official Portal: ${domainName}`}
                           </span>
                         </span>
                       )}
@@ -369,7 +431,7 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
                         onClick={() => onSelectSchemeForEligibility(scheme)}
                         className="px-3 py-1.5 rounded-xl bg-civic-50 hover:bg-civic-100 text-civic-800 font-semibold text-xs transition-colors"
                       >
-                        {language === 'ta' ? 'தகுதி சரிபார்க்க' : 'Check Eligibility'}
+                        {language === 'ta' ? 'தகுதி சரிபார்க்க' : language === 'hi' ? 'पात्रता जांचें' : 'Check Eligibility'}
                       </button>
                     )}
                     {scheme.official_portal_url && (
@@ -392,22 +454,34 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
                   <div className="p-3 bg-slate-50 rounded-2xl space-y-1">
                     <span className="font-semibold text-slate-500 text-[10px] uppercase tracking-wider block flex items-center space-x-1">
                       <Calendar className="w-3 h-3 text-slate-400" />
-                      <span>{language === 'ta' ? 'கடைசி அரசிதழ் சரிபார்ப்பு' : 'Last Gazette Check'}</span>
+                      <span>
+                        {language === 'ta'
+                          ? 'கடைசி அரசிதழ் சரிபார்ப்பு'
+                          : language === 'hi'
+                          ? 'अंतिम राजपत्र सत्यापन'
+                          : 'Last Gazette Check'}
+                      </span>
                     </span>
                     <p className="font-bold text-slate-800">
                       {hasRealDate
                         ? verificationDate
                         : language === 'ta'
                         ? 'சரிபார்ப்பு நாள் பதிவாகவில்லை'
+                        : language === 'hi'
+                        ? 'सत्यापन तिथि दर्ज नहीं है'
                         : 'No Verification Date on Record'}
                     </p>
                     <span className="text-[10px] text-slate-500">
                       {hasRealDate
                         ? language === 'ta'
                           ? 'அதிகாரப்பூர்வ மூலத்தில் சரிபார்க்கப்பட்டது'
+                          : language === 'hi'
+                          ? 'आधिकारिक स्रोत से सत्यापित'
                           : 'Verified against authentic source'
                         : language === 'ta'
                         ? 'பழைய அல்லது பதிவாகாத சரிபார்ப்பு'
+                        : language === 'hi'
+                        ? 'पुरानी या अदर्ज समीक्षा'
                         : 'Stale or unrecorded check'}
                     </span>
                   </div>
@@ -416,13 +490,21 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
                   <div className="p-3 bg-slate-50 rounded-2xl space-y-1 md:col-span-2">
                     <span className="font-semibold text-slate-500 text-[10px] uppercase tracking-wider block flex items-center space-x-1">
                       <FileText className="w-3 h-3 text-slate-400" />
-                      <span>{language === 'ta' ? 'ஆதார அரசிதழ் மேற்கோள்' : 'Source Provenance Citation'}</span>
+                      <span>
+                        {language === 'ta'
+                          ? 'ஆதார அரசிதழ் மேற்கோள்'
+                          : language === 'hi'
+                          ? 'मूल राजपत्र उद्धरण'
+                          : 'Source Provenance Citation'}
+                      </span>
                     </span>
                     <p className="text-slate-800 font-medium text-xs leading-snug">
                       {hasGazetteCitation
                         ? scheme.verification_source
                         : language === 'ta'
                         ? 'அதிகாரப்பூர்வ அரசிதழ் மேற்கோள் இல்லை'
+                        : language === 'hi'
+                        ? 'मेटाडेटा में कोई आधिकारिक स्रोत संदर्भ दर्ज नहीं है।'
                         : 'No official source citation recorded in metadata.'}
                     </p>
                   </div>
@@ -436,6 +518,8 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
                       <span>
                         {language === 'ta'
                           ? `நம்பகத்தன்மை ஆய்வு அறிவிப்புகள் (${flags.length}):`
+                          : language === 'hi'
+                          ? `विश्वसनीयता निरीक्षण सूचनाएं (${flags.length}):`
                           : `Trust Inspection Notices (${flags.length}):`}
                       </span>
                     </span>
@@ -455,11 +539,15 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
             <h3 className="text-base font-bold text-slate-900">
               {language === 'ta'
                 ? 'இந்த வடிகட்டலுக்கு ஏற்ற திட்டங்கள் எதுவும் இல்லை'
+                : language === 'hi'
+                ? 'इस फ़िल्टर से मेल खाती कोई योजना नहीं मिली'
                 : 'No schemes matched the trust filter'}
             </h3>
             <p className="text-xs text-slate-500">
               {language === 'ta'
                 ? '"அனைத்து திட்டங்கள்" என்பதை தேர்வு செய்யவும் அல்லது தேடல் சொல்லை மாற்றவும்.'
+                : language === 'hi'
+                ? '"सभी योजनाएं" चुनें या खोज शब्द साफ़ करें।'
                 : 'Try selecting "All Schemes" or clearing your search term.'}
             </p>
           </div>

@@ -209,6 +209,8 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
           <span>
             {language === 'ta'
               ? 'FastAPI மூலம் பல திட்டங்களுக்கான ஆவண இணைப்பை கணக்கிடுகிறது...'
+              : language === 'hi'
+              ? 'FastAPI के माध्यम से बहु-योजना दस्तावेज़ तालमेल की गणना की जा रही है...'
               : 'Computing cross-scheme document synergy via FastAPI POST /api/documents/mapper...'}
           </span>
         </div>
@@ -220,10 +222,16 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
             <Server className="w-4 h-4 text-emerald-700 shrink-0" />
             <span>
               <strong>
-                {language === 'ta' ? 'சேவையக ஆவண இணைப்பு:' : 'Server-Computed Document Synergy:'}
+                {language === 'ta'
+                  ? 'சேவையக ஆவண இணைப்பு:'
+                  : language === 'hi'
+                  ? 'सर्वर-गणना दस्तावेज़ तालमेल:'
+                  : 'Server-Computed Document Synergy:'}
               </strong>{' '}
               {language === 'ta'
                 ? `${backendMapping.selected_scheme_ids.length} திட்டங்களில் பகுப்பாய்வு செய்யப்பட்டது (${backendMapping.reusable_documents.length} மறுபயன்பாட்டு ஆவணங்கள், ${backendMapping.single_scheme_documents.length} தனித்த ஆவணங்கள்).`
+                : language === 'hi'
+                ? `${backendMapping.selected_scheme_ids.length} योजनाओं में विश्लेषण किया गया (${backendMapping.reusable_documents.length} पुन: प्रयोज्य दस्तावेज़, ${backendMapping.single_scheme_documents.length} योजना-विशिष्ट दस्तावेज़)।`
                 : `Analyzed across ${backendMapping.selected_scheme_ids.length} schemes (${backendMapping.reusable_documents.length} reusable multi-scheme documents, ${backendMapping.single_scheme_documents.length} scheme-specific).`}
             </span>
           </div>
@@ -233,7 +241,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
             className="text-emerald-800 underline font-semibold flex items-center space-x-1 hover:text-emerald-900"
           >
             <RefreshCw className="w-3 h-3" />
-            <span>{language === 'ta' ? 'மீண்டும் பகுப்பாய்வு' : 'Re-analyze'}</span>
+            <span>{language === 'ta' ? 'மீண்டும் பகுப்பாய்வு' : language === 'hi' ? 'पुन: विश्लेषण करें' : 'Re-analyze'}</span>
           </button>
         </div>
       )}
@@ -243,11 +251,18 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
           <AlertCircle className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
           <div>
             <p className="font-semibold">
-              {language === 'ta' ? 'பின்தள ஆவண இணைப்பு அறிவிப்பு:' : 'Backend Document Mapper Notice:'} {mappingError}
+              {language === 'ta'
+                ? 'பின்தள ஆவண இணைப்பு அறிவிப்பு:'
+                : language === 'hi'
+                ? 'बैकएंड दस्तावेज़ मैपर सूचना:'
+                : 'Backend Document Mapper Notice:'}{' '}
+              {mappingError}
             </p>
             <p className="text-amber-800 mt-0.5">
               {language === 'ta'
                 ? 'உள்ளூர் ஆவண இணைப்பு மாதிரி மாற்றாக காட்டப்படுகிறது.'
+                : language === 'hi'
+                ? 'वैकल्पिक रूप से स्थानीय दस्तावेज़ तालमेल मॉडल दिखाया जा रहा है।'
                 : 'Showing local document synergy model as fallback.'}
             </p>
           </div>
@@ -266,9 +281,13 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
               {selectedSchemeIds.length === 0
                 ? language === 'ta'
                   ? 'அனைத்து திட்டங்களும் தேர்வில்'
+                  : language === 'hi'
+                  ? 'सभी योजनाएं सक्रिय'
                   : 'All schemes active'
                 : language === 'ta'
                 ? `${selectedSchemeIds.length} தேர்வு செய்யப்பட்டுள்ளது`
+                : language === 'hi'
+                ? `${selectedSchemeIds.length} चयनित`
                 : `${selectedSchemeIds.length} selected`}
               )
             </span>
@@ -320,6 +339,8 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                 (
                 {language === 'ta'
                   ? `${totalCount} இல் ${haveCount} தயார்`
+                  : language === 'hi'
+                  ? `${totalCount} में से ${haveCount} तैयार`
                   : `${haveCount} of ${totalCount} ready`}
                 )
               </span>
@@ -338,19 +359,19 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
             <div>
               <span className="text-emerald-700 font-bold block">{haveCount}</span>
               <span className="text-slate-500 text-[10px]">
-                {language === 'ta' ? 'தயார்' : 'Ready'}
+                {language === 'ta' ? 'தயார்' : language === 'hi' ? 'तैयार' : 'Ready'}
               </span>
             </div>
             <div>
               <span className="text-rose-700 font-bold block">{missingCount}</span>
               <span className="text-slate-500 text-[10px]">
-                {language === 'ta' ? 'விடுபட்டவை' : 'Missing'}
+                {language === 'ta' ? 'விடுபட்டவை' : language === 'hi' ? 'अनुपलब्ध' : 'Missing'}
               </span>
             </div>
             <div>
               <span className="text-amber-700 font-bold block">{unconfirmedCount}</span>
               <span className="text-slate-500 text-[10px]">
-                {language === 'ta' ? 'உறுதிப்படுத்தப்படவில்லை' : 'Unconfirmed'}
+                {language === 'ta' ? 'உறுதிப்படுத்தப்படவில்லை' : language === 'hi' ? 'अपुष्ट' : 'Unconfirmed'}
               </span>
             </div>
           </div>
@@ -373,17 +394,23 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
               <span>
                 {language === 'ta'
                   ? 'திட்டங்களுக்கிடையேயான பலன்'
+                  : language === 'hi'
+                  ? 'योजनाओं के बीच तालमेल'
                   : 'Cross-Scheme Synergy Unlocked'}
               </span>
             </div>
             <h3 className="text-lg font-bold text-white">
               {language === 'ta'
                 ? `${sharedDocsCount} பொது ஆவணங்கள் கண்டறியப்பட்டுள்ளன`
+                : language === 'hi'
+                ? `${sharedDocsCount} साझा दस्तावेज़ मिले`
                 : `${sharedDocsCount} Shared Documents Found`}
             </h3>
             <p className="text-xs text-slate-300 mt-1 leading-relaxed">
               {language === 'ta'
                 ? 'பல திட்டங்களுக்கு விண்ணப்பிக்கும்போது ஒவ்வொரு முறையும் ஆவணங்களை புதிதாக பெற வேண்டியதில்லை. ஒரே சான்றிதழ் (வருமானச் சான்றிதழ், இருப்பிடச் சான்றிதழ் போன்றவை) பல அரசு திட்டங்களுக்கு செல்லும்.'
+                : language === 'hi'
+                ? 'कई योजनाओं के लिए आवेदन करने का अर्थ बार-बार दस्तावेज़ बनवाना नहीं है। एक सत्यापित प्रमाणपत्र (जैसे आय प्रमाणपत्र या मूल निवास प्रमाणपत्र) कई मंत्रालयों की योजनाओं में मान्य होता है।'
                 : 'Applying for multiple schemes does not mean duplicating paperwork. One verified document (such as an Income Certificate or Domicile Certificate) satisfies eligibility proof across multiple government ministries.'}
             </p>
           </div>
@@ -404,6 +431,8 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                     (
                     {language === 'ta'
                       ? `${schemeOverlapCount} திட்டங்கள்`
+                      : language === 'hi'
+                      ? `${schemeOverlapCount} योजनाएं`
                       : `${schemeOverlapCount} schemes`}
                     )
                   </span>
@@ -424,7 +453,11 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
               : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
           }`}
         >
-          {language === 'ta' ? `அனைத்து ஆவணங்கள் (${totalCount})` : `All Required Documents (${totalCount})`}
+          {language === 'ta'
+            ? `அனைத்து ஆவணங்கள் (${totalCount})`
+            : language === 'hi'
+            ? `सभी आवश्यक दस्तावेज़ (${totalCount})`
+            : `All Required Documents (${totalCount})`}
         </button>
 
         <button
@@ -435,7 +468,11 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
               : 'bg-indigo-50 text-indigo-800 border border-indigo-200 hover:bg-indigo-100'
           }`}
         >
-          {language === 'ta' ? `பொதுவானவை (${sharedDocsCount})` : `Shared Synergies (${sharedDocsCount})`}
+          {language === 'ta'
+            ? `பொதுவானவை (${sharedDocsCount})`
+            : language === 'hi'
+            ? `साझा तालमेल (${sharedDocsCount})`
+            : `Shared Synergies (${sharedDocsCount})`}
         </button>
 
         <button
@@ -446,7 +483,11 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
               : 'bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200'
           }`}
         >
-          {language === 'ta' ? `குறிப்பிட்டவை (${singleDocsCount})` : `Scheme-Specific (${singleDocsCount})`}
+          {language === 'ta'
+            ? `குறிப்பிட்டவை (${singleDocsCount})`
+            : language === 'hi'
+            ? `योजना-विशिष्ट (${singleDocsCount})`
+            : `Scheme-Specific (${singleDocsCount})`}
         </button>
 
         <button
@@ -457,7 +498,11 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
               : 'bg-rose-50 text-rose-800 border border-rose-200 hover:bg-rose-100'
           }`}
         >
-          {language === 'ta' ? `விடுபட்டவை (${missingCount})` : `Missing to Procure (${missingCount})`}
+          {language === 'ta'
+            ? `விடுபட்டவை (${missingCount})`
+            : language === 'hi'
+            ? `प्राप्त करने योग्य (${missingCount})`
+            : `Missing to Procure (${missingCount})`}
         </button>
 
         <button
@@ -468,7 +513,11 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
               : 'bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100'
           }`}
         >
-          {language === 'ta' ? `கையில் உள்ளவை (${haveCount})` : `Ready in Hand (${haveCount})`}
+          {language === 'ta'
+            ? `கையில் உள்ளவை (${haveCount})`
+            : language === 'hi'
+            ? `पास में उपलब्ध (${haveCount})`
+            : `Ready in Hand (${haveCount})`}
         </button>
       </div>
 
@@ -498,6 +547,8 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                           <span>
                             {language === 'ta'
                               ? `${applicableInSelection.length} திட்டங்களுக்கு பொதுவானது (மறுபயன்பாடு)`
+                              : language === 'hi'
+                              ? `${applicableInSelection.length} योजनाओं में साझा (पुन: प्रयोज्य)`
                               : `Shared across ${applicableInSelection.length} schemes (reusable once)`}
                           </span>
                         </span>
@@ -506,6 +557,8 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                           <span>
                             {language === 'ta'
                               ? 'குறிப்பிட்ட திட்டத் தேவை'
+                              : language === 'hi'
+                              ? 'योजना-विशिष्ट आवश्यकता'
                               : 'Scheme-Specific Requirement'}
                           </span>
                         </span>
@@ -515,17 +568,35 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                       {doc.status === 'have' ? (
                         <span className="inline-flex items-center space-x-1 text-[11px] font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
                           <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                          <span>{language === 'ta' ? 'கையில் உள்ளது (தயார்)' : 'Possessed (Ready)'}</span>
+                          <span>
+                            {language === 'ta'
+                              ? 'கையில் உள்ளது (தயார்)'
+                              : language === 'hi'
+                              ? 'पास में है (तैयार)'
+                              : 'Possessed (Ready)'}
+                          </span>
                         </span>
                       ) : doc.status === 'missing' ? (
                         <span className="inline-flex items-center space-x-1 text-[11px] font-semibold text-rose-800 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200">
                           <XCircle className="w-3 h-3 text-rose-600" />
-                          <span>{language === 'ta' ? 'விடுபட்டது (பெற வேண்டும்)' : 'Missing (Must Procure)'}</span>
+                          <span>
+                            {language === 'ta'
+                              ? 'விடுபட்டது (பெற வேண்டும்)'
+                              : language === 'hi'
+                              ? 'अनुपलब्ध (प्राप्त करें)'
+                              : 'Missing (Must Procure)'}
+                          </span>
                         </span>
                       ) : (
                         <span className="inline-flex items-center space-x-1 text-[11px] font-semibold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
                           <HelpCircle className="w-3 h-3 text-amber-600" />
-                          <span>{language === 'ta' ? 'உறுதிப்படுத்தப்படவில்லை' : 'Unconfirmed'}</span>
+                          <span>
+                            {language === 'ta'
+                              ? 'உறுதிப்படுத்தப்படவில்லை'
+                              : language === 'hi'
+                              ? 'अपुष्ट'
+                              : 'Unconfirmed'}
+                          </span>
                         </span>
                       )}
                     </div>
@@ -543,7 +614,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                       }`}
                     >
                       <CheckCircle2 className="w-3.5 h-3.5" />
-                      <span>{language === 'ta' ? 'கையில் உள்ளது' : 'I Have This'}</span>
+                      <span>{language === 'ta' ? 'கையில் உள்ளது' : language === 'hi' ? 'मेरे पास है' : 'I Have This'}</span>
                     </button>
 
                     <button
@@ -555,7 +626,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                       }`}
                     >
                       <XCircle className="w-3.5 h-3.5" />
-                      <span>{language === 'ta' ? 'இல்லை' : 'Missing'}</span>
+                      <span>{language === 'ta' ? 'இல்லை' : language === 'hi' ? 'नहीं है' : 'Missing'}</span>
                     </button>
 
                     <button
@@ -567,7 +638,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                       }`}
                     >
                       <HelpCircle className="w-3.5 h-3.5" />
-                      <span>{language === 'ta' ? 'தெரியவில்லை' : 'Unconfirmed'}</span>
+                      <span>{language === 'ta' ? 'தெரியவில்லை' : language === 'hi' ? 'पता नहीं' : 'Unconfirmed'}</span>
                     </button>
                   </div>
                 </div>
@@ -584,7 +655,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
 
                   <div className="flex flex-wrap items-center gap-1.5">
                     <span className="text-slate-400">
-                      {language === 'ta' ? 'தேவைப்படும் திட்டங்கள்:' : 'Required by:'}
+                      {language === 'ta' ? 'தேவைப்படும் திட்டங்கள்:' : language === 'hi' ? 'आवश्यक योजनाएं:' : 'Required by:'}
                     </span>
                     {applicableInSelection.map((s) => {
                       const locScheme = getLocalizedScheme(s);
@@ -606,11 +677,13 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
           <div className="p-12 bg-white rounded-3xl border border-slate-200 text-center space-y-2">
             <Info className="w-8 h-8 text-slate-400 mx-auto" />
             <h3 className="text-sm font-bold text-slate-800">
-              {language === 'ta' ? 'இப்பிரிவில் ஆவணங்கள் எதுவும் இல்லை' : 'No documents in this view'}
+              {language === 'ta' ? 'இப்பிரிவில் ஆவணங்கள் எதுவும் இல்லை' : language === 'hi' ? 'इस श्रेणी में कोई दस्तावेज़ नहीं' : 'No documents in this view'}
             </h3>
             <p className="text-xs text-slate-500">
               {language === 'ta'
                 ? 'அனைத்து ஆவணங்களையும் காண மேலே உள்ள வடிகட்டியை மாற்றவும்.'
+                : language === 'hi'
+                ? 'सभी आवश्यक प्रमाणपत्र देखने के लिए ऊपर फ़िल्टर टैब बदलें।'
                 : 'Change the filter tab above to view all required certificates.'}
             </p>
           </div>
@@ -624,6 +697,8 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
             <span className="text-xs font-bold uppercase tracking-wider text-slate-800">
               {language === 'ta'
                 ? 'சரிபார்க்கப்பட்ட திட்ட ஆவண வழிகாட்டுதல்கள்'
+                : language === 'hi'
+                ? 'सत्यापित योजना दस्तावेज़ संदर्भ एवं दिशानिर्देश'
                 : 'Verified Scheme Document Citations & Operational Guidelines'}
             </span>
           </div>
@@ -635,7 +710,12 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
               >
                 <span className="font-bold text-slate-900 block">{ref.scheme_title}</span>
                 <p className="text-[11px] text-slate-600 leading-relaxed">
-                  {ref.verification_source || (language === 'ta' ? 'சரிபார்க்கப்பட்ட அரசு திட்ட வழிகாட்டுதல்கள்' : 'Verified Government Scheme Guidelines')}
+                  {ref.verification_source ||
+                    (language === 'ta'
+                      ? 'சரிபார்க்கப்பட்ட அரசு திட்ட வழிகாட்டுதல்கள்'
+                      : language === 'hi'
+                      ? 'सत्यापित सरकारी योजना दिशानिर्देश'
+                      : 'Verified Government Scheme Guidelines')}
                 </p>
                 {ref.official_portal_url && (
                   <a

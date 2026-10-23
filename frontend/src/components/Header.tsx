@@ -12,11 +12,10 @@ import {
   Trash2,
   ListChecks,
   Globe,
-  Accessibility,
 } from 'lucide-react';
 import { ApiState, NavigationTab } from '../types';
 import { useLanguage } from '../context/LanguageContext';
-import { useAccessibility } from '../context/AccessibilityContext';
+import { LanguageSelector } from './LanguageSelector';
 
 interface HeaderProps {
   apiState?: ApiState;
@@ -46,9 +45,9 @@ export const Header: React.FC<HeaderProps> = ({
   onToggleKioskMode,
   onClearSession,
 }) => {
-  const { language, setLanguage, t } = useLanguage();
+  const { language, t } = useLanguage();
+  const isIndic = language === 'ta' || language === 'hi';
   const isTamil = language === 'ta';
-  const { toggleOpen: toggleAccessibility, isOpen: isA11yOpen, activeCount: a11yActiveCount } = useAccessibility();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
 
@@ -143,8 +142,8 @@ export const Header: React.FC<HeaderProps> = ({
     <header className="sticky top-0 z-50 bg-white border-b border-slate-200/90 shadow-2xs w-full">
       <div className="w-full px-2 sm:px-4 lg:px-5 xl:px-6 2xl:px-8">
         <div className="flex items-center justify-between min-h-[3.75rem] sm:min-h-[4.25rem] py-1 sm:py-1.5 w-full gap-1.5 sm:gap-2 lg:gap-3">
-          {/* Top Left: Logo & Tagline + Accessibility Options (aligned properly below the logo) */}
-          <div className="flex flex-col justify-center items-start shrink-0 pr-1">
+          {/* Top Left: Logo & Tagline */}
+          <div className="flex items-center shrink-0 pr-1">
             <button
               type="button"
               onClick={() => handleNavClick('dashboard')}
@@ -158,40 +157,11 @@ export const Header: React.FC<HeaderProps> = ({
                 <span className="text-base sm:text-lg xl:text-xl font-black tracking-tight text-slate-900 leading-none">
                   Sev<span className="text-civic-600">AI</span>Q
                 </span>
-                <span className={`text-[9px] xl:text-[10px] text-slate-500 font-medium tracking-normal leading-none mt-1 ${isTamil ? 'max-w-[185px] sm:max-w-[215px] 2xl:max-w-none' : 'max-w-[200px] xl:max-w-none'} truncate`}>
+                <span className={`text-[9px] xl:text-[10px] text-slate-500 font-medium tracking-normal leading-none mt-1 ${isIndic ? 'max-w-[185px] sm:max-w-[215px] 2xl:max-w-none' : 'max-w-[200px] xl:max-w-none'} truncate`}>
                   {t.header.tagline}
                 </span>
               </div>
             </button>
-
-            {/* Accessibility options button positioned cleanly below the logo */}
-            <div className="mt-1 flex items-center space-x-1 pl-0.5">
-              <button
-                type="button"
-                onClick={toggleAccessibility}
-                className={`inline-flex items-center gap-1 xl:gap-1.5 px-1.5 xl:px-2 py-0.5 rounded-md ${
-                  isTamil ? 'text-[10px] xl:text-[11px]' : 'text-[11px]'
-                } font-semibold border transition-all focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-2xs group cursor-pointer ${
-                  a11yActiveCount > 0 || isA11yOpen
-                    ? 'bg-purple-100/90 text-purple-900 border-purple-300 font-bold'
-                    : 'bg-purple-50/80 text-purple-800 border-purple-200/90 hover:bg-purple-100 hover:text-purple-900'
-                }`}
-                title="Accessibility options (Ctrl+F2)"
-                aria-label="Open accessibility options (Ctrl+F2)"
-                aria-expanded={isA11yOpen}
-              >
-                <Accessibility className="w-3 h-3 xl:w-3.5 xl:h-3.5 text-purple-600 group-hover:scale-110 transition-transform shrink-0" />
-                <span>{language === 'ta' ? 'அணுகல்தன்மை விருப்பங்கள்' : 'Accessibility options'}</span>
-                <span className="hidden sm:inline-block text-[8px] xl:text-[9px] font-mono font-bold bg-white text-purple-700 px-1 py-0.2 rounded border border-purple-200 shadow-2xs">
-                  Ctrl+F2
-                </span>
-                {a11yActiveCount > 0 && (
-                  <span className="inline-flex items-center justify-center px-1.5 py-0.2 text-[8px] xl:text-[9px] font-black bg-purple-600 text-white rounded-full">
-                    {a11yActiveCount}
-                  </span>
-                )}
-              </button>
-            </div>
           </div>
 
           {/* Center: All Navigation Options Aligned in Center */}
@@ -209,7 +179,7 @@ export const Header: React.FC<HeaderProps> = ({
                   onClick={() => handleNavClick(item.id)}
                   aria-current={isActive ? 'page' : undefined}
                   className={`relative flex items-center ${
-                    isTamil
+                    isIndic
                       ? 'gap-1 xl:gap-1.5 px-1.5 py-1 xl:px-2 xl:py-1.5 2xl:px-2.5 text-[11px] xl:text-xs font-semibold'
                       : 'gap-1.5 px-2 py-1 xl:px-2.5 xl:py-1.5 text-xs font-semibold'
                   } rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 whitespace-nowrap shrink-0 ${
@@ -218,7 +188,7 @@ export const Header: React.FC<HeaderProps> = ({
                       : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                   }`}
                 >
-                  <Icon className={`${isTamil ? 'w-3 h-3 xl:w-3.5 xl:h-3.5' : 'w-3.5 h-3.5'} shrink-0 ${isActive ? 'text-civic-700' : 'text-slate-500'}`} />
+                  <Icon className={`${isIndic ? 'w-3 h-3 xl:w-3.5 xl:h-3.5' : 'w-3.5 h-3.5'} shrink-0 ${isActive ? 'text-civic-700' : 'text-slate-500'}`} />
                   <span>
                     {item.id === 'eligibility' && isTamil ? (
                       <>
@@ -244,51 +214,15 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Top Right: Language Switcher, Kiosk Mode, End Session & Mobile Menu Toggle */}
           <div className="flex items-center justify-end gap-1.5 sm:gap-2 shrink-0">
-            {/* Language Switcher Segmented Control: English | தமிழ் */}
-            <div
-              className="flex items-center rounded-lg border border-slate-200 bg-slate-100/80 p-0.5 shadow-2xs shrink-0"
-              role="group"
-              aria-label="Language selection"
-            >
-              <Globe className="w-3 h-3 xl:w-3.5 xl:h-3.5 text-slate-500 ml-1.5 mr-1 hidden sm:inline shrink-0" />
-              <button
-                type="button"
-                onClick={() => setLanguage('en')}
-                className={`h-7 px-2 xl:px-2.5 rounded-md ${
-                  isTamil ? 'text-[11px] xl:text-xs' : 'text-xs'
-                } font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 ${
-                  language === 'en'
-                    ? 'bg-white text-civic-900 shadow-2xs font-bold border border-slate-200'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-                aria-label="Switch website language to English"
-                aria-pressed={language === 'en'}
-              >
-                English
-              </button>
-              <button
-                type="button"
-                onClick={() => setLanguage('ta')}
-                className={`h-7 px-2 xl:px-2.5 rounded-md ${
-                  isTamil ? 'text-[11px] xl:text-xs' : 'text-xs'
-                } font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 ${
-                  language === 'ta'
-                    ? 'bg-civic-700 text-white shadow-2xs font-bold'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-                aria-label="வலைத்தள மொழியை தமிழுக்கு மாற்றவும் (Switch website to Tamil)"
-                aria-pressed={language === 'ta'}
-              >
-                தமிழ்
-              </button>
-            </div>
+            {/* Official Indian Governance / myScheme-Style Language Option */}
+            <LanguageSelector variant="header" />
 
             {/* Ephemeral Public Kiosk Mode Toggle */}
             <button
               type="button"
               onClick={onToggleKioskMode}
               className={`h-7 xl:h-8 px-2 xl:px-2.5 rounded-lg ${
-                isTamil ? 'text-[11px] xl:text-xs' : 'text-xs'
+                isIndic ? 'text-[11px] xl:text-xs' : 'text-xs'
               } font-semibold inline-flex items-center gap-1 xl:gap-1.5 border transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 shrink-0 ${
                 isKioskMode
                   ? 'bg-amber-50 text-amber-900 border-amber-300 shadow-2xs hover:bg-amber-100'
@@ -302,7 +236,7 @@ export const Header: React.FC<HeaderProps> = ({
               aria-pressed={isKioskMode}
             >
               <Monitor className={`w-3 h-3 xl:w-3.5 xl:h-3.5 shrink-0 ${isKioskMode ? 'text-amber-800' : 'text-slate-500'}`} />
-              <span className={isTamil ? 'hidden 2xl:inline' : 'hidden xl:inline'}>{t.header.kioskMode}</span>
+              <span className={isIndic ? 'hidden 2xl:inline' : 'hidden xl:inline'}>{t.header.kioskMode}</span>
               <span className={isKioskMode ? 'font-bold text-amber-900' : ''}>
                 {isKioskMode ? t.header.active : t.header.off}
               </span>
@@ -314,13 +248,13 @@ export const Header: React.FC<HeaderProps> = ({
               type="button"
               onClick={() => setShowClearConfirm(true)}
               className={`h-7 xl:h-8 px-2 xl:px-2.5 rounded-lg ${
-                isTamil ? 'text-[11px] xl:text-xs' : 'text-xs'
-              } font-semibold inline-flex items-center gap-1 xl:gap-1.5 border border-rose-200 text-rose-700 hover:bg-rose-50 hover:border-rose-300 transition-all focus:outline-none focus:ring-2 focus:ring-rose-500 shrink-0`}
+                isIndic ? 'text-[11px] xl:text-xs' : 'text-xs'
+              } font-semibold inline-flex items-center gap-1 xl:gap-1.5 border border-rose-200 text-rose-700 bg-white hover:bg-rose-50 hover:border-rose-300 transition-all focus:outline-none focus:ring-2 focus:ring-rose-500 shadow-2xs shrink-0 cursor-pointer`}
               title={t.header.endSessionTooltip}
               aria-label={t.header.endSession}
             >
               <Trash2 className="w-3 h-3 xl:w-3.5 xl:h-3.5 text-rose-600 shrink-0" />
-              <span className="hidden sm:inline">{t.header.endSession}</span>
+              <span className="hidden sm:inline whitespace-nowrap">{t.header.endSession}</span>
             </button>
 
             {/* Mobile Hamburger Button */}
@@ -345,54 +279,18 @@ export const Header: React.FC<HeaderProps> = ({
               <span className="text-[10px] text-amber-700 font-semibold">{t.header.civicDossier}</span>
             </div>
 
-            {/* Mobile Language Switcher */}
-            <div className="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs">
-              <span className="font-semibold text-slate-700 flex items-center gap-1.5">
-                <Globe className="w-3.5 h-3.5 text-slate-500" />
-                <span>{t.header.languageSelect}</span>
-              </span>
-              <div className="flex items-center space-x-1">
-                <button
-                  type="button"
-                  onClick={() => setLanguage('en')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                    language === 'en'
-                      ? 'bg-white text-civic-800 shadow-xs border border-slate-200'
-                      : 'text-slate-600 hover:bg-slate-200/60'
-                  }`}
-                >
-                  English
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setLanguage('ta')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                    language === 'ta'
-                      ? 'bg-civic-700 text-white shadow-xs'
-                      : 'text-slate-600 hover:bg-slate-200/60'
-                  }`}
-                >
-                  தமிழ்
-                </button>
+            {/* Mobile Language Switcher with official myScheme branding */}
+            <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+              <div className="flex items-center justify-between text-xs px-1">
+                <span className="font-semibold text-slate-700 flex items-center gap-1.5">
+                  <Globe className="w-3.5 h-3.5 text-slate-500" />
+                  <span>{t.header.languageSelect}</span>
+                </span>
+                <span className="text-[10px] text-emerald-800 font-semibold bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                  myScheme
+                </span>
               </div>
-            </div>
-
-            {/* Mobile Accessibility Options Quick Launch */}
-            <div className="px-3 py-2 rounded-xl bg-purple-50 border border-purple-200 flex items-center justify-between text-xs">
-              <span className="font-semibold text-purple-900 flex items-center gap-1.5">
-                <Accessibility className="w-4 h-4 text-purple-700" />
-                <span>{language === 'ta' ? 'அணுகல்தன்மை விருப்பங்கள்' : 'Accessibility options'}</span>
-              </span>
-              <button
-                type="button"
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  toggleAccessibility();
-                }}
-                className="px-2.5 py-1 rounded-lg text-xs font-bold bg-purple-600 hover:bg-purple-700 text-white shadow-xs transition-colors"
-              >
-                {language === 'ta' ? 'திறக்கவும்' : 'Open (Ctrl+F2)'}
-              </button>
+              <LanguageSelector variant="mobile" />
             </div>
 
             <div className="space-y-1">
@@ -447,13 +345,14 @@ export const Header: React.FC<HeaderProps> = ({
                 </button>
               </div>
 
+              {/* Clear Profile / End Session */}
               <button
                 type="button"
                 onClick={() => {
                   setMobileMenuOpen(false);
                   setShowClearConfirm(true);
                 }}
-                className="w-full flex items-center justify-center space-x-2 py-2.5 text-xs font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl transition-colors"
+                className="w-full flex items-center justify-center space-x-2 py-2.5 text-xs font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl transition-colors cursor-pointer"
               >
                 <Trash2 className="w-4 h-4 text-rose-600" />
                 <span>{t.header.endSession}</span>

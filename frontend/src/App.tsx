@@ -11,6 +11,7 @@ import { VoiceAssistant } from './components/VoiceAssistant';
 import { TrustMonitor } from './components/TrustMonitor';
 import { ApplicationTracker } from './components/ApplicationTracker';
 import { AccessibilityDrawer } from './components/AccessibilityDrawer';
+import { FloatingAccessibilityButton } from './components/FloatingAccessibilityButton';
 import { ADHDRuler } from './components/ADHDRuler';
 import { AboutModal } from './components/AboutModal';
 import { Footer } from './components/Footer';
@@ -452,7 +453,13 @@ export function App() {
           type="button"
           onClick={() => setIsAboutOpen(true)}
           className="group flex items-center space-x-2 sm:space-x-2.5 px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-full bg-white hover:bg-slate-50 text-slate-800 border border-slate-300/90 shadow-lg hover:shadow-xl hover:border-civic-400 transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 active:scale-95 cursor-pointer"
-          aria-label={language === 'ta' ? 'SevAIQ பற்றி: அம்சங்கள் & செயல்படும் முறை' : 'About SevAIQ: Features & Working'}
+          aria-label={
+            language === 'ta'
+              ? 'SevAIQ பற்றி: அம்சங்கள் & செயல்படும் முறை'
+              : language === 'hi'
+              ? 'SevAIQ के बारे में: विशेषताएं और कार्यप्रणाली'
+              : 'About SevAIQ: Features & Working'
+          }
         >
           <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-civic-700 to-indigo-900 text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform shrink-0">
             <Info className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
@@ -460,14 +467,18 @@ export function App() {
           <div className="flex flex-col items-start leading-tight text-left">
             <div className="flex items-center gap-1.5">
               <span className="text-xs sm:text-sm font-black tracking-tight text-slate-900">
-                {language === 'ta' ? 'SevAIQ பற்றி' : 'About SevAIQ'}
+                {language === 'ta' ? 'SevAIQ பற்றி' : language === 'hi' ? 'SevAIQ के बारे में' : 'About SevAIQ'}
               </span>
               <span className="inline-flex items-center px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-civic-50 text-civic-700 border border-civic-200/60">
-                {language === 'ta' ? 'அம்சங்கள்' : 'How it works'}
+                {language === 'ta' ? 'அம்சங்கள்' : language === 'hi' ? 'कार्यप्रणाली' : 'How it works'}
               </span>
             </div>
             <span className="text-[10px] text-slate-500 font-medium hidden sm:inline">
-              {language === 'ta' ? 'செயல்பாடுகள் & கருவிகள்' : 'Features & Citizen Workflow'}
+              {language === 'ta'
+                ? 'செயல்பாடுகள் & கருவிகள்'
+                : language === 'hi'
+                ? 'विशेषताएं और नागरिक कार्यप्रवाह'
+                : 'Features & Citizen Workflow'}
             </span>
           </div>
         </button>
@@ -493,6 +504,9 @@ export function App() {
 
       {/* UX4G Universal Accessibility Options Slide-over Drawer */}
       <AccessibilityDrawer />
+
+      {/* myScheme-Style Left Docked Purple Accessibility Launcher */}
+      <FloatingAccessibilityButton />
 
       {/* ADHD Full-Screen Interactive Reading Focus Ruler */}
       <ADHDRuler />

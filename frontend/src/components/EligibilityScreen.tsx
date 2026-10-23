@@ -245,11 +245,17 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
         <Shield className="w-4 h-4 text-civic-700 shrink-0 mt-0.5" />
         <div className="space-y-1">
           <span className="font-bold text-slate-900 block">
-            {language === 'ta' ? 'சட்டப்பூர்வ வெளிப்படைத்தன்மை உத்தரவாதம்:' : 'Statutory Legal Notice & Transparency Mandate:'}
+            {language === 'ta'
+              ? 'சட்டப்பூர்வ வெளிப்படைத்தன்மை உத்தரவாதம்:'
+              : language === 'hi'
+              ? 'वैधानिक विधिक सूचना एवं पारदर्शिता अधिदेश:'
+              : 'Statutory Legal Notice & Transparency Mandate:'}
           </span>
           <p className="text-slate-600 leading-relaxed text-[11px]">
             {language === 'ta'
               ? 'SevAIQ குடிமக்கள் தகவல் & ஆவண தயார்நிலை தளம். இங்கு காட்டப்படும் மதிப்பீடுகள் அனைத்தும் வெளியிடப்பட்ட அரசிதழ் விதிகளின் அடிப்படையிலானவை. அரசு அதிகாரிகளின் நேரடி சரிபார்ப்பிற்கு பின்னரே முறையான பலன்கள் கிடைக்கும்.'
+              : language === 'hi'
+              ? 'SevAIQ एक नागरिक सूचना और दस्तावेज तत्परता मंच है। यहां प्रदर्शित सभी मूल्यांकन प्रकाशित राजपत्र नियमों पर आधारित हैं। आधिकारिक सरकारी सत्यापन के बाद ही योजना का अंतिम लाभ प्राप्त होगा।'
               : 'SevAIQ is a civic intelligence and document-readiness platform. All evaluation outcomes represent an explainable assessment against published statutory guidelines. SevAIQ does not guarantee scheme approval and does not replace official verification by statutory government authorities.'}
           </p>
         </div>
@@ -276,7 +282,13 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
             {/* Privacy Guarantee Pill */}
             <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-medium self-start sm:self-auto">
               <Lock className="w-3.5 h-3.5 text-emerald-600" />
-              <span>{language === 'ta' ? 'ஆதார் / வங்கி கணக்கு தேவையில்லை' : 'No Aadhaar / Bank account required'}</span>
+              <span>
+                {language === 'ta'
+                  ? 'ஆதார் / வங்கி கணக்கு தேவையில்லை'
+                  : language === 'hi'
+                  ? 'आधार / बैंक खाते की आवश्यकता नहीं'
+                  : 'No Aadhaar / Bank account required'}
+              </span>
             </div>
           </div>
 
@@ -344,7 +356,13 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                 <option value="">{t.eligibility.stateSelect}</option>
                 {INDIAN_STATES.map((st) => (
                   <option key={st} value={st}>
-                    {st === 'Tamil Nadu' && language === 'ta' ? 'தமிழ்நாடு (Tamil Nadu)' : st}
+                    {st === 'Tamil Nadu'
+                      ? language === 'ta'
+                        ? 'தமிழ்நாடு (Tamil Nadu)'
+                        : language === 'hi'
+                        ? 'तमिलनाडु (Tamil Nadu)'
+                        : st
+                      : st}
                   </option>
                 ))}
               </select>
@@ -449,7 +467,14 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
             {/* Exact Annual Household Income */}
             <div>
               <label htmlFor="field-annual-income" className="block font-semibold text-slate-700 mb-1.5">
-                {language === 'ta' ? 'துல்லிய ஆண்டு வருமானம் (₹)' : 'Exact Annual Income (₹)'} <span className="text-[10px] text-slate-500 font-normal">({language === 'ta' ? 'விருப்பம்' : 'Optional'})</span>
+                {language === 'ta'
+                  ? 'துல்லிய ஆண்டு வருமானம் (₹)'
+                  : language === 'hi'
+                  ? 'सटीक वार्षिक आय (₹)'
+                  : 'Exact Annual Income (₹)'}{' '}
+                <span className="text-[10px] text-slate-500 font-normal">
+                  ({language === 'ta' ? 'விருப்பம்' : language === 'hi' ? 'वैकल्पिक' : 'Optional'})
+                </span>
               </label>
               <input
                 id="field-annual-income"
@@ -478,7 +503,14 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
             {/* Owns Pucca House */}
             <div>
               <label htmlFor="field-pucca-house" className="block font-semibold text-slate-700 mb-1.5">
-                {language === 'ta' ? 'சொந்த கான்கிரீட் வீடு உள்ளதா?' : 'Owns Pucca House?'} <span className="text-[10px] text-slate-500 font-normal">({language === 'ta' ? 'விருப்பம்' : 'Optional'})</span>
+                {language === 'ta'
+                  ? 'சொந்த கான்கிரீட் வீடு உள்ளதா?'
+                  : language === 'hi'
+                  ? 'क्या पक्का मकान है?'
+                  : 'Owns Pucca House?'}{' '}
+                <span className="text-[10px] text-slate-500 font-normal">
+                  ({language === 'ta' ? 'விருப்பம்' : language === 'hi' ? 'वैकल्पिक' : 'Optional'})
+                </span>
               </label>
               <select
                 id="field-pucca-house"
@@ -497,16 +529,23 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                 }
                 className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-civic-500 focus:bg-white text-slate-900"
               >
-                <option value="">{language === 'ta' ? 'குறிப்பிடப்படவில்லை' : 'Unanswered (Unknown)'}</option>
-                <option value="false">{language === 'ta' ? 'இல்லை (குடிசை / வீடற்ற)' : 'No (Kutcha / Homeless)'}</option>
-                <option value="true">{language === 'ta' ? 'ஆம் (சொந்த கான்கிரீட் வீடு உண்டு)' : 'Yes (Owns Pucca House)'}</option>
+                <option value="">{language === 'ta' ? 'குறிப்பிடப்படவில்லை' : language === 'hi' ? 'उत्तर नहीं दिया (अज्ञात)' : 'Unanswered (Unknown)'}</option>
+                <option value="false">{language === 'ta' ? 'இல்லை (குடிசை / வீடற்ற)' : language === 'hi' ? 'नहीं (कच्चा मकान / बेघर)' : 'No (Kutcha / Homeless)'}</option>
+                <option value="true">{language === 'ta' ? 'ஆம் (சொந்த கான்கிரீட் வீடு உண்டு)' : language === 'hi' ? 'हाँ (स्वयं का पक्का मकान है)' : 'Yes (Owns Pucca House)'}</option>
               </select>
             </div>
 
             {/* Income Tax Payer */}
             <div>
               <label htmlFor="field-tax-payer" className="block font-semibold text-slate-700 mb-1.5">
-                {language === 'ta' ? 'வருமான வரி செலுத்துபவரா?' : 'Income Tax Payer?'} <span className="text-[10px] text-slate-500 font-normal">({language === 'ta' ? 'விருப்பம்' : 'Optional'})</span>
+                {language === 'ta'
+                  ? 'வருமான வரி செலுத்துபவரா?'
+                  : language === 'hi'
+                  ? 'क्या आयकर दाता हैं?'
+                  : 'Income Tax Payer?'}{' '}
+                <span className="text-[10px] text-slate-500 font-normal">
+                  ({language === 'ta' ? 'விருப்பம்' : language === 'hi' ? 'वैकल्पिक' : 'Optional'})
+                </span>
               </label>
               <select
                 id="field-tax-payer"
@@ -525,16 +564,23 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                 }
                 className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-civic-500 focus:bg-white text-slate-900"
               >
-                <option value="">{language === 'ta' ? 'குறிப்பிடப்படவில்லை' : 'Unanswered (Unknown)'}</option>
-                <option value="false">{language === 'ta' ? 'இல்லை (வரி செலுத்துவதில்லை)' : 'No (Non-Taxpayer)'}</option>
-                <option value="true">{language === 'ta' ? 'ஆம் (வருமான வரி செலுத்துகிறார்)' : 'Yes (Income Tax Payer)'}</option>
+                <option value="">{language === 'ta' ? 'குறிப்பிடப்படவில்லை' : language === 'hi' ? 'उत्तर नहीं दिया (अज्ञात)' : 'Unanswered (Unknown)'}</option>
+                <option value="false">{language === 'ta' ? 'இல்லை (வரி செலுத்துவதில்லை)' : language === 'hi' ? 'नहीं (गैर-करदाता)' : 'No (Non-Taxpayer)'}</option>
+                <option value="true">{language === 'ta' ? 'ஆம் (வருமான வரி செலுத்துகிறார்)' : language === 'hi' ? 'हाँ (आयकर दाता)' : 'Yes (Income Tax Payer)'}</option>
               </select>
             </div>
 
             {/* Government Employee */}
             <div>
               <label htmlFor="field-govt-employee" className="block font-semibold text-slate-700 mb-1.5">
-                {language === 'ta' ? 'அரசு ஊழியரா?' : 'Govt Employee?'} <span className="text-[10px] text-slate-500 font-normal">({language === 'ta' ? 'விருப்பம்' : 'Optional'})</span>
+                {language === 'ta'
+                  ? 'அரசு ஊழியரா?'
+                  : language === 'hi'
+                  ? 'क्या सरकारी कर्मचारी हैं?'
+                  : 'Govt Employee?'}{' '}
+                <span className="text-[10px] text-slate-500 font-normal">
+                  ({language === 'ta' ? 'விருப்பம்' : language === 'hi' ? 'वैकल्पिक' : 'Optional'})
+                </span>
               </label>
               <select
                 id="field-govt-employee"
@@ -553,9 +599,9 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                 }
                 className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-civic-500 focus:bg-white text-slate-900"
               >
-                <option value="">{language === 'ta' ? 'குறிப்பிடப்படவில்லை' : 'Unanswered (Unknown)'}</option>
-                <option value="false">{language === 'ta' ? 'இல்லை (அரசு ஊழியர் அல்ல)' : 'No (Non-Govt Worker)'}</option>
-                <option value="true">{language === 'ta' ? 'ஆம் (பணியிலுள்ள/ஓய்வுபெற்ற அரசு ஊழியர்)' : 'Yes (Serving/Retired Govt Employee)'}</option>
+                <option value="">{language === 'ta' ? 'குறிப்பிடப்படவில்லை' : language === 'hi' ? 'उत्तर नहीं दिया (अज्ञात)' : 'Unanswered (Unknown)'}</option>
+                <option value="false">{language === 'ta' ? 'இல்லை (அரசு ஊழியர் அல்ல)' : language === 'hi' ? 'नहीं (गैर-सरकारी)' : 'No (Non-Govt Worker)'}</option>
+                <option value="true">{language === 'ta' ? 'ஆம் (பணியிலுள்ள/ஓய்வுபெற்ற அரசு ஊழியர்)' : language === 'hi' ? 'हाँ (कार्यरत/सेवानिवृत्त सरकारी कर्मचारी)' : 'Yes (Serving/Retired Govt Employee)'}</option>
               </select>
             </div>
           </div>
@@ -590,7 +636,11 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
             <div className="text-[11px] text-slate-600 font-medium">
               {isKioskMode && (
                 <span className="font-semibold text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
-                  {language === 'ta' ? 'பொது கியோஸ்க் முறை: விவரங்கள் நினைவகத்தில் மட்டுமே இருக்கும்' : 'Public Kiosk Mode: Answers stored in memory only'}
+                  {language === 'ta'
+                    ? 'பொது கியோஸ்க் முறை: விவரங்கள் நினைவகத்தில் மட்டுமே இருக்கும்'
+                    : language === 'hi'
+                    ? 'सार्वजनिक कियोस्क मोड: उत्तर केवल मेमोरी में सुरक्षित रहते हैं'
+                    : 'Public Kiosk Mode: Answers stored in memory only'}
                 </span>
               )}
             </div>
@@ -763,7 +813,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
 
           <span className="text-xs font-semibold text-slate-500 flex items-center space-x-1 pr-1 border-l border-slate-200 pl-2">
             <Filter className="w-3.5 h-3.5" />
-            <span>{language === 'ta' ? 'முடிவு:' : 'Outcome:'}</span>
+            <span>{language === 'ta' ? 'முடிவு:' : language === 'hi' ? 'परिणाम:' : 'Outcome:'}</span>
           </span>
 
           <button
@@ -818,7 +868,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
           onClick={() => onNavigate('document-mapper')}
           className="hidden sm:inline-flex items-center space-x-1.5 text-xs font-semibold text-civic-700 hover:underline"
         >
-          <span>{language === 'ta' ? 'ஆவண வரைபடத்திற்கு செல்' : 'Go to Document Mapper'}</span>
+          <span>{language === 'ta' ? 'ஆவண வரைபடத்திற்கு செல்' : language === 'hi' ? 'दस्तावेज़ मैपर पर जाएं' : 'Go to Document Mapper'}</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </button>
       </div>
@@ -890,7 +940,11 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                       )}
 
                       <span className="text-xs text-slate-400">
-                        {language === 'ta' ? `${metCount}/${totalCriteriaCount} தகுதிகள் பூர்த்தி` : `${metCount}/${totalCriteriaCount} criteria evaluated`}
+                        {language === 'ta'
+                          ? `${metCount}/${totalCriteriaCount} தகுதிகள் பூர்த்தி`
+                          : language === 'hi'
+                          ? `${metCount}/${totalCriteriaCount} मानदंड पूरे हुए`
+                          : `${metCount}/${totalCriteriaCount} criteria evaluated`}
                       </span>
                     </div>
 
@@ -910,7 +964,19 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                       }`}
                     >
                       <FileText className="w-3.5 h-3.5" />
-                      <span>{isSelectedForMapper ? (language === 'ta' ? 'வரைபடத்தில் உள்ளது ✓' : 'In Document Mapper ✓') : (language === 'ta' ? '+ வரைபடத்தில் சேர்' : '+ Add to Mapper')}</span>
+                      <span>
+                        {isSelectedForMapper
+                          ? language === 'ta'
+                            ? 'வரைபடத்தில் உள்ளது ✓'
+                            : language === 'hi'
+                            ? 'मैपर में मौजूद ✓'
+                            : 'In Document Mapper ✓'
+                          : language === 'ta'
+                          ? '+ வரைபடத்தில் சேர்'
+                          : language === 'hi'
+                          ? '+ मैपर में जोड़ें'
+                          : '+ Add to Mapper'}
+                      </span>
                     </button>
 
                     <button
@@ -919,7 +985,19 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                       }
                       className="px-3 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 flex items-center space-x-1"
                     >
-                      <span>{isExpanded ? (language === 'ta' ? 'விதிமுறைகளை மறை' : 'Hide Criteria') : (language === 'ta' ? 'விதிமுறை விவரங்கள்' : 'View Criteria Breakdown')}</span>
+                      <span>
+                        {isExpanded
+                          ? language === 'ta'
+                            ? 'விதிமுறைகளை மறை'
+                            : language === 'hi'
+                            ? 'नियम छुपाएं'
+                            : 'Hide Criteria'
+                          : language === 'ta'
+                          ? 'விதிமுறை விவரங்கள்'
+                          : language === 'hi'
+                          ? 'नियम विवरण देखें'
+                          : 'View Criteria Breakdown'}
+                      </span>
                       {isExpanded ? (
                         <ChevronUp className="w-3.5 h-3.5" />
                       ) : (
@@ -933,7 +1011,11 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                 {isExpanded && (
                   <div className="bg-slate-50 border-t border-slate-100 p-6 space-y-3">
                     <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
-                      {language === 'ta' ? `${scheme.title} - அதிகாரப்பூர்வ தகுதி விதிகள்` : `Official Criteria Breakdown for ${scheme.title}`}
+                      {language === 'ta'
+                        ? `${scheme.title} - அதிகாரப்பூர்வ தகுதி விதிகள்`
+                        : language === 'hi'
+                        ? `${scheme.title} - आधिकारिक पात्रता नियम`
+                        : `Official Criteria Breakdown for ${scheme.title}`}
                     </h4>
 
                     <div className="space-y-2">
@@ -965,10 +1047,22 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                                 }`}
                               >
                                 {crit.status === 'met'
-                                  ? (language === 'ta' ? 'பூர்த்தி' : 'Met')
+                                  ? language === 'ta'
+                                    ? 'பூர்த்தி'
+                                    : language === 'hi'
+                                    ? 'पूरा हुआ'
+                                    : 'Met'
                                   : crit.status === 'unknown'
-                                  ? (language === 'ta' ? 'சரிபார்ப்பு தேவை' : 'Unknown')
-                                  : (language === 'ta' ? 'தகுதியில்லை' : 'Not Met')}
+                                  ? language === 'ta'
+                                    ? 'சரிபார்ப்பு தேவை'
+                                    : language === 'hi'
+                                    ? 'सत्यापन आवश्यक'
+                                    : 'Unknown'
+                                  : language === 'ta'
+                                  ? 'தகுதியில்லை'
+                                  : language === 'hi'
+                                  ? 'अपात्र'
+                                  : 'Not Met'}
                               </span>
                             </div>
 
@@ -977,12 +1071,20 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                             {crit.expectedRule && (
                               <div className="mt-1 flex items-center space-x-3 text-[11px] text-slate-500">
                                 <span>
-                                  {language === 'ta' ? 'எதிர்பார்க்கப்படும் விதி:' : 'Expected:'}{' '}
+                                  {language === 'ta'
+                                    ? 'எதிர்பார்க்கப்படும் விதி:'
+                                    : language === 'hi'
+                                    ? 'अपेक्षित नियम:'
+                                    : 'Expected:'}{' '}
                                   <strong className="text-slate-700">{crit.expectedRule}</strong>
                                 </span>
                                 {crit.citizenValue && (
                                   <span>
-                                    {language === 'ta' ? 'உங்கள் விவரம்:' : 'Profile Value:'}{' '}
+                                    {language === 'ta'
+                                      ? 'உங்கள் விவரம்:'
+                                      : language === 'hi'
+                                      ? 'आपकी प्रोफ़ाइल:'
+                                      : 'Profile Value:'}{' '}
                                     <strong className="text-slate-700">
                                       {crit.citizenValue}
                                     </strong>
@@ -998,11 +1100,17 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                     {/* Unassessed criteria disclaimer */}
                     <div className="p-3 bg-slate-100/70 rounded-xl text-[11px] text-slate-600 space-y-1">
                       <span className="font-semibold text-slate-700 block">
-                        {language === 'ta' ? 'திட்ட விதிகளில் தேவையில்லாத காரணிகள்:' : 'Criteria Not Evaluated by Scheme Rules:'}
+                        {language === 'ta'
+                          ? 'திட்ட விதிகளில் தேவையில்லாத காரணிகள்:'
+                          : language === 'hi'
+                          ? 'योजना नियमों में असंबद्ध कारक:'
+                          : 'Criteria Not Evaluated by Scheme Rules:'}
                       </span>
                       <p>
                         {language === 'ta'
                           ? 'திட்ட விதிகளில் குறிப்பிடப்படாத பாலினம், ஊனம் அல்லது சமூகப் பிரிவு போன்ற விவரங்கள் அனைத்து குடிமக்களுக்கும் பொதுவானவை.'
+                          : language === 'hi'
+                          ? 'लिंग, छात्र स्थिति, दिव्यांगता या सामाजिक वर्ग जैसे कारक यदि आधिकारिक नियमों में निर्दिष्ट नहीं हैं, तो वे सभी नागरिकों के लिए खुले हैं।'
                           : 'Criteria such as gender, student status, disability, or social category were not assessed if not specified in official scheme rules (open to all citizens).'}
                       </p>
                     </div>
@@ -1015,7 +1123,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                         rel="noreferrer"
                         className="text-civic-700 font-semibold hover:underline inline-flex items-center space-x-1"
                       >
-                        <span>{language === 'ta' ? 'அதிகாரப்பூர்வ வழிகாட்டுதல்கள்' : 'Official Guidelines'}</span>
+                        <span>{language === 'ta' ? 'அதிகாரப்பூர்வ வழிகாட்டுதல்கள்' : language === 'hi' ? 'आधिकारिक दिशानिर्देश' : 'Official Guidelines'}</span>
                         <ExternalLink className="w-3 h-3" />
                       </a>
                     </div>
@@ -1029,14 +1137,18 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
             <AlertCircle className="w-10 h-10 text-slate-400 mx-auto" />
             <h3 className="text-base font-bold text-slate-900">{t.eligibility.noResultsMatching}</h3>
             <p className="text-xs text-slate-500">
-              {language === 'ta' ? 'வேறு தகுதி வடிகட்டலைத் தேர்ந்தெடுக்கவும் அல்லது உங்கள் விவரங்களை புதுப்பிக்கவும்.' : 'Try changing the status filter above or updating your citizen profile.'}
+              {language === 'ta'
+                ? 'வேறு தகுதி வடிகட்டலைத் தேர்ந்தெடுக்கவும் அல்லது உங்கள் விவரங்களை புதுப்பிக்கவும்.'
+                : language === 'hi'
+                ? 'ऊपर दिए गए स्थिति फ़िल्टर को बदलें या अपनी नागरिक प्रोफ़ाइल अपडेट करें।'
+                : 'Try changing the status filter above or updating your citizen profile.'}
             </p>
             <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
               <button
                 onClick={() => setStatusFilter('all')}
                 className="px-4 py-2 text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-xl transition-colors"
               >
-                {language === 'ta' ? 'அனைத்து முடிவுகளையும் காட்டு' : 'Show All Statuses'}
+                {language === 'ta' ? 'அனைத்து முடிவுகளையும் காட்டு' : language === 'hi' ? 'सभी स्थितियां दिखाएं' : 'Show All Statuses'}
               </button>
               {selectedSchemeFilter !== 'all' && (
                 <button

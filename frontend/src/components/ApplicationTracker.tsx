@@ -99,6 +99,8 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
       description:
         language === 'ta'
           ? `${locActiveScheme.title} திட்டத்திற்கான சட்டப்பூர்வ தகுதி விதிகளை சரிபாருங்கள். வயது, வருமானம் மற்றும் தொழில் தேவைகள் பொருந்துகிறதா என்பதை உறுதிப்படுத்தவும்.`
+          : language === 'hi'
+          ? `${locActiveScheme.title} के लिए वैधानिक पात्रता नियमों की समीक्षा करें। सुनिश्चित करें कि नागरिक आयु, आय एवं व्यवसाय की शर्तों को पूरा करता है।`
           : `Review verified eligibility rules for ${activeScheme.title}. Ensure citizen meets age, income, and occupational requirements.`,
       isCompleted: currentCompleted.includes('step-eligibility'),
     });
@@ -109,10 +111,17 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
       const docStepId = `step-doc-${idx}`;
       steps.push({
         id: docStepId,
-        title: language === 'ta' ? `படி 2: ${doc} ஆவணத்தை தயார் செய்தல்` : `Stage 2: Procure ${doc}`,
+        title:
+          language === 'ta'
+            ? `படி 2: ${doc} ஆவணத்தை தயார் செய்தல்`
+            : language === 'hi'
+            ? `चरण 2: ${doc} दस्तावेज़ तैयार करना`
+            : `Stage 2: Procure ${doc}`,
         description:
           language === 'ta'
             ? `${doc} ஆவணத்தின் அசல் அல்லது சுய கையொப்பமிட்ட நகலை கையில் தயாராக வைத்திருக்கவும்.`
+            : language === 'hi'
+            ? `${doc} की प्रमाणित मूल प्रति या स्व-हस्ताक्षरित प्रतिलिपि तैयार रखें।`
             : `Ensure an authentic, self-attested original or photocopy of ${doc} is prepared and ready in hand.`,
         isCompleted: currentCompleted.includes(docStepId),
       });
@@ -125,9 +134,13 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
       description: activeScheme.application_mode
         ? language === 'ta'
           ? `அதிகாரப்பூர்வ முறையில் விண்ணப்பிக்கவும்: ${activeScheme.application_mode}.`
+          : language === 'hi'
+          ? `आधिकारिक माध्यम से आवेदन करें: ${activeScheme.application_mode}।`
           : `Submit application through official mode: ${activeScheme.application_mode}.`
         : language === 'ta'
         ? `அதிகாரப்பூர்வ இணையதளத்தில் நேரடியாக விண்ணப்பிக்கவும் (${activeScheme.official_portal_url || 'இ-சேவை மையம்'}).`
+        : language === 'hi'
+        ? `आधिकारिक पोर्टल पर सीधे आवेदन जमा करें (${activeScheme.official_portal_url || 'सीएससी केंद्र'})।`
         : `Submit application directly on the official portal (${activeScheme.official_portal_url || 'State Kendra'}).`,
       isCompleted: currentCompleted.includes('step-submission'),
     });
@@ -139,6 +152,8 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
       description:
         language === 'ta'
           ? 'இணையதளம் அல்லது பொது சேவை மையம் வழங்கும் அதிகாரப்பூர்வ விண்ணப்ப ரசீது / குறிப்பு எண்ணை குறித்து வைத்து அரசு தளத்தில் நிலையைக் கண்காணிக்கவும்.'
+          : language === 'hi'
+          ? 'पोर्टल अथवा सीएससी केंद्र से प्राप्त आधिकारिक पावती / संदर्भ संख्या को सुरक्षित रखें और सरकारी पोर्टल पर स्थिति को ट्रैक करें।'
           : 'Save your official receipt/acknowledgment number given by the portal or CSC Kendra to track progress on the government portal.',
       isCompleted: currentCompleted.includes('step-tracking'),
     });
@@ -208,7 +223,13 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
             type="button"
             onClick={handleResetProgress}
             className="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition-colors"
-            title={language === 'ta' ? 'இத்திட்டத்திற்கான வழிகாட்டலை மீட்டமை' : 'Reset checklist progress for this scheme'}
+            title={
+              language === 'ta'
+                ? 'இத்திட்டத்திற்கான வழிகாட்டலை மீட்டமை'
+                : language === 'hi'
+                ? 'इस योजना की चेकलिस्ट रीसेट करें'
+                : 'Reset checklist progress for this scheme'
+            }
             aria-label="Reset checklist progress"
           >
             <RotateCcw className="w-4 h-4" />
@@ -223,11 +244,15 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
           <span className="font-bold text-slate-900 block text-sm">
             {language === 'ta'
               ? 'அதிகாரப்பூர்வ இணையதள ஆய்வு & விண்ணப்ப நிலை கொள்கை:'
+              : language === 'hi'
+              ? 'आधिकारिक पोर्टल सत्यापन एवं आवेदन स्थिति नीति:'
               : 'Official Portal Scrutiny & Status Policy:'}
           </span>
           <p className="text-slate-600 leading-relaxed text-xs">
             {language === 'ta'
               ? 'விண்ணப்ப செயலாக்கம், சரிபார்ப்பு மற்றும் வங்கி கணக்கு சரிபார்த்தல் ஆகியவை அதிகாரப்பூர்வ அரசு அமைப்புகளில் மட்டுமே நடைபெறும். SevAIQ தயார்நிலை சரிபார்ப்பு பட்டியல் மற்றும் நேரடி இணையதள இணைப்புகளை மட்டுமே வழங்குகிறது. போலியான கண்காணிப்பு எண்களையோ ஒப்புதல் நிலைகளையோ உருவாக்குவதில்லை. விண்ணப்பதாரர்கள் தங்கள் நேரடி நிலையை அதிகாரப்பூர்வ அரசு தளத்திலேயே சரிபார்க்க வேண்டும்.'
+              : language === 'hi'
+              ? 'आवेदन की लाइव प्रोसेसिंग, जांच व बैंक सत्यापन केवल आधिकारिक सरकारी प्रणालियों पर होता है। SevAIQ तैयारी चेकलिस्ट और सीधे पोर्टल लिंक प्रदान करता है, कोई नकली ट्रैकिंग नंबर या अनुमोदन स्थिति नहीं बनाता। नागरिक अपनी वास्तविक स्थिति सीधे अधिकृत सरकारी पोर्टल पर जांचें।'
               : 'Live application processing, scrutiny, and bank verification occur exclusively on official government systems. SevAIQ provides preparation checklists and direct portal links, but does not fabricate tracking numbers or simulate government approval statuses. Users must check live progress directly on the authorized government portal.'}
           </p>
         </div>
@@ -271,6 +296,8 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
               <span>
                 {language === 'ta'
                   ? `${progressPercent}% முடிந்தது (${completedCount}/${steps.length} படிகள்)`
+                  : language === 'hi'
+                  ? `${progressPercent}% पूर्ण (${completedCount}/${steps.length} चरण)`
                   : `${progressPercent}% Complete (${completedCount}/${steps.length} steps)`}
               </span>
             </div>
@@ -287,7 +314,11 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
       {/* Step-by-Step Interactive Checklist */}
       <div className="space-y-3">
         <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700">
-          {language === 'ta' ? 'படிபடியான தயாரிப்பு சரிபார்ப்பு பட்டியல்:' : 'Step-by-Step Preparation Checklist:'}
+          {language === 'ta'
+            ? 'படிபடியான தயாரிப்பு சரிபார்ப்பு பட்டியல்:'
+            : language === 'hi'
+            ? 'चरण-दर-चरण तैयारी चेकलिस्ट:'
+            : 'Step-by-Step Preparation Checklist:'}
         </h3>
 
         <div className="space-y-3">
@@ -322,7 +353,7 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
                     {step.title}
                   </h4>
                   <span className="text-[11px] font-mono text-slate-400">
-                    {language === 'ta' ? `படி ${idx + 1}` : `Step ${idx + 1}`}
+                    {language === 'ta' ? `படி ${idx + 1}` : language === 'hi' ? `चरण ${idx + 1}` : `Step ${idx + 1}`}
                   </span>
                 </div>
                 <p className="text-xs text-slate-600 leading-relaxed">{step.description}</p>
@@ -336,7 +367,11 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
       {activeScheme && (activeScheme as any).application_steps && (activeScheme as any).application_steps.length > 0 && (
         <div className="p-6 bg-white rounded-3xl border border-slate-200 shadow-xs space-y-3">
           <span className="text-xs font-bold uppercase tracking-wider text-slate-800 block">
-            {language === 'ta' ? 'அதிகாரப்பூர்வ விண்ணப்ப நடைமுறை:' : 'Official Application Procedure:'}
+            {language === 'ta'
+              ? 'அதிகாரப்பூர்வ விண்ணப்ப நடைமுறை:'
+              : language === 'hi'
+              ? 'आधिकारिक आवेदन प्रक्रिया:'
+              : 'Official Application Procedure:'}
           </span>
           <ol className="space-y-2 list-decimal list-inside text-xs text-slate-700">
             {((activeScheme as any).application_steps as string[]).map((st, i) => (
@@ -356,7 +391,11 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
           </span>
           {isKioskMode && (
             <span className="text-[10px] text-amber-800 font-semibold bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
-              {language === 'ta' ? 'பொது கியோஸ்க்: குறிப்புகள் நினைவகத்தில் மட்டுமே இருக்கும்' : 'Public Kiosk: Notes in volatile memory'}
+              {language === 'ta'
+                ? 'பொது கியோஸ்க்: குறிப்புகள் நினைவகத்தில் மட்டுமே இருக்கும்'
+                : language === 'hi'
+                ? 'सार्वजनिक कियोस्क: नोट्स केवल मेमोरी में हैं'
+                : 'Public Kiosk: Notes in volatile memory'}
             </span>
           )}
         </div>
@@ -370,6 +409,8 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
         <p className="text-[11px] text-slate-500">
           {language === 'ta'
             ? 'தனியுரிமை விதி: வங்கி பின் எண்கள், கடவுச்சொற்கள் போன்ற ரகசிய விவரங்களை இங்கு பதிய வேண்டாம்.'
+            : language === 'hi'
+            ? 'गोपनीयता नियम: बैंक पिन, पासवर्ड या बायोमेट्रिक जैसी गोपनीय जानकारी यहाँ दर्ज न करें।'
             : 'Privacy Mandate: Do not store bank PINs, passwords, or biometric secrets here.'}
         </p>
       </div>
@@ -385,6 +426,8 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
           <span>
             {language === 'ta'
               ? 'ஆவண வரைபடத்தில் தேவையான ஆவணங்களை தயார் செய்யவும்'
+              : language === 'hi'
+              ? 'दस्तावेज़ मैपर में आवश्यक दस्तावेज़ तैयार करें'
               : 'Prepare Required Documents in Document Mapper'}
           </span>
         </button>
@@ -394,7 +437,13 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
           onClick={() => onNavigate('readiness-passport')}
           className="inline-flex items-center space-x-1.5 text-civic-700 hover:text-civic-900 font-semibold"
         >
-          <span>{language === 'ta' ? 'திட்ட பாஸ்போர்ட்டை பதிவிறக்கவும்' : 'Download Scheme Passport'}</span>
+          <span>
+            {language === 'ta'
+              ? 'திட்ட பாஸ்போர்ட்டை பதிவிறக்கவும்'
+              : language === 'hi'
+              ? 'योजना पासपोर्ट डाउनलोड करें'
+              : 'Download Scheme Passport'}
+          </span>
           <ArrowRight className="w-4 h-4" />
         </button>
       </div>

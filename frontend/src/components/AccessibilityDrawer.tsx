@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useAccessibility } from '../context/AccessibilityContext';
 import { useLanguage } from '../context/LanguageContext';
-import { RotateCcw, X, Sparkles, Check } from 'lucide-react';
+import { RotateCcw, X, Check } from 'lucide-react';
 
 export const AccessibilityDrawer: React.FC = () => {
   const {
@@ -15,7 +15,6 @@ export const AccessibilityDrawer: React.FC = () => {
     toggleDyslexia,
     toggleAdhdMode,
     cycleSaturation,
-    toggleInvertColors,
     toggleHighlightLinks,
     toggleBigCursor,
     togglePauseAnimation,
@@ -26,6 +25,22 @@ export const AccessibilityDrawer: React.FC = () => {
   const { language } = useLanguage();
   const drawerRef = useRef<HTMLDivElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
+
+  const labels = {
+    title: language === 'ta' ? 'அணுகல்தன்மை விருப்பங்கள்' : language === 'hi' ? 'सुलभता विकल्प' : 'Accessibility options',
+    biggerText: language === 'ta' ? 'பெரிய எழுத்து' : language === 'hi' ? 'बड़ा टेक्स्ट' : 'Bigger Text',
+    smallerText: language === 'ta' ? 'சிறிய எழுத்து' : language === 'hi' ? 'छोटा टेक्स्ट' : 'Smaller Text',
+    textSpacing: language === 'ta' ? 'எழுத்து இடைவெளி' : language === 'hi' ? 'अक्षर रिक्ति' : 'Text Spacing',
+    lineHeight: language === 'ta' ? 'வரி இடைவெளி' : language === 'hi' ? 'पंक्ति ऊंचाई' : 'Line Height',
+    dyslexia: language === 'ta' ? 'டிஸ்லெக்ஸியா நட்பு' : language === 'hi' ? 'डिस्लेक्सिया अनुकूल' : 'Dyslexia Friendly',
+    adhd: language === 'ta' ? 'ADHD முறைமை' : language === 'hi' ? 'एडीएचडी मोड' : 'ADHD Mode',
+    saturation: language === 'ta' ? 'வண்ண செறிவு' : language === 'hi' ? 'रंग संतृप्ति' : 'Saturation',
+    highlightLinks: language === 'ta' ? 'இணைப்பு முன்னிலை' : language === 'hi' ? 'लिंक उभारें' : 'Highlight Links',
+    cursor: language === 'ta' ? 'பெரிய சுட்டி' : language === 'hi' ? 'बड़ा कर्सर' : 'Cursor',
+    pauseAnimation: language === 'ta' ? 'அசைவு நிறுத்து' : language === 'hi' ? 'एनिमेशन रोकें' : 'Pause Animation',
+    hideImages: language === 'ta' ? 'படங்களை மறை' : language === 'hi' ? 'चित्र छुपाएं' : 'Hide Images',
+    reset: language === 'ta' ? 'அனைத்தையும் மீட்டமை' : language === 'hi' ? 'सभी सेटिंग्स रीसेट करें' : 'Reset All Settings',
+  };
 
   // Focus management
   useEffect(() => {
@@ -43,7 +58,7 @@ export const AccessibilityDrawer: React.FC = () => {
       className="fixed inset-0 z-50 overflow-hidden a11y-exempt"
       role="dialog"
       aria-modal="true"
-      aria-label="Accessibility options"
+      aria-label={labels.title}
     >
       {/* Semi-transparent backdrop */}
       <div
@@ -64,36 +79,20 @@ export const AccessibilityDrawer: React.FC = () => {
             <div className="bg-gradient-to-r from-[#6342E8] via-[#6B46C1] to-[#7952F5] text-white px-5 py-3.5 flex items-center justify-between shadow-xs">
               <div className="flex items-center space-x-2">
                 <span className="text-base font-bold tracking-tight">
-                  {language === 'ta' ? 'அணுகல்தன்மை விருப்பங்கள்' : 'Accessibility options'}
-                </span>
-                <span className="bg-white/20 text-white text-[11px] font-mono font-bold px-2 py-0.5 rounded-full border border-white/25 shadow-2xs">
-                  Ctrl+F2
+                  {labels.title}
                 </span>
               </div>
 
-              <div className="flex items-center space-x-2">
-                {/* Upgrade Button matching screenshot */}
-                <button
-                  type="button"
-                  onClick={() => alert('UX4G Accessibility Suite: All standard & pro features are fully unlocked for SevAIQ citizens.')}
-                  className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-full bg-white text-[#6342E8] text-xs font-bold shadow-xs hover:bg-purple-50 transition-all focus:outline-none focus:ring-2 focus:ring-white"
-                  title="Accessibility Features Tier: Government Enterprise Unlocked"
-                >
-                  <Sparkles className="w-3 h-3 text-[#6342E8] fill-current" />
-                  <span>{language === 'ta' ? 'மேம்படுத்து' : 'Upgrade'}</span>
-                </button>
-
-                {/* Close Button */}
-                <button
-                  ref={closeButtonRef}
-                  type="button"
-                  onClick={() => setIsOpen(false)}
-                  className="p-1.5 rounded-lg text-white/90 hover:text-white hover:bg-white/15 transition-colors focus:outline-none focus:ring-2 focus:ring-white"
-                  aria-label="Close accessibility options"
-                >
-                  <X className="w-5 h-5 stroke-[2.5]" />
-                </button>
-              </div>
+              {/* Close Button */}
+              <button
+                ref={closeButtonRef}
+                type="button"
+                onClick={() => setIsOpen(false)}
+                className="p-1.5 rounded-lg text-white/90 hover:text-white hover:bg-white/15 transition-colors focus:outline-none focus:ring-2 focus:ring-white"
+                aria-label="Close accessibility options"
+              >
+                <X className="w-5 h-5 stroke-[2.5]" />
+              </button>
             </div>
 
             {/* 3x4 Grid of 12 Accessibility Tools */}
@@ -122,7 +121,7 @@ export const AccessibilityDrawer: React.FC = () => {
                     </svg>
                   </div>
                   <span className="text-xs font-semibold leading-tight">
-                    {language === 'ta' ? 'பெரிய எழுத்து' : 'Bigger Text'}
+                    {labels.biggerText}
                   </span>
                   {settings.textSize > 100 && (
                     <span className="text-[10px] font-bold text-purple-700 mt-0.5">
@@ -154,7 +153,7 @@ export const AccessibilityDrawer: React.FC = () => {
                     </svg>
                   </div>
                   <span className="text-xs font-semibold leading-tight">
-                    {language === 'ta' ? 'சிறிய எழுத்து' : 'Smaller Text'}
+                    {labels.smallerText}
                   </span>
                   {settings.textSize < 100 && (
                     <span className="text-[10px] font-bold text-purple-700 mt-0.5">
@@ -186,7 +185,7 @@ export const AccessibilityDrawer: React.FC = () => {
                     </svg>
                   </div>
                   <span className="text-xs font-semibold leading-tight">
-                    {language === 'ta' ? 'எழுத்து இடைவெளி' : 'Text Spacing'}
+                    {labels.textSpacing}
                   </span>
                 </button>
 
@@ -213,7 +212,7 @@ export const AccessibilityDrawer: React.FC = () => {
                     </svg>
                   </div>
                   <span className="text-xs font-semibold leading-tight">
-                    {language === 'ta' ? 'வரி இடைவெளி' : 'Line Height'}
+                    {labels.lineHeight}
                   </span>
                 </button>
 
@@ -237,7 +236,7 @@ export const AccessibilityDrawer: React.FC = () => {
                     <span className="text-2xl font-black font-serif tracking-tighter">Df</span>
                   </div>
                   <span className="text-xs font-semibold leading-tight">
-                    {language === 'ta' ? 'டிஸ்லெக்ஸியா நட்பு' : 'Dyslexia Friendly'}
+                    {labels.dyslexia}
                   </span>
                 </button>
 
@@ -264,7 +263,7 @@ export const AccessibilityDrawer: React.FC = () => {
                     </svg>
                   </div>
                   <span className="text-xs font-semibold leading-tight">
-                    {language === 'ta' ? 'ADHD முறைமை' : 'ADHD Mode'}
+                    {labels.adhd}
                   </span>
                 </button>
 
@@ -290,7 +289,7 @@ export const AccessibilityDrawer: React.FC = () => {
                     </svg>
                   </div>
                   <span className="text-xs font-semibold leading-tight">
-                    {language === 'ta' ? 'வண்ண செறிவு' : 'Saturation'}
+                    {labels.saturation}
                   </span>
                   {settings.saturation !== 'normal' && (
                     <span className="text-[10px] font-bold text-purple-700 capitalize mt-0.5">
@@ -299,34 +298,7 @@ export const AccessibilityDrawer: React.FC = () => {
                   )}
                 </button>
 
-                {/* 8. Invert Colors */}
-                <button
-                  type="button"
-                  onClick={toggleInvertColors}
-                  className={`p-3.5 rounded-2xl flex flex-col items-center justify-center text-center transition-all cursor-pointer relative ${
-                    settings.invertColors
-                      ? 'bg-purple-50 border-2 border-purple-600 text-purple-900 shadow-xs'
-                      : 'bg-white border border-slate-200/90 text-slate-800 hover:border-purple-300 hover:bg-slate-50'
-                  }`}
-                  aria-pressed={settings.invertColors}
-                >
-                  {settings.invertColors && (
-                    <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-purple-600 text-white rounded-full flex items-center justify-center text-[9px] font-bold">
-                      <Check className="w-2.5 h-2.5" />
-                    </span>
-                  )}
-                  <div className="h-7 flex items-center justify-center mb-1">
-                    <svg viewBox="0 0 24 24" className="w-7 h-7 stroke-current stroke-2">
-                      <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-                      <path d="M12 3v16.5a8 8 0 0 1 0-16z" fill="currentColor" />
-                    </svg>
-                  </div>
-                  <span className="text-xs font-semibold leading-tight">
-                    {language === 'ta' ? 'வண்ணங்களை மாற்று' : 'Invert Colors'}
-                  </span>
-                </button>
-
-                {/* 9. Highlight Links */}
+                {/* 8. Highlight Links */}
                 <button
                   type="button"
                   onClick={toggleHighlightLinks}
@@ -349,7 +321,7 @@ export const AccessibilityDrawer: React.FC = () => {
                     </svg>
                   </div>
                   <span className="text-xs font-semibold leading-tight">
-                    {language === 'ta' ? 'இணைப்பு முன்னிலை' : 'Highlight Links'}
+                    {labels.highlightLinks}
                   </span>
                 </button>
 
@@ -376,7 +348,7 @@ export const AccessibilityDrawer: React.FC = () => {
                     </svg>
                   </div>
                   <span className="text-xs font-semibold leading-tight">
-                    {language === 'ta' ? 'பெரிய சுட்டி' : 'Cursor'}
+                    {labels.cursor}
                   </span>
                 </button>
 
@@ -403,7 +375,7 @@ export const AccessibilityDrawer: React.FC = () => {
                     </svg>
                   </div>
                   <span className="text-xs font-semibold leading-tight">
-                    {language === 'ta' ? 'அசைவு நிறுத்து' : 'Pause Animation'}
+                    {labels.pauseAnimation}
                   </span>
                 </button>
 
@@ -432,7 +404,7 @@ export const AccessibilityDrawer: React.FC = () => {
                     </svg>
                   </div>
                   <span className="text-xs font-semibold leading-tight">
-                    {language === 'ta' ? 'படங்களை மறை' : 'Hide Images'}
+                    {labels.hideImages}
                   </span>
                 </button>
               </div>
@@ -444,10 +416,10 @@ export const AccessibilityDrawer: React.FC = () => {
             <button
               type="button"
               onClick={resetAllSettings}
-              className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl bg-purple-100 hover:bg-purple-200 text-purple-900 text-xs font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-2xs"
+              className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl bg-purple-100 hover:bg-purple-200 text-purple-900 text-xs font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-2xs cursor-pointer"
             >
               <RotateCcw className="w-3.5 h-3.5 text-purple-900" />
-              <span>{language === 'ta' ? 'அனைத்தையும் மீட்டமை' : 'Reset All Settings'}</span>
+              <span>{labels.reset}</span>
             </button>
 
             <div className="text-xs text-slate-500 font-medium flex items-center space-x-1">

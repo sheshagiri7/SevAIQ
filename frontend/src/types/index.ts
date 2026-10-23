@@ -57,7 +57,9 @@ export interface Scheme {
   required_documents?: string[];
   benefits_summary?: string;
   detailed_benefits?: string | null;
+  eligibility_summary?: string | null;
   application_mode?: 'Online' | 'CSC / Seva Kendra' | 'Both';
+  image_url?: string | null;
 }
 
 /**
@@ -233,7 +235,7 @@ export type NavigationTab =
   | 'trust-monitor'
   | 'application-tracker';
 
-export type AssistantLanguage = 'en' | 'ta';
+export type AssistantLanguage = 'en' | 'ta' | 'hi';
 
 export interface ChatMessageWire {
   role: 'user' | 'assistant' | 'system';
