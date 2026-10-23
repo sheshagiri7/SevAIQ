@@ -76,7 +76,7 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
 
   useEffect(() => {
     loadCategories();
-  }, [loadCategories, backendSchemesCount]);
+  }, [loadCategories]);
 
   // Keyboard accessibility: Close modal on Escape
   useEffect(() => {

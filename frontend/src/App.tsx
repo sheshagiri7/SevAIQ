@@ -379,7 +379,6 @@ export function App() {
                 setSelectedTrackerSchemeId(schemeId);
                 setActiveTab('application-tracker');
               }}
-              backendSchemesCount={backendSchemes.length}
               selectedCategory={selectedCategoryFilter}
               onSelectCategory={setSelectedCategoryFilter}
             />
