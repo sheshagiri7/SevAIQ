@@ -47,7 +47,7 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   const { language, t } = useLanguage();
   const isIndic = language === 'ta' || language === 'hi';
-  const isTamil = isIndic;
+  const isTamil = language === 'ta';
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
 
