@@ -172,7 +172,11 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
         <Info className="w-4 h-4 text-civic-700 shrink-0 mt-0.5" />
         <div className="space-y-1">
           <p className="font-semibold text-civic-900">
-            {language === 'ta' ? 'சரிபார்க்கப்பட்ட தரவு உத்தரவாதம் & பின்தள நிலை:' : 'Verified Data Guarantee & Backend Status:'}
+            {language === 'ta'
+              ? 'சரிபார்க்கப்பட்ட தரவு உத்தரவாதம் & பின்தள நிலை:'
+              : language === 'hi'
+              ? 'सत्यापित डेटा गारंटी एवं बैकएंड स्थिति:'
+              : 'Verified Data Guarantee & Backend Status:'}
           </p>
           <p className="text-slate-700 leading-relaxed">
             {backendSchemesCount === 0 ? (
@@ -180,6 +184,11 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                 <>
                   FastAPI இறுதிப்புள்ளி <code className="bg-white/80 px-1 py-0.5 rounded font-mono text-slate-800">GET /api/schemes</code> தற்போது எதிர்பார்க்கப்பட்டபடி காலியாக உள்ளது.
                   SevAIQ அதிகாரப்பூர்வ போர்ட்டல்களின் (எ.கா. <em>pmkisan.gov.in</em>, <em>pmjay.gov.in</em>) சரிபார்க்கப்பட்ட மாதிரிகளை காட்டுகிறது.
+                </>
+              ) : language === 'hi' ? (
+                <>
+                  FastAPI एंडपॉइंट <code className="bg-white/80 px-1 py-0.5 rounded font-mono text-slate-800">GET /api/schemes</code> वर्तमान में खाली है।
+                  SevAIQ आधिकारिक सरकारी पोर्टलों (उदा. <em>pmkisan.gov.in</em>, <em>pmjay.gov.in</em>) के सत्यापित मॉडल प्रदर्शित करता है।
                 </>
               ) : (
                 <>
@@ -205,15 +214,27 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
             </div>
             <div>
               <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800">
-                {language === 'ta' ? 'தமிழ் & ஆங்கில இருமொழி நலத்திட்ட தேடுபொறி' : 'AI & Bilingual Natural Language Scheme Finder'}
+                {language === 'ta'
+                  ? 'தமிழ் & ஆங்கில இருமொழி நலத்திட்ட தேடுபொறி'
+                  : language === 'hi'
+                  ? 'बहुभाषी कल्याणकारी योजना खोज इंजन'
+                  : 'AI & Bilingual Natural Language Scheme Finder'}
               </h3>
               <p className="text-[11px] text-slate-500">
-                {language === 'ta' ? 'எளிய தமிழில் அல்லது ஆங்கிலத்தில் உங்கள் தேவையை தட்டச்சு செய்யுங்கள் (எ.கா. "விவசாயி உதவி", "மருத்துவ காப்பீடு", "வீடு கட்ட", "ஓய்வூதியம்")' : 'Describe citizen needs in simple Tamil or English (e.g. "விவசாயி உதவி", "free healthcare", "வீடு கட்ட", "pension")'}
+                {language === 'ta'
+                  ? 'எளிய தமிழில் அல்லது ஆங்கிலத்தில் உங்கள் தேவையை தட்டச்சு செய்யுங்கள் (எ.கா. "விவசாயி உதவி", "மருத்துவ காப்பீடு", "வீடு கட்ட", "ஓய்வூதியம்")'
+                  : language === 'hi'
+                  ? 'सरल हिंदी या अंग्रेजी में अपनी आवश्यकता लिखें (जैसे "किसान सहायता", "आयुष्मान इलाज", "मकान", "पेंशन")'
+                  : 'Describe citizen needs in simple Tamil or English (e.g. "விவசாயி உதவி", "free healthcare", "வீடு கட்ட", "pension")'}
               </p>
             </div>
           </div>
           <span className="text-[11px] font-semibold text-slate-600 bg-slate-100 px-2.5 py-1 rounded-full self-start sm:self-auto">
-            {language === 'ta' ? `காட்டப்படுவது: ${filteredSchemes.length} / ${schemes.length} திட்டங்கள்` : `Showing ${filteredSchemes.length} of ${schemes.length} schemes`}
+            {language === 'ta'
+              ? `காட்டப்படுவது: ${filteredSchemes.length} / ${schemes.length} திட்டங்கள்`
+              : language === 'hi'
+              ? `प्रदर्शित: ${filteredSchemes.length} / ${schemes.length} योजनाएं`
+              : `Showing ${filteredSchemes.length} of ${schemes.length} schemes`}
           </span>
         </div>
 
