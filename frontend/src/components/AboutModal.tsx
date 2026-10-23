@@ -66,9 +66,9 @@ export const AboutModal: React.FC<AboutModalProps> = ({
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden my-auto">
+      <div className="bg-white dark:bg-[#0c1834] rounded-3xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden my-auto">
         {/* Top Header */}
-        <div className="px-5 sm:px-8 py-5 border-b border-slate-200 flex items-center justify-between bg-gradient-to-r from-slate-50 via-white to-blue-50/40 shrink-0">
+        <div className="px-5 sm:px-8 py-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-gradient-to-r from-slate-50 via-white to-blue-50/40 dark:from-[#0d1a38] dark:via-[#0c1834] dark:to-[#081228] shrink-0">
           <div className="flex items-center space-x-3 min-w-0">
             <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-blue-800 via-civic-700 to-indigo-900 text-white flex items-center justify-center shadow-xs shrink-0">
               <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.2]" />
@@ -77,7 +77,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({
               <div className="flex items-center space-x-2">
                 <h2
                   id="about-modal-title"
-                  className="text-lg sm:text-xl font-black text-slate-900 tracking-tight leading-tight"
+                  className="text-lg sm:text-xl font-black text-slate-900 dark:text-white tracking-tight leading-tight"
                 >
                   {isTamil
                     ? 'SevAIQ பற்றி: அம்சங்கள் & செயல்படும் முறை'
@@ -85,11 +85,11 @@ export const AboutModal: React.FC<AboutModalProps> = ({
                     ? 'SevAIQ के बारे में: विशेषताएं और कार्यप्रणाली'
                     : 'About SevAIQ: Features & Working'}
                 </h2>
-                <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-civic-100 text-civic-800 border border-civic-200">
+                <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-civic-100 dark:bg-civic-950/80 text-civic-800 dark:text-civic-300 border border-civic-200 dark:border-civic-800">
                   {t.header.challengeBadge}
                 </span>
               </div>
-              <p className="text-xs text-slate-500 font-medium truncate mt-0.5">
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium truncate mt-0.5">
                 {t.header.tagline}
               </p>
             </div>
@@ -99,7 +99,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({
             ref={closeButtonRef}
             type="button"
             onClick={onClose}
-            className="w-9 h-9 rounded-xl border border-slate-200 text-slate-500 hover:text-slate-800 hover:bg-slate-100 flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500 shrink-0 ml-2"
+            className="w-9 h-9 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500 shrink-0 ml-2"
             aria-label="Close dialog"
           >
             <X className="w-5 h-5" />
@@ -107,11 +107,11 @@ export const AboutModal: React.FC<AboutModalProps> = ({
         </div>
 
         {/* Scrollable Content Body */}
-        <div className="p-5 sm:p-8 overflow-y-auto space-y-8 text-slate-800">
+        <div className="p-5 sm:p-8 overflow-y-auto space-y-8 text-slate-800 dark:text-slate-200 bg-white dark:bg-[#091226]">
           {/* Mission Intro */}
-          <div className="p-5 rounded-2xl bg-civic-50/70 border border-civic-100 flex items-start space-x-3.5">
-            <Sparkles className="w-5 h-5 text-civic-700 shrink-0 mt-0.5" />
-            <div className="text-xs sm:text-sm text-civic-900 leading-relaxed">
+          <div className="p-5 rounded-2xl bg-civic-50/70 dark:bg-civic-950/70 border border-civic-100 dark:border-civic-900 flex items-start space-x-3.5">
+            <Sparkles className="w-5 h-5 text-civic-700 dark:text-civic-400 shrink-0 mt-0.5" />
+            <div className="text-xs sm:text-sm text-civic-900 dark:text-civic-200 leading-relaxed">
               <strong>SevAIQ</strong> {isTamil
                 ? 'என்பது இந்திய குடிமக்கள் தங்களுக்குரிய மத்திய மற்றும் மாநில நலத்திட்டங்களை துல்லியமாக கண்டறிந்து, தகுதியை சோதித்து, தேவையான ஆவணங்களை தயார் செய்து, நிராகரிப்பு இல்லாத விண்ணப்பங்களை சமர்ப்பிக்க உதவும் அரசு-நம்பகத்தன்மை கொண்ட டிஜிட்டல் தளமாகும்.'
                 : isHindi
@@ -336,13 +336,13 @@ export const AboutModal: React.FC<AboutModalProps> = ({
               </div>
             </div>
 
-            <div className="p-5 bg-slate-50 border border-slate-200 rounded-2xl flex items-start space-x-3.5">
-              <div className="p-2.5 rounded-xl bg-blue-100 text-civic-800 shrink-0">
+            <div className="p-5 bg-slate-50 dark:bg-[#0c1834] border border-slate-200 dark:border-slate-800 rounded-2xl flex items-start space-x-3.5">
+              <div className="p-2.5 rounded-xl bg-blue-100 dark:bg-blue-950/70 text-civic-800 dark:text-civic-300 shrink-0">
                 <Database className="w-5 h-5" />
               </div>
               <div>
-                <h4 className="font-bold text-sm text-slate-900">{t.dashboard.zeroHallucinationTitle}</h4>
-                <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                <h4 className="font-bold text-sm text-slate-900 dark:text-white">{t.dashboard.zeroHallucinationTitle}</h4>
+                <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
                   {t.dashboard.zeroHallucinationDesc}
                 </p>
               </div>
@@ -351,8 +351,8 @@ export const AboutModal: React.FC<AboutModalProps> = ({
         </div>
 
         {/* Modal Footer */}
-        <div className="px-5 sm:px-8 py-4 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
-          <span className="text-[11px] text-slate-500 text-center sm:text-left">
+        <div className="px-5 sm:px-8 py-4 bg-slate-50 dark:bg-[#0b162f] border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
+          <span className="text-[11px] text-slate-500 dark:text-slate-400 text-center sm:text-left">
             {isTamil
               ? 'அனைத்து தரவுகளும் உங்கள் உலாவியில் மட்டுமே பாதுகாப்பாக சேமிக்கப்படுகின்றன.'
               : isHindi
@@ -362,7 +362,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="w-full sm:w-auto px-5 py-2 text-xs font-bold text-white bg-civic-700 hover:bg-civic-800 rounded-xl shadow-xs transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500"
+            className="w-full sm:w-auto px-5 py-2 text-xs font-bold text-white bg-civic-700 hover:bg-civic-800 rounded-xl shadow-xs transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500 cursor-pointer"
           >
             {isTamil ? 'மூடவும்' : isHindi ? 'समझ गए, बंद करें' : 'Got it, Close'}
           </button>

@@ -503,3 +503,104 @@ body.a11y-hide-images [role="img"] {
   opacity: 0 !important;
 }
 
+/* ==========================================================================
+   SevAIQ Professional Navy & Blue Dark Theme
+   ========================================================================== */
+html.dark {
+  color-scheme: dark;
+}
+
+html.dark body {
+  background-color: #070d1e;
+  color: #f1f5f9;
+}
+
+/* Smooth theme transitions */
+body, header, main, footer, nav, aside {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+/* Custom dark scrollbar for sleek navy feel */
+html.dark ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+html.dark ::-webkit-scrollbar-track {
+  background: #080f24;
+}
+
+html.dark ::-webkit-scrollbar-thumb {
+  background: #1b2d56;
+  border-radius: 4px;
+}
+
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: #25407a;
+}
+
+/* Navy & Blue Dark Theme Surfaces */
+html.dark .bg-white {
+  background-color: #0c1834;
+}
+
+html.dark .bg-slate-50 {
+  background-color: #070d1e;
+}
+
+html.dark .bg-slate-100 {
+  background-color: #0e1e3e;
+}
+
+html.dark .bg-slate-200 {
+  background-color: #152a55;
+}
+
+html.dark .text-slate-900 {
+  color: #f8fafc;
+}
+
+html.dark .text-slate-800 {
+  color: #f1f5f9;
+}
+
+html.dark .text-slate-700 {
+  color: #cbd5e1;
+}
+
+html.dark .text-slate-600 {
+  color: #94a3b8;
+}
+
+html.dark .text-slate-500 {
+  color: #64748b;
+}
+
+html.dark .border-slate-200 {
+  border-color: #172a52;
+}
+
+html.dark .border-slate-300 {
+  border-color: #203a70;
+}
+
+html.dark .border-slate-100 {
+  border-color: #122142;
+}
+
+html.dark input:not([type="checkbox"]):not([type="radio"]),
+html.dark textarea,
+html.dark select {
+  background-color: #0a1329;
+  color: #f8fafc;
+  border-color: #203a70;
+}
+
+html.dark input:focus,
+html.dark textarea:focus,
+html.dark select:focus {
+  background-color: #0e1b38;
+}
+
+
+

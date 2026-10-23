@@ -124,26 +124,26 @@ export const Dashboard: React.FC<DashboardProps> = ({
             <button
               type="button"
               onClick={() => onNavigate('discover')}
-              className="p-5 sm:p-6 bg-white rounded-2xl border border-slate-200 shadow-xs hover:border-civic-300 hover:shadow-md transition-all text-left w-full group focus:outline-none focus:ring-2 focus:ring-civic-500 h-full flex flex-col justify-between"
+              className="p-5 sm:p-6 bg-white dark:bg-[#0c1834] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs hover:border-civic-300 dark:hover:border-civic-600 hover:shadow-md transition-all text-left w-full group focus:outline-none focus:ring-2 focus:ring-civic-500 h-full flex flex-col justify-between"
               aria-label={t.dashboard.metricCataloged}
             >
               <div>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                  <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                     {t.dashboard.metricCataloged}
                   </span>
-                  <div className="w-10 h-10 rounded-xl bg-blue-50 text-civic-700 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-civic-700 dark:text-civic-400 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
                     <Compass className="w-5 h-5" />
                   </div>
                 </div>
                 <div className="my-3 flex items-baseline justify-between flex-wrap gap-2">
-                  <span className="text-3xl font-black text-slate-900 tracking-tight">{schemes.length}</span>
-                  <span className="text-xs text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200/60">
+                  <span className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">{schemes.length}</span>
+                  <span className="text-xs text-emerald-700 dark:text-emerald-300 font-semibold bg-emerald-50 dark:bg-emerald-950/70 px-2 py-0.5 rounded-md border border-emerald-200/60 dark:border-emerald-800/60">
                     {t.dashboard.metricVerified}
                   </span>
                 </div>
               </div>
-              <p className="text-xs text-slate-500 font-medium pt-2.5 border-t border-slate-100">
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium pt-2.5 border-t border-slate-100 dark:border-slate-800">
                 {t.dashboard.metricGazetteLinks}
               </p>
             </button>
@@ -152,26 +152,26 @@ export const Dashboard: React.FC<DashboardProps> = ({
             <button
               type="button"
               onClick={() => onNavigate('eligibility')}
-              className="p-5 sm:p-6 bg-white rounded-2xl border border-slate-200 shadow-xs hover:border-emerald-300 hover:shadow-md transition-all text-left w-full group focus:outline-none focus:ring-2 focus:ring-emerald-500 h-full flex flex-col justify-between"
+              className="p-5 sm:p-6 bg-white dark:bg-[#0c1834] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs hover:border-emerald-300 dark:hover:border-emerald-600 hover:shadow-md transition-all text-left w-full group focus:outline-none focus:ring-2 focus:ring-emerald-500 h-full flex flex-col justify-between"
               aria-label={t.dashboard.metricEligible}
             >
               <div>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                  <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                     {t.dashboard.metricEligible}
                   </span>
-                  <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
                     <CheckSquare className="w-5 h-5" />
                   </div>
                 </div>
                 <div className="my-3 flex items-baseline justify-between flex-wrap gap-2">
-                  <span className="text-3xl font-black text-slate-900 tracking-tight">{eligibleCount}</span>
-                  <span className="text-xs text-slate-600 font-semibold bg-slate-100 px-2 py-0.5 rounded-md">
+                  <span className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">{eligibleCount}</span>
+                  <span className="text-xs text-slate-600 dark:text-slate-300 font-semibold bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md">
                     {profileComplete ? t.dashboard.metricFullyMet : t.dashboard.metricProfileNeeded}
                   </span>
                 </div>
               </div>
-              <p className="text-xs text-slate-500 font-medium pt-2.5 border-t border-slate-100">
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium pt-2.5 border-t border-slate-100 dark:border-slate-800">
                 {t.dashboard.metricCriteriaMatched}
               </p>
             </button>
@@ -180,28 +180,28 @@ export const Dashboard: React.FC<DashboardProps> = ({
             <button
               type="button"
               onClick={() => onNavigate('document-mapper')}
-              className="p-5 sm:p-6 bg-white rounded-2xl border border-slate-200 shadow-xs hover:border-indigo-300 hover:shadow-md transition-all text-left w-full group focus:outline-none focus:ring-2 focus:ring-indigo-500 h-full flex flex-col justify-between"
+              className="p-5 sm:p-6 bg-white dark:bg-[#0c1834] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs hover:border-indigo-300 dark:hover:border-indigo-600 hover:shadow-md transition-all text-left w-full group focus:outline-none focus:ring-2 focus:ring-indigo-500 h-full flex flex-col justify-between"
               aria-label={t.dashboard.metricDocsReady}
             >
               <div>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                  <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                     {t.dashboard.metricDocsReady}
                   </span>
-                  <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-400 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
                     <Files className="w-5 h-5" />
                   </div>
                 </div>
                 <div className="my-3 flex items-baseline justify-between flex-wrap gap-2">
-                  <span className="text-3xl font-black text-slate-900 tracking-tight">
+                  <span className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
                     {readyDocsCount}/{totalDocsCount}
                   </span>
-                  <span className="text-xs text-indigo-700 font-bold bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-200/60">
+                  <span className="text-xs text-indigo-700 dark:text-indigo-300 font-bold bg-indigo-50 dark:bg-indigo-950/70 px-2 py-0.5 rounded-md border border-indigo-200/60 dark:border-indigo-800/60">
                     {readinessPercentage}%
                   </span>
                 </div>
               </div>
-              <p className="text-xs text-slate-500 font-medium pt-2.5 border-t border-slate-100">
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium pt-2.5 border-t border-slate-100 dark:border-slate-800">
                 {t.dashboard.metricDocOverlap}
               </p>
             </button>
@@ -210,28 +210,28 @@ export const Dashboard: React.FC<DashboardProps> = ({
             <button
               type="button"
               onClick={() => onNavigate('readiness-passport')}
-              className="p-5 sm:p-6 bg-white rounded-2xl border border-slate-200 shadow-xs hover:border-amber-300 hover:shadow-md transition-all text-left w-full group focus:outline-none focus:ring-2 focus:ring-amber-500 h-full flex flex-col justify-between"
+              className="p-5 sm:p-6 bg-white dark:bg-[#0c1834] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs hover:border-amber-300 dark:hover:border-amber-600 hover:shadow-md transition-all text-left w-full group focus:outline-none focus:ring-2 focus:ring-amber-500 h-full flex flex-col justify-between"
               aria-label={t.dashboard.metricPassport}
             >
               <div>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                  <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                     {t.dashboard.metricPassport}
                   </span>
-                  <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
                     <Award className="w-5 h-5" />
                   </div>
                 </div>
                 <div className="my-3 flex items-baseline justify-between flex-wrap gap-2">
-                  <span className="text-3xl font-black text-slate-900 tracking-tight">
+                  <span className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
                     {eligibleCount > 0 && readyDocsCount > 0 ? t.dashboard.metricActive : t.dashboard.metricDraft}
                   </span>
-                  <span className="text-xs text-amber-800 font-semibold bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200/60">
+                  <span className="text-xs text-amber-800 dark:text-amber-300 font-semibold bg-amber-50 dark:bg-amber-950/70 px-2 py-0.5 rounded-md border border-amber-200/60 dark:border-amber-800/60">
                     {t.dashboard.metricExportReady}
                   </span>
                 </div>
               </div>
-              <p className="text-xs text-slate-500 font-medium pt-2.5 border-t border-slate-100">
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium pt-2.5 border-t border-slate-100 dark:border-slate-800">
                 {t.dashboard.metricPrintableDossier}
               </p>
             </button>
@@ -240,16 +240,16 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
         {/* Quick Launch Banner to Discover Features & Workflow via About Modal */}
         {onOpenAbout && (
-          <div className="p-4 sm:p-5 bg-gradient-to-r from-blue-50/90 via-white to-purple-50/90 rounded-3xl border border-civic-200/80 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-2xs">
+          <div className="p-4 sm:p-5 bg-gradient-to-r from-blue-50/90 via-white to-purple-50/90 dark:from-[#0d1a38] dark:via-[#0c1834] dark:to-[#081228] rounded-3xl border border-civic-200/80 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-2xs">
             <div className="flex items-center space-x-3.5 text-left min-w-0">
               <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-civic-700 to-indigo-800 text-white flex items-center justify-center shrink-0 shadow-xs">
                 <Sparkles className="w-5 h-5" />
               </div>
               <div className="min-w-0">
-                <h4 className="text-sm font-bold text-slate-900">
+                <h4 className="text-sm font-bold text-slate-900 dark:text-white">
                   {t.dashboard?.workflowTitle || 'How SevAIQ Empowers Your Application'}
                 </h4>
-                <p className="text-xs text-slate-600 truncate mt-0.5">
+                <p className="text-xs text-slate-600 dark:text-slate-300 truncate mt-0.5">
                   {t.dashboard?.workflowSubtitle || 'Follow the 4-stage readiness pipeline designed to maximize scheme access.'}
                 </p>
               </div>
@@ -257,7 +257,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             <button
               type="button"
               onClick={onOpenAbout}
-              className="w-full sm:w-auto px-4 py-2 rounded-xl bg-white hover:bg-slate-50 text-civic-800 hover:text-civic-900 border border-civic-300 text-xs font-bold shadow-2xs transition-colors shrink-0 cursor-pointer"
+              className="w-full sm:w-auto px-4 py-2 rounded-xl bg-white dark:bg-[#102046] hover:bg-slate-50 dark:hover:bg-[#152756] text-civic-800 dark:text-civic-300 border border-civic-300 dark:border-civic-700 text-xs font-bold shadow-2xs transition-colors shrink-0 cursor-pointer"
             >
               {language === 'ta'
                 ? 'அம்சங்கள் & வழிமுறைகள்'
@@ -282,13 +282,13 @@ export const Dashboard: React.FC<DashboardProps> = ({
             </div>
           </div>
 
-          <div className="p-6 bg-white border border-slate-200 rounded-3xl shadow-sm flex items-start space-x-4">
-            <div className="p-3 rounded-2xl bg-blue-50 text-civic-700 shrink-0">
+          <div className="p-6 bg-white dark:bg-[#0c1834] border border-slate-200 dark:border-slate-800 rounded-3xl shadow-sm flex items-start space-x-4">
+            <div className="p-3 rounded-2xl bg-blue-50 dark:bg-blue-950/60 text-civic-700 dark:text-civic-400 shrink-0">
               <Database className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="font-bold text-base text-slate-900">{t.dashboard.zeroHallucinationTitle}</h3>
-              <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+              <h3 className="font-bold text-base text-slate-900 dark:text-white">{t.dashboard.zeroHallucinationTitle}</h3>
+              <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
                 {t.dashboard.zeroHallucinationDesc}
               </p>
             </div>

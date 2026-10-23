@@ -419,6 +419,11 @@ export const UI_TRANSLATIONS = {
       civicDossier: 'Civic Dossier',
       volatileSession: 'Volatile in-memory session',
       standardSession: 'Standard local session',
+      themeToggle: 'Toggle Theme',
+      darkMode: 'Dark Mode',
+      lightMode: 'Light Mode',
+      switchToDark: 'Switch to dark theme',
+      switchToLight: 'Switch to light theme',
     },
 
     // Hero
@@ -778,6 +783,11 @@ export const UI_TRANSLATIONS = {
       civicDossier: 'குடிமக்கள் ஆவணக் கோப்பு',
       volatileSession: 'நினைவகத்தில் மட்டுமே உள்ள அமர்வு',
       standardSession: 'நிலையான உள்ளூர் அமர்வு',
+      themeToggle: 'வண்ணப் பயன்முறை மாற்று',
+      darkMode: 'இருண்ட பயன்முறை',
+      lightMode: 'வெளிச்ச பயன்முறை',
+      switchToDark: 'இருண்ட பயன்முறைக்கு மாறவும்',
+      switchToLight: 'வெளிச்ச பயன்முறைக்கு மாறவும்',
     },
 
     // Hero
@@ -1137,6 +1147,11 @@ export const UI_TRANSLATIONS = {
       civicDossier: 'नागरिक डोजियर',
       volatileSession: 'अस्थायी इन-मेमोरी सत्र',
       standardSession: 'स्थानीय ब्राउज़र सत्र',
+      themeToggle: 'थीम बदलें',
+      darkMode: 'डार्क मोड',
+      lightMode: 'लाइट मोड',
+      switchToDark: 'डार्क थीम पर स्विच करें',
+      switchToLight: 'लाइट थीम पर स्विच करें',
     },
 
     // Hero

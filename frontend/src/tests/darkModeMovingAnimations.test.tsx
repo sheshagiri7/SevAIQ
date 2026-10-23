@@ -1,64 +1,167 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { Header } from '../components/Header';
-import { AccessibilityDrawer } from '../components/AccessibilityDrawer';
 import { SchemeBannerCarousel } from '../components/SchemeBannerCarousel';
 import { LanguageProvider } from '../context/LanguageContext';
 import { AccessibilityProvider } from '../context/AccessibilityContext';
+import { ThemeProvider, useTheme, THEME_STORAGE_KEY } from '../context/ThemeContext';
 import { MemoryStorage } from '../utils/kioskStorage';
 
-describe('Dark Mode Removal & Moving Animation Images Exemption', () => {
+describe('Professional Light / Dark Mode & Moving Animation Images Exemption', () => {
+  let mockClassList: { add: any; remove: any; contains: any };
+
   beforeEach(() => {
     (globalThis as any).localStorage = new MemoryStorage();
-    if (typeof document === 'undefined') {
-      (globalThis as any).document = {
-        documentElement: { lang: 'en', style: {}, classList: { add: vi.fn(), remove: vi.fn() } },
-        body: { classList: { add: vi.fn(), remove: vi.fn() } },
-        getElementById: vi.fn().mockReturnValue({ scrollIntoView: vi.fn() }),
-      };
-    }
+    mockClassList = {
+      add: vi.fn(),
+      remove: vi.fn(),
+      contains: vi.fn().mockReturnValue(false),
+    };
+
+    (globalThis as any).document = {
+      documentElement: {
+        lang: 'en',
+        style: {},
+        classList: mockClassList,
+        setAttribute: vi.fn(),
+        removeAttribute: vi.fn(),
+      },
+      body: { classList: { add: vi.fn(), remove: vi.fn() } },
+      getElementById: vi.fn().mockReturnValue({ scrollIntoView: vi.fn() }),
+    };
+
+    (globalThis as any).window = {
+      matchMedia: vi.fn().mockImplementation((query: string) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    };
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
   });
 
-  it('verifies dark mode option is completely removed from Header', () => {
-    const html = renderToString(
+  it('verifies dark mode toggle is available in Header with accessible controls and localized labels', () => {
+    // English rendering
+    const enHtml = renderToString(
       <LanguageProvider>
         <AccessibilityProvider>
-          <Header
-            activeTab="dashboard"
-            onSelectTab={vi.fn()}
-            eligibleCount={0}
-            isKioskMode={false}
-            onToggleKioskMode={vi.fn()}
-            onClearSession={vi.fn()}
-          />
+          <ThemeProvider>
+            <Header
+              activeTab="dashboard"
+              onSelectTab={vi.fn()}
+              eligibleCount={0}
+              isKioskMode={false}
+              onToggleKioskMode={vi.fn()}
+              onClearSession={vi.fn()}
+            />
+          </ThemeProvider>
         </AccessibilityProvider>
       </LanguageProvider>
     );
 
-    // Dark mode / High contrast theme toggle button is removed from header
-    expect(html).not.toContain('Switch to high contrast dark theme');
-    expect(html).not.toContain('High Contrast Theme (Dark)');
-    expect(html).not.toContain('Standard Theme');
+    // English Light Mode state should offer switch to dark theme
+    expect(enHtml).toContain('Switch to dark theme');
+    expect(enHtml).toContain('Dark Mode');
   });
 
-  it('verifies dark mode option is completely removed from AccessibilityDrawer', () => {
-    localStorage.setItem('SEVAIQ_A11Y_OPEN', 'true');
-    const html = renderToString(
+  it('verifies dark mode toggle provides Tamil and Hindi localization in Header', () => {
+    // Tamil localized Header
+    localStorage.setItem('SEVAIQ_APP_LANGUAGE', 'ta');
+    const taHtml = renderToString(
       <LanguageProvider>
         <AccessibilityProvider>
-          <AccessibilityDrawer />
+          <ThemeProvider>
+            <Header
+              activeTab="dashboard"
+              onSelectTab={vi.fn()}
+              eligibleCount={0}
+              isKioskMode={false}
+              onToggleKioskMode={vi.fn()}
+              onClearSession={vi.fn()}
+            />
+          </ThemeProvider>
         </AccessibilityProvider>
       </LanguageProvider>
     );
 
-    // Invert colors / dark mode button is removed from drawer
-    expect(html).not.toContain('Invert Colors');
-    expect(html).not.toContain('வண்ணங்களை மாற்று');
-    expect(html).not.toContain('रंग उलटें');
+    expect(taHtml).toContain('இருண்ட பயன்முறை');
+    expect(taHtml).toContain('இருண்ட பயன்முறைக்கு மாறவும்');
+
+    // Hindi localized Header
+    localStorage.setItem('SEVAIQ_APP_LANGUAGE', 'hi');
+    const hiHtml = renderToString(
+      <LanguageProvider>
+        <AccessibilityProvider>
+          <ThemeProvider>
+            <Header
+              activeTab="dashboard"
+              onSelectTab={vi.fn()}
+              eligibleCount={0}
+              isKioskMode={false}
+              onToggleKioskMode={vi.fn()}
+              onClearSession={vi.fn()}
+            />
+          </ThemeProvider>
+        </AccessibilityProvider>
+      </LanguageProvider>
+    );
+
+    expect(hiHtml).toContain('डार्क मोड');
+    expect(hiHtml).toContain('डार्क थीम पर स्विच करें');
+  });
+
+  it('verifies ThemeContext persists dark theme in localStorage and applies dark class', () => {
+    localStorage.setItem(THEME_STORAGE_KEY, 'dark');
+
+    const TestThemeConsumer: React.FC = () => {
+      const { theme, isDark } = useTheme();
+      return (
+        <div data-testid="theme-status">
+          {`${theme}:${isDark}`}
+        </div>
+      );
+    };
+
+    const html = renderToString(
+      <ThemeProvider>
+        <TestThemeConsumer />
+      </ThemeProvider>
+    );
+
+    expect(html).toContain('dark:true');
+    expect(mockClassList.add).toHaveBeenCalledWith('dark');
+  });
+
+  it('verifies ThemeContext detects system preference when no localStorage entry exists', () => {
+    // Simulate OS dark mode preference
+    (globalThis as any).window.matchMedia = vi.fn().mockImplementation((query: string) => ({
+      matches: query.includes('prefers-color-scheme: dark'),
+      media: query,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    }));
+
+    const TestConsumer: React.FC = () => {
+      const { isDark } = useTheme();
+      return <div>{`system-dark:${isDark}`}</div>;
+    };
+
+    const html = renderToString(
+      <ThemeProvider>
+        <TestConsumer />
+      </ThemeProvider>
+    );
+
+    expect(html).toContain('system-dark:true');
   });
 
   it('renders SchemeBannerCarousel with dark mode exempt classes and data attributes', () => {
@@ -126,5 +229,9 @@ describe('Dark Mode Removal & Moving Animation Images Exemption', () => {
     expect(cssContent).toContain('html.a11y-invert .moving-animation-image');
     expect(cssContent).toContain('html.a11y-invert [data-dark-exempt="true"]');
     expect(cssContent).toContain('html.a11y-invert [data-moving-animation="true"]');
+
+    // Verify professional navy and blue theme rules
+    expect(cssContent).toContain('SevAIQ Professional Navy & Blue Dark Theme');
+    expect(cssContent).toContain('html.dark body');
   });
 });

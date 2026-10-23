@@ -6,8 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SevAIQ — Civic Intelligence for Verified Government Schemes</title>
     <meta name="description" content="AI-powered discovery platform for verified government schemes. Seva First Innovation Challenge 2026." />
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('SEVAIQ_THEME');
+          var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (saved === 'dark' || (!saved && prefersDark)) {
+            document.documentElement.classList.add('dark');
+            document.documentElement.setAttribute('data-theme', 'dark');
+            if (document.documentElement.style) document.documentElement.style.colorScheme = 'dark';
+          } else {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.setAttribute('data-theme', 'light');
+            if (document.documentElement.style) document.documentElement.style.colorScheme = 'light';
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
-  <body class="bg-slate-50 text-slate-900 antialiased selection:bg-civic-100 selection:text-civic-900">
+  <body class="bg-slate-50 dark:bg-[#070d1e] text-slate-900 dark:text-slate-100 antialiased selection:bg-civic-100 selection:text-civic-900 transition-colors duration-150">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
