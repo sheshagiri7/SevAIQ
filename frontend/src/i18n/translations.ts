@@ -1420,6 +1420,12 @@ export const LOCALIZED_OPTIONS = {
       Transgender: 'திருநங்கை / மூன்றாம் பாலினம் (Transgender)',
       'Prefer not to say': 'குறிப்பிட விரும்பவில்லை (Prefer not to say)',
     },
+    hi: {
+      Female: 'महिला (Female)',
+      Male: 'पुरुष (Male)',
+      Transgender: 'ट्रांसजेंडर / तृतीय लिंग (Transgender)',
+      'Prefer not to say': 'बताना नहीं चाहते (Prefer not to say)',
+    },
   },
   areas: {
     en: {
@@ -1429,6 +1435,10 @@ export const LOCALIZED_OPTIONS = {
     ta: {
       Rural: 'கிராமப்புறம் (Rural / ஊராட்சி)',
       Urban: 'நகர்ப்புறம் (Urban / நகராட்சி)',
+    },
+    hi: {
+      Rural: 'ग्रामीण (Rural / ग्राम पंचायत)',
+      Urban: 'शहरी (Urban / नगर पालिका)',
     },
   },
   incomes: {
@@ -1446,6 +1456,13 @@ export const LOCALIZED_OPTIONS = {
       '5 - 8 Lakh': '₹5 - ₹8 லட்சம் (உயர் நடுத்தர வருவாய்)',
       '> 8 Lakh': '₹8 லட்சத்திற்கு மேல் (உயர் வருவாய்)',
     },
+    hi: {
+      '< 1 Lakh': '₹1 लाख से कम (बीपीएल / अंत्योदय वर्ग)',
+      '1 - 2.5 Lakh': '₹1 - ₹2.5 लाख (निम्न आय / EWS)',
+      '2.5 - 5 Lakh': '₹2.5 - ₹5 लाख (मध्यम आय वर्ग)',
+      '5 - 8 Lakh': '₹5 - ₹8 लाख (उच्च मध्यम आय)',
+      '> 8 Lakh': '₹8 लाख से अधिक (उच्च आय वर्ग)',
+    },
   },
   categories: {
     en: {
@@ -1462,6 +1479,13 @@ export const LOCALIZED_OPTIONS = {
       ST: 'பழங்குடியினர் (ST)',
       EWS: 'பொருளாதாரத்தில் பின்தங்கியோர் (EWS)',
     },
+    hi: {
+      General: 'सामान्य वर्ग (General Category)',
+      OBC: 'अन्य पिछड़ा वर्ग (OBC)',
+      SC: 'अनुसूचित जाति (SC)',
+      ST: 'अनुसूचित जनजाति (ST)',
+      EWS: 'आर्थिक रूप से कमजोर वर्ग (EWS)',
+    },
   },
   landholdings: {
     en: {
@@ -1475,6 +1499,12 @@ export const LOCALIZED_OPTIONS = {
       'Marginal (< 1 ha)': 'குறு விவசாயி (< 1 ஹெக்டேர் / 2.5 ஏக்கருக்குள்)',
       'Small (1-2 ha)': 'சிறு விவசாயி (1-2 ஹெக்டேர் / 2.5 - 5 ஏக்கர்)',
       'Medium/Large (> 2 ha)': 'நடுத்தர / பெரிய விவசாயி (> 2 ஹெக்டேர்)',
+    },
+    hi: {
+      None: 'भूमिहीन (कोई कृषि भूमि नहीं)',
+      'Marginal (< 1 ha)': 'सीमांत किसान (< 1 हेक्टेयर / 2.5 एकड़ तक)',
+      'Small (1-2 ha)': 'लघु किसान (1-2 हेक्टेयर / 2.5 से 5 एकड़)',
+      'Medium/Large (> 2 ha)': 'मध्यम या बड़ा किसान (> 2 हेक्टेयर / 5+ एकड़)',
     },
   },
   occupations: {
@@ -1504,6 +1534,19 @@ export const LOCALIZED_OPTIONS = {
       'Senior Citizen / Retired': 'மூத்த குடிமக்கள் / ஓய்வுபெற்றவர் (Senior Citizen)',
       'Unemployed / Jobseeker': 'வேலை தேடுபவர் (Jobseeker)',
     },
+    hi: {
+      'Farmer / Cultivator': 'किसान / काश्तकार (Farmer / Cultivator)',
+      'Agricultural Worker': 'खेतिहर मजदूर (Agricultural Labour)',
+      'Street Vendor / Hawker': 'रेहड़ी-पटरी / फेरीवाले (Street Vendor)',
+      'Small Business / Artisan': 'छोटा व्यापारी / पारंपरिक कारीगर (Artisan / Business)',
+      'Daily Wage / Informal Worker': 'दैनिक वेतनभोगी / निर्माण श्रमिक (Daily Wage)',
+      'Self-Employed': 'स्व-नियोजित पेशेवर (Self-Employed)',
+      'Student / Scholar': 'विद्यार्थी / शोधार्थी (Student / Scholar)',
+      'Salaried Employee (Private)': 'निजी क्षेत्र कर्मचारी (Private Employee)',
+      Homemaker: 'गृहणी (Homemaker)',
+      'Senior Citizen / Retired': 'वरिष्ठ नागरिक / सेवानिवृत्त (Senior Citizen)',
+      'Unemployed / Jobseeker': 'बेरोजगार / नौकरी तलाशकर्ता (Jobseeker)',
+    },
   },
   categoryFilters: {
     en: {
@@ -1521,6 +1564,14 @@ export const LOCALIZED_OPTIONS = {
       livelihood: 'வாழ்வாதாரம் & குறுந்தொழில்',
       education: 'கல்வி & திறன்மேம்பாடு',
       housing: 'வீட்டுவசதி & உள்கட்டமைப்பு',
+    },
+    hi: {
+      all: 'सभी क्षेत्र',
+      agriculture: 'कृषि एवं ग्रामीण विकास',
+      healthcare: 'स्वास्थ्य एवं कल्याण',
+      livelihood: 'शहरी आजीविका एवं सूक्ष्म उद्यम',
+      education: 'शिक्षा एवं कौशल विकास',
+      housing: 'आवास एवं अवसंरचना',
     },
   },
 };
