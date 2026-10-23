@@ -16,6 +16,7 @@ import {
   RefreshCw,
   Server,
   ExternalLink,
+  X,
 } from 'lucide-react';
 import {
   CitizenProfile,
@@ -47,6 +48,8 @@ interface EligibilityScreenProps {
   isKioskMode?: boolean;
   onResetProfile?: () => void;
   onPreFillDemoProfile?: () => void;
+  targetSchemeId?: string | null;
+  onClearTargetScheme?: () => void;
 }
 
 const INDIAN_STATES = [
