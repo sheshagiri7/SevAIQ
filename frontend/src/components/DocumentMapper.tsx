@@ -547,6 +547,8 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                           <span>
                             {language === 'ta'
                               ? `${applicableInSelection.length} திட்டங்களுக்கு பொதுவானது (மறுபயன்பாடு)`
+                              : language === 'hi'
+                              ? `${applicableInSelection.length} योजनाओं में साझा (पुन: प्रयोज्य)`
                               : `Shared across ${applicableInSelection.length} schemes (reusable once)`}
                           </span>
                         </span>
@@ -555,6 +557,8 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                           <span>
                             {language === 'ta'
                               ? 'குறிப்பிட்ட திட்டத் தேவை'
+                              : language === 'hi'
+                              ? 'योजना-विशिष्ट आवश्यकता'
                               : 'Scheme-Specific Requirement'}
                           </span>
                         </span>
@@ -564,17 +568,35 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                       {doc.status === 'have' ? (
                         <span className="inline-flex items-center space-x-1 text-[11px] font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
                           <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                          <span>{language === 'ta' ? 'கையில் உள்ளது (தயார்)' : 'Possessed (Ready)'}</span>
+                          <span>
+                            {language === 'ta'
+                              ? 'கையில் உள்ளது (தயார்)'
+                              : language === 'hi'
+                              ? 'पास में है (तैयार)'
+                              : 'Possessed (Ready)'}
+                          </span>
                         </span>
                       ) : doc.status === 'missing' ? (
                         <span className="inline-flex items-center space-x-1 text-[11px] font-semibold text-rose-800 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200">
                           <XCircle className="w-3 h-3 text-rose-600" />
-                          <span>{language === 'ta' ? 'விடுபட்டது (பெற வேண்டும்)' : 'Missing (Must Procure)'}</span>
+                          <span>
+                            {language === 'ta'
+                              ? 'விடுபட்டது (பெற வேண்டும்)'
+                              : language === 'hi'
+                              ? 'अनुपलब्ध (प्राप्त करें)'
+                              : 'Missing (Must Procure)'}
+                          </span>
                         </span>
                       ) : (
                         <span className="inline-flex items-center space-x-1 text-[11px] font-semibold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
                           <HelpCircle className="w-3 h-3 text-amber-600" />
-                          <span>{language === 'ta' ? 'உறுதிப்படுத்தப்படவில்லை' : 'Unconfirmed'}</span>
+                          <span>
+                            {language === 'ta'
+                              ? 'உறுதிப்படுத்தப்படவில்லை'
+                              : language === 'hi'
+                              ? 'अपुष्ट'
+                              : 'Unconfirmed'}
+                          </span>
                         </span>
                       )}
                     </div>
@@ -592,7 +614,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                       }`}
                     >
                       <CheckCircle2 className="w-3.5 h-3.5" />
-                      <span>{language === 'ta' ? 'கையில் உள்ளது' : 'I Have This'}</span>
+                      <span>{language === 'ta' ? 'கையில் உள்ளது' : language === 'hi' ? 'मेरे पास है' : 'I Have This'}</span>
                     </button>
 
                     <button
@@ -604,7 +626,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                       }`}
                     >
                       <XCircle className="w-3.5 h-3.5" />
-                      <span>{language === 'ta' ? 'இல்லை' : 'Missing'}</span>
+                      <span>{language === 'ta' ? 'இல்லை' : language === 'hi' ? 'नहीं है' : 'Missing'}</span>
                     </button>
 
                     <button
@@ -616,7 +638,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                       }`}
                     >
                       <HelpCircle className="w-3.5 h-3.5" />
-                      <span>{language === 'ta' ? 'தெரியவில்லை' : 'Unconfirmed'}</span>
+                      <span>{language === 'ta' ? 'தெரியவில்லை' : language === 'hi' ? 'पता नहीं' : 'Unconfirmed'}</span>
                     </button>
                   </div>
                 </div>
@@ -633,7 +655,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
 
                   <div className="flex flex-wrap items-center gap-1.5">
                     <span className="text-slate-400">
-                      {language === 'ta' ? 'தேவைப்படும் திட்டங்கள்:' : 'Required by:'}
+                      {language === 'ta' ? 'தேவைப்படும் திட்டங்கள்:' : language === 'hi' ? 'आवश्यक योजनाएं:' : 'Required by:'}
                     </span>
                     {applicableInSelection.map((s) => {
                       const locScheme = getLocalizedScheme(s);
@@ -655,11 +677,13 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
           <div className="p-12 bg-white rounded-3xl border border-slate-200 text-center space-y-2">
             <Info className="w-8 h-8 text-slate-400 mx-auto" />
             <h3 className="text-sm font-bold text-slate-800">
-              {language === 'ta' ? 'இப்பிரிவில் ஆவணங்கள் எதுவும் இல்லை' : 'No documents in this view'}
+              {language === 'ta' ? 'இப்பிரிவில் ஆவணங்கள் எதுவும் இல்லை' : language === 'hi' ? 'इस श्रेणी में कोई दस्तावेज़ नहीं' : 'No documents in this view'}
             </h3>
             <p className="text-xs text-slate-500">
               {language === 'ta'
                 ? 'அனைத்து ஆவணங்களையும் காண மேலே உள்ள வடிகட்டியை மாற்றவும்.'
+                : language === 'hi'
+                ? 'सभी आवश्यक प्रमाणपत्र देखने के लिए ऊपर फ़िल्टर टैब बदलें।'
                 : 'Change the filter tab above to view all required certificates.'}
             </p>
           </div>
