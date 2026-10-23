@@ -1025,12 +1025,26 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
             <p className="text-xs text-slate-500">
               {language === 'ta' ? 'வேறு தகுதி வடிகட்டலைத் தேர்ந்தெடுக்கவும் அல்லது உங்கள் விவரங்களை புதுப்பிக்கவும்.' : 'Try changing the status filter above or updating your citizen profile.'}
             </p>
-            <button
-              onClick={() => setStatusFilter('all')}
-              className="px-4 py-2 text-xs font-semibold bg-slate-100 text-slate-700 rounded-xl"
-            >
-              {language === 'ta' ? 'அனைத்து முடிவுகளையும் காட்டு' : 'Show All Statuses'}
-            </button>
+            <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
+              <button
+                onClick={() => setStatusFilter('all')}
+                className="px-4 py-2 text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-xl transition-colors"
+              >
+                {language === 'ta' ? 'அனைத்து முடிவுகளையும் காட்டு' : 'Show All Statuses'}
+              </button>
+              {selectedSchemeFilter !== 'all' && (
+                <button
+                  onClick={() => {
+                    setSelectedSchemeFilter('all');
+                    setStatusFilter('all');
+                    onClearTargetScheme?.();
+                  }}
+                  className="px-4 py-2 text-xs font-semibold bg-civic-700 text-white hover:bg-civic-800 rounded-xl transition-colors shadow-2xs"
+                >
+                  {t.eligibility.viewAllSchemes}
+                </button>
+              )}
+            </div>
           </div>
         )}
       </div>
