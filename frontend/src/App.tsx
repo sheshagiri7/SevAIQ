@@ -309,8 +309,18 @@ export function App() {
     }
   }, [activeTab]);
 
-  const handleSelectSchemeForEligibility = (_scheme: Scheme) => {
+  const handleSelectSchemeForEligibility = (scheme: Scheme | string) => {
+    const schemeId = typeof scheme === 'string' ? scheme : scheme.id;
+    setSelectedEligibilitySchemeId(schemeId);
     setActiveTab('eligibility');
+  };
+
+  const handleTabSelect = (tab: NavigationTab) => {
+    if (tab === 'eligibility') {
+      // Citizen clicked the top header "Eligibility" tab directly -> show all schemes
+      setSelectedEligibilitySchemeId(null);
+    }
+    handleNavigate(tab);
   };
 
   const handleCategorySelect = (categoryId: string) => {
@@ -328,7 +338,7 @@ export function App() {
       <Header
         apiState={apiState}
         activeTab={activeTab}
-        onSelectTab={handleNavigate}
+        onSelectTab={handleTabSelect}
         onRefreshHealth={handleCheckHealth}
         eligibleCount={eligibleCount}
         isKioskMode={isKioskMode}
@@ -348,6 +358,7 @@ export function App() {
             isKioskMode={isKioskMode}
             onSelectCategory={handleCategorySelect}
             onOpenAbout={() => setIsAboutOpen(true)}
+            onSelectSchemeForEligibility={handleSelectSchemeForEligibility}
           />
         )}
 
@@ -386,6 +397,8 @@ export function App() {
             isKioskMode={isKioskMode}
             onResetProfile={handleResetProfile}
             onPreFillDemoProfile={handlePreFillDemoProfile}
+            targetSchemeId={selectedEligibilitySchemeId}
+            onClearTargetScheme={() => setSelectedEligibilitySchemeId(null)}
           />
         )}
 
