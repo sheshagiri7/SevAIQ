@@ -46,6 +46,8 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
   const isWidgetOpen = isOpen !== undefined ? isOpen : internalIsOpen;
 
   const { language, setLanguage, getLocalizedScheme } = useLanguage();
+  const assistantLang: AssistantLanguage =
+    language === 'ta' ? 'ta' : language === 'hi' ? 'hi' : 'en';
   const [inputText, setInputText] = useState('');
   const [isListening, setIsListening] = useState(false);
   const [speechSupported, setSpeechSupported] = useState<boolean>(true);
@@ -59,7 +61,7 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const triggerButtonRef = useRef<HTMLButtonElement | null>(null);
-  const prevLangRef = useRef<AssistantLanguage>(language);
+  const prevLangRef = useRef<AssistantLanguage>(assistantLang);
 
   const handleToggle = () => {
     if (onToggleOpen) {
