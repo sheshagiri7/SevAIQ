@@ -218,10 +218,18 @@ html.a11y-invert {
   background-color: #121212 !important;
 }
 
-/* Re-invert media so images and accessibility widget don't look weirdly negative */
+/* Re-invert media, moving animation images, illustrations, and accessibility widgets so they keep their original vibrant colors and don't look weirdly negative in dark mode */
 html.a11y-invert img,
 html.a11y-invert video,
-html.a11y-invert .a11y-exempt {
+html.a11y-invert .a11y-exempt,
+html.a11y-invert .moving-animation-exempt,
+html.a11y-invert .scheme-banner-carousel,
+html.a11y-invert .moving-animation-image,
+html.a11y-invert [data-dark-exempt="true"],
+html.a11y-invert [data-moving-animation="true"],
+html.a11y-invert img[class*="animate-"],
+html.a11y-invert svg[class*="animate-"]:not(.moving-animation-exempt *):not(.a11y-exempt *):not(.scheme-banner-carousel *),
+html.a11y-invert [role="img"][class*="animate-"]:not(.moving-animation-exempt *):not(.a11y-exempt *):not(.scheme-banner-carousel *) {
   filter: invert(100%) hue-rotate(180deg) !important;
 }
 
