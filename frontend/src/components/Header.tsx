@@ -12,11 +12,9 @@ import {
   Trash2,
   ListChecks,
   Globe,
-  Accessibility,
 } from 'lucide-react';
 import { ApiState, NavigationTab } from '../types';
 import { useLanguage } from '../context/LanguageContext';
-import { useAccessibility } from '../context/AccessibilityContext';
 
 interface HeaderProps {
   apiState?: ApiState;
