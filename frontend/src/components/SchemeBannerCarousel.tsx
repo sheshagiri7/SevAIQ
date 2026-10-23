@@ -1358,10 +1358,10 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                       </div>
                       <div className="flex flex-col min-w-0">
                         <span className="text-[11px] sm:text-xs font-bold text-slate-900 leading-snug truncate">
-                          {slide.phone.floatingBadge1.title}
+                          {locSlide.phone.floatingBadge1.title}
                         </span>
                         <span className="mt-0.5 inline-flex items-center px-1.5 py-0.2 rounded-full text-[8px] sm:text-[9px] font-black bg-emerald-100 text-emerald-800 uppercase tracking-wider w-fit">
-                          {slide.phone.floatingBadge1.tag}
+                          {locSlide.phone.floatingBadge1.tag}
                         </span>
                       </div>
                     </div>
@@ -1375,10 +1375,10 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                       </div>
                       <div className="flex flex-col min-w-0">
                         <span className="text-[11px] sm:text-xs font-bold text-slate-900 leading-snug truncate">
-                          {slide.phone.floatingBadge2.title}
+                          {locSlide.phone.floatingBadge2.title}
                         </span>
                         <span className="mt-0.5 inline-flex items-center px-1.5 py-0.2 rounded-full text-[8px] sm:text-[9px] font-black bg-emerald-100 text-emerald-800 uppercase tracking-wider w-fit">
-                          {slide.phone.floatingBadge2.tag}
+                          {locSlide.phone.floatingBadge2.tag}
                         </span>
                       </div>
                     </div>
@@ -1411,13 +1411,13 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                           <div className="flex items-center space-x-1 min-w-0">
                             <ChevronLeft className="w-3.5 h-3.5 text-slate-700 shrink-0" />
                             <span className="text-[10px] font-bold text-slate-900 truncate">
-                              {slide.phone.title}
+                              {locSlide.phone.title}
                             </span>
                           </div>
                           <div className="flex items-center space-x-1 text-slate-600 shrink-0">
                             <Search className="w-3 h-3" />
                             <div className="text-[8px] font-semibold flex items-center text-slate-700 bg-slate-100 px-1 py-0.5 rounded">
-                              <span>En</span>
+                              <span>{isTamil ? 'தமிழ்' : isHindi ? 'हिं' : 'En'}</span>
                               <ChevronDown className="w-2 h-2 ml-0.5" />
                             </div>
                           </div>
@@ -1428,13 +1428,13 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                           {/* Scheme Header Card */}
                           <div className="p-2 rounded-xl bg-white border border-slate-200/70 shadow-2xs flex items-center space-x-1.5">
                             <div className="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-800 flex items-center justify-center font-bold text-[9px] shrink-0 border border-emerald-200">
-                              {slide.phone.shortCode}
+                              {locSlide.phone.shortCode}
                             </div>
                             <div className="min-w-0 flex-1">
                               <p className="text-[9px] font-bold text-slate-900 truncate">
-                                {slide.phone.title}
+                                {locSlide.phone.title}
                               </p>
-                              <p className="text-[7.5px] text-slate-500 truncate">{slide.phone.tagline}</p>
+                              <p className="text-[7.5px] text-slate-500 truncate">{locSlide.phone.tagline}</p>
                             </div>
                           </div>
 
@@ -1444,7 +1444,7 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                             <input
                               type="text"
                               readOnly
-                              placeholder={slide.phone.searchPlaceholder}
+                              placeholder={locSlide.phone.searchPlaceholder}
                               className="w-full pl-5.5 pr-2 py-1 rounded-lg bg-white border border-slate-200 text-[8px] text-slate-700 placeholder-slate-400 cursor-default focus:outline-none"
                             />
                           </div>
@@ -1452,20 +1452,20 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                           {/* Highlight Feature Card */}
                           <div className="p-2 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-1">
                             <span className="text-[9px] font-bold text-slate-800 block leading-tight">
-                              {slide.phone.highlightCard.title}
+                              {locSlide.phone.highlightCard.title}
                             </span>
                             <button
                               type="button"
-                              className={`w-full py-0.5 rounded-md ${slide.phone.highlightCard.btnColor} text-white text-[8px] font-bold shadow-2xs tracking-wider uppercase`}
+                              className={`w-full py-0.5 rounded-md ${locSlide.phone.highlightCard.btnColor} text-white text-[8px] font-bold shadow-2xs tracking-wider uppercase`}
                             >
-                              {slide.phone.highlightCard.btnText}
+                              {locSlide.phone.highlightCard.btnText}
                             </button>
                           </div>
 
                           {/* Service Row 1 */}
                           <div className="p-1.5 rounded-xl bg-white border border-slate-200 shadow-2xs flex items-center justify-between">
                             <span className="text-[8px] font-semibold text-slate-800 truncate">
-                              {slide.phone.service1}
+                              {locSlide.phone.service1}
                             </span>
                             <ChevronRight className="w-2.5 h-2.5 text-slate-400 shrink-0" />
                           </div>
@@ -1473,7 +1473,7 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                           {/* Service Row 2 */}
                           <div className="p-1.5 rounded-xl bg-white border border-slate-200 shadow-2xs flex items-center justify-between">
                             <span className="text-[8px] font-semibold text-slate-800 truncate">
-                              {slide.phone.service2}
+                              {locSlide.phone.service2}
                             </span>
                             <ChevronRight className="w-2.5 h-2.5 text-slate-400 shrink-0" />
                           </div>
