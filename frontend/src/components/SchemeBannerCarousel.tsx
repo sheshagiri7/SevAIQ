@@ -1492,7 +1492,8 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                 </div>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Bottom Area: Slide Indicator Dots + Floating Options Launcher */}
@@ -1501,6 +1502,7 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
           <div className="flex items-center space-x-2">
             {SLIDES.map((slide, index) => {
               const isActive = index === currentSlideIndex;
+              const locSlide = getLocalizedSlide(slide, language);
               return (
                 <button
                   key={slide.id}
@@ -1509,7 +1511,7 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                   className={`relative h-2 rounded-full overflow-hidden transition-all duration-300 ${
                     isActive ? 'w-10 bg-slate-300/90 shadow-2xs' : 'w-2.5 bg-slate-400/50 hover:bg-slate-500'
                   }`}
-                  aria-label={`Go to slide ${index + 1}: ${slide.titlePrimary}`}
+                  aria-label={`${t.banner?.goToSlide || (isTamil ? 'திட்டம்' : isHindi ? 'योजना' : 'Go to slide')} ${index + 1}: ${locSlide.titlePrimary}`}
                 >
                   {isActive && (
                     <div
@@ -1530,15 +1532,15 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
           {/* Floating Options Launcher Bar (Exact replica of Image 1) */}
           <div className="inline-flex flex-col items-center px-6 sm:px-8 py-2.5 sm:py-3 rounded-2xl sm:rounded-3xl bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-xl hover:shadow-2xl transition-all duration-300 group/float animate-float-subtle">
             <p className="text-[10px] sm:text-xs font-black tracking-widest text-slate-700 uppercase mb-1.5">
-              #GOVERNMENTSCHEMES / #SCHEMESFORYOU
+              {t.banner?.hashtag || (isTamil ? '#அரசுதிட்டங்கள் / #உங்களுக்கானதிட்டங்கள்' : isHindi ? '#सरकारीयोजनाएं / #आपकेलिएयोजनाएं' : '#GOVERNMENTSCHEMES / #SCHEMESFORYOU')}
             </p>
             <button
               type="button"
               onClick={handleScrollToOptions}
               className="inline-flex items-center space-x-2 px-6 sm:px-8 py-2 sm:py-2.5 rounded-xl bg-[#107c41] hover:bg-[#0c6534] text-white font-bold text-xs sm:text-sm shadow-md hover:shadow-lg transition-all hover:scale-105 active:scale-95 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-600"
-              aria-label="Find Schemes For You - scroll to options"
+              aria-label={t.banner?.findSchemesAria || (isTamil ? 'உங்களுக்கான திட்டங்களைக் கண்டறியவும் - விருப்பங்களை ஆராய கீழே உருட்டவும்' : isHindi ? 'आपके लिए योजनाएं खोजें - विकल्प देखने के लिए नीचे स्क्रॉल करें' : 'Find Schemes For You - scroll to options')}
             >
-              <span>Find Schemes For You</span>
+              <span>{t.banner?.findSchemes || (isTamil ? 'உங்களுக்கான திட்டங்களைக் கண்டறியவும்' : isHindi ? 'आपके लिए योजनाएं खोजें' : 'Find Schemes For You')}</span>
               <ArrowRight className="w-4 h-4 stroke-[2.5] group-hover/float:translate-x-1 transition-transform" />
             </button>
             <button
@@ -1546,7 +1548,7 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
               onClick={handleScrollToOptions}
               className="flex items-center space-x-1 text-[10px] font-bold text-slate-500 hover:text-emerald-700 mt-1 transition-colors cursor-pointer"
             >
-              <span>Scroll down to explore options</span>
+              <span>{t.banner?.scrollDown || (isTamil ? 'விருப்பங்களை ஆராய கீழே உருட்டவும்' : isHindi ? 'विकल्प देखने के लिए नीचे स्क्रॉल करें' : 'Scroll down to explore options')}</span>
               <ChevronDown className="w-3.5 h-3.5 animate-bounce text-emerald-700" />
             </button>
           </div>
