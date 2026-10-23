@@ -717,14 +717,14 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
 
   // 5-second automatic scrolling timer (respects WCAG pause animations)
   useEffect(() => {
-    if (isPaused || settings.pauseAnimation) return;
+    if (settings.pauseAnimation) return;
 
     const timer = setInterval(() => {
       nextSlide();
     }, SLIDE_DURATION_MS);
 
     return () => clearInterval(timer);
-  }, [isPaused, settings.pauseAnimation, nextSlide]);
+  }, [settings.pauseAnimation, nextSlide]);
 
   const activeSlide = SLIDES[currentSlideIndex];
 
