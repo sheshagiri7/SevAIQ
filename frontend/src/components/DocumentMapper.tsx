@@ -339,6 +339,8 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                 (
                 {language === 'ta'
                   ? `${totalCount} இல் ${haveCount} தயார்`
+                  : language === 'hi'
+                  ? `${totalCount} में से ${haveCount} तैयार`
                   : `${haveCount} of ${totalCount} ready`}
                 )
               </span>
@@ -357,19 +359,19 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
             <div>
               <span className="text-emerald-700 font-bold block">{haveCount}</span>
               <span className="text-slate-500 text-[10px]">
-                {language === 'ta' ? 'தயார்' : 'Ready'}
+                {language === 'ta' ? 'தயார்' : language === 'hi' ? 'तैयार' : 'Ready'}
               </span>
             </div>
             <div>
               <span className="text-rose-700 font-bold block">{missingCount}</span>
               <span className="text-slate-500 text-[10px]">
-                {language === 'ta' ? 'விடுபட்டவை' : 'Missing'}
+                {language === 'ta' ? 'விடுபட்டவை' : language === 'hi' ? 'अनुपलब्ध' : 'Missing'}
               </span>
             </div>
             <div>
               <span className="text-amber-700 font-bold block">{unconfirmedCount}</span>
               <span className="text-slate-500 text-[10px]">
-                {language === 'ta' ? 'உறுதிப்படுத்தப்படவில்லை' : 'Unconfirmed'}
+                {language === 'ta' ? 'உறுதிப்படுத்தப்படவில்லை' : language === 'hi' ? 'अपुष्ट' : 'Unconfirmed'}
               </span>
             </div>
           </div>
@@ -392,17 +394,23 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
               <span>
                 {language === 'ta'
                   ? 'திட்டங்களுக்கிடையேயான பலன்'
+                  : language === 'hi'
+                  ? 'योजनाओं के बीच तालमेल'
                   : 'Cross-Scheme Synergy Unlocked'}
               </span>
             </div>
             <h3 className="text-lg font-bold text-white">
               {language === 'ta'
                 ? `${sharedDocsCount} பொது ஆவணங்கள் கண்டறியப்பட்டுள்ளன`
+                : language === 'hi'
+                ? `${sharedDocsCount} साझा दस्तावेज़ मिले`
                 : `${sharedDocsCount} Shared Documents Found`}
             </h3>
             <p className="text-xs text-slate-300 mt-1 leading-relaxed">
               {language === 'ta'
                 ? 'பல திட்டங்களுக்கு விண்ணப்பிக்கும்போது ஒவ்வொரு முறையும் ஆவணங்களை புதிதாக பெற வேண்டியதில்லை. ஒரே சான்றிதழ் (வருமானச் சான்றிதழ், இருப்பிடச் சான்றிதழ் போன்றவை) பல அரசு திட்டங்களுக்கு செல்லும்.'
+                : language === 'hi'
+                ? 'कई योजनाओं के लिए आवेदन करने का अर्थ बार-बार दस्तावेज़ बनवाना नहीं है। एक सत्यापित प्रमाणपत्र (जैसे आय प्रमाणपत्र या मूल निवास प्रमाणपत्र) कई मंत्रालयों की योजनाओं में मान्य होता है।'
                 : 'Applying for multiple schemes does not mean duplicating paperwork. One verified document (such as an Income Certificate or Domicile Certificate) satisfies eligibility proof across multiple government ministries.'}
             </p>
           </div>
@@ -423,6 +431,8 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                     (
                     {language === 'ta'
                       ? `${schemeOverlapCount} திட்டங்கள்`
+                      : language === 'hi'
+                      ? `${schemeOverlapCount} योजनाएं`
                       : `${schemeOverlapCount} schemes`}
                     )
                   </span>
@@ -443,7 +453,11 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
               : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
           }`}
         >
-          {language === 'ta' ? `அனைத்து ஆவணங்கள் (${totalCount})` : `All Required Documents (${totalCount})`}
+          {language === 'ta'
+            ? `அனைத்து ஆவணங்கள் (${totalCount})`
+            : language === 'hi'
+            ? `सभी आवश्यक दस्तावेज़ (${totalCount})`
+            : `All Required Documents (${totalCount})`}
         </button>
 
         <button
@@ -454,7 +468,11 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
               : 'bg-indigo-50 text-indigo-800 border border-indigo-200 hover:bg-indigo-100'
           }`}
         >
-          {language === 'ta' ? `பொதுவானவை (${sharedDocsCount})` : `Shared Synergies (${sharedDocsCount})`}
+          {language === 'ta'
+            ? `பொதுவானவை (${sharedDocsCount})`
+            : language === 'hi'
+            ? `साझा तालमेल (${sharedDocsCount})`
+            : `Shared Synergies (${sharedDocsCount})`}
         </button>
 
         <button
@@ -465,7 +483,11 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
               : 'bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200'
           }`}
         >
-          {language === 'ta' ? `குறிப்பிட்டவை (${singleDocsCount})` : `Scheme-Specific (${singleDocsCount})`}
+          {language === 'ta'
+            ? `குறிப்பிட்டவை (${singleDocsCount})`
+            : language === 'hi'
+            ? `योजना-विशिष्ट (${singleDocsCount})`
+            : `Scheme-Specific (${singleDocsCount})`}
         </button>
 
         <button
@@ -476,7 +498,11 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
               : 'bg-rose-50 text-rose-800 border border-rose-200 hover:bg-rose-100'
           }`}
         >
-          {language === 'ta' ? `விடுபட்டவை (${missingCount})` : `Missing to Procure (${missingCount})`}
+          {language === 'ta'
+            ? `விடுபட்டவை (${missingCount})`
+            : language === 'hi'
+            ? `प्राप्त करने योग्य (${missingCount})`
+            : `Missing to Procure (${missingCount})`}
         </button>
 
         <button
@@ -487,7 +513,11 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
               : 'bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100'
           }`}
         >
-          {language === 'ta' ? `கையில் உள்ளவை (${haveCount})` : `Ready in Hand (${haveCount})`}
+          {language === 'ta'
+            ? `கையில் உள்ளவை (${haveCount})`
+            : language === 'hi'
+            ? `पास में उपलब्ध (${haveCount})`
+            : `Ready in Hand (${haveCount})`}
         </button>
       </div>
 
