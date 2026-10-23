@@ -20,7 +20,12 @@ export const FloatingAccessibilityButton: React.FC = () => {
     }
   };
 
-  const label = language === 'ta' ? 'அணுகல்தன்மை விருப்பங்கள்' : 'Accessibility options';
+  const label =
+    language === 'ta'
+      ? 'அணுகல்தன்மை விருப்பங்கள்'
+      : language === 'hi'
+      ? 'सुलभता विकल्प'
+      : 'Accessibility options';
 
   return (
     <aside
