@@ -415,7 +415,12 @@ const FloatingBadgeIcon: React.FC<{ type: string; className?: string }> = ({ typ
 const FloatingGraphic3D: React.FC<{ type: string }> = ({ type }) => {
   if (type === 'graduation') {
     return (
-      <div className="relative animate-bounce duration-1000">
+      <div
+        role="img"
+        aria-label="3D Floating Graduation Cap"
+        data-dark-exempt="true"
+        className="relative animate-bounce duration-1000 moving-animation-image"
+      >
         <svg viewBox="0 0 100 80" className="w-16 h-14 drop-shadow-2xl">
           <polygon points="50,10 92,28 50,46 8,28" fill="#1e293b" stroke="#334155" strokeWidth="2" />
           <polygon points="50,13 88,28 50,43 12,28" fill="#0f172a" />
@@ -431,7 +436,12 @@ const FloatingGraphic3D: React.FC<{ type: string }> = ({ type }) => {
 
   if (type === 'sprout') {
     return (
-      <div className="relative animate-bounce duration-1000">
+      <div
+        role="img"
+        aria-label="3D Floating Sprout"
+        data-dark-exempt="true"
+        className="relative animate-bounce duration-1000 moving-animation-image"
+      >
         <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-emerald-600 to-green-400 text-white flex items-center justify-center shadow-xl border-2 border-white/80">
           <Sprout className="w-8 h-8 stroke-[2.2]" />
         </div>
@@ -441,7 +451,12 @@ const FloatingGraphic3D: React.FC<{ type: string }> = ({ type }) => {
 
   if (type === 'heart') {
     return (
-      <div className="relative animate-bounce duration-1000">
+      <div
+        role="img"
+        aria-label="3D Floating Heart"
+        data-dark-exempt="true"
+        className="relative animate-bounce duration-1000 moving-animation-image"
+      >
         <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-sky-500 to-blue-600 text-white flex items-center justify-center shadow-xl border-2 border-white/80">
           <HeartPulse className="w-8 h-8 stroke-[2.2]" />
         </div>
@@ -451,7 +466,12 @@ const FloatingGraphic3D: React.FC<{ type: string }> = ({ type }) => {
 
   if (type === 'coins') {
     return (
-      <div className="relative animate-bounce duration-1000">
+      <div
+        role="img"
+        aria-label="3D Floating Coins"
+        data-dark-exempt="true"
+        className="relative animate-bounce duration-1000 moving-animation-image"
+      >
         <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 text-white flex items-center justify-center shadow-xl border-2 border-white/80">
           <Coins className="w-8 h-8 stroke-[2.2]" />
         </div>
@@ -460,7 +480,12 @@ const FloatingGraphic3D: React.FC<{ type: string }> = ({ type }) => {
   }
 
   return (
-    <div className="relative animate-bounce duration-1000">
+    <div
+      role="img"
+      aria-label="3D Floating Home"
+      data-dark-exempt="true"
+      className="relative animate-bounce duration-1000 moving-animation-image"
+    >
       <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-teal-500 to-emerald-600 text-white flex items-center justify-center shadow-xl border-2 border-white/80">
         <Home className="w-8 h-8 stroke-[2.2]" />
       </div>
