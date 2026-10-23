@@ -874,6 +874,73 @@ const FloatingBadgeIcon: React.FC<{ type: string; className?: string }> = ({ typ
   }
 };
 
+// Robust Scheme Photograph Component with Guaranteed Local Fallback
+interface SchemeImageWithFallbackProps {
+  src: string;
+  alt: string;
+  fallbackTitle: string;
+  category: string;
+  iconType: string;
+  className?: string;
+  objectPosition?: string;
+}
+
+const SchemeImageWithFallback: React.FC<SchemeImageWithFallbackProps> = ({
+  src,
+  alt,
+  fallbackTitle,
+  category,
+  iconType,
+  className = 'w-full h-full object-cover',
+  objectPosition = 'object-center',
+}) => {
+  const [hasError, setHasError] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    setHasError(false);
+    setIsLoaded(false);
+  }, [src]);
+
+  if (hasError) {
+    return (
+      <div
+        role="img"
+        aria-label={`${fallbackTitle} - ${category} (Neutral Fallback)`}
+        className="w-full h-full bg-gradient-to-br from-slate-100 via-slate-200 to-slate-300 flex flex-col items-center justify-center p-3 text-center relative overflow-hidden"
+      >
+        <div className="w-10 h-10 rounded-xl bg-white shadow-xs border border-slate-300/80 flex items-center justify-center text-slate-700 mb-1.5">
+          <FloatingBadgeIcon type={iconType} className="w-5 h-5 text-emerald-700" />
+        </div>
+        <span className="text-[9px] font-black text-slate-800 uppercase tracking-wider">{category}</span>
+        <span className="text-[10px] font-bold text-slate-600 line-clamp-1 mt-0.5">{fallbackTitle}</span>
+        <span className="text-[8px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-full mt-1">
+          Official Government Scheme
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full h-full relative overflow-hidden bg-slate-100">
+      {!isLoaded && (
+        <div className="absolute inset-0 bg-slate-200 animate-pulse flex items-center justify-center" aria-hidden="true">
+          <FloatingBadgeIcon type={iconType} className="w-6 h-6 text-slate-400" />
+        </div>
+      )}
+      <img
+        src={src}
+        alt={alt}
+        loading="eager"
+        decoding="async"
+        className={`${className} ${objectPosition} ${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`}
+        onLoad={() => setIsLoaded(true)}
+        onError={() => setHasError(true)}
+      />
+    </div>
+  );
+};
+
 // 3D Isometric Floating Graphics with Distinct Movement Per Image
 const FloatingGraphic3D: React.FC<{ type: string }> = ({ type }) => {
   if (type === 'graduation') {
