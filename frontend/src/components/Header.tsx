@@ -47,6 +47,7 @@ export const Header: React.FC<HeaderProps> = ({
   onClearSession,
 }) => {
   const { language, setLanguage, t } = useLanguage();
+  const isTamil = language === 'ta';
   const { toggleOpen: toggleAccessibility, isOpen: isA11yOpen, activeCount: a11yActiveCount } = useAccessibility();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
@@ -140,35 +141,37 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-slate-200/90 shadow-2xs w-full">
-      <div className="w-full px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between xl:grid xl:grid-cols-[auto_1fr_auto] min-h-[4.25rem] sm:min-h-[4.5rem] py-1.5 sm:py-2 w-full gap-2 lg:gap-4">
+      <div className="w-full px-2 sm:px-4 lg:px-5 xl:px-6 2xl:px-8">
+        <div className="flex items-center justify-between min-h-[3.75rem] sm:min-h-[4.25rem] py-1 sm:py-1.5 w-full gap-1.5 sm:gap-2 lg:gap-3">
           {/* Top Left: Logo & Tagline + Accessibility Options (aligned properly below the logo) */}
           <div className="flex flex-col justify-center items-start shrink-0 pr-1">
             <button
               type="button"
               onClick={() => handleNavClick('dashboard')}
-              className="flex items-center space-x-2.5 text-left group focus:outline-none focus:ring-2 focus:ring-civic-500 rounded-xl p-0.5"
+              className="flex items-center space-x-2 text-left group focus:outline-none focus:ring-2 focus:ring-civic-500 rounded-xl p-0.5"
               aria-label="SevAIQ - Civic Intelligence & Scheme Readiness Dashboard"
             >
-              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-blue-800 via-civic-700 to-indigo-900 flex items-center justify-center text-white shadow-xs group-hover:scale-105 transition-transform shrink-0">
-                <ShieldCheck className="w-4.5 h-4.5 sm:w-5 sm:h-5 stroke-[2.2]" />
+              <div className="w-7 h-7 sm:w-8 sm:h-8 xl:w-9 xl:h-9 rounded-xl bg-gradient-to-br from-blue-800 via-civic-700 to-indigo-900 flex items-center justify-center text-white shadow-xs group-hover:scale-105 transition-transform shrink-0">
+                <ShieldCheck className="w-4 h-4 sm:w-4.5 sm:h-4.5 xl:w-5 xl:h-5 stroke-[2.2]" />
               </div>
               <div className="flex flex-col justify-center min-w-0">
-                <span className="text-lg sm:text-xl font-black tracking-tight text-slate-900 leading-none">
+                <span className="text-base sm:text-lg xl:text-xl font-black tracking-tight text-slate-900 leading-none">
                   Sev<span className="text-civic-600">AI</span>Q
                 </span>
-                <span className="text-[10px] text-slate-500 font-medium tracking-normal whitespace-nowrap leading-none mt-1">
+                <span className={`text-[9px] xl:text-[10px] text-slate-500 font-medium tracking-normal leading-none mt-1 ${isTamil ? 'max-w-[185px] sm:max-w-[215px] 2xl:max-w-none' : 'max-w-[200px] xl:max-w-none'} truncate`}>
                   {t.header.tagline}
                 </span>
               </div>
             </button>
 
             {/* Accessibility options button positioned cleanly below the logo */}
-            <div className="mt-1 flex items-center space-x-1.5 pl-0.5">
+            <div className="mt-1 flex items-center space-x-1 pl-0.5">
               <button
                 type="button"
                 onClick={toggleAccessibility}
-                className={`inline-flex items-center space-x-1.5 px-2 py-0.5 rounded-md text-[11px] font-semibold border transition-all focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-2xs group cursor-pointer ${
+                className={`inline-flex items-center gap-1 xl:gap-1.5 px-1.5 xl:px-2 py-0.5 rounded-md ${
+                  isTamil ? 'text-[10px] xl:text-[11px]' : 'text-[11px]'
+                } font-semibold border transition-all focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-2xs group cursor-pointer ${
                   a11yActiveCount > 0 || isA11yOpen
                     ? 'bg-purple-100/90 text-purple-900 border-purple-300 font-bold'
                     : 'bg-purple-50/80 text-purple-800 border-purple-200/90 hover:bg-purple-100 hover:text-purple-900'
@@ -177,13 +180,13 @@ export const Header: React.FC<HeaderProps> = ({
                 aria-label="Open accessibility options (Ctrl+F2)"
                 aria-expanded={isA11yOpen}
               >
-                <Accessibility className="w-3.5 h-3.5 text-purple-600 group-hover:scale-110 transition-transform" />
+                <Accessibility className="w-3 h-3 xl:w-3.5 xl:h-3.5 text-purple-600 group-hover:scale-110 transition-transform shrink-0" />
                 <span>{language === 'ta' ? 'அணுகல்தன்மை விருப்பங்கள்' : 'Accessibility options'}</span>
-                <span className="hidden sm:inline-block text-[9px] font-mono font-bold bg-white text-purple-700 px-1 py-0.2 rounded border border-purple-200 shadow-2xs">
+                <span className="hidden sm:inline-block text-[8px] xl:text-[9px] font-mono font-bold bg-white text-purple-700 px-1 py-0.2 rounded border border-purple-200 shadow-2xs">
                   Ctrl+F2
                 </span>
                 {a11yActiveCount > 0 && (
-                  <span className="inline-flex items-center justify-center px-1.5 py-0.2 text-[9px] font-black bg-purple-600 text-white rounded-full">
+                  <span className="inline-flex items-center justify-center px-1.5 py-0.2 text-[8px] xl:text-[9px] font-black bg-purple-600 text-white rounded-full">
                     {a11yActiveCount}
                   </span>
                 )}
@@ -193,7 +196,7 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Center: All Navigation Options Aligned in Center */}
           <nav
-            className="hidden lg:flex items-center justify-center mx-2 xl:mx-0 space-x-1"
+            className="hidden lg:flex items-center justify-center flex-1 min-w-0 mx-1 lg:mx-2 gap-0.5 xl:gap-1 2xl:gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden py-1"
             aria-label="Main Navigation"
           >
             {navItems.map((item) => {
@@ -205,21 +208,34 @@ export const Header: React.FC<HeaderProps> = ({
                   type="button"
                   onClick={() => handleNavClick(item.id)}
                   aria-current={isActive ? 'page' : undefined}
-                  className={`relative flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 whitespace-nowrap ${
+                  className={`relative flex items-center ${
+                    isTamil
+                      ? 'gap-1 xl:gap-1.5 px-1.5 py-1 xl:px-2 xl:py-1.5 2xl:px-2.5 text-[11px] xl:text-xs font-semibold'
+                      : 'gap-1.5 px-2 py-1 xl:px-2.5 xl:py-1.5 text-xs font-semibold'
+                  } rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 whitespace-nowrap shrink-0 ${
                     isActive
                       ? 'bg-civic-50 text-civic-800 shadow-2xs font-bold border border-civic-200/50'
                       : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                   }`}
                 >
-                  <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-civic-700' : 'text-slate-500'}`} />
-                  <span>{item.label}</span>
+                  <Icon className={`${isTamil ? 'w-3 h-3 xl:w-3.5 xl:h-3.5' : 'w-3.5 h-3.5'} shrink-0 ${isActive ? 'text-civic-700' : 'text-slate-500'}`} />
+                  <span>
+                    {item.id === 'eligibility' && isTamil ? (
+                      <>
+                        <span>தகுதி</span>
+                        <span className="hidden xl:inline"> சரிபார்ப்பு</span>
+                      </>
+                    ) : (
+                      item.label
+                    )}
+                  </span>
                   {item.badge !== undefined && (
-                    <span className="inline-flex items-center px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-emerald-100 text-emerald-800">
+                    <span className="inline-flex items-center px-1.5 py-0.2 rounded-full text-[8px] xl:text-[9px] font-bold bg-emerald-100 text-emerald-800">
                       {item.badge}
                     </span>
                   )}
                   {isActive && (
-                    <span className="absolute bottom-0 left-2 right-2 h-0.5 bg-civic-600 rounded-full" />
+                    <span className="absolute bottom-0 left-1.5 right-1.5 h-0.5 bg-civic-600 rounded-full" />
                   )}
                 </button>
               );
@@ -227,18 +243,20 @@ export const Header: React.FC<HeaderProps> = ({
           </nav>
 
           {/* Top Right: Language Switcher, Kiosk Mode, End Session & Mobile Menu Toggle */}
-          <div className="flex items-center justify-end space-x-2 shrink-0">
+          <div className="flex items-center justify-end gap-1.5 sm:gap-2 shrink-0">
             {/* Language Switcher Segmented Control: English | தமிழ் */}
             <div
               className="flex items-center rounded-lg border border-slate-200 bg-slate-100/80 p-0.5 shadow-2xs shrink-0"
               role="group"
               aria-label="Language selection"
             >
-              <Globe className="w-3.5 h-3.5 text-slate-500 ml-1.5 mr-1 hidden sm:inline" />
+              <Globe className="w-3 h-3 xl:w-3.5 xl:h-3.5 text-slate-500 ml-1.5 mr-1 hidden sm:inline shrink-0" />
               <button
                 type="button"
                 onClick={() => setLanguage('en')}
-                className={`h-7 px-2.5 rounded-md text-xs font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 ${
+                className={`h-7 px-2 xl:px-2.5 rounded-md ${
+                  isTamil ? 'text-[11px] xl:text-xs' : 'text-xs'
+                } font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 ${
                   language === 'en'
                     ? 'bg-white text-civic-900 shadow-2xs font-bold border border-slate-200'
                     : 'text-slate-600 hover:text-slate-900'
@@ -251,7 +269,9 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 type="button"
                 onClick={() => setLanguage('ta')}
-                className={`h-7 px-2.5 rounded-md text-xs font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 ${
+                className={`h-7 px-2 xl:px-2.5 rounded-md ${
+                  isTamil ? 'text-[11px] xl:text-xs' : 'text-xs'
+                } font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 ${
                   language === 'ta'
                     ? 'bg-civic-700 text-white shadow-2xs font-bold'
                     : 'text-slate-600 hover:text-slate-900'
@@ -267,7 +287,9 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               type="button"
               onClick={onToggleKioskMode}
-              className={`h-8 px-2.5 rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 border transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 shrink-0 ${
+              className={`h-7 xl:h-8 px-2 xl:px-2.5 rounded-lg ${
+                isTamil ? 'text-[11px] xl:text-xs' : 'text-xs'
+              } font-semibold inline-flex items-center gap-1 xl:gap-1.5 border transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 shrink-0 ${
                 isKioskMode
                   ? 'bg-amber-50 text-amber-900 border-amber-300 shadow-2xs hover:bg-amber-100'
                   : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50 hover:border-slate-300'
@@ -279,8 +301,8 @@ export const Header: React.FC<HeaderProps> = ({
               }
               aria-pressed={isKioskMode}
             >
-              <Monitor className={`w-3.5 h-3.5 ${isKioskMode ? 'text-amber-800' : 'text-slate-500'}`} />
-              <span className="hidden md:inline">{t.header.kioskMode}</span>
+              <Monitor className={`w-3 h-3 xl:w-3.5 xl:h-3.5 shrink-0 ${isKioskMode ? 'text-amber-800' : 'text-slate-500'}`} />
+              <span className={isTamil ? 'hidden 2xl:inline' : 'hidden xl:inline'}>{t.header.kioskMode}</span>
               <span className={isKioskMode ? 'font-bold text-amber-900' : ''}>
                 {isKioskMode ? t.header.active : t.header.off}
               </span>
@@ -291,11 +313,13 @@ export const Header: React.FC<HeaderProps> = ({
               ref={triggerButtonRef}
               type="button"
               onClick={() => setShowClearConfirm(true)}
-              className="h-8 px-2.5 rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 border border-rose-200 text-rose-700 hover:bg-rose-50 hover:border-rose-300 transition-all focus:outline-none focus:ring-2 focus:ring-rose-500 shrink-0"
+              className={`h-7 xl:h-8 px-2 xl:px-2.5 rounded-lg ${
+                isTamil ? 'text-[11px] xl:text-xs' : 'text-xs'
+              } font-semibold inline-flex items-center gap-1 xl:gap-1.5 border border-rose-200 text-rose-700 hover:bg-rose-50 hover:border-rose-300 transition-all focus:outline-none focus:ring-2 focus:ring-rose-500 shrink-0`}
               title={t.header.endSessionTooltip}
               aria-label={t.header.endSession}
             >
-              <Trash2 className="w-3.5 h-3.5 text-rose-600" />
+              <Trash2 className="w-3 h-3 xl:w-3.5 xl:h-3.5 text-rose-600 shrink-0" />
               <span className="hidden sm:inline">{t.header.endSession}</span>
             </button>
 

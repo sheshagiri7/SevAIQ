@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { Info } from 'lucide-react';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { Dashboard } from './components/Dashboard';
@@ -11,7 +12,9 @@ import { TrustMonitor } from './components/TrustMonitor';
 import { ApplicationTracker } from './components/ApplicationTracker';
 import { AccessibilityDrawer } from './components/AccessibilityDrawer';
 import { ADHDRuler } from './components/ADHDRuler';
+import { AboutModal } from './components/AboutModal';
 import { Footer } from './components/Footer';
+import { useLanguage } from './context/LanguageContext';
 import { checkBackendHealth, fetchSchemes, getApiBaseUrl } from './services/api';
 import {
   ApiState,
@@ -38,8 +41,11 @@ import {
 } from './utils/kioskStorage';
 
 export function App() {
+  const { language } = useLanguage();
   const [activeTab, setActiveTab] = useState<NavigationTab>('dashboard');
   const [isVoiceAssistantOpen, setIsVoiceAssistantOpen] = useState(false);
+  const [isAboutOpen, setIsAboutOpen] = useState(false);
+  const [selectedCategoryFilter, setSelectedCategoryFilter] = useState('all');
 
   const [apiState, setApiState] = useState<ApiState>({
     status: 'checking',
@@ -301,6 +307,15 @@ export function App() {
     setActiveTab('eligibility');
   };
 
+  const handleCategorySelect = (categoryId: string) => {
+    setSelectedCategoryFilter(categoryId);
+    setActiveTab('discover');
+    setTimeout(() => {
+      const el = document.getElementById('discover');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }, 50);
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 font-sans relative">
       {/* Universal Header with Tab Navigation & Health Status */}
@@ -325,6 +340,8 @@ export function App() {
             eligibleCount={eligibleCount}
             documents={documents}
             isKioskMode={isKioskMode}
+            onSelectCategory={handleCategorySelect}
+            onOpenAbout={() => setIsAboutOpen(true)}
           />
         )}
 
@@ -345,6 +362,8 @@ export function App() {
                 setActiveTab('application-tracker');
               }}
               backendSchemesCount={backendSchemes.length}
+              selectedCategory={selectedCategoryFilter}
+              onSelectCategory={setSelectedCategoryFilter}
             />
           </>
         )}
@@ -405,6 +424,43 @@ export function App() {
         )}
       </main>
 
+      {/* Floating Bottom-Left Corner About Option Launcher */}
+      <aside
+        aria-label="About SevAIQ Features & Working"
+        className="fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-40 print:hidden"
+      >
+        <button
+          type="button"
+          onClick={() => setIsAboutOpen(true)}
+          className="group flex items-center space-x-2 sm:space-x-2.5 px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-full bg-white hover:bg-slate-50 text-slate-800 border border-slate-300/90 shadow-lg hover:shadow-xl hover:border-civic-400 transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 active:scale-95 cursor-pointer"
+          aria-label={language === 'ta' ? 'SevAIQ பற்றி: அம்சங்கள் & செயல்படும் முறை' : 'About SevAIQ: Features & Working'}
+        >
+          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-civic-700 to-indigo-900 text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform shrink-0">
+            <Info className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
+          </div>
+          <div className="flex flex-col items-start leading-tight text-left">
+            <div className="flex items-center gap-1.5">
+              <span className="text-xs sm:text-sm font-black tracking-tight text-slate-900">
+                {language === 'ta' ? 'SevAIQ பற்றி' : 'About SevAIQ'}
+              </span>
+              <span className="inline-flex items-center px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-civic-50 text-civic-700 border border-civic-200/60">
+                {language === 'ta' ? 'அம்சங்கள்' : 'How it works'}
+              </span>
+            </div>
+            <span className="text-[10px] text-slate-500 font-medium hidden sm:inline">
+              {language === 'ta' ? 'செயல்பாடுகள் & கருவிகள்' : 'Features & Citizen Workflow'}
+            </span>
+          </div>
+        </button>
+      </aside>
+
+      {/* About SevAIQ Features & Working Interactive Modal */}
+      <AboutModal
+        isOpen={isAboutOpen}
+        onClose={() => setIsAboutOpen(false)}
+        onNavigate={handleNavigate}
+      />
+
       {/* Floating Bottom-Right Corner Voice AI Assistant */}
       <VoiceAssistant
         schemes={allSchemes}
@@ -421,7 +477,7 @@ export function App() {
       {/* ADHD Full-Screen Interactive Reading Focus Ruler */}
       <ADHDRuler />
 
-      <Footer />
+      <Footer onOpenAbout={() => setIsAboutOpen(true)} />
     </div>
   );
 }

@@ -31,6 +31,8 @@ interface SchemeDiscoveryProps {
   onSelectForEligibility?: (scheme: Scheme) => void;
   onNavigateToTracker?: (schemeId: string) => void;
   backendSchemesCount: number;
+  selectedCategory?: string;
+  onSelectCategory?: (category: string) => void;
 }
 
 export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
@@ -41,10 +43,12 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
   onSelectForEligibility,
   onNavigateToTracker,
   backendSchemesCount,
+  selectedCategory: propCategory,
+  onSelectCategory: propOnSelectCategory,
 }) => {
   const { language, t, getLocalizedScheme, getLocalizedOption } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState(propCategory || 'all');
   const [selectedSchemeDetail, setSelectedSchemeDetail] = useState<Scheme | null>(null);
   const [fullSchemeDetail, setFullSchemeDetail] = useState<SchemeDetail | null>(null);
   const [isDetailLoading, setIsDetailLoading] = useState(false);
@@ -52,6 +56,18 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
   const [categories, setCategories] = useState<CategoryCount[]>([]);
 
   const modalCloseButtonRef = useRef<HTMLButtonElement | null>(null);
+
+  // Sync propCategory if it changes externally
+  useEffect(() => {
+    if (propCategory) {
+      setSelectedCategory(propCategory);
+    }
+  }, [propCategory]);
+
+  const handleCategorySelect = (catId: string) => {
+    setSelectedCategory(catId);
+    propOnSelectCategory?.(catId);
+  };
 
   // Load categories from backend GET /api/categories
   const loadCategories = useCallback(async () => {
@@ -264,7 +280,7 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
           </span>
           <button
             type="button"
-            onClick={() => setSelectedCategory('all')}
+            onClick={() => handleCategorySelect('all')}
             aria-pressed={selectedCategory === 'all'}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500 ${
               selectedCategory === 'all'
@@ -282,7 +298,7 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                   <button
                     key={cat.category}
                     type="button"
-                    onClick={() => setSelectedCategory(cat.category)}
+                    onClick={() => handleCategorySelect(cat.category)}
                     aria-pressed={isSelected}
                     className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500 ${
                       isSelected
@@ -298,7 +314,7 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                 <button
                   key={cat.id}
                   type="button"
-                  onClick={() => setSelectedCategory(cat.id)}
+                  onClick={() => handleCategorySelect(cat.id)}
                   aria-pressed={selectedCategory === cat.id}
                   className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500 ${
                     selectedCategory === cat.id

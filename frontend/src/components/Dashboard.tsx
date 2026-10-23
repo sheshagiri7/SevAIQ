@@ -4,17 +4,15 @@ import {
   CheckSquare,
   Files,
   Award,
-  ShieldCheck,
-  ArrowRight,
   Database,
   Lock,
   Monitor,
-  Mic,
-  ListChecks,
+  Sparkles,
 } from 'lucide-react';
 import { NavigationTab, CitizenProfile, Scheme, DocumentRecord } from '../types';
 import { useLanguage } from '../context/LanguageContext';
 import { SchemeBannerCarousel } from './SchemeBannerCarousel';
+import { CategoryGrid } from './CategoryGrid';
 
 interface DashboardProps {
   onNavigate: (tab: NavigationTab) => void;
@@ -23,6 +21,8 @@ interface DashboardProps {
   eligibleCount: number;
   documents: DocumentRecord[];
   isKioskMode: boolean;
+  onSelectCategory?: (categoryId: string) => void;
+  onOpenAbout?: () => void;
 }
 
 export const Dashboard: React.FC<DashboardProps> = ({
@@ -32,8 +32,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
   eligibleCount,
   documents,
   isKioskMode,
+  onSelectCategory,
+  onOpenAbout,
 }) => {
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
 
   const profileComplete = Boolean(
     profile.age && profile.gender && profile.state && profile.area && profile.occupation
@@ -183,208 +185,36 @@ export const Dashboard: React.FC<DashboardProps> = ({
         </button>
       </div>
 
-      {/* Citizen Journey Steps - Workflow Section */}
-      <div className="p-6 sm:p-8 bg-white rounded-3xl border border-slate-200 shadow-sm">
-        <div className="max-w-2xl">
-          <div className="inline-flex items-center space-x-1.5 text-xs font-semibold uppercase tracking-wider text-civic-700 mb-1">
-            <ShieldCheck className="w-4 h-4" />
-            <span>{t.dashboard.workflowBadge}</span>
+      {/* Find Schemes Based on Categories (myScheme Grid from 2nd image) */}
+      <CategoryGrid
+        onSelectCategory={onSelectCategory || ((_catId) => onNavigate('discover'))}
+      />
+
+      {/* Quick Launch Banner to Discover Features & Workflow via About Modal */}
+      {onOpenAbout && (
+        <div className="p-4 sm:p-5 bg-gradient-to-r from-blue-50/90 via-white to-purple-50/90 rounded-3xl border border-civic-200/80 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-2xs">
+          <div className="flex items-center space-x-3.5 text-left min-w-0">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-civic-700 to-indigo-800 text-white flex items-center justify-center shrink-0 shadow-xs">
+              <Sparkles className="w-5 h-5" />
+            </div>
+            <div className="min-w-0">
+              <h4 className="text-sm font-bold text-slate-900">
+                {t.dashboard?.workflowTitle || 'How SevAIQ Empowers Your Application'}
+              </h4>
+              <p className="text-xs text-slate-600 truncate mt-0.5">
+                {t.dashboard?.workflowSubtitle || 'Follow the 4-stage readiness pipeline designed to maximize scheme access.'}
+              </p>
+            </div>
           </div>
-          <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
-            {t.dashboard.workflowTitle}
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-600 mt-1">
-            {t.dashboard.workflowSubtitle}
-          </p>
-        </div>
-
-        {/* Responsive grid: 1 column on mobile, 2 columns on tablet, 4 columns on desktop */}
-        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Step 1 */}
           <button
             type="button"
-            onClick={() => onNavigate('discover')}
-            className="p-5 rounded-2xl bg-slate-50 border border-slate-200 hover:bg-blue-50/50 hover:border-civic-200 transition-all text-left flex flex-col justify-between w-full h-full focus:outline-none focus:ring-2 focus:ring-civic-500 group"
+            onClick={onOpenAbout}
+            className="w-full sm:w-auto px-4 py-2 rounded-xl bg-white hover:bg-slate-50 text-civic-800 hover:text-civic-900 border border-civic-300 text-xs font-bold shadow-2xs transition-colors shrink-0 cursor-pointer"
           >
-            <div>
-              <div className="w-8 h-8 rounded-lg bg-blue-100 text-civic-800 font-black text-xs flex items-center justify-center mb-3 shrink-0">
-                01
-              </div>
-              <h3 className="font-bold text-sm text-slate-900 group-hover:text-civic-800 transition-colors">
-                {t.dashboard.step1Title}
-              </h3>
-              <p className="text-xs text-slate-600 mt-1.5 leading-relaxed font-normal">
-                {t.dashboard.step1Desc}
-              </p>
-            </div>
-            <div className="mt-5 pt-3 border-t border-slate-200/60 flex items-center text-xs font-semibold text-civic-700">
-              <span>{t.dashboard.step1Action}</span>
-              <ArrowRight className="w-3.5 h-3.5 ml-1 transition-transform group-hover:translate-x-0.5" />
-            </div>
-          </button>
-
-          {/* Step 2 */}
-          <button
-            type="button"
-            onClick={() => onNavigate('eligibility')}
-            className="p-5 rounded-2xl bg-slate-50 border border-slate-200 hover:bg-emerald-50/50 hover:border-emerald-200 transition-all text-left flex flex-col justify-between w-full h-full focus:outline-none focus:ring-2 focus:ring-emerald-500 group"
-          >
-            <div>
-              <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-800 font-black text-xs flex items-center justify-center mb-3 shrink-0">
-                02
-              </div>
-              <h3 className="font-bold text-sm text-slate-900 group-hover:text-emerald-800 transition-colors">
-                {t.dashboard.step2Title}
-              </h3>
-              <p className="text-xs text-slate-600 mt-1.5 leading-relaxed font-normal">
-                {t.dashboard.step2Desc}
-              </p>
-            </div>
-            <div className="mt-5 pt-3 border-t border-slate-200/60 flex items-center text-xs font-semibold text-emerald-700">
-              <span>{t.dashboard.step2Action}</span>
-              <ArrowRight className="w-3.5 h-3.5 ml-1 transition-transform group-hover:translate-x-0.5" />
-            </div>
-          </button>
-
-          {/* Step 3 */}
-          <button
-            type="button"
-            onClick={() => onNavigate('document-mapper')}
-            className="p-5 rounded-2xl bg-slate-50 border border-slate-200 hover:bg-indigo-50/50 hover:border-indigo-200 transition-all text-left flex flex-col justify-between w-full h-full focus:outline-none focus:ring-2 focus:ring-indigo-500 group"
-          >
-            <div>
-              <div className="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-800 font-black text-xs flex items-center justify-center mb-3 shrink-0">
-                03
-              </div>
-              <h3 className="font-bold text-sm text-slate-900 group-hover:text-indigo-800 transition-colors">
-                {t.dashboard.step3Title}
-              </h3>
-              <p className="text-xs text-slate-600 mt-1.5 leading-relaxed font-normal">
-                {t.dashboard.step3Desc}
-              </p>
-            </div>
-            <div className="mt-5 pt-3 border-t border-slate-200/60 flex items-center text-xs font-semibold text-indigo-700">
-              <span>{t.dashboard.step3Action}</span>
-              <ArrowRight className="w-3.5 h-3.5 ml-1 transition-transform group-hover:translate-x-0.5" />
-            </div>
-          </button>
-
-          {/* Step 4 */}
-          <button
-            type="button"
-            onClick={() => onNavigate('readiness-passport')}
-            className="p-5 rounded-2xl bg-slate-50 border border-slate-200 hover:bg-amber-50/50 hover:border-amber-200 transition-all text-left flex flex-col justify-between w-full h-full focus:outline-none focus:ring-2 focus:ring-amber-500 group"
-          >
-            <div>
-              <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-800 font-black text-xs flex items-center justify-center mb-3 shrink-0">
-                04
-              </div>
-              <h3 className="font-bold text-sm text-slate-900 group-hover:text-amber-800 transition-colors">
-                {t.dashboard.step4Title}
-              </h3>
-              <p className="text-xs text-slate-600 mt-1.5 leading-relaxed font-normal">
-                {t.dashboard.step4Desc}
-              </p>
-            </div>
-            <div className="mt-5 pt-3 border-t border-slate-200/60 flex items-center text-xs font-semibold text-amber-700">
-              <span>{t.dashboard.step4Action}</span>
-              <ArrowRight className="w-3.5 h-3.5 ml-1 transition-transform group-hover:translate-x-0.5" />
-            </div>
+            {language === 'ta' ? 'அம்சங்கள் & வழிமுறைகள்' : 'View Features & Working'}
           </button>
         </div>
-      </div>
-
-      {/* Advanced Civic Entitlement Tools (Features 5, 6, 7) */}
-      <div className="space-y-4">
-        <div>
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">
-            {t.dashboard.toolsBadge}
-          </h3>
-          <p className="text-sm font-bold text-slate-900 mt-0.5">
-            {t.dashboard.toolsTitle}
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Tool 1: Voice Assistant */}
-          <button
-            type="button"
-            onClick={() => onNavigate('voice-assistant')}
-            className="p-6 bg-white rounded-3xl border border-slate-200 shadow-xs hover:border-civic-400 hover:shadow-md transition-all text-left flex flex-col justify-between h-full group focus:outline-none focus:ring-2 focus:ring-civic-500"
-          >
-            <div>
-              <div className="w-10 h-10 rounded-2xl bg-blue-50 text-civic-700 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shrink-0">
-                <Mic className="w-5 h-5" />
-              </div>
-              <span className="text-[11px] font-bold uppercase tracking-wider text-civic-700">
-                Feature 5
-              </span>
-              <h4 className="text-base font-bold text-slate-900 mt-1">
-                {t.dashboard.feat5Title}
-              </h4>
-              <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-                {t.dashboard.feat5Desc}
-              </p>
-            </div>
-            <div className="mt-5 pt-3 border-t border-slate-100 flex items-center text-xs font-semibold text-civic-700">
-              <span>{t.dashboard.feat5Action}</span>
-              <ArrowRight className="w-3.5 h-3.5 ml-1.5 transition-transform group-hover:translate-x-0.5" />
-            </div>
-          </button>
-
-          {/* Tool 2: Trust Monitor */}
-          <button
-            type="button"
-            onClick={() => onNavigate('trust-monitor')}
-            className="p-6 bg-white rounded-3xl border border-slate-200 shadow-xs hover:border-emerald-400 hover:shadow-md transition-all text-left flex flex-col justify-between h-full group focus:outline-none focus:ring-2 focus:ring-emerald-500"
-          >
-            <div>
-              <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shrink-0">
-                <ShieldCheck className="w-5 h-5" />
-              </div>
-              <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700">
-                Feature 6
-              </span>
-              <h4 className="text-base font-bold text-slate-900 mt-1">
-                {t.dashboard.feat6Title}
-              </h4>
-              <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-                {t.dashboard.feat6Desc}
-              </p>
-            </div>
-            <div className="mt-5 pt-3 border-t border-slate-100 flex items-center text-xs font-semibold text-emerald-700">
-              <span>{t.dashboard.feat6Action}</span>
-              <ArrowRight className="w-3.5 h-3.5 ml-1.5 transition-transform group-hover:translate-x-0.5" />
-            </div>
-          </button>
-
-          {/* Tool 3: Application Tracker */}
-          <button
-            type="button"
-            onClick={() => onNavigate('application-tracker')}
-            className="p-6 bg-white rounded-3xl border border-slate-200 shadow-xs hover:border-indigo-400 hover:shadow-md transition-all text-left flex flex-col justify-between h-full group focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          >
-            <div>
-              <div className="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-700 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shrink-0">
-                <ListChecks className="w-5 h-5" />
-              </div>
-              <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-700">
-                Feature 7
-              </span>
-              <h4 className="text-base font-bold text-slate-900 mt-1">
-                {t.dashboard.feat7Title}
-              </h4>
-              <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-                {t.dashboard.feat7Desc}
-              </p>
-            </div>
-            <div className="mt-5 pt-3 border-t border-slate-100 flex items-center text-xs font-semibold text-indigo-700">
-              <span>{t.dashboard.feat7Action}</span>
-              <ArrowRight className="w-3.5 h-3.5 ml-1.5 transition-transform group-hover:translate-x-0.5" />
-            </div>
-          </button>
-        </div>
-      </div>
+      )}
 
       {/* Privacy First Commitment & Architecture Note */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
