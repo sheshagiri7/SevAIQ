@@ -433,65 +433,6 @@ const PaperAirplane: React.FC<{ className?: string }> = ({ className = 'w-6 h-6'
   </svg>
 );
 
-// Citizen Mobile User Vector Graphic matching Image 1
-const CitizenMobileUser: React.FC<{ className?: string }> = ({ className = '' }) => (
-  <div
-    role="img"
-    aria-label="Citizen using smartphone illustration"
-    data-dark-exempt="true"
-    className={`relative hidden xl:flex flex-col items-center justify-end select-none pointer-events-none moving-animation-image animate-citizen-sway ${className}`}
-  >
-    <svg viewBox="0 0 160 280" className="w-40 h-72 drop-shadow-xl" fill="none">
-      {/* Hair */}
-      <path
-        d="M50 45 C45 30 65 20 80 20 C95 20 115 30 110 45 C120 50 125 65 120 78 C110 82 105 75 100 80 C95 70 70 70 65 80 C60 75 55 82 45 78 C40 65 45 50 50 45 Z"
-        fill="#1e293b"
-      />
-      {/* Face */}
-      <path
-        d="M55 58 C55 45 105 45 105 58 C105 85 98 100 80 100 C62 100 55 85 55 58 Z"
-        fill="#d4a373"
-      />
-      {/* Smile & Eyes */}
-      <circle cx="68" cy="68" r="2" fill="#78350f" />
-      <circle cx="92" cy="68" r="2" fill="#78350f" />
-      <path d="M72 82 C76 88 84 88 88 82" stroke="#78350f" strokeWidth="2.5" strokeLinecap="round" />
-      {/* Neck */}
-      <rect x="74" y="98" width="12" height="14" fill="#c68a4c" />
-      {/* Blue Shirt Body */}
-      <path
-        d="M40 120 C55 110 105 110 120 120 L135 260 L25 260 Z"
-        fill="#1d4ed8"
-      />
-      {/* Arms holding phone */}
-      <path
-        d="M36 135 C30 165 60 190 70 180"
-        stroke="#d4a373"
-        strokeWidth="14"
-        strokeLinecap="round"
-      />
-      <path
-        d="M124 135 C130 165 100 190 90 180"
-        stroke="#d4a373"
-        strokeWidth="14"
-        strokeLinecap="round"
-      />
-      {/* Phone in hands */}
-      <rect
-        x="68"
-        y="162"
-        width="24"
-        height="42"
-        rx="4"
-        fill="#ea580c"
-        stroke="#c2410c"
-        strokeWidth="1.5"
-      />
-      <rect x="71" y="166" width="18" height="32" rx="2" fill="#fed7aa" />
-    </svg>
-  </div>
-);
-
 // 4 Floating Options Configuration
 interface FloatingCategoryOption {
   id: string;
