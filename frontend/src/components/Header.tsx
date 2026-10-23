@@ -12,11 +12,9 @@ import {
   Trash2,
   ListChecks,
   Globe,
-  Sun,
 } from 'lucide-react';
 import { ApiState, NavigationTab } from '../types';
 import { useLanguage } from '../context/LanguageContext';
-import { useAccessibility } from '../context/AccessibilityContext';
 import { LanguageSelector } from './LanguageSelector';
 
 interface HeaderProps {
@@ -48,7 +46,6 @@ export const Header: React.FC<HeaderProps> = ({
   onClearSession,
 }) => {
   const { language, t } = useLanguage();
-  const { settings, toggleInvertColors } = useAccessibility();
   const isIndic = language === 'ta' || language === 'hi';
   const isTamil = isIndic;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
