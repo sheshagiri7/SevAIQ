@@ -813,7 +813,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
 
           <span className="text-xs font-semibold text-slate-500 flex items-center space-x-1 pr-1 border-l border-slate-200 pl-2">
             <Filter className="w-3.5 h-3.5" />
-            <span>{language === 'ta' ? 'முடிவு:' : 'Outcome:'}</span>
+            <span>{language === 'ta' ? 'முடிவு:' : language === 'hi' ? 'परिणाम:' : 'Outcome:'}</span>
           </span>
 
           <button
@@ -868,7 +868,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
           onClick={() => onNavigate('document-mapper')}
           className="hidden sm:inline-flex items-center space-x-1.5 text-xs font-semibold text-civic-700 hover:underline"
         >
-          <span>{language === 'ta' ? 'ஆவண வரைபடத்திற்கு செல்' : 'Go to Document Mapper'}</span>
+          <span>{language === 'ta' ? 'ஆவண வரைபடத்திற்கு செல்' : language === 'hi' ? 'दस्तावेज़ मैपर पर जाएं' : 'Go to Document Mapper'}</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </button>
       </div>
