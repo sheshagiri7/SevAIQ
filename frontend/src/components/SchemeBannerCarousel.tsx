@@ -26,6 +26,7 @@ import { useAccessibility } from '../context/AccessibilityContext';
 interface SchemeBannerCarouselProps {
   onNavigate: (tab: NavigationTab) => void;
   onSelectScheme?: (schemeId: string) => void;
+  onSelectSchemeForEligibility?: (schemeId: string) => void;
 }
 
 interface SchemeSlide {
