@@ -678,7 +678,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
             <div>
               <div className="flex flex-wrap items-center gap-2 mb-0.5">
                 <span className="text-[11px] font-black uppercase tracking-wider text-civic-800 bg-civic-100/90 px-2 py-0.5 rounded-md">
-                  {t.eligibility.targetSchemeBadge}
+                  {t.eligibility.targetSchemeBannerTitle}
                 </span>
                 <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-white border border-slate-200 text-slate-700">
                   {activeTargetScheme.category}
