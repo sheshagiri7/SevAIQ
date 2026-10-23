@@ -65,7 +65,8 @@ describe('Dark Mode & Moving Animation Images Exemption', () => {
     const fs = await import('fs');
     // @ts-ignore
     const path = await import('path');
-    const cssPath = path.resolve(process.cwd(), 'src/index.css');
+    const cwd = (globalThis as any).process?.cwd?.() || '.';
+    const cssPath = path.resolve(cwd, 'src/index.css');
     const cssContent = fs.readFileSync(cssPath, 'utf8');
 
     // Verify dark mode base rule
