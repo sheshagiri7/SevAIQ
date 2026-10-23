@@ -57,7 +57,9 @@ export interface Scheme {
   required_documents?: string[];
   benefits_summary?: string;
   detailed_benefits?: string | null;
+  eligibility_summary?: string | null;
   application_mode?: 'Online' | 'CSC / Seva Kendra' | 'Both';
+  image_url?: string | null;
 }
 
 /**

@@ -77,7 +77,7 @@ describe('Dark Mode Removal & Moving Animation Images Exemption', () => {
     expect(html).toContain('data-moving-animation="true"');
   });
 
-  it('renders moving animated graphics with moving-animation-image and data-dark-exempt tags', () => {
+  it('verifies mobile mockup, citizen girl avatar, and moving image illustrations are removed while preserving text', () => {
     const html = renderToString(
       <LanguageProvider>
         <AccessibilityProvider>
@@ -86,19 +86,26 @@ describe('Dark Mode Removal & Moving Animation Images Exemption', () => {
       </LanguageProvider>
     );
 
-    // Animated 3D Floating Graphic
-    expect(html).toContain('moving-animation-image');
-    expect(html).toContain('3D Floating Graduation Cap');
+    // Citizen mobile user graphic is removed
+    expect(html).not.toContain('aria-label="Citizen using smartphone illustration"');
 
-    // Origami Paper Airplane with floating motion
-    expect(html).toContain('animate-float-subtle');
+    // 3D Floating Graduation Cap is removed
+    expect(html).not.toContain('3D Floating Graduation Cap');
+
+    // Origami Paper Airplane is removed
+    expect(html).not.toContain('animate-airplane-glide');
+
+    // Mobile mockup is removed
+    expect(html).not.toContain('animate-moving-phone-1');
 
     // QR Code graphic removed
     expect(html).not.toContain('aria-label="Scheme QR Code"');
     expect(html).not.toContain('Scan the');
 
-    // Citizen mobile user graphic
-    expect(html).toContain('aria-label="Citizen using smartphone illustration"');
+    // Scheme texts are preserved
+    expect(html).toContain('National Scholarship Portal');
+    expect(html).toContain('Apply For Scholarship');
+    expect(html).toContain('Official Portal Services');
   });
 
   it('index.css specifies dark mode re-inversion rules for moving animation images and carousel', async () => {

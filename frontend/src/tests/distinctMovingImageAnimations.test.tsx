@@ -21,7 +21,7 @@ describe('Distinct Moving Image Animations', () => {
     vi.restoreAllMocks();
   });
 
-  it('renders distinct animation classes for each different 3D moving image icon', () => {
+  it('verifies 3D moving image icons, mobile mockup, and citizen girl avatar are removed from DOM', () => {
     const html = renderToString(
       <LanguageProvider>
         <AccessibilityProvider>
@@ -30,39 +30,34 @@ describe('Distinct Moving Image Animations', () => {
       </LanguageProvider>
     );
 
-    // 1. Education: Graduation Cap has academic cap float & tilt
-    expect(html).toContain('animate-cap-float');
-    expect(html).toContain('animate-icon-graduation');
+    // 3D image icons are removed
+    expect(html).not.toContain('animate-cap-float');
+    expect(html).not.toContain('animate-icon-graduation');
+    expect(html).not.toContain('animate-sprout-pulse');
+    expect(html).not.toContain('animate-icon-sprout');
+    expect(html).not.toContain('animate-heart-throb');
+    expect(html).not.toContain('animate-icon-heart');
+    expect(html).not.toContain('animate-coin-spin');
+    expect(html).not.toContain('animate-icon-coins');
+    expect(html).not.toContain('animate-home-glide');
+    expect(html).not.toContain('animate-icon-home');
 
-    // 2. Agriculture: Sprout has organic growth & breeze sway
-    expect(html).toContain('animate-sprout-pulse');
-    expect(html).toContain('animate-icon-sprout');
+    // Citizen girl avatar is removed
+    expect(html).not.toContain('animate-citizen-sway');
+    expect(html).not.toContain('aria-label="Citizen using smartphone illustration"');
 
-    // 3. Healthcare: Heart has rhythmic vital dual heartbeat throb
-    expect(html).toContain('animate-heart-throb');
-    expect(html).toContain('animate-icon-heart');
+    // Paper airplane is removed
+    expect(html).not.toContain('animate-airplane-glide');
 
-    // 4. Finance: Coins has 3D perspective spin and sparkle jingle
-    expect(html).toContain('animate-coin-spin');
-    expect(html).toContain('animate-icon-coins');
-
-    // 5. Housing: Home has permanent masonry hover glide & foundation stability
-    expect(html).toContain('animate-home-glide');
-    expect(html).toContain('animate-icon-home');
-
-    // Verify all 5 image animations are mutually distinct
-    const animationClasses = [
-      'animate-cap-float',
-      'animate-sprout-pulse',
-      'animate-heart-throb',
-      'animate-coin-spin',
-      'animate-home-glide',
-    ];
-    const uniqueAnimations = new Set(animationClasses);
-    expect(uniqueAnimations.size).toBe(5);
+    // Mobile phone mockups are removed
+    expect(html).not.toContain('animate-moving-phone-1');
+    expect(html).not.toContain('animate-moving-phone-2');
+    expect(html).not.toContain('animate-moving-phone-3');
+    expect(html).not.toContain('animate-moving-phone-4');
+    expect(html).not.toContain('animate-moving-phone-5');
   });
 
-  it('renders different moving animations for paper airplane, citizen, and action badges', () => {
+  it('renders clean text badges, portal services, and category options in place of graphic illustrations', () => {
     const html = renderToString(
       <LanguageProvider>
         <AccessibilityProvider>
@@ -71,18 +66,20 @@ describe('Distinct Moving Image Animations', () => {
       </LanguageProvider>
     );
 
-    // Origami paper airplane has aerodynamic banking glide
-    expect(html).toContain('animate-airplane-glide');
-
-    // Citizen mobile user illustration has natural human breathing sway
-    expect(html).toContain('animate-citizen-sway');
-
-    // Action Badges have parallax floating movements
+    // Action Badges rendered as clean text badges
     expect(html).toContain('animate-badge-float-1');
     expect(html).toContain('animate-badge-float-2');
+    expect(html).toContain('Apply For Scholarship');
+    expect(html).toContain('My Applications');
+
+    // Official portal services text
+    expect(html).toContain('Official Portal Services');
+    expect(html).toContain('Know Your Payment Status');
+    expect(html).toContain('One Time Registration (OTR)');
+    expect(html).toContain('My Profile &amp; Aadhaar Verification');
   });
 
-  it('renders distinct slide-specific smartphone mockup floating animations', () => {
+  it('preserves all scheme texts and portal information across slides', () => {
     const html = renderToString(
       <LanguageProvider>
         <AccessibilityProvider>
@@ -91,12 +88,12 @@ describe('Distinct Moving Image Animations', () => {
       </LanguageProvider>
     );
 
-    // Each slide's phone mockup has its own animation profile
-    expect(html).toContain('animate-moving-phone-1');
-    expect(html).toContain('animate-moving-phone-2');
-    expect(html).toContain('animate-moving-phone-3');
-    expect(html).toContain('animate-moving-phone-4');
-    expect(html).toContain('animate-moving-phone-5');
+    // Verifies primary text content is preserved
+    expect(html).toContain('National Scholarship Portal');
+    expect(html).toContain('PM-KISAN Samman Nidhi');
+    expect(html).toContain('Ayushman Bharat PM-JAY');
+    expect(html).toContain('PM SVANidhi Micro-Credit');
+    expect(html).toContain('Pradhan Mantri Awas Yojana');
   });
 
   it('index.css declares all distinct keyframe animations for moving images', async () => {
