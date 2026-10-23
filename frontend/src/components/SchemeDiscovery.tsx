@@ -20,7 +20,7 @@ import {
 import { Scheme, SchemeDetail, CategoryCount } from '../types';
 import { CATEGORY_OPTIONS, matchesCategory } from '../utils/categoryMatcher';
 import { fetchCategories, fetchSchemeById } from '../services/api';
-import { matchesBilingualQuery, QUICK_SEARCH_CHIPS } from '../utils/bilingualSearch';
+import { matchesBilingualQuery } from '../utils/bilingualSearch';
 import { useLanguage } from '../context/LanguageContext';
 
 interface SchemeDiscoveryProps {
@@ -266,34 +266,6 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
           )}
         </div>
 
-        {/* Quick Suggestion Chips (Multilingual Tamil, Hindi & English) */}
-        <div className="space-y-1.5 pt-1">
-          <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block">
-            {t.discover.quickQueries}
-          </span>
-          <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
-            {QUICK_SEARCH_CHIPS.map((chip) => {
-              const chipQuery = language === 'ta' ? chip.query : language === 'hi' ? chip.queryHi : chip.queryEn;
-              const chipLabel = language === 'ta' ? chip.labelTa : language === 'hi' ? chip.labelHi : chip.labelEn;
-              const isActive = searchQuery === chipQuery;
-              return (
-                <button
-                  key={chip.id}
-                  type="button"
-                  onClick={() => setSearchQuery(isActive ? '' : chipQuery)}
-                  className={`px-3 py-1 rounded-xl text-xs font-medium whitespace-nowrap transition-all flex items-center space-x-1 ${
-                    isActive
-                      ? 'bg-civic-700 text-white shadow-xs'
-                      : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
-                  }`}
-                  title={`${chip.labelEn} / ${chip.labelTa} / ${chip.labelHi}`}
-                >
-                  <span>{chipLabel}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
 
         {/* Sector Filter Pills */}
         <div className="pt-2.5 border-t border-slate-100 flex flex-wrap items-center gap-2">
