@@ -212,22 +212,7 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
             <div className="p-1.5 rounded-lg bg-civic-50 text-civic-700">
               <Sparkles className="w-4 h-4 text-civic-600" />
             </div>
-            <div>
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800">
-                {language === 'ta'
-                  ? 'தமிழ் & ஆங்கில இருமொழி நலத்திட்ட தேடுபொறி'
-                  : language === 'hi'
-                  ? 'बहुभाषी कल्याणकारी योजना खोज इंजन'
-                  : 'AI & Bilingual Natural Language Scheme Finder'}
-              </h3>
-              <p className="text-[11px] text-slate-500">
-                {language === 'ta'
-                  ? 'எளிய தமிழில் அல்லது ஆங்கிலத்தில் உங்கள் தேவையை தட்டச்சு செய்யுங்கள் (எ.கா. "விவசாயி உதவி", "மருத்துவ காப்பீடு", "வீடு கட்ட", "ஓய்வூதியம்")'
-                  : language === 'hi'
-                  ? 'सरल हिंदी या अंग्रेजी में अपनी आवश्यकता लिखें (जैसे "किसान सहायता", "आयुष्मान इलाज", "मकान", "पेंशन")'
-                  : 'Describe citizen needs in simple Tamil or English (e.g. "விவசாயி உதவி", "free healthcare", "வீடு கட்ட", "pension")'}
-              </p>
-            </div>
+
           </div>
           <span className="text-[11px] font-semibold text-slate-600 bg-slate-100 px-2.5 py-1 rounded-full self-start sm:self-auto">
             {language === 'ta'
