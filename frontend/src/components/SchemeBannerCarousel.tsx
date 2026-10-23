@@ -81,6 +81,7 @@ interface SchemeSlide {
       icon: 'file' | 'shield' | 'check' | 'award';
     };
     floating3DIcon: 'graduation' | 'sprout' | 'heart' | 'coins' | 'home';
+    phoneAnimationClass?: string;
   };
 }
 
