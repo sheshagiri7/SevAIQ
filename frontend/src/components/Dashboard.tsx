@@ -23,6 +23,7 @@ interface DashboardProps {
   isKioskMode: boolean;
   onSelectCategory?: (categoryId: string) => void;
   onOpenAbout?: () => void;
+  onSelectSchemeForEligibility?: (schemeId: string) => void;
 }
 
 export const Dashboard: React.FC<DashboardProps> = ({
@@ -34,6 +35,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
   isKioskMode,
   onSelectCategory,
   onOpenAbout,
+  onSelectSchemeForEligibility,
 }) => {
   const { language, t } = useLanguage();
 
