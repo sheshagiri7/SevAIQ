@@ -701,7 +701,6 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
   const { language } = useLanguage();
   const isTamil = language === 'ta';
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
 
   // 5-second time limit requested by user
@@ -1189,7 +1188,7 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                       key={`progress-${currentSlideIndex}`}
                       className={`h-full ${activeSlide.theme.accentDot} rounded-full`}
                       style={{
-                        animation: isPaused
+                        animation: settings.pauseAnimation
                           ? 'none'
                           : `carousel-progress ${SLIDE_DURATION_MS}ms linear forwards`,
                       }}
