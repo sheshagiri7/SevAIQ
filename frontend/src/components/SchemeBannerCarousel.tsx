@@ -587,7 +587,7 @@ const CitizenMobileUser: React.FC<{ className?: string }> = ({ className = '' })
     role="img"
     aria-label="Citizen using smartphone illustration"
     data-dark-exempt="true"
-    className={`relative hidden 2xl:flex flex-col items-center justify-end select-none pointer-events-none moving-animation-image ${className}`}
+    className={`relative hidden xl:flex flex-col items-center justify-end select-none pointer-events-none moving-animation-image animate-float-subtle ${className}`}
   >
     <svg viewBox="0 0 160 280" className="w-40 h-72 drop-shadow-xl" fill="none">
       {/* Hair */}
