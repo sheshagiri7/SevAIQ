@@ -110,4 +110,54 @@ describe('Full-Frame Scheme Carousel Banner & Floating Options Section', () => {
     expect(html).toContain('Cataloged Schemes');
     expect(html).toContain('Eligible Matches');
   });
+
+  it('SchemeBannerCarousel updates green button and floating launcher options for Tamil language transition', () => {
+    localStorage.setItem('SEVAIQ_APP_LANGUAGE', 'ta');
+
+    const html = renderToString(
+      <LanguageProvider>
+        <AccessibilityProvider>
+          <SchemeBannerCarousel onNavigate={vi.fn()} />
+        </AccessibilityProvider>
+      </LanguageProvider>
+    );
+
+    // Green button and floating launcher translated to Tamil
+    expect(html).toContain('#அரசுதிட்டங்கள் / #உங்களுக்கானதிட்டங்கள்');
+    expect(html).toContain('உங்களுக்கான திட்டங்களைக் கண்டறியவும்');
+    expect(html).toContain('விருப்பங்களை ஆராய கீழே உருட்டவும்');
+
+    // Slide content translated to Tamil
+    expect(html).toContain('தேசிய கல்வி உதவித்தொகை தளம்');
+    expect(html).toContain('மின்னணு &amp; தகவல் தொழில்நுட்ப அமைச்சகம்');
+    expect(html).toContain('விண்ணப்பிக்கவும்');
+    expect(html).toContain('தகுதியை சரிபார்க்கவும்');
+    expect(html).toContain('முந்தைய திட்டம்');
+    expect(html).toContain('அடுத்த திட்டம்');
+  });
+
+  it('SchemeBannerCarousel updates green button and floating launcher options for Hindi language transition', () => {
+    localStorage.setItem('SEVAIQ_APP_LANGUAGE', 'hi');
+
+    const html = renderToString(
+      <LanguageProvider>
+        <AccessibilityProvider>
+          <SchemeBannerCarousel onNavigate={vi.fn()} />
+        </AccessibilityProvider>
+      </LanguageProvider>
+    );
+
+    // Green button and floating launcher translated to Hindi
+    expect(html).toContain('#सरकारीयोजनाएं / #आपकेलिएयोजनाएं');
+    expect(html).toContain('आपके लिए योजनाएं खोजें');
+    expect(html).toContain('विकल्प देखने के लिए नीचे स्क्रॉल करें');
+
+    // Slide content translated to Hindi
+    expect(html).toContain('राष्ट्रीय छात्रवृत्ति पोर्टल');
+    expect(html).toContain('इलेक्ट्रॉनिक्स और सूचना प्रौद्योगिकी मंत्रालय');
+    expect(html).toContain('अभी आवेदन करें');
+    expect(html).toContain('पात्रता जांचें');
+    expect(html).toContain('पिछली योजना');
+    expect(html).toContain('अगली योजना');
+  });
 });
