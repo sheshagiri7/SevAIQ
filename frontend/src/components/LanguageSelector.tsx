@@ -365,6 +365,13 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
             />
           </div>
 
+          {bhashiniNotice && (
+            <div className="mb-2 p-2 rounded-xl bg-amber-50 border border-amber-200 text-[11px] text-amber-900 leading-tight">
+              <span className="font-bold">{bhashiniNotice}: </span>
+              Comprehensive translations are scaling up via Bhashini. Defaulting to English reference.
+            </div>
+          )}
+
           {/* Languages Scrollable Grid */}
           <div className="max-h-64 overflow-y-auto space-y-1 pr-0.5 [scrollbar-width:thin]">
             {filteredLanguages.length === 0 ? (
