@@ -194,6 +194,11 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
   const notMetCount = evaluationResults.filter((r) => r.overallStatus === 'not_met').length;
 
   const filteredResults = evaluationResults.filter((r) => {
+    if (selectedSchemeFilter !== 'all') {
+      if (!isSchemeMatching(r.scheme.id, selectedSchemeFilter)) {
+        return false;
+      }
+    }
     if (statusFilter === 'all') return true;
     return r.overallStatus === statusFilter;
   });
