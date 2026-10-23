@@ -454,7 +454,7 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
               </span>
               {!isWidgetOpen && (
                 <span className="inline-flex items-center px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-white/20 text-blue-100 tracking-wide">
-                  தமிழ் / EN
+                  தமிழ் / हिंदी / EN
                 </span>
               )}
             </div>
@@ -477,7 +477,7 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
         <section
           role="dialog"
           aria-modal="false"
-          aria-label="SevAIQ Tamil & English Voice Assistant"
+          aria-label="SevAIQ Multilingual Voice Assistant"
           className={`fixed z-50 bg-white rounded-3xl shadow-2xl border border-slate-200/90 flex flex-col overflow-hidden transition-all duration-200 animate-in fade-in slide-in-from-bottom-4 ${
             isMaximized
               ? 'bottom-4 right-4 sm:bottom-6 sm:right-6 w-[calc(100vw-2rem)] sm:w-[640px] md:w-[700px] h-[86vh] max-h-[760px]'
@@ -507,7 +507,9 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
                 <div className="text-[10px] text-slate-500 font-medium truncate leading-tight mt-0.5">
                   {language === 'ta'
                     ? 'தமிழ் & English குரல் வழிகாட்டி'
-                    : 'Bilingual Civic Assistant'}
+                    : language === 'hi'
+                    ? 'हिंदी, தமிழ் & English वॉइस असिस्टेंट'
+                    : 'Multilingual Civic Assistant'}
                 </div>
               </div>
             </div>
@@ -516,6 +518,18 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
             <div className="flex items-center space-x-1.5 shrink-0">
               {/* Segmented Language Selector */}
               <div className="flex items-center bg-slate-100 p-0.5 rounded-xl border border-slate-200 text-[11px] font-bold">
+                <button
+                  type="button"
+                  onClick={() => handleLanguageChange('en')}
+                  className={`px-2 py-1 rounded-lg transition-all ${
+                    language === 'en'
+                      ? 'bg-civic-800 text-white shadow-2xs font-extrabold'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                  aria-label="Switch language to English"
+                >
+                  <span>EN</span>
+                </button>
                 <button
                   type="button"
                   onClick={() => handleLanguageChange('ta')}
@@ -531,15 +545,15 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
                 </button>
                 <button
                   type="button"
-                  onClick={() => handleLanguageChange('en')}
-                  className={`px-2 py-1 rounded-lg transition-all ${
-                    language === 'en'
+                  onClick={() => handleLanguageChange('hi')}
+                  className={`px-2 py-1 rounded-lg transition-all flex items-center space-x-1 ${
+                    language === 'hi'
                       ? 'bg-civic-800 text-white shadow-2xs font-extrabold'
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
-                  aria-label="Switch language to English"
+                  aria-label="Switch language to Hindi"
                 >
-                  <span>EN</span>
+                  <span>हिंदी</span>
                 </button>
               </div>
 
