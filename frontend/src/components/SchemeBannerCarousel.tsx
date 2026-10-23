@@ -1169,7 +1169,7 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
               />
               <div className="absolute inset-0 opacity-15 pointer-events-none bg-[radial-gradient(#155e3b_1px,transparent_1px)] [background-size:20px_20px]" />
 
-              {/* Bottom Landscape Green Hill with Tree (Exact replica of Image 1) */}
+              {/* Bottom Landscape Green Hill (Subtle clean background) */}
               <div className="absolute bottom-0 left-0 right-0 h-14 sm:h-18 pointer-events-none z-10 overflow-hidden">
                 <svg
                   viewBox="0 0 1440 80"
@@ -1178,14 +1178,6 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                 >
                   <path d="M0,45 C320,15 620,65 980,30 C1200,10 1340,35 1440,25 L1440,80 L0,80 Z" />
                 </svg>
-                {/* Little Tree on Hill */}
-                <div className="absolute left-[16%] bottom-3 sm:bottom-4 hidden md:flex items-end">
-                  <div className="flex flex-col items-center">
-                    <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-emerald-600/80 -mb-1 shadow-xs" />
-                    <div className="w-4 h-4 rounded-full bg-green-500/90 -mb-1" />
-                    <div className="w-1 h-3 bg-amber-800 rounded-xs" />
-                  </div>
-                </div>
               </div>
 
               {/* Main Content Layout: Left Scheme Info + Middle Floating Options + Right Phone Mockup */}
