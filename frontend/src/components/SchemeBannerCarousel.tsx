@@ -2,24 +2,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import {
   ChevronLeft,
   ChevronRight,
-  GraduationCap,
-  FileText,
-  Sprout,
-  ShieldCheck,
-  HeartPulse,
-  Coins,
-  Home,
-  Award,
-  Search,
-  Wifi,
-  Battery,
-  Signal,
   ChevronDown,
   ArrowRight,
   ExternalLink,
   Sparkles,
-  CheckCircle2,
-  Tractor,
 } from 'lucide-react';
 import { NavigationTab } from '../types';
 import { useAccessibility } from '../context/AccessibilityContext';
