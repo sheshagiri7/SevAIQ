@@ -345,6 +345,10 @@ export function App() {
         isKioskMode={isKioskMode}
         onToggleKioskMode={handleToggleKioskMode}
         onClearSession={handleClearSession}
+        schemes={allSchemes}
+        onSelectSchemeForEligibility={handleSelectSchemeForEligibility}
+        onPreFillDemoProfile={handlePreFillDemoProfile}
+        profile={profile}
       />
 
       {/* Main Screen Content */}

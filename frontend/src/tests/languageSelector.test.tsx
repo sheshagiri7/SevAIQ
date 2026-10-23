@@ -1,12 +1,11 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import React from 'react';
 import { renderToString } from 'react-dom/server';
 import {
   LanguageSelector,
   IndicLanguageEmblem,
   INDIAN_LANGUAGES,
 } from '../components/LanguageSelector';
-import { LanguageProvider, useLanguage } from '../context/LanguageContext';
+import { LanguageProvider } from '../context/LanguageContext';
 import { AccessibilityProvider } from '../context/AccessibilityContext';
 import { MemoryStorage } from '../utils/kioskStorage';
 
