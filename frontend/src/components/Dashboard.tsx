@@ -286,5 +286,4 @@ export const Dashboard: React.FC<DashboardProps> = ({
       </section>
     </div>
   );
-  );
 };

@@ -96,7 +96,7 @@ describe('Scheme-to-Eligibility Redirect & Focused Breakdown', () => {
     );
 
     // Should focus on AB-PMJAY
-    expect(html).toContain('Target Scheme Selected');
+    expect(html).toContain('Focused Scheme Eligibility');
     expect(html).toContain('Ayushman Bharat');
     expect(html).toContain('Official Criteria Breakdown for');
   });
@@ -106,7 +106,7 @@ describe('Scheme-to-Eligibility Redirect & Focused Breakdown', () => {
     const TamilWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       // Mock localStorage with language 'ta'
       (globalThis as any).localStorage = {
-        getItem: (k: string) => (k === 'SEVAIQ_LANGUAGE' ? 'ta' : null),
+        getItem: (k: string) => (k === 'SEVAIQ_APP_LANGUAGE' ? 'ta' : null),
         setItem: vi.fn(),
         removeItem: vi.fn(),
       };
