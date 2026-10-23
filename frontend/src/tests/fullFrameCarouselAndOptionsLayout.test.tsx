@@ -1,5 +1,4 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { SchemeBannerCarousel } from '../components/SchemeBannerCarousel';
 import { Dashboard } from '../components/Dashboard';
