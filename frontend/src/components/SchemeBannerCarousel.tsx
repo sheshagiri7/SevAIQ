@@ -949,19 +949,6 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                         );
                       })}
                     </div>
-
-                    {/* Scan the QR Code Section */}
-                    <div className="flex items-center space-x-2 pt-2 sm:pt-3 relative z-20">
-                      <div className="flex flex-col text-left leading-none">
-                        <span className="text-[10px] sm:text-[11px] font-black text-slate-800 tracking-tight uppercase">
-                          {isTamil ? 'ஸ்கேன்' : language === 'hi' ? 'स्कैन करें' : 'Scan the'}
-                        </span>
-                        <span className="text-[9px] sm:text-[10px] font-extrabold text-slate-900 tracking-tight uppercase mt-0.5">
-                          {isTamil ? 'QR குறியீடு' : language === 'hi' ? 'QR कोड' : 'QR Code'}
-                        </span>
-                      </div>
-                      <QRCodeGraphic className="w-12 h-12 sm:w-13 sm:h-13 shrink-0" />
-                    </div>
                   </div>
 
                   {/* Smartphone Mockup with Overlapping Badges */}

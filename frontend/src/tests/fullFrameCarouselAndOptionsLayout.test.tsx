@@ -69,9 +69,9 @@ describe('Full-Frame Scheme Carousel Banner & Floating Options Section', () => {
     expect(html).toContain('Agriculture &amp; Rural');
     expect(html).toContain('Housing &amp; Shelter');
 
-    // QR code section
-    expect(html).toContain('Scan the');
-    expect(html).toContain('QR Code');
+    // QR code section is removed
+    expect(html).not.toContain('Scan the');
+    expect(html).not.toContain('QR Code');
 
     // Navigation arrows matching green rounded rectangles
     expect(html).toContain('Previous Scheme Slide');
