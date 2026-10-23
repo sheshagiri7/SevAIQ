@@ -10,6 +10,8 @@ import {
   Lock,
   Sparkles,
   Monitor,
+  Mic,
+  ListChecks,
 } from 'lucide-react';
 import { NavigationTab, CitizenProfile, Scheme, DocumentRecord } from '../types';
 
@@ -289,6 +291,98 @@ export const Dashboard: React.FC<DashboardProps> = ({
             <div className="mt-4 pt-3 border-t border-slate-200/60 flex items-center text-xs font-semibold text-amber-700">
               <span>Generate passport</span>
               <ArrowRight className="w-3.5 h-3.5 ml-1" />
+            </div>
+          </button>
+        </div>
+      </div>
+
+      {/* Advanced Civic Entitlement Tools (Features 5, 6, 7) */}
+      <div className="space-y-4">
+        <div>
+          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">
+            Specialized Citizen Tools
+          </h3>
+          <p className="text-sm font-bold text-slate-900 mt-0.5">
+            Voice Access, Government Source Audits & Submission Tracking
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Tool 1: Voice Assistant */}
+          <button
+            type="button"
+            onClick={() => onNavigate('voice-assistant')}
+            className="p-6 bg-white rounded-3xl border border-slate-200 shadow-xs hover:border-civic-400 hover:shadow-md transition-all text-left flex flex-col justify-between group focus:outline-none focus:ring-2 focus:ring-civic-500"
+          >
+            <div>
+              <div className="w-10 h-10 rounded-2xl bg-blue-50 text-civic-700 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <Mic className="w-5 h-5" />
+              </div>
+              <span className="text-[11px] font-bold uppercase tracking-wider text-civic-700">
+                Feature 5
+              </span>
+              <h4 className="text-base font-bold text-slate-900 mt-1">
+                Tamil & English Voice Assistant
+              </h4>
+              <p className="text-xs text-slate-600 mt-2 leading-relaxed">
+                Ask scheme questions verbally or via text in everyday Tamil or English. Web Speech API with zero cloud audio leakage.
+              </p>
+            </div>
+            <div className="mt-5 pt-3 border-t border-slate-100 flex items-center text-xs font-semibold text-civic-700">
+              <span>Open Voice Assistant</span>
+              <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
+            </div>
+          </button>
+
+          {/* Tool 2: Trust Monitor */}
+          <button
+            type="button"
+            onClick={() => onNavigate('trust-monitor')}
+            className="p-6 bg-white rounded-3xl border border-slate-200 shadow-xs hover:border-emerald-400 hover:shadow-md transition-all text-left flex flex-col justify-between group focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          >
+            <div>
+              <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <ShieldCheck className="w-5 h-5" />
+              </div>
+              <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700">
+                Feature 6
+              </span>
+              <h4 className="text-base font-bold text-slate-900 mt-1">
+                Official-Source Trust Monitor
+              </h4>
+              <p className="text-xs text-slate-600 mt-2 leading-relaxed">
+                Inspect government domain authenticity (.gov.in / .nic.in), real verification dates, and gazette citations for every scheme.
+              </p>
+            </div>
+            <div className="mt-5 pt-3 border-t border-slate-100 flex items-center text-xs font-semibold text-emerald-700">
+              <span>View Trust Audit</span>
+              <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
+            </div>
+          </button>
+
+          {/* Tool 3: Application Tracker */}
+          <button
+            type="button"
+            onClick={() => onNavigate('application-tracker')}
+            className="p-6 bg-white rounded-3xl border border-slate-200 shadow-xs hover:border-indigo-400 hover:shadow-md transition-all text-left flex flex-col justify-between group focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          >
+            <div>
+              <div className="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-700 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <ListChecks className="w-5 h-5" />
+              </div>
+              <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-700">
+                Feature 7
+              </span>
+              <h4 className="text-base font-bold text-slate-900 mt-1">
+                Application Guidance Tracker
+              </h4>
+              <p className="text-xs text-slate-600 mt-2 leading-relaxed">
+                Interactive step-by-step preparation checklist from document gathering to visiting CSC centers and official portals.
+              </p>
+            </div>
+            <div className="mt-5 pt-3 border-t border-slate-100 flex items-center text-xs font-semibold text-indigo-700">
+              <span>Track Application Guidance</span>
+              <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
             </div>
           </button>
         </div>

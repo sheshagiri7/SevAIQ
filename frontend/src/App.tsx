@@ -6,6 +6,9 @@ import { SchemeDiscovery } from './components/SchemeDiscovery';
 import { EligibilityScreen } from './components/EligibilityScreen';
 import { DocumentMapper } from './components/DocumentMapper';
 import { ReadinessPassport } from './components/ReadinessPassport';
+import { VoiceAssistant } from './components/VoiceAssistant';
+import { TrustMonitor } from './components/TrustMonitor';
+import { ApplicationTracker } from './components/ApplicationTracker';
 import { DeveloperHandshake } from './components/DeveloperHandshake';
 import { Footer } from './components/Footer';
 import { checkBackendHealth, fetchSchemes, getApiBaseUrl } from './services/api';
@@ -99,6 +102,9 @@ export function App() {
     }
     return ['pm-kisan', 'ab-pmjay'];
   });
+
+  // Target scheme for Application Guidance Tracker
+  const [selectedTrackerSchemeId, setSelectedTrackerSchemeId] = useState<string>('pm-kisan');
 
   // Guard ref to prevent React transition effects from writing kiosk-session data to localStorage
   const justExitedKioskRef = useRef(false);
@@ -315,6 +321,10 @@ export function App() {
               onRefreshSchemes={handleFetchSchemes}
               error={schemesError}
               onSelectForEligibility={handleSelectSchemeForEligibility}
+              onNavigateToTracker={(schemeId) => {
+                setSelectedTrackerSchemeId(schemeId);
+                setActiveTab('application-tracker');
+              }}
               backendSchemesCount={backendSchemes.length}
             />
           </>
@@ -358,8 +368,33 @@ export function App() {
           />
         )}
 
+        {activeTab === 'voice-assistant' && (
+          <VoiceAssistant
+            schemes={allSchemes}
+            onNavigate={setActiveTab}
+            onSelectSchemeForEligibility={handleSelectSchemeForEligibility}
+          />
+        )}
+
+        {activeTab === 'trust-monitor' && (
+          <TrustMonitor
+            schemes={allSchemes}
+            onNavigate={setActiveTab}
+            onSelectSchemeForEligibility={handleSelectSchemeForEligibility}
+          />
+        )}
+
+        {activeTab === 'application-tracker' && (
+          <ApplicationTracker
+            schemes={allSchemes}
+            initialSchemeId={selectedTrackerSchemeId}
+            onNavigate={setActiveTab}
+            isKioskMode={isKioskMode}
+          />
+        )}
+
         {/* Developer Handshake section accessible on dashboard and discover */}
-        {(activeTab === 'dashboard' || activeTab === 'discover') && (
+        {(activeTab === 'dashboard' || activeTab === 'discover' || activeTab === 'trust-monitor') && (
           <DeveloperHandshake apiState={apiState} />
         )}
       </main>

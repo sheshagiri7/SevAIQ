@@ -186,6 +186,19 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
         </button>
       </div>
 
+      {/* Statutory Legal Notice & Non-Guarantee Advisory */}
+      <div className="p-4 bg-slate-100 rounded-2xl border border-slate-200 text-xs text-slate-700 flex items-start space-x-3">
+        <Shield className="w-4 h-4 text-civic-700 shrink-0 mt-0.5" />
+        <div className="space-y-1">
+          <span className="font-bold text-slate-900 block">
+            Statutory Legal Notice & Transparency Mandate:
+          </span>
+          <p className="text-slate-600 leading-relaxed text-[11px]">
+            SevAIQ is a civic intelligence and document-readiness platform. All evaluation outcomes represent an explainable assessment against published statutory guidelines. <strong>SevAIQ does not guarantee scheme approval and does not replace official verification by statutory government authorities.</strong>
+          </p>
+        </div>
+      </div>
+
       {/* Citizen Profile Configuration Card */}
       {profileEditorOpen && (
         <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-6">
@@ -222,7 +235,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                 id="field-age"
                 type="number"
                 min="0"
-                max="120"
+                max="130"
                 value={profile.age ?? ''}
                 onChange={(e) =>
                   handleProfileFieldChange(
@@ -231,8 +244,15 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                   )
                 }
                 placeholder="e.g. 35"
-                className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-civic-500 focus:bg-white text-slate-900"
+                className={`w-full px-3 py-2.5 bg-slate-50 border rounded-xl focus:ring-2 focus:ring-civic-500 focus:bg-white text-slate-900 ${
+                  profile.age !== null && (profile.age < 0 || profile.age > 130)
+                    ? 'border-rose-400 bg-rose-50/50'
+                    : 'border-slate-300'
+                }`}
               />
+              {profile.age !== null && (profile.age < 0 || profile.age > 130) && (
+                <p className="text-[11px] text-rose-600 mt-1">Please enter a valid age between 0 and 130.</p>
+              )}
             </div>
 
             {/* Gender */}
@@ -388,8 +408,15 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                   )
                 }
                 placeholder="e.g. 120000"
-                className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-civic-500 focus:bg-white text-slate-900"
+                className={`w-full px-3 py-2.5 bg-slate-50 border rounded-xl focus:ring-2 focus:ring-civic-500 focus:bg-white text-slate-900 ${
+                  profile.annualIncome !== null && profile.annualIncome !== undefined && profile.annualIncome < 0
+                    ? 'border-rose-400 bg-rose-50/50'
+                    : 'border-slate-300'
+                }`}
               />
+              {profile.annualIncome !== null && profile.annualIncome !== undefined && profile.annualIncome < 0 && (
+                <p className="text-[11px] text-rose-600 mt-1">Income cannot be negative.</p>
+              )}
             </div>
 
             {/* Owns Pucca House */}
@@ -564,23 +591,33 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
       )}
 
       {backendEvalError && !isEvaluatingBackend && (
-        <div className="p-4 bg-amber-50 border border-amber-200 text-amber-900 rounded-2xl flex items-start space-x-3 text-xs">
-          <AlertCircle className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
-          <div>
-            <p className="font-semibold">FastAPI Backend Notice: {backendEvalError}</p>
-            <p className="text-amber-800 mt-0.5">
-              Showing local client assessment as fallback. The application will automatically reconnect once the backend is reachable.
-            </p>
+        <div className="p-4 bg-amber-50 border border-amber-200 text-amber-900 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+          <div className="flex items-start space-x-3">
+            <AlertCircle className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
+            <div>
+              <p className="font-semibold">FastAPI Backend Notice: {backendEvalError}</p>
+              <p className="text-amber-800 mt-0.5">
+                Showing local client assessment as fallback. The application will evaluate locally or you can retry the backend check.
+              </p>
+            </div>
           </div>
+          <button
+            type="button"
+            onClick={runBackendEvaluation}
+            className="px-3 py-1.5 bg-amber-200 hover:bg-amber-300 text-amber-950 font-semibold rounded-xl self-start sm:self-auto transition-colors flex items-center space-x-1.5 shrink-0"
+          >
+            <RefreshCw className="w-3.5 h-3.5" />
+            <span>Retry Backend Check</span>
+          </button>
         </div>
       )}
 
-      {/* Filter Tabs by Status */}
-      <div className="flex items-center justify-between gap-4">
-        <div className="flex items-center space-x-2 overflow-x-auto pb-1 scrollbar-none">
+      {/* Filter Tabs by Statutory Outcome */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-2">
           <span className="text-xs font-semibold text-slate-500 flex items-center space-x-1 pr-1">
             <Filter className="w-3.5 h-3.5" />
-            <span>Status:</span>
+            <span>Outcome:</span>
           </span>
 
           <button
@@ -591,7 +628,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                 : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
             }`}
           >
-            All Results ({evaluationResults.length})
+            All Outcomes ({evaluationResults.length})
           </button>
 
           <button
@@ -603,7 +640,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
             }`}
           >
             <CheckCircle2 className="w-3.5 h-3.5" />
-            <span>Eligible / Met ({metCount})</span>
+            <span>Meets known criteria ({metCount})</span>
           </button>
 
           <button
@@ -615,7 +652,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
             }`}
           >
             <HelpCircle className="w-3.5 h-3.5" />
-            <span>Needs Info / Unknown ({unknownCount})</span>
+            <span>Needs verification ({unknownCount})</span>
           </button>
 
           <button
@@ -627,7 +664,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
             }`}
           >
             <XCircle className="w-3.5 h-3.5" />
-            <span>Not Met ({notMetCount})</span>
+            <span>Does not meet known criteria ({notMetCount})</span>
           </button>
         </div>
 
@@ -674,21 +711,21 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                         </span>
                       )}
 
-                      {/* Overall Status Badge */}
+                      {/* 3 Explainable Statutory Outcome Badges */}
                       {overallStatus === 'met' ? (
                         <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
                           <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                          <span>Met (Eligible)</span>
+                          <span>Meets known criteria</span>
                         </span>
                       ) : overallStatus === 'unknown' ? (
                         <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200">
                           <HelpCircle className="w-3.5 h-3.5 text-amber-600" />
-                          <span>Unknown (Needs Info)</span>
+                          <span>Needs verification</span>
                         </span>
                       ) : (
                         <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-100 text-rose-800 border border-rose-200">
                           <XCircle className="w-3.5 h-3.5 text-rose-600" />
-                          <span>Not Met</span>
+                          <span>Does not meet known criteria</span>
                         </span>
                       )}
 

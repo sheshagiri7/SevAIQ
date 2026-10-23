@@ -14,10 +14,13 @@ import {
   Building2,
   FileText,
   ListOrdered,
+  Sparkles,
+  X,
 } from 'lucide-react';
 import { Scheme, SchemeDetail, CategoryCount } from '../types';
 import { CATEGORY_OPTIONS, matchesCategory } from '../utils/categoryMatcher';
 import { fetchCategories, fetchSchemeById } from '../services/api';
+import { matchesBilingualQuery, QUICK_SEARCH_CHIPS } from '../utils/bilingualSearch';
 
 interface SchemeDiscoveryProps {
   schemes: Scheme[];
@@ -25,6 +28,7 @@ interface SchemeDiscoveryProps {
   onRefreshSchemes: () => void;
   error?: string | null;
   onSelectForEligibility?: (scheme: Scheme) => void;
+  onNavigateToTracker?: (schemeId: string) => void;
   backendSchemesCount: number;
 }
 
@@ -34,6 +38,7 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
   onRefreshSchemes,
   error,
   onSelectForEligibility,
+  onNavigateToTracker,
   backendSchemesCount,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -96,18 +101,10 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
     }
   };
 
-  // Filter schemes using normalized category matcher and search terms
+  // Filter schemes using normalized category matcher and bilingual search terms
   const filteredSchemes = schemes.filter((s) => {
-    const query = searchQuery.toLowerCase().trim();
-    const matchesSearch =
-      query === '' ||
-      s.title.toLowerCase().includes(query) ||
-      s.short_description.toLowerCase().includes(query) ||
-      s.ministry.toLowerCase().includes(query) ||
-      s.category.toLowerCase().includes(query);
-
+    const matchesSearch = matchesBilingualQuery(s, searchQuery);
     const matchesCat = matchesCategory(s.category, selectedCategory);
-
     return matchesSearch && matchesCat;
   });
 
@@ -165,11 +162,31 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
         </div>
       </div>
 
-      {/* Search and Filters */}
-      <div className="space-y-4">
+      {/* AI & Bilingual Search Card */}
+      <div className="bg-white rounded-3xl border border-slate-200 p-5 shadow-xs space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div className="flex items-center space-x-2">
+            <div className="p-1.5 rounded-lg bg-civic-50 text-civic-700">
+              <Sparkles className="w-4 h-4 text-civic-600" />
+            </div>
+            <div>
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800">
+                AI & Bilingual Natural Language Scheme Finder
+              </h3>
+              <p className="text-[11px] text-slate-500">
+                Describe citizen needs in simple Tamil or English (e.g. "விவசாயி உதவி", "free healthcare", "வீடு கட்ட", "pension")
+              </p>
+            </div>
+          </div>
+          <span className="text-[11px] font-semibold text-slate-600 bg-slate-100 px-2.5 py-1 rounded-full self-start sm:self-auto">
+            Showing {filteredSchemes.length} of {schemes.length} schemes
+          </span>
+        </div>
+
+        {/* Search Input with Clear Button */}
         <div className="relative">
           <label htmlFor="scheme-search-input" className="sr-only">
-            Search government schemes
+            Search government schemes in Tamil or English
           </label>
           <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
             <Search className="w-5 h-5" />
@@ -179,13 +196,50 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by scheme name, ministry, or keywords (e.g., farmer, health, student, vendor, housing)..."
-            className="w-full pl-11 pr-4 py-3 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-civic-500 focus:border-civic-500 shadow-xs transition-all"
+            placeholder="Search in Tamil or English (e.g. விவசாயி, farmer, மருத்துவம், health, வீடு, housing, கடன், pension)..."
+            className="w-full pl-11 pr-10 py-3 bg-slate-50 hover:bg-white focus:bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-civic-500 focus:border-civic-500 shadow-xs transition-all"
           />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery('')}
+              className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none"
+              aria-label="Clear search query"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+
+        {/* Quick Suggestion Chips (Bilingual Tamil & English) */}
+        <div className="space-y-1.5 pt-1">
+          <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block">
+            Popular Citizen Needs (பொதுவான தேவைகள்):
+          </span>
+          <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+            {QUICK_SEARCH_CHIPS.map((chip) => {
+              const isActive = searchQuery === chip.query;
+              return (
+                <button
+                  key={chip.id}
+                  type="button"
+                  onClick={() => setSearchQuery(isActive ? '' : chip.query)}
+                  className={`px-3 py-1 rounded-xl text-xs font-medium whitespace-nowrap transition-all flex items-center space-x-1 ${
+                    isActive
+                      ? 'bg-civic-700 text-white shadow-xs'
+                      : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                  }`}
+                  title={`${chip.labelEn} / ${chip.labelTa}`}
+                >
+                  <span>{chip.labelTa}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Sector Filter Pills */}
-        <div className="flex items-center space-x-2 overflow-x-auto pb-2 scrollbar-none">
+        <div className="pt-2.5 border-t border-slate-100 flex flex-wrap items-center gap-2">
           <span className="text-xs font-semibold text-slate-700 flex items-center space-x-1 pr-1 shrink-0">
             <Filter className="w-3.5 h-3.5 text-slate-500" />
             <span>Sectors:</span>
@@ -197,7 +251,7 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
             className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500 ${
               selectedCategory === 'all'
                 ? 'bg-civic-800 text-white shadow-xs'
-                : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
+                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
             }`}
           >
             All Sectors ({schemes.length})
@@ -214,7 +268,7 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                     className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500 ${
                       isSelected
                         ? 'bg-civic-800 text-white shadow-xs'
-                        : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
+                        : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                     }`}
                   >
                     {cat.category} ({cat.count})
@@ -230,12 +284,20 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                   className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500 ${
                     selectedCategory === cat.id
                       ? 'bg-civic-800 text-white shadow-xs'
-                      : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
+                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                   }`}
                 >
                   {cat.label}
                 </button>
               ))}
+        </div>
+
+        {/* Honest AI & Bilingual Search Disclosure */}
+        <div className="pt-2 text-[11px] text-slate-500 flex items-center space-x-1.5 border-t border-slate-100">
+          <Info className="w-3.5 h-3.5 text-civic-600 shrink-0" />
+          <span>
+            <strong>Engine Transparency:</strong> Bilingual search maps citizen intent in simple Tamil and English directly to verified FastAPI backend scheme records (<code className="font-mono text-[10px] bg-slate-100 px-1 py-0.5 rounded">GET /api/schemes</code>) using client-side semantic matching without transmitting personal queries to external LLMs.
+          </span>
         </div>
       </div>
 
@@ -326,16 +388,28 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                     </button>
                   </div>
 
-                  {onSelectForEligibility && (
-                    <button
-                      type="button"
-                      onClick={() => onSelectForEligibility(scheme)}
-                      className="w-full flex items-center justify-center space-x-2 py-2 px-3 rounded-xl bg-slate-900 hover:bg-civic-700 text-white font-semibold text-xs shadow-xs transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500"
-                    >
-                      <span>Check Eligibility For This Scheme</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
-                  )}
+                  <div className="space-y-2">
+                    {onSelectForEligibility && (
+                      <button
+                        type="button"
+                        onClick={() => onSelectForEligibility(scheme)}
+                        className="w-full flex items-center justify-center space-x-2 py-2 px-3 rounded-xl bg-slate-900 hover:bg-civic-700 text-white font-semibold text-xs shadow-xs transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500"
+                      >
+                        <span>Check Eligibility For This Scheme</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                    {onNavigateToTracker && (
+                      <button
+                        type="button"
+                        onClick={() => onNavigateToTracker(scheme.id)}
+                        className="w-full flex items-center justify-center space-x-2 py-1.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500"
+                      >
+                        <ListOrdered className="w-3.5 h-3.5 text-civic-700" />
+                        <span>Application Checklist & Steps</span>
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}

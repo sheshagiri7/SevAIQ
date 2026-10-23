@@ -129,6 +129,38 @@ export const VERIFIED_REFERENCE_SCHEMES: Scheme[] = [
  */
 export const INITIAL_DOCUMENT_RECORDS: DocumentRecord[] = [
   {
+    id: 'aadhaar-card',
+    name: 'Aadhaar Card',
+    description: '12-digit national biometric identity card verifying citizen personal identity.',
+    issuingAuthority: 'Unique Identification Authority of India (UIDAI)',
+    applicableSchemeIds: ['pm-kisan', 'ab-pmjay', 'pm-jay', 'pm-svanidhi', 'pmay-g', 'pmay-u', 'atal-pension-yojana', 'pm-mudra-yojana', 'pm-vishwakarma', 'nsp-post-matric'],
+    status: 'unconfirmed',
+  },
+  {
+    id: 'bank-passbook',
+    name: 'Bank Account Passbook / Statement',
+    description: 'Active Aadhaar-seeded bank account passbook or cancelled cheque with IFSC.',
+    issuingAuthority: 'Scheduled Commercial Bank / Regional Rural Bank / Post Office',
+    applicableSchemeIds: ['pm-kisan', 'ab-pmjay', 'pm-jay', 'pm-svanidhi', 'pmay-g', 'pmay-u', 'pm-mudra-yojana', 'nsp-post-matric'],
+    status: 'unconfirmed',
+  },
+  {
+    id: 'mobile-number',
+    name: 'Active Mobile Number (Aadhaar linked)',
+    description: 'Active mobile telephone number registered with Aadhaar for OTP verification.',
+    issuingAuthority: 'Authorized Telecom Provider / UIDAI Portal',
+    applicableSchemeIds: ['pm-kisan', 'ab-pmjay', 'pm-jay', 'pm-svanidhi'],
+    status: 'unconfirmed',
+  },
+  {
+    id: 'pan-card',
+    name: 'PAN Card',
+    description: 'Permanent Account Number for statutory financial and credit assessment.',
+    issuingAuthority: 'Income Tax Department / NSDL / UTIITSL',
+    applicableSchemeIds: ['pmay-u', 'pm-mudra-yojana'],
+    status: 'unconfirmed',
+  },
+  {
     id: 'income-certificate',
     name: 'Income Certificate',
     description: 'Official revenue document certifying total annual family income.',

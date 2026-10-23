@@ -1,0 +1,290 @@
+/**
+ * Voice Assistant Knowledge Engine for SevAIQ.
+ * 
+ * Provides truthful, verified responses in Tamil and English based on the official scheme catalog.
+ * No fabricated AI claims; maps citizen queries directly to authentic government guidelines.
+ */
+
+import { Scheme, AssistantLanguage, NavigationTab } from '../types';
+
+export interface AssistantAnswer {
+  text: string;
+  matchedSchemes: Scheme[];
+  suggestedAction?: {
+    label: string;
+    tab: NavigationTab;
+    schemeId?: string;
+  };
+}
+
+export const SAMPLE_PROMPTS = {
+  ta: [
+    { label: '🌾 விவசாயி உதவி', query: 'விவசாயிகளுக்கு என்னென்ன அரசு திட்டங்கள் உள்ளன?' },
+    { label: '🏥 இலவச மருத்துவ காப்பீடு', query: 'ஆயுஷ்மான் பாரத் அட்டை பெறுவது எப்படி?' },
+    { label: '🏠 வீடு கட்ட நிதி உதவி', query: 'வீடு கட்ட அரசு மானியம் யாருக்கு கிடைக்கும்?' },
+    { label: '👴 முதியோர் ஓய்வூதியம்', query: 'முதியோர் பென்ஷன் திட்டத்திற்கு என்னென்ன ஆவணங்கள் தேவை?' },
+    { label: '🛒 வியாபார கடன்', query: 'தெருவோர வியாபாரிகள் கடன் பெறுவது எப்படி?' },
+  ],
+  en: [
+    { label: '🌾 Farmer Financial Support', query: 'What schemes are available for farmers?' },
+    { label: '🏥 Free Healthcare Card', query: 'How to get an Ayushman Bharat health card?' },
+    { label: '🏠 Housing Subsidy', query: 'Who is eligible for PMAY housing grant?' },
+    { label: '👴 Senior Pension', query: 'What documents are required for Atal Pension Yojana?' },
+    { label: '🛒 Street Vendor Loan', query: 'How can street vendors apply for PM SVANidhi loan?' },
+  ],
+};
+
+export function processCitizenQuery(
+  rawQuery: string,
+  language: AssistantLanguage,
+  schemes: Scheme[]
+): AssistantAnswer {
+  const query = rawQuery.trim().toLowerCase();
+
+  // 1. Farmer / PM-KISAN
+  if (
+    query.includes('விவசாயி') ||
+    query.includes('விவசாய') ||
+    query.includes('farmer') ||
+    query.includes('kisan') ||
+    query.includes('agriculture') ||
+    query.includes('பயிர்')
+  ) {
+    const kisan = schemes.find((s) => s.id === 'pm-kisan');
+    if (language === 'ta') {
+      return {
+        text: 'விவசாயிகளுக்கு "பிரதான் மந்திரி கிசான் சம்மான் நிதி (PM-KISAN)" திட்டம் உள்ளது. சொந்த நிலம் உள்ள விவசாய குடும்பங்களுக்கு ஆண்டுக்கு ₹6,000 (மூன்று தவணைகளில் தலா ₹2,000) நேரடியாக வங்கி கணக்கில் செலுத்தப்படுகிறது. தேவையான ஆவணங்கள்: ஆதார் அட்டை, நில பட்டா/சிட்டா (RoR), வங்கி கணக்கு புத்தகம், மற்றும் ஆதார் இணைக்கப்பட்ட மொபைல் எண். விண்ணப்பிக்க pmkisan.gov.in போர்ட்டல் அல்லது பொது சேவை மையத்தை (CSC) அணுகலாம்.',
+        matchedSchemes: kisan ? [kisan] : [],
+        suggestedAction: {
+          label: 'விவசாயி தகுதி சரிபார்க்கவும் (Check Eligibility)',
+          tab: 'eligibility',
+          schemeId: 'pm-kisan',
+        },
+      };
+    }
+    return {
+      text: 'For farmers, the government provides the "Pradhan Mantri Kisan Samman Nidhi (PM-KISAN)" scheme. Eligible landholding farmer families receive ₹6,000 annually in three 4-monthly installments of ₹2,000 directly into Aadhaar-linked bank accounts via DBT. Mandatory documents: Aadhaar Card, Land Ownership Document (RoR / Khasra-Khatauni), Bank Passbook, and active mobile number. You can apply on pmkisan.gov.in or at Common Service Centres (CSCs).',
+      matchedSchemes: kisan ? [kisan] : [],
+      suggestedAction: {
+        label: 'Check PM-KISAN Eligibility',
+        tab: 'eligibility',
+        schemeId: 'pm-kisan',
+      },
+    };
+  }
+
+  // 2. Healthcare / Ayushman Bharat / AB-PMJAY
+  if (
+    query.includes('மருத்துவம்') ||
+    query.includes('சிகிச்சை') ||
+    query.includes('காப்பீடு') ||
+    query.includes('ஆயுஷ்மான்') ||
+    query.includes('health') ||
+    query.includes('medical') ||
+    query.includes('hospital') ||
+    query.includes('ayushman') ||
+    query.includes('pmjay')
+  ) {
+    const pmjay = schemes.find((s) => s.id === 'pm-jay' || s.id === 'ab-pmjay');
+    if (language === 'ta') {
+      return {
+        text: 'ஏழை எளிய குடும்பங்களுக்கு "ஆயுஷ்மான் பாரத் - பிரதம மந்திரி ஜன் ஆரோக்கிய திட்டம் (AB-PMJAY)" மூலம் ஆண்டுக்கு குடும்பத்திற்கு ₹5,00,000 வரை இலவச பணமில்லா மருத்துவ சிகிச்சை வழங்கப்படுகிறது. 70 வயது நிரம்பிய அனைத்து மூத்த குடிமக்களுக்கும் ஆயுஷ்மான் வய வந்தனா அட்டை மூலம் இது விரிவுபடுத்தப்பட்டுள்ளது. தேவையான ஆவணங்கள்: ஆதார் அட்டை, குடும்ப அட்டை (Ration Card), மொபைல் எண். அருகிலுள்ள அரசு அல்லது இணைக்கப்பட்ட தனியார் மருத்துவமனையில் உள்ள ஆயுஷ்மான் மித்ரா மையத்தில் உடனடியாக அட்டை பெறலாம்.',
+        matchedSchemes: pmjay ? [pmjay] : [],
+        suggestedAction: {
+          label: 'ஆயுஷ்மான் பாரத் தகுதி சரிபார்க்கவும்',
+          tab: 'eligibility',
+          schemeId: 'pm-jay',
+        },
+      };
+    }
+    return {
+      text: 'Under Ayushman Bharat (AB-PMJAY), eligible families receive health coverage of ₹5 Lakh per year for hospitalization at empanelled public and private hospitals nationwide. Senior citizens aged 70+ are also covered universally under the Ayushman Vay Vandana card. Required documents: Aadhaar Card, Ration Card / NFSA Card, and Mobile Number. Visit beneficiary.nha.gov.in or an Ayushman Mitra desk at any empanelled hospital.',
+      matchedSchemes: pmjay ? [pmjay] : [],
+      suggestedAction: {
+        label: 'Check AB-PMJAY Eligibility',
+        tab: 'eligibility',
+        schemeId: 'pm-jay',
+      },
+    };
+  }
+
+  // 3. Housing / PMAY
+  if (
+    query.includes('வீடு') ||
+    query.includes('ஆவாஸ்') ||
+    query.includes('house') ||
+    query.includes('housing') ||
+    query.includes('pmay') ||
+    query.includes('pucca')
+  ) {
+    const pmayg = schemes.find((s) => s.id === 'pmay-g');
+    const pmayu = schemes.find((s) => s.id === 'pmay-u');
+    const matched = [pmayg, pmayu].filter(Boolean) as Scheme[];
+
+    if (language === 'ta') {
+      return {
+        text: 'வீடு கட்ட இரண்டு முக்கிய அரசு திட்டங்கள் உள்ளன: 1) கிராமப்புறங்களுக்கு "பிரதான் மந்திரி ஆவாஸ் யோஜனா - கிராமின் (PMAY-G)" மூலம் சொந்தமாக பக்கா வீடு இல்லாத ஏழைகளுக்கு ₹1.20 லட்சம் முதல் ₹1.30 லட்சம் வரை நேரடி மானியம் வழங்கப்படுகிறது. 2) நகர்ப்புறங்களுக்கு "PMAY-U" மூலம் வட்டி மானியம் அல்லது ₹2.67 லட்சம் வரை உதவி கிடைக்கிறது. இந்தியாவில் எங்கும் சொந்தமாக பக்கா வீடு இருக்கக்கூடாது. தேவையான ஆவணங்கள்: ஆதார் அட்டை, வங்கி கணக்கு புத்தகம், கிராம பஞ்சாயத்து ஆவணங்கள்.',
+        matchedSchemes: matched,
+        suggestedAction: {
+          label: 'வீட்டு வசதி திட்டங்கள் பார்க்கவும்',
+          tab: 'discover',
+        },
+      };
+    }
+    return {
+      text: 'The government operates two housing schemes: 1) PMAY-Gramin provides ₹1.20 Lakh to ₹1.30 Lakh direct grant to rural families living in kutcha houses or without homes. 2) PMAY-Urban provides interest subsidy and central assistance up to ₹2.67 Lakh for urban EWS/LIG families. Beneficiaries must not own a pucca house anywhere in India. Required documents: Aadhaar, Bank Passbook, Land Title/Patta, and MGNREGA Job Card (for rural).',
+      matchedSchemes: matched,
+      suggestedAction: {
+        label: 'Explore Housing Schemes',
+        tab: 'discover',
+      },
+    };
+  }
+
+  // 4. Pension / APY
+  if (
+    query.includes('ஓய்வூதியம்') ||
+    query.includes('பென்ஷன்') ||
+    query.includes('முதியோர்') ||
+    query.includes('pension') ||
+    query.includes('atal') ||
+    query.includes('apy') ||
+    query.includes('retirement')
+  ) {
+    const apy = schemes.find((s) => s.id === 'atal-pension-yojana');
+    if (language === 'ta') {
+      return {
+        text: '"அடல் பென்ஷன் யோஜனா (APY)" மூலம் 18 முதல் 40 வயதுடைய இந்திய குடிமக்கள் தங்களின் 60 வயதுக்குப் பிறகு மாதம் ₹1,000 முதல் ₹5,000 வரை உத்தரவாதமான மாதாந்திர ஓய்வூதியம் பெறலாம். குறைந்த மாதாந்திர பங்களிப்புடன் உங்கள் சேமிப்பு கணக்கு உள்ள எந்த வங்கியிலும் அல்லது தபால் நிலையத்திலும் இதில் சேரலாம். தேவையான ஆவணங்கள்: ஆதார் அட்டை, வங்கி சேமிப்பு கணக்கு, மொபைல் எண். வருமான வரி செலுத்துவோர் இதற்கு தகுதியற்றவர்கள்.',
+        matchedSchemes: apy ? [apy] : [],
+        suggestedAction: {
+          label: 'ஓய்வூதிய தகுதி பார்க்கவும்',
+          tab: 'eligibility',
+          schemeId: 'atal-pension-yojana',
+        },
+      };
+    }
+    return {
+      text: 'Under Atal Pension Yojana (APY), Indian citizens aged 18 to 40 can secure a guaranteed monthly pension of ₹1,000 to ₹5,000 upon reaching 60 years of age. Contributions depend on joining age and selected pension slab. Required documents: Aadhaar Card, Savings Bank Account, and Mobile Number. Note: Income tax payers are not eligible to enroll.',
+      matchedSchemes: apy ? [apy] : [],
+      suggestedAction: {
+        label: 'Check APY Eligibility',
+        tab: 'eligibility',
+        schemeId: 'atal-pension-yojana',
+      },
+    };
+  }
+
+  // 5. Street Vendors / PM SVANidhi
+  if (
+    query.includes('வியாபாரி') ||
+    query.includes('தெருவோர') ||
+    query.includes('vendor') ||
+    query.includes('svanidhi') ||
+    query.includes('street vendor')
+  ) {
+    const svanidhi = schemes.find((s) => s.id === 'pm-svanidhi');
+    if (language === 'ta') {
+      return {
+        text: 'தெருவோர வியாபாரிகளுக்கு "பிஎம் ஸ்வநிதி (PM SVANidhi)" திட்டம் உள்ளது. பிணையில்லா செயல்பாட்டு மூலதன கடனாக முதல் தவணையில் ₹10,000, சரியாக திருப்பி செலுத்தினால் இரண்டாம் தவணையில் ₹20,000, மூன்றாம் தவணையில் ₹50,000 கடன் வழங்கப்படுகிறது. மேலும் 7% வட்டி மானியமும் டிஜிட்டல் பரிவர்த்தனைகளுக்கு கேஷ்பேக் சலுகையும் உண்டு. தேவையான ஆவணங்கள்: ஆதார் அட்டை, நகராட்சி விற்பனை சான்றிதழ் (CoV) அல்லது பரிந்துரை கடிதம் (LoR), வங்கி கணக்கு புத்தகம்.',
+        matchedSchemes: svanidhi ? [svanidhi] : [],
+        suggestedAction: {
+          label: 'ஸ்வநிதி ஆவணங்களை சரிபார்க்கவும்',
+          tab: 'document-mapper',
+          schemeId: 'pm-svanidhi',
+        },
+      };
+    }
+    return {
+      text: 'For urban street vendors, the "PM SVANidhi" scheme offers collateral-free working capital loans starting with ₹10,000 (1st tranche), ₹20,000 (2nd tranche), and ₹50,000 (3rd tranche) upon timely repayment, along with 7% interest subsidy and digital cashback. Required documents: Aadhaar Card, Certificate of Vending (CoV) / Letter of Recommendation from Urban Local Body, and Bank Account Passbook.',
+      matchedSchemes: svanidhi ? [svanidhi] : [],
+      suggestedAction: {
+        label: 'Map SVANidhi Documents',
+        tab: 'document-mapper',
+        schemeId: 'pm-svanidhi',
+      },
+    };
+  }
+
+  // 6. Artisans / PM Vishwakarma
+  if (
+    query.includes('கைவினைஞர்') ||
+    query.includes('விஸ்வகர்மா') ||
+    query.includes('artisan') ||
+    query.includes('craft') ||
+    query.includes('vishwakarma') ||
+    query.includes('தச்சர்') ||
+    query.includes('தையல்')
+  ) {
+    const vishwa = schemes.find((s) => s.id === 'pm-vishwakarma');
+    if (language === 'ta') {
+      return {
+        text: '"பிஎம் விஸ்வகர்மா திட்டம்" 18 பாரம்பரிய கைவினைஞர்கள் மற்றும் தொழிலாளர்களுக்கு (தச்சர், கொல்லர், பொற்கொல்லர், தையல்காரர், கொத்தனார், குயவர் போன்றவர்கள்) திறன் பயிற்சி, ₹15,000 மதிப்புள்ள இலவச நவீன கருவித்தொகுதி மானியம் மற்றும் 5% சலுகை வட்டியில் ₹3 லட்சம் வரை பிணையில்லா தொழில் கடன் வழங்குகிறது. தேவையான ஆவணங்கள்: ஆதார் அட்டை, கைவினைஞர் சுய அறிவிப்பு, வங்கி கணக்கு புத்தகம்.',
+        matchedSchemes: vishwa ? [vishwa] : [],
+        suggestedAction: {
+          label: 'விஸ்வகர்மா தகுதி பார்க்கவும்',
+          tab: 'eligibility',
+          schemeId: 'pm-vishwakarma',
+        },
+      };
+    }
+    return {
+      text: 'The "PM Vishwakarma" scheme supports 18 traditional artisan trades (carpenters, blacksmiths, tailors, masons, potters, etc.) with skill certification, ₹15,000 modern toolkit incentive, and collateral-free enterprise credit up to ₹3 Lakh at 5% concessional interest. Required documents: Aadhaar Card, Bank Passbook, and Traditional Trade Self-Declaration.',
+      matchedSchemes: vishwa ? [vishwa] : [],
+      suggestedAction: {
+        label: 'Check Vishwakarma Eligibility',
+        tab: 'eligibility',
+        schemeId: 'pm-vishwakarma',
+      },
+    };
+  }
+
+  // 7. Micro Business / MUDRA Loan
+  if (
+    query.includes('முத்ரா') ||
+    query.includes('கடன்') ||
+    query.includes('தொழில் கடன்') ||
+    query.includes('loan') ||
+    query.includes('mudra') ||
+    query.includes('business')
+  ) {
+    const mudra = schemes.find((s) => s.id === 'pm-mudra-yojana');
+    if (language === 'ta') {
+      return {
+        text: '"பிரதான் மந்திரி முத்ரா யோஜனா (PMMY)" சிறு தொழில் மற்றும் வர்த்தகம் தொடங்குவதற்கு ₹10 லட்சம் வரை (மற்றும் ₹20 லட்சம் வரை விரிவுபடுத்தப்பட்ட) பிணையில்லா வணிக கடன் வழங்குகிறது. 3 பிரிவுகள் உள்ளன: சிசு (₹50,000 வரை), கிஷோர் (₹50,000 முதல் ₹5 லட்சம் வரை), தருண் (₹5 லட்சம் முதல் ₹10 லட்சம் வரை). தேவையான ஆவணங்கள்: ஆதார் அட்டை, பான் கார்டு, வணிக முகவரி சான்று, வங்கி அறிக்கை.',
+        matchedSchemes: mudra ? [mudra] : [],
+        suggestedAction: {
+          label: 'முத்ரா திட்ட விவரங்களை பார்க்கவும்',
+          tab: 'discover',
+        },
+      };
+    }
+    return {
+      text: 'Under Pradhan Mantri Mudra Yojana (PMMY), non-corporate small businesses and micro-enterprises can access collateral-free institutional loans up to ₹10 Lakh across three categories: Shishu (up to ₹50,000), Kishore (₹50,000 to ₹5 Lakh), and Tarun (₹5 Lakh to ₹10 Lakh). Required documents: Identity Proof (Aadhaar/PAN), Proof of Residence, Business Address Proof, and Bank Statements.',
+      matchedSchemes: mudra ? [mudra] : [],
+      suggestedAction: {
+        label: 'View MUDRA Scheme Details',
+        tab: 'discover',
+      },
+    };
+  }
+
+  // General fallback
+  if (language === 'ta') {
+    return {
+      text: `உங்கள் கேள்வி தொடர்பாக verified அரசு தரவுத்தளத்தில் ${schemes.length} அதிகாரப்பூர்வ திட்டங்கள் உள்ளன. விவசாயம், மருத்துவம், வீட்டு வசதி, ஓய்வூதியம், அல்லது சிறு தொழில் கடன் ஆகியவற்றில் உங்களுக்கு என்ன உதவி தேவை என்பதை குறிப்பிடவும். அல்லது "திட்டங்களை தேடு" பக்கத்தில் முழு பட்டியலை காணலாம்.`,
+      matchedSchemes: schemes.slice(0, 3),
+      suggestedAction: {
+        label: 'அனைத்து திட்டங்களையும் காண்க',
+        tab: 'discover',
+      },
+    };
+  }
+  return {
+    text: `Based on your query, SevAIQ verified ${schemes.length} official government schemes in the catalog. You can ask specifically about farming assistance, free hospital treatment, housing grants, senior pensions, or micro-business loans. You can also explore the full catalog directly.`,
+    matchedSchemes: schemes.slice(0, 3),
+    suggestedAction: {
+      label: 'Explore All Schemes',
+      tab: 'discover',
+    },
+  };
+}

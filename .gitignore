@@ -75,3 +75,7 @@ htmlcov/
 *.swp
 *.swo
 *~
+
+# Nested clone directory protection
+SevAIQ/
+

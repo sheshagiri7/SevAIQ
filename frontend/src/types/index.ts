@@ -56,6 +56,7 @@ export interface Scheme {
   rules?: SchemeEligibilityRule;
   required_documents?: string[];
   benefits_summary?: string;
+  detailed_benefits?: string | null;
   application_mode?: 'Online' | 'CSC / Seva Kendra' | 'Both';
 }
 
@@ -227,4 +228,29 @@ export type NavigationTab =
   | 'discover'
   | 'eligibility'
   | 'document-mapper'
-  | 'readiness-passport';
+  | 'readiness-passport'
+  | 'voice-assistant'
+  | 'trust-monitor'
+  | 'application-tracker';
+
+export type AssistantLanguage = 'en' | 'ta';
+
+export interface AssistantMessage {
+  id: string;
+  sender: 'citizen' | 'assistant';
+  text: string;
+  timestamp: Date;
+  suggestedSchemes?: Scheme[];
+  suggestedAction?: {
+    label: string;
+    tab: NavigationTab;
+  };
+}
+
+export interface ApplicationStepProgress {
+  schemeId: string;
+  completedSteps: number[]; // index of completed application steps
+  status: 'not_started' | 'preparing_documents' | 'submitted_on_portal' | 'tracking_externally';
+  notes?: string;
+  lastUpdated: string;
+}
