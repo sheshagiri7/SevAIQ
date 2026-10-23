@@ -45,7 +45,8 @@ export const Header: React.FC<HeaderProps> = ({
   onClearSession,
 }) => {
   const { language, setLanguage, t } = useLanguage();
-  const isTamil = language === 'ta';
+  const isIndic = language === 'ta' || language === 'hi';
+  const isTamil = isIndic;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
 
@@ -212,7 +213,7 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Top Right: Language Switcher, Kiosk Mode, End Session & Mobile Menu Toggle */}
           <div className="flex items-center justify-end gap-1.5 sm:gap-2 shrink-0">
-            {/* Language Switcher Segmented Control: English | தமிழ் */}
+            {/* Language Switcher Segmented Control: English | தமிழ் | हिंदी */}
             <div
               className="flex items-center rounded-lg border border-slate-200 bg-slate-100/80 p-0.5 shadow-2xs shrink-0"
               role="group"
@@ -223,7 +224,7 @@ export const Header: React.FC<HeaderProps> = ({
                 type="button"
                 onClick={() => setLanguage('en')}
                 className={`h-7 px-2 xl:px-2.5 rounded-md ${
-                  isTamil ? 'text-[11px] xl:text-xs' : 'text-xs'
+                  isIndic ? 'text-[11px] xl:text-xs' : 'text-xs'
                 } font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 ${
                   language === 'en'
                     ? 'bg-white text-civic-900 shadow-2xs font-bold border border-slate-200'
@@ -238,7 +239,7 @@ export const Header: React.FC<HeaderProps> = ({
                 type="button"
                 onClick={() => setLanguage('ta')}
                 className={`h-7 px-2 xl:px-2.5 rounded-md ${
-                  isTamil ? 'text-[11px] xl:text-xs' : 'text-xs'
+                  isIndic ? 'text-[11px] xl:text-xs' : 'text-xs'
                 } font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 ${
                   language === 'ta'
                     ? 'bg-civic-700 text-white shadow-2xs font-bold'
@@ -248,6 +249,21 @@ export const Header: React.FC<HeaderProps> = ({
                 aria-pressed={language === 'ta'}
               >
                 தமிழ்
+              </button>
+              <button
+                type="button"
+                onClick={() => setLanguage('hi')}
+                className={`h-7 px-2 xl:px-2.5 rounded-md ${
+                  isIndic ? 'text-[11px] xl:text-xs' : 'text-xs'
+                } font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 ${
+                  language === 'hi'
+                    ? 'bg-civic-700 text-white shadow-2xs font-bold'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+                aria-label="वेबसाइट की भाषा हिंदी में बदलें (Switch website to Hindi)"
+                aria-pressed={language === 'hi'}
+              >
+                हिंदी
               </button>
             </div>
 

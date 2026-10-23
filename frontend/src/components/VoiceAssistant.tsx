@@ -771,7 +771,7 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
               )}
             </div>
             <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
-              {SAMPLE_PROMPTS[language].map((sample, idx) => (
+              {(SAMPLE_PROMPTS[language] || SAMPLE_PROMPTS.en).map((sample, idx) => (
                 <button
                   key={idx}
                   type="button"
