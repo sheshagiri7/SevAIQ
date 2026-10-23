@@ -894,8 +894,9 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
   onSelectCategory,
 }) => {
   const { settings } = useAccessibility();
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const isTamil = language === 'ta';
+  const isHindi = language === 'hi';
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
 
