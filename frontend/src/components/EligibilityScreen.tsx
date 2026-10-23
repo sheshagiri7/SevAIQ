@@ -662,10 +662,100 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
         </div>
       )}
 
-      {/* Filter Tabs by Statutory Outcome */}
+      {/* Target Scheme Focused Banner */}
+      {activeTargetScheme && selectedSchemeFilter !== 'all' && (
+        <div className="p-4 sm:p-5 bg-gradient-to-r from-civic-50 via-blue-50/50 to-indigo-50/40 border-2 border-civic-400/80 rounded-3xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm animate-fadeIn">
+          <div className="flex items-start sm:items-center space-x-3.5">
+            <div className="w-10 h-10 rounded-2xl bg-civic-700 text-white flex items-center justify-center shrink-0 shadow-sm">
+              <CheckSquare className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex flex-wrap items-center gap-2 mb-0.5">
+                <span className="text-[11px] font-black uppercase tracking-wider text-civic-800 bg-civic-100/90 px-2 py-0.5 rounded-md">
+                  {t.eligibility.targetSchemeBadge}
+                </span>
+                <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-white border border-slate-200 text-slate-700">
+                  {activeTargetScheme.category}
+                </span>
+              </div>
+              <h3 className="text-sm sm:text-base font-bold text-slate-900">
+                {getLocalizedScheme(activeTargetScheme).title}
+              </h3>
+              <p className="text-xs text-slate-600 mt-0.5">
+                {t.eligibility.targetSchemeBannerDesc}
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setSelectedSchemeFilter('all');
+              onClearTargetScheme?.();
+            }}
+            className="px-4 py-2 rounded-xl text-xs font-bold bg-white border border-slate-300 hover:bg-slate-50 text-slate-800 transition-colors shadow-xs hover:border-slate-400 self-start sm:self-auto shrink-0 flex items-center space-x-1.5 focus:outline-none focus:ring-2 focus:ring-civic-500 cursor-pointer"
+          >
+            <span>{t.eligibility.viewAllSchemes} ({evaluationResults.length})</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
+
+      {/* Filter Tabs by Statutory Outcome & Scheme Dropdown */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs font-semibold text-slate-500 flex items-center space-x-1 pr-1">
+          {/* Scheme Selector Dropdown */}
+          <div className="flex items-center space-x-1.5 mr-2">
+            <label htmlFor="eligibility-scheme-filter" className="text-xs font-semibold text-slate-500 whitespace-nowrap">
+              {t.eligibility.filterByScheme}
+            </label>
+            <div className="relative">
+              <select
+                id="eligibility-scheme-filter"
+                value={selectedSchemeFilter}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setSelectedSchemeFilter(val);
+                  setStatusFilter('all');
+                  if (val === 'all') {
+                    onClearTargetScheme?.();
+                  } else {
+                    setExpandedSchemeId(val);
+                  }
+                }}
+                className="pl-2.5 pr-7 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-slate-800 hover:border-civic-400 focus:ring-2 focus:ring-civic-500 focus:outline-none shadow-2xs appearance-none cursor-pointer max-w-[200px] sm:max-w-xs truncate"
+              >
+                <option value="all">
+                  {t.eligibility.allSchemesOption} ({evaluationResults.length})
+                </option>
+                {evaluationResults.map((r) => {
+                  const loc = getLocalizedScheme(r.scheme);
+                  return (
+                    <option key={r.scheme.id} value={r.scheme.id}>
+                      {loc.title}
+                    </option>
+                  );
+                })}
+              </select>
+              <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+            </div>
+
+            {selectedSchemeFilter !== 'all' && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedSchemeFilter('all');
+                  onClearTargetScheme?.();
+                }}
+                className="p-1 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-200 transition-colors"
+                title={t.eligibility.clearSchemeFilter}
+                aria-label="Clear scheme filter"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
+
+          <span className="text-xs font-semibold text-slate-500 flex items-center space-x-1 pr-1 border-l border-slate-200 pl-2">
             <Filter className="w-3.5 h-3.5" />
             <span>{language === 'ta' ? 'முடிவு:' : 'Outcome:'}</span>
           </span>
@@ -734,13 +824,19 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
             const rawScheme = result.scheme;
             const scheme = getLocalizedScheme(rawScheme);
             const { overallStatus, criteriaResults, metCount, totalCriteriaCount } = result;
+            const isTargetScheme = isSchemeMatching(scheme.id, selectedSchemeFilter);
             const isExpanded = expandedSchemeId === scheme.id;
             const isSelectedForMapper = selectedSchemeIdsForMapper.includes(scheme.id);
 
             return (
               <div
                 key={scheme.id}
-                className="bg-white rounded-3xl border border-slate-200 shadow-xs hover:shadow-md transition-all overflow-hidden"
+                id={`eligibility-scheme-${scheme.id}`}
+                className={`bg-white rounded-3xl border transition-all overflow-hidden ${
+                  isTargetScheme
+                    ? 'border-civic-500 shadow-md ring-4 ring-civic-100/90'
+                    : 'border-slate-200 shadow-xs hover:shadow-md'
+                }`}
               >
                 {/* Scheme Header Row */}
                 <div className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -749,6 +845,13 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
                       <span className="px-2.5 py-0.5 rounded text-[11px] font-semibold bg-civic-50 text-civic-700">
                         {scheme.category}
                       </span>
+
+                      {/* Focused Scheme Badge */}
+                      {isTargetScheme && (
+                        <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-civic-700 text-white shadow-2xs">
+                          <span>🎯 {t.eligibility.targetSchemeBadge}</span>
+                        </span>
+                      )}
 
                       {/* Engine Source Badge */}
                       {backendResponse && backendResponse.schemes.some((s) => s.scheme_id.toLowerCase() === resolveBackendSchemeId(scheme.id).toLowerCase()) ? (
