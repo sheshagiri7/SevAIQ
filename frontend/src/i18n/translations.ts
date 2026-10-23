@@ -3,19 +3,7 @@
  * Covers all screens, components, modals, filters, options, schemes, and documents.
  */
 
-export type AppLanguage =
-  | 'en'
-  | 'ta'
-  | 'hi'
-  | 'te'
-  | 'kn'
-  | 'ml'
-  | 'mr'
-  | 'gu'
-  | 'bn'
-  | 'pa'
-  | 'or'
-  | 'as';
+export type AppLanguage = 'en' | 'ta' | 'hi';
 
 export interface SchemeTranslation {
   title: string;
@@ -33,7 +21,7 @@ export interface DocumentTranslation {
   issuingAuthority: string;
 }
 
-export const SCHEME_TRANSLATIONS: Record<string, Record<string, SchemeTranslation>> = {
+export const SCHEME_TRANSLATIONS: Record<'ta' | 'hi', Record<string, SchemeTranslation>> = {
   ta: {
     'pm-kisan': {
       title: 'பிரதான் மந்திரி கிசான் சம்மான் நிதி (PM-KISAN)',
@@ -260,7 +248,7 @@ export const SCHEME_TRANSLATIONS: Record<string, Record<string, SchemeTranslatio
   },
 };
 
-export const DOCUMENT_TRANSLATIONS: Record<string, Record<string, DocumentTranslation>> = {
+export const DOCUMENT_TRANSLATIONS: Record<'ta' | 'hi', Record<string, DocumentTranslation>> = {
   ta: {
     'aadhaar-card': {
       name: 'ஆதார் அட்டை',
@@ -428,21 +416,6 @@ export const UI_TRANSLATIONS = {
       civicDossier: 'Civic Dossier',
       volatileSession: 'Volatile in-memory session',
       standardSession: 'Standard local session',
-      searchPlaceholder: 'Enter scheme name to search...',
-      signIn: 'Sign In',
-      signInDialogTitle: 'Citizen Sign In & Identity',
-      signInDialogDesc: 'Sign in to access your personalized scheme readiness passport and save your document eligibility status.',
-      digiLockerSignIn: 'Sign In with DigiLocker',
-      digiLockerDesc: 'Government of India digital document repository',
-      mobileOtpSignIn: 'Sign In with Mobile OTP',
-      mobileOtpDesc: 'Instant SMS verification on registered mobile number',
-      demoProfileSignIn: 'Quick Demo Citizen Profile',
-      demoProfileDesc: 'One-click load: Raman (Marginal Farmer, Rural TN)',
-      currentSession: 'Active Citizen Profile',
-      themeTooltip: 'Toggle High Contrast / Theme Mode',
-      viewAllSchemes: 'View all matching schemes in discovery',
-      noSchemesFound: 'No schemes match your search query',
-      close: 'Close',
     },
 
     // Hero
@@ -785,21 +758,6 @@ export const UI_TRANSLATIONS = {
       civicDossier: 'குடிமக்கள் ஆவணக் கோப்பு',
       volatileSession: 'நினைவகத்தில் மட்டுமே உள்ள அமர்வு',
       standardSession: 'நிலையான உள்ளூர் அமர்வு',
-      searchPlaceholder: 'திட்டத்தின் பெயரை உள்ளிடவும்...',
-      signIn: 'உள்நுழைக',
-      signInDialogTitle: 'குடிமக்கள் உள்நுழைவு & அடையாளம்',
-      signInDialogDesc: 'தனிப்பயனாக்கப்பட்ட திட்ட பரிந்துரைகளை அணுகவும் உங்கள் ஆவண தயார்நிலையை சேமிக்கவும் உள்நுழையவும்.',
-      digiLockerSignIn: 'DigiLocker மூலம் உள்நுழைக',
-      digiLockerDesc: 'இந்திய அரசின் அதிகாரப்பூர்வ டிஜிட்டல் ஆவண பெட்டகம்',
-      mobileOtpSignIn: 'மொபைல் OTP மூலம் உள்நுழைக',
-      mobileOtpDesc: 'பதிவுசெய்த மொபைல் எண்ணிற்கு உடனடி எஸ்எம்எஸ் சரிபார்ப்பு',
-      demoProfileSignIn: 'மாதிரி குடிமக்கள் விவரக்குறிப்பு',
-      demoProfileDesc: 'ஒரே கிளிக்கில் மாதிரி விவரங்களை ஏற்றவும் (சிறு விவசாயி, தமிழ்நாடு)',
-      currentSession: 'செயலில் உள்ள குடிமக்கள் விவரம்',
-      themeTooltip: 'உயர் மாறுபாடு / தோற்ற முறை மாற்று',
-      viewAllSchemes: 'அனைத்து பொருந்தும் திட்டங்களையும் காண்க',
-      noSchemesFound: 'பொருந்தும் திட்டங்கள் ஏதும் இல்லை',
-      close: 'மூடு',
     },
 
     // Hero
@@ -1142,21 +1100,6 @@ export const UI_TRANSLATIONS = {
       civicDossier: 'नागरिक डोजियर',
       volatileSession: 'अस्थायी इन-मेमोरी सत्र',
       standardSession: 'स्थानीय ब्राउज़र सत्र',
-      searchPlaceholder: 'योजना का नाम खोजें...',
-      signIn: 'साइन इन करें',
-      signInDialogTitle: 'नागरिक साइन इन एवं पहचान',
-      signInDialogDesc: 'व्यक्तिगत योजना अनुशंसाओं और दस्तावेज़ तत्परता प्रोफ़ाइल के लिए साइन इन करें।',
-      digiLockerSignIn: 'DigiLocker के साथ साइन इन करें',
-      digiLockerDesc: 'भारत सरकार का आधिकारिक डिजिटल दस्तावेज़ वॉलेट',
-      mobileOtpSignIn: 'मोबाइल ओटीपी के साथ साइन इन करें',
-      mobileOtpDesc: 'पंजीकृत मोबाइल नंबर पर त्वरित एसएमएस सत्यापन',
-      demoProfileSignIn: 'त्वरित डेमो नागरिक प्रोफ़ाइल',
-      demoProfileDesc: 'एक क्लिक में नमूना प्रोफ़ाइल लोड करें (सीमांत किसान, तमिलनाडु)',
-      currentSession: 'सक्रिय नागरिक प्रोफ़ाइल',
-      themeTooltip: 'उच्च कंट्रास्ट / थीम मोड बदलें',
-      viewAllSchemes: 'सभी योजना खोज परिणाम देखें',
-      noSchemesFound: 'कोई योजना नहीं मिली',
-      close: 'बंद करें',
     },
 
     // Hero

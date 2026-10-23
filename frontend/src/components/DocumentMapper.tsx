@@ -209,6 +209,8 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
           <span>
             {language === 'ta'
               ? 'FastAPI மூலம் பல திட்டங்களுக்கான ஆவண இணைப்பை கணக்கிடுகிறது...'
+              : language === 'hi'
+              ? 'FastAPI के माध्यम से बहु-योजना दस्तावेज़ तालमेल की गणना की जा रही है...'
               : 'Computing cross-scheme document synergy via FastAPI POST /api/documents/mapper...'}
           </span>
         </div>
@@ -220,10 +222,16 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
             <Server className="w-4 h-4 text-emerald-700 shrink-0" />
             <span>
               <strong>
-                {language === 'ta' ? 'சேவையக ஆவண இணைப்பு:' : 'Server-Computed Document Synergy:'}
+                {language === 'ta'
+                  ? 'சேவையக ஆவண இணைப்பு:'
+                  : language === 'hi'
+                  ? 'सर्वर-गणना दस्तावेज़ तालमेल:'
+                  : 'Server-Computed Document Synergy:'}
               </strong>{' '}
               {language === 'ta'
                 ? `${backendMapping.selected_scheme_ids.length} திட்டங்களில் பகுப்பாய்வு செய்யப்பட்டது (${backendMapping.reusable_documents.length} மறுபயன்பாட்டு ஆவணங்கள், ${backendMapping.single_scheme_documents.length} தனித்த ஆவணங்கள்).`
+                : language === 'hi'
+                ? `${backendMapping.selected_scheme_ids.length} योजनाओं में विश्लेषण किया गया (${backendMapping.reusable_documents.length} पुन: प्रयोज्य दस्तावेज़, ${backendMapping.single_scheme_documents.length} योजना-विशिष्ट दस्तावेज़)।`
                 : `Analyzed across ${backendMapping.selected_scheme_ids.length} schemes (${backendMapping.reusable_documents.length} reusable multi-scheme documents, ${backendMapping.single_scheme_documents.length} scheme-specific).`}
             </span>
           </div>
@@ -233,7 +241,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
             className="text-emerald-800 underline font-semibold flex items-center space-x-1 hover:text-emerald-900"
           >
             <RefreshCw className="w-3 h-3" />
-            <span>{language === 'ta' ? 'மீண்டும் பகுப்பாய்வு' : 'Re-analyze'}</span>
+            <span>{language === 'ta' ? 'மீண்டும் பகுப்பாய்வு' : language === 'hi' ? 'पुन: विश्लेषण करें' : 'Re-analyze'}</span>
           </button>
         </div>
       )}
@@ -243,11 +251,18 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
           <AlertCircle className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
           <div>
             <p className="font-semibold">
-              {language === 'ta' ? 'பின்தள ஆவண இணைப்பு அறிவிப்பு:' : 'Backend Document Mapper Notice:'} {mappingError}
+              {language === 'ta'
+                ? 'பின்தள ஆவண இணைப்பு அறிவிப்பு:'
+                : language === 'hi'
+                ? 'बैकएंड दस्तावेज़ मैपर सूचना:'
+                : 'Backend Document Mapper Notice:'}{' '}
+              {mappingError}
             </p>
             <p className="text-amber-800 mt-0.5">
               {language === 'ta'
                 ? 'உள்ளூர் ஆவண இணைப்பு மாதிரி மாற்றாக காட்டப்படுகிறது.'
+                : language === 'hi'
+                ? 'वैकल्पिक रूप से स्थानीय दस्तावेज़ तालमेल मॉडल दिखाया जा रहा है।'
                 : 'Showing local document synergy model as fallback.'}
             </p>
           </div>
@@ -266,9 +281,13 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
               {selectedSchemeIds.length === 0
                 ? language === 'ta'
                   ? 'அனைத்து திட்டங்களும் தேர்வில்'
+                  : language === 'hi'
+                  ? 'सभी योजनाएं सक्रिय'
                   : 'All schemes active'
                 : language === 'ta'
                 ? `${selectedSchemeIds.length} தேர்வு செய்யப்பட்டுள்ளது`
+                : language === 'hi'
+                ? `${selectedSchemeIds.length} चयनित`
                 : `${selectedSchemeIds.length} selected`}
               )
             </span>
