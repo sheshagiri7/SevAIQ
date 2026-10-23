@@ -152,57 +152,6 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
           </p>
         </div>
 
-        <div className="flex items-center space-x-2 self-start md:self-auto">
-          <button
-            type="button"
-            onClick={onRefreshSchemes}
-            disabled={isLoading}
-            className="inline-flex items-center space-x-2 px-3.5 py-2 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-300 rounded-xl shadow-xs transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500"
-            title="Poll backend /api/schemes for updates"
-            aria-label={`Sync schemes with backend. Currently ${backendSchemesCount} schemes from backend.`}
-          >
-            <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
-            <span>{t.discover.syncBackend} ({backendSchemesCount})</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Backend Synchronization Notification */}
-      <div className="p-4 rounded-2xl bg-blue-50 border border-blue-200 text-blue-900 text-xs flex items-start space-x-3">
-        <Info className="w-4 h-4 text-civic-700 shrink-0 mt-0.5" />
-        <div className="space-y-1">
-          <p className="font-semibold text-civic-900">
-            {language === 'ta'
-              ? 'சரிபார்க்கப்பட்ட தரவு உத்தரவாதம் & பின்தள நிலை:'
-              : language === 'hi'
-              ? 'सत्यापित डेटा गारंटी एवं बैकएंड स्थिति:'
-              : 'Verified Data Guarantee & Backend Status:'}
-          </p>
-          <p className="text-slate-700 leading-relaxed">
-            {backendSchemesCount === 0 ? (
-              language === 'ta' ? (
-                <>
-                  FastAPI இறுதிப்புள்ளி <code className="bg-white/80 px-1 py-0.5 rounded font-mono text-slate-800">GET /api/schemes</code> தற்போது எதிர்பார்க்கப்பட்டபடி காலியாக உள்ளது.
-                  SevAIQ அதிகாரப்பூர்வ போர்ட்டல்களின் (எ.கா. <em>pmkisan.gov.in</em>, <em>pmjay.gov.in</em>) சரிபார்க்கப்பட்ட மாதிரிகளை காட்டுகிறது.
-                </>
-              ) : language === 'hi' ? (
-                <>
-                  FastAPI एंडपॉइंट <code className="bg-white/80 px-1 py-0.5 rounded font-mono text-slate-800">GET /api/schemes</code> वर्तमान में खाली है।
-                  SevAIQ आधिकारिक सरकारी पोर्टलों (उदा. <em>pmkisan.gov.in</em>, <em>pmjay.gov.in</em>) के सत्यापित मॉडल प्रदर्शित करता है।
-                </>
-              ) : (
-                <>
-                  FastAPI endpoint <code className="bg-white/80 px-1 py-0.5 rounded font-mono text-slate-800">GET /api/schemes</code> currently returns <code className="bg-white/80 px-1 py-0.5 rounded font-mono text-slate-800">[]</code> as expected during initial setup.
-                  SevAIQ displays official reference models from authentic portals (e.g. <em>pmkisan.gov.in</em>, <em>pmjay.gov.in</em>) so you can evaluate eligibility and document mapping.
-                </>
-              )
-            ) : (
-              <>
-                FastAPI backend has returned {backendSchemesCount} verified schemes from <code className="bg-white/80 px-1 py-0.5 rounded font-mono text-slate-800">GET /api/schemes</code>.
-              </>
-            )}
-          </p>
-        </div>
       </div>
 
       {/* AI & Bilingual Search Card */}
