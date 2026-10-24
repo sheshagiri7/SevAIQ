@@ -7,6 +7,86 @@ import { VERIFIED_REFERENCE_SCHEMES } from '../data/verifiedReferenceSchemes';
 import { INITIAL_DOCUMENT_RECORDS } from '../data/verifiedReferenceSchemes';
 import { inferClientAction, validateChatbotAction, executeChatbotAction, ActionValidationContext } from '../utils/actionRegistry';
 
+vi.mock('../services/api', async () => {
+  const actual = await vi.importActual<any>('../services/api');
+  return {
+    ...actual,
+    executeChatAction: vi.fn().mockImplementation(async (req: any) => {
+      const action = req.action;
+      if (action === 'discover_schemes') {
+        return {
+          success: true,
+          data: {
+            success: true,
+            action: 'discover_schemes',
+            summary: 'Opened Scheme Discovery.',
+            data: { match_count: 1, schemes: [{ id: 'pm-kisan' }] },
+            sources: [],
+            requires_confirmation: false,
+          },
+        };
+      }
+      if (action === 'check_eligibility') {
+        return {
+          success: true,
+          data: {
+            success: true,
+            action: 'check_eligibility',
+            summary: 'Eligibility evaluated.',
+            data: { outcome: 'meets_known_criteria' },
+            sources: [],
+            requires_confirmation: false,
+          },
+        };
+      }
+      if (action === 'map_documents') {
+        return {
+          success: true,
+          data: {
+            success: true,
+            action: 'map_documents',
+            summary: 'Document checklist loaded.',
+            data: { readiness_score: { score_percentage: 100 } },
+            sources: [],
+            requires_confirmation: false,
+          },
+        };
+      }
+      if (action === 'generate_passport') {
+        return {
+          success: true,
+          data: {
+            success: true,
+            action: 'generate_passport',
+            summary: 'Scheme Readiness Passport generated.',
+            data: {
+              filename: 'SevAIQ_Scheme_Passport.pdf',
+              pdf_base64: 'JVBERi0xLjQK...',
+              readiness_percentage: 100,
+            },
+            sources: [],
+            requires_confirmation: false,
+          },
+        };
+      }
+      if (action === 'get_application_guidance') {
+        return {
+          success: true,
+          data: {
+            success: true,
+            action: 'get_application_guidance',
+            summary: 'Application guidance loaded.',
+            data: { official_portal_url: 'https://pmkisan.gov.in' },
+            sources: [],
+            requires_confirmation: false,
+          },
+        };
+      }
+      return { success: false, error: 'Unknown action' };
+    }),
+  };
+});
+
 describe('Citizen-First Accessible Chat-Driven Assistant Suite', () => {
   const baseProps = {
     schemes: VERIFIED_REFERENCE_SCHEMES,

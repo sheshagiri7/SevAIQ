@@ -1,6 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
 import {
   ALLOWED_ACTIONS,
+  BACKEND_SERVER_ACTIONS,
+  BACKEND_CLIENT_ACTIONS,
   validateChatbotAction,
   extractActionFromText,
   inferClientAction,
@@ -10,6 +12,122 @@ import {
 } from '../utils/actionRegistry';
 import { VERIFIED_REFERENCE_SCHEMES } from '../data/verifiedReferenceSchemes';
 import { INITIAL_DOCUMENT_RECORDS } from '../data/verifiedReferenceSchemes';
+
+vi.mock('../services/api', async () => {
+  const actual = await vi.importActual<any>('../services/api');
+  return {
+    ...actual,
+    executeChatAction: vi.fn().mockImplementation(async (req: any) => {
+      const action = req.action;
+      if (action === 'discover_schemes') {
+        return {
+          success: true,
+          data: {
+            success: true,
+            action: 'discover_schemes',
+            summary:
+              'Opened Scheme Discovery: Found 1 verified scheme matching agriculture (திட்டங்கள் தேடல் பகுதி திறக்கப்பட்டது).',
+            data: { match_count: 1, schemes: [{ id: 'pm-kisan', title: 'PM-KISAN' }] },
+            sources: [
+              {
+                title: 'PM-KISAN',
+                url: 'https://pmkisan.gov.in',
+                verification_source: 'Official Operational Guidelines',
+                verification_date: '2024-02-28',
+              },
+            ],
+            requires_confirmation: false,
+          },
+        };
+      }
+      if (action === 'check_eligibility') {
+        return {
+          success: true,
+          data: {
+            success: true,
+            action: 'check_eligibility',
+            summary: 'Checking eligibility criteria for PM-KISAN.',
+            data: {
+              scheme_id: 'pm-kisan',
+              outcome: 'meets_known_criteria',
+              criteria_matched: ['Age 18+'],
+              missing_information: [],
+            },
+            sources: [
+              {
+                title: 'PM-KISAN',
+                url: 'https://pmkisan.gov.in',
+                verification_source: 'Official Operational Guidelines',
+              },
+            ],
+            requires_confirmation: false,
+          },
+        };
+      }
+      if (action === 'map_documents') {
+        return {
+          success: true,
+          data: {
+            success: true,
+            action: 'map_documents',
+            summary: 'Opened document checklist for selected schemes.',
+            data: {
+              readiness_score: { score_percentage: 100 },
+              total_unique_required_documents: 2,
+            },
+            sources: [],
+            requires_confirmation: false,
+          },
+        };
+      }
+      if (action === 'generate_passport') {
+        return {
+          success: true,
+          data: {
+            success: true,
+            action: 'generate_passport',
+            summary: 'SevAIQ Scheme Passport PDF successfully generated.',
+            data: {
+              filename: 'SevAIQ_Scheme_Passport.pdf',
+              download_endpoint: '/api/passport/pdf',
+              pdf_base64: 'JVBERi0xLjQK...',
+              readiness_percentage: 100,
+            },
+            sources: [],
+            requires_confirmation: false,
+          },
+        };
+      }
+      if (action === 'get_application_guidance') {
+        return {
+          success: true,
+          data: {
+            success: true,
+            action: 'get_application_guidance',
+            summary: 'Application guidance retrieved.',
+            data: {
+              scheme_title: 'PM-KISAN',
+              application_mode: 'Online / CSC',
+              official_portal_url: 'https://pmkisan.gov.in',
+            },
+            sources: [
+              {
+                title: 'PM-KISAN',
+                url: 'https://pmkisan.gov.in',
+                verification_source: 'Official Operational Guidelines',
+              },
+            ],
+            requires_confirmation: false,
+          },
+        };
+      }
+      return {
+        success: false,
+        error: `Action ${action} execution failed`,
+      };
+    }),
+  };
+});
 
 describe('Chatbot Action Registry & Security Validation Suite', () => {
   const mockContext: ActionValidationContext = {
@@ -44,6 +162,18 @@ describe('Chatbot Action Registry & Security Validation Suite', () => {
       expect(ALLOWED_ACTIONS).toContain('NAVIGATE_TO_SECTION');
       expect(ALLOWED_ACTIONS).toContain('CLEAR_SESSION');
       expect(ALLOWED_ACTIONS).toHaveLength(15);
+
+      // Backend canonical actions from docs/CHATBOT_API_CONTRACT.md
+      expect(BACKEND_SERVER_ACTIONS).toContain('discover_schemes');
+      expect(BACKEND_SERVER_ACTIONS).toContain('check_eligibility');
+      expect(BACKEND_SERVER_ACTIONS).toContain('get_scheme_details');
+      expect(BACKEND_SERVER_ACTIONS).toContain('map_documents');
+      expect(BACKEND_SERVER_ACTIONS).toContain('generate_passport');
+      expect(BACKEND_SERVER_ACTIONS).toContain('get_application_guidance');
+      expect(BACKEND_CLIENT_ACTIONS).toContain('navigate_to');
+      expect(BACKEND_CLIENT_ACTIONS).toContain('set_language');
+      expect(BACKEND_CLIENT_ACTIONS).toContain('clear_session');
+      expect(BACKEND_CLIENT_ACTIONS).toContain('speak_text');
     });
 
     it('rejects unknown, arbitrary or dangerous action types', () => {

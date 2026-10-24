@@ -244,11 +244,62 @@ export interface ChatMessageWire {
   content: string;
 }
 
+/**
+ * Official source reference as specified in docs/CHATBOT_API_CONTRACT.md
+ */
+export interface ChatSourceReference {
+  title: string;
+  url: string;
+  verification_source: string;
+  verification_date?: string;
+}
+
+/**
+ * Structured action execution outcome matching docs/CHATBOT_API_CONTRACT.md
+ */
+export interface ChatActionResultSchema {
+  success: boolean;
+  action: string;
+  summary: string;
+  data: Record<string, any>;
+  sources: ChatSourceReference[];
+  requires_confirmation: boolean;
+  next_question?: string | null;
+  error?: {
+    code: string;
+    message: string;
+    details?: any;
+  } | null;
+}
+
+/**
+ * Request payload for POST /api/chat/action
+ */
+export interface ChatActionRequest {
+  action: string;
+  payload?: Record<string, any>;
+  language?: 'en' | 'ta';
+  citizen_context?: Record<string, any>;
+}
+
+/**
+ * Action metadata item from GET /api/chat/actions
+ */
+export interface ChatActionCatalogItem {
+  action: string;
+  type: 'server' | 'client_side';
+  description: string;
+  parameters: Record<string, any>;
+  requires_confirmation?: boolean;
+}
+
 export interface ChatRequestPayload {
   messages: ChatMessageWire[];
   language?: string;
   context_scheme_id?: string;
   citizen_context?: Record<string, any>;
+  action?: string;
+  action_params?: Record<string, any>;
 }
 
 export interface ChatResponsePayload {
@@ -260,6 +311,7 @@ export interface ChatResponsePayload {
   error_type?: string;
   error_message?: string;
   suggested_schemes?: string[];
+  action_result?: ChatActionResultSchema;
 }
 
 export interface ProviderStatus {
@@ -268,6 +320,25 @@ export interface ProviderStatus {
   configured: boolean;
   status: 'ready' | 'not_configured' | 'quota_exhausted' | 'error';
   message: string;
+}
+
+export interface AssistantActionResult {
+  actionType: string;
+  type?: string;
+  success: boolean;
+  messageEn: string;
+  messageTa: string;
+  data?: any;
+  action?: string;
+  summary?: string;
+  sources?: ChatSourceReference[];
+  requires_confirmation?: boolean;
+  next_question?: string | null;
+  error?: {
+    code: string;
+    message: string;
+    details?: any;
+  } | null;
 }
 
 export interface AssistantMessage {
@@ -286,14 +357,7 @@ export interface AssistantMessage {
   isError?: boolean;
   errorType?: string;
   retryable?: boolean;
-  actionResult?: {
-    actionType: string;
-    type?: string;
-    success: boolean;
-    messageEn: string;
-    messageTa: string;
-    data?: any;
-  };
+  actionResult?: AssistantActionResult;
   pendingActionConfirmation?: {
     type: string;
     payload: any;

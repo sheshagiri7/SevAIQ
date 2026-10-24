@@ -18,6 +18,9 @@ import {
   ChatRequestPayload,
   ChatResponsePayload,
   ProviderStatus,
+  ChatActionRequest,
+  ChatActionResultSchema,
+  ChatActionCatalogItem,
 } from '../types';
 
 export const getApiBaseUrl = (): string => {
@@ -756,6 +759,155 @@ export async function fetchChatProviders(): Promise<{
       success: false,
       data: [],
       error: err instanceof Error ? err.message : 'Failed to fetch AI providers',
+    };
+  }
+}
+
+/**
+ * Direct deterministic execution of a typed chatbot action via POST /api/chat/action.
+ * Used for instant, zero-latency server-side operations (discover_schemes, check_eligibility,
+ * get_scheme_details, map_documents, generate_passport, get_application_guidance).
+ */
+export async function executeChatAction(request: ChatActionRequest): Promise<{
+  success: boolean;
+  data: ChatActionResultSchema | null;
+  error?: string;
+}> {
+  const baseUrl = getApiBaseUrl();
+
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+    const response = await fetch(`${baseUrl}/api/chat/action`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify(request),
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      const errorMessage = await extractApiErrorMessage(response);
+      let errorData: any = null;
+      try {
+        errorData = await response.json();
+      } catch {
+        // non-json response
+      }
+
+      return {
+        success: false,
+        data: errorData && typeof errorData === 'object' && 'action' in errorData ? (errorData as ChatActionResultSchema) : null,
+        error: errorMessage,
+      };
+    }
+
+    try {
+      const data = await response.json();
+      if (data && typeof data === 'object' && typeof data.action === 'string') {
+        const resultSchema = data as ChatActionResultSchema;
+        return {
+          success: Boolean(resultSchema.success),
+          data: resultSchema,
+          error: resultSchema.error?.message,
+        };
+      }
+      return {
+        success: false,
+        data: null,
+        error: 'Malformed response structure received from /api/chat/action',
+      };
+    } catch {
+      return {
+        success: false,
+        data: null,
+        error: 'Malformed JSON response from /api/chat/action',
+      };
+    }
+  } catch (err: unknown) {
+    let message = 'Failed to connect to Chatbot Action endpoint';
+    if (err instanceof DOMException && err.name === 'AbortError') {
+      message = 'Chat action request timed out (15s)';
+    } else if (err instanceof Error && err.message) {
+      message = err.message;
+    }
+    return {
+      success: false,
+      data: null,
+      error: message,
+    };
+  }
+}
+
+/**
+ * Retrieves the catalog of registered chatbot actions and metadata from GET /api/chat/actions.
+ */
+export async function fetchChatActionsCatalog(): Promise<{
+  success: boolean;
+  data: ChatActionCatalogItem[];
+  error?: string;
+}> {
+  const baseUrl = getApiBaseUrl();
+
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 6000);
+
+    const response = await fetch(`${baseUrl}/api/chat/actions`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+      },
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      const errorMessage = await extractApiErrorMessage(response);
+      return {
+        success: false,
+        data: [],
+        error: errorMessage,
+      };
+    }
+
+    try {
+      const data = await response.json();
+      if (Array.isArray(data)) {
+        return {
+          success: true,
+          data: data as ChatActionCatalogItem[],
+        };
+      }
+      return {
+        success: false,
+        data: [],
+        error: 'Expected array format from /api/chat/actions',
+      };
+    } catch {
+      return {
+        success: false,
+        data: [],
+        error: 'Malformed JSON received from /api/chat/actions',
+      };
+    }
+  } catch (err: unknown) {
+    let message = 'Failed to fetch chatbot actions catalog';
+    if (err instanceof DOMException && err.name === 'AbortError') {
+      message = 'Request to /api/chat/actions timed out (6s)';
+    } else if (err instanceof Error && err.message) {
+      message = err.message;
+    }
+    return {
+      success: false,
+      data: [],
+      error: message,
     };
   }
 }

@@ -27,6 +27,7 @@ import {
   CheckCircle2,
   HelpCircle,
   ExternalLink,
+  Download,
 } from 'lucide-react';
 import { Scheme, AssistantLanguage, AssistantMessage, NavigationTab, ChatMessageWire, DocumentPossessionStatus } from '../types';
 import {
@@ -47,7 +48,7 @@ import {
   isValidTranscript,
 } from '../utils/speechUtils';
 import { useLanguage } from '../context/LanguageContext';
-import { sendChatMessage } from '../services/api';
+import { sendChatMessage, triggerBlobDownload } from '../services/api';
 import { CivicMarkdown } from './CivicMarkdown';
 import { buildCitizenChatContext } from '../utils/chatbotContextBuilder';
 import { CitizenProfile, DocumentRecord } from '../types';
@@ -57,6 +58,7 @@ import {
   extractActionFromText,
   validateChatbotAction,
   executeChatbotAction,
+  normalizeActionType,
   ChatbotActionHandlers,
   ActionValidationContext,
   ActionResult,
@@ -770,11 +772,18 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
         }
 
         // Direct local actions
+        const localNorm = normalizeActionType(validated.action.type);
         if (
-          validated.action.type === 'CHANGE_LANGUAGE' ||
-          validated.action.type === 'NAVIGATE_TO_SECTION'
+          localNorm === 'CHANGE_LANGUAGE' ||
+          localNorm === 'NAVIGATE_TO_SECTION'
         ) {
-          const result = await executeChatbotAction(validated.action, actionHandlers);
+          const result = await executeChatbotAction(validated.action, actionHandlers, {
+            profile,
+            schemes,
+            documents,
+            selectedSchemeIds,
+            language,
+          });
           const botMsg: AssistantMessage = {
             id: `bot-act-${Date.now()}`,
             sender: 'assistant',
@@ -840,23 +849,69 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
         let actionConfirmation: any;
         let inlineQ: any;
 
-        // Process action proposal
-        const actionCandidate = proposedAction || clientProposed;
-        if (actionCandidate) {
-          const validated = validateChatbotAction(actionCandidate, validationContext);
-          if (validated.valid && validated.action) {
-            if (validated.requiresConfirmation) {
-              actionConfirmation = {
-                type: validated.action.type,
-                payload: validated.action.payload,
-                promptEn: 'Are you sure you want to reset your session and clear your data?',
-                promptTa: 'உங்கள் விவரங்களை அழித்து புதிய அமர்வைத் தொடங்க விரும்புகிறீர்களா?',
+        // Priority 1: Backend action result returned in /api/chat response
+        if (res.data.action_result) {
+          const bar = res.data.action_result;
+          executedResult = {
+            actionType: bar.action,
+            action: bar.action,
+            success: bar.success,
+            summary: bar.summary,
+            messageEn: bar.summary,
+            messageTa: bar.summary,
+            data: bar.data,
+            sources: bar.sources,
+            requires_confirmation: bar.requires_confirmation,
+            next_question: bar.next_question,
+            error: bar.error,
+          };
+
+          // If backend indicated a client-side interaction
+          if (bar.data && bar.data.execution === 'client_side') {
+            if (bar.data.target) {
+              const targetMap: Record<string, NavigationTab> = {
+                schemes: 'discover',
+                documents: 'document-mapper',
+                passport: 'readiness-passport',
+                tracking: 'application-tracker',
+                eligibility: 'eligibility',
+                profile: 'demographic-profile',
+                dashboard: 'dashboard',
+                chat: 'chat',
               };
-            } else {
-              executedResult = await executeChatbotAction(validated.action, actionHandlers);
-              if (validated.action.type === 'ASK_PROFILE_QUESTION') {
-                const f = validated.action.payload.field as keyof CitizenProfile;
-                inlineQ = buildInlineQuestion(f, language);
+              const tab = targetMap[bar.data.target] || bar.data.target;
+              onNavigate(tab);
+            }
+            if (bar.data.language && (bar.data.language === 'ta' || bar.data.language === 'en')) {
+              setLanguage(bar.data.language);
+            }
+          }
+        } else {
+          // Priority 2: Process action proposal from comment tag or client intent
+          const actionCandidate = proposedAction || clientProposed;
+          if (actionCandidate) {
+            const validated = validateChatbotAction(actionCandidate, validationContext);
+            if (validated.valid && validated.action) {
+              if (validated.requiresConfirmation) {
+                actionConfirmation = {
+                  type: validated.action.type,
+                  payload: validated.action.payload,
+                  promptEn: 'Are you sure you want to reset your session and clear your data?',
+                  promptTa: 'உங்கள் விவரங்களை அழித்து புதிய அமர்வைத் தொடங்க விரும்புகிறீர்களா?',
+                };
+              } else {
+                executedResult = await executeChatbotAction(validated.action, actionHandlers, {
+                  profile,
+                  schemes,
+                  documents,
+                  selectedSchemeIds,
+                  language,
+                  applicationTracking,
+                });
+                if (normalizeActionType(validated.action.type) === 'ASK_PROFILE_QUESTION') {
+                  const f = validated.action.payload.field as keyof CitizenProfile;
+                  inlineQ = buildInlineQuestion(f, language);
+                }
               }
             }
           }
@@ -1628,68 +1683,290 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
                 {/* Action Result Notification Card */}
                 {isBot && msg.actionResult && (
                   <div
-                    className="mt-3.5 p-3.5 bg-[#EDF6EF] dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-800 rounded-xl space-y-2 text-sm sm:text-base animate-in fade-in"
+                    className={`mt-3.5 p-3.5 border rounded-xl space-y-2.5 text-sm sm:text-base animate-in fade-in ${
+                      msg.actionResult.success
+                        ? 'bg-[#EDF6EF] dark:bg-emerald-950/60 border-emerald-300 dark:border-emerald-800'
+                        : 'bg-amber-50 dark:bg-amber-950/40 border-amber-300 dark:border-amber-800'
+                    }`}
                     data-testid="action-result-card"
                   >
-                    <div className="flex items-center space-x-2 text-[#16733B] dark:text-emerald-300 font-bold">
-                      <CheckCircle2 className="w-5 h-5 text-[#16733B] dark:text-emerald-400 shrink-0" />
-                      <span>
-                        {language === 'ta' ? 'நடவடிக்கை மேற்கொள்ளப்பட்டது' : 'Action Performed'}
-                      </span>
+                    <div className="flex items-center space-x-2 font-bold">
+                      {msg.actionResult.success ? (
+                        <>
+                          <CheckCircle2 className="w-5 h-5 text-[#16733B] dark:text-emerald-400 shrink-0" />
+                          <span className="text-[#16733B] dark:text-emerald-300">
+                            {language === 'ta' ? 'நடவடிக்கை மேற்கொள்ளப்பட்டது' : 'Action Performed'}
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0" />
+                          <span className="text-amber-800 dark:text-amber-300">
+                            {language === 'ta' ? 'நடவடிக்கை நிறைவடையவில்லை' : 'Action Could Not Complete'}
+                          </span>
+                        </>
+                      )}
                     </div>
+
                     <p className="text-slate-800 dark:text-slate-200 font-medium">
-                      {language === 'ta' ? msg.actionResult.messageTa : msg.actionResult.messageEn}
+                      {msg.actionResult.summary ||
+                        (language === 'ta' ? msg.actionResult.messageTa : msg.actionResult.messageEn)}
                     </p>
-                    {msg.actionResult.actionType === 'SHOW_REQUIRED_DOCUMENTS' && (
-                      <button
-                        type="button"
-                        onClick={() => onNavigate('document-mapper')}
-                        className="min-h-[48px] px-4 py-2 bg-[#16733B] hover:bg-[#105C2E] text-white rounded-xl font-bold flex items-center space-x-2 transition-colors cursor-pointer"
-                      >
-                        <FileText className="w-4 h-4" />
-                        <span>{language === 'ta' ? 'ஆவணங்கள் திட்டமிடலை பார்க்க' : 'View Document Planner'}</span>
-                      </button>
+
+                    {/* Specific Action Outcome Visuals */}
+                    {/* 1. Readiness Passport Generation & PDF Download */}
+                    {(msg.actionResult.actionType === 'GENERATE_READINESS_PASSPORT' ||
+                      msg.actionResult.action === 'generate_passport') && (
+                      <div className="space-y-2 pt-1 border-t border-emerald-200 dark:border-emerald-800/60">
+                        {msg.actionResult.data?.pdf_base64 && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              try {
+                                const b64 = msg.actionResult!.data.pdf_base64;
+                                const byteCharacters = atob(b64);
+                                const byteNumbers = new Array(byteCharacters.length);
+                                for (let i = 0; i < byteCharacters.length; i++) {
+                                  byteNumbers[i] = byteCharacters.charCodeAt(i);
+                                }
+                                const byteArray = new Uint8Array(byteNumbers);
+                                const blob = new Blob([byteArray], { type: 'application/pdf' });
+                                triggerBlobDownload(
+                                  blob,
+                                  msg.actionResult!.data.filename || 'SevAIQ_Scheme_Passport.pdf'
+                                );
+                              } catch (err) {
+                                console.error('Failed to download PDF blob', err);
+                              }
+                            }}
+                            data-testid="download-passport-button"
+                            className="min-h-[48px] px-4 py-2 bg-[#16733B] hover:bg-[#105C2E] text-white rounded-xl font-bold flex items-center space-x-2 transition-colors cursor-pointer shadow-xs"
+                          >
+                            <Download className="w-5 h-5 shrink-0" />
+                            <span>
+                              {language === 'ta'
+                                ? 'பாஸ்போர்ட்டை பதிவிறக்கு (PDF)'
+                                : 'Download Passport (PDF)'}
+                            </span>
+                          </button>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => onNavigate('readiness-passport')}
+                          className="min-h-[48px] px-4 py-2 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-[#17324D] dark:text-slate-200 border border-slate-300 dark:border-slate-600 rounded-xl font-bold flex items-center space-x-2 transition-colors cursor-pointer"
+                        >
+                          <ShieldCheck className="w-4 h-4 text-[#16733B]" />
+                          <span>
+                            {language === 'ta'
+                              ? 'தயார் பாஸ்போர்ட்டை பார்க்க'
+                              : 'View Readiness Passport'}
+                          </span>
+                        </button>
+                      </div>
                     )}
-                    {msg.actionResult.actionType === 'CHECK_ELIGIBILITY' && (
-                      <button
-                        type="button"
-                        onClick={() => onNavigate('eligibility')}
-                        className="min-h-[48px] px-4 py-2 bg-[#16733B] hover:bg-[#105C2E] text-white rounded-xl font-bold flex items-center space-x-2 transition-colors cursor-pointer"
-                      >
-                        <CheckSquare className="w-4 h-4" />
-                        <span>{language === 'ta' ? 'தகுதி சரிபார்ப்பை பார்க்க' : 'View Eligibility Checker'}</span>
-                      </button>
+
+                    {/* 2. Eligibility Check Assessment */}
+                    {(msg.actionResult.actionType === 'CHECK_ELIGIBILITY' ||
+                      msg.actionResult.action === 'check_eligibility') && (
+                      <div className="space-y-2 pt-1 border-t border-emerald-200 dark:border-emerald-800/60">
+                        {msg.actionResult.data?.outcome && (
+                          <div className="flex items-center space-x-2 text-xs">
+                            <span className="font-bold text-slate-700 dark:text-slate-300">
+                              {language === 'ta' ? 'தகுதி நிலை:' : 'Eligibility Outcome:'}
+                            </span>
+                            <span
+                              className={`px-2 py-0.5 rounded-full font-bold ${
+                                msg.actionResult.data.outcome === 'meets_known_criteria'
+                                  ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-700'
+                                  : msg.actionResult.data.outcome === 'needs_verification'
+                                  ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-200 border border-amber-300 dark:border-amber-700'
+                                  : 'bg-rose-100 text-rose-800 dark:bg-rose-900/60 dark:text-rose-200 border border-rose-300 dark:border-rose-700'
+                              }`}
+                            >
+                              {msg.actionResult.data.outcome === 'meets_known_criteria'
+                                ? language === 'ta'
+                                  ? 'அளவுகோல்கள் பொருந்துகின்றன'
+                                  : 'Meets Known Criteria'
+                                : msg.actionResult.data.outcome === 'needs_verification'
+                                ? language === 'ta'
+                                  ? 'சரிபார்ப்பு தேவை'
+                                  : 'Needs Verification'
+                                : language === 'ta'
+                                ? 'அளவுகோல்கள் பொருந்தவில்லை'
+                                : 'Does Not Meet Criteria'}
+                            </span>
+                          </div>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => onNavigate('eligibility')}
+                          className="min-h-[48px] px-4 py-2 bg-[#16733B] hover:bg-[#105C2E] text-white rounded-xl font-bold flex items-center space-x-2 transition-colors cursor-pointer"
+                        >
+                          <CheckSquare className="w-4 h-4" />
+                          <span>
+                            {language === 'ta'
+                              ? 'தகுதி சரிபார்ப்பை பார்க்க'
+                              : 'View Eligibility Checker'}
+                          </span>
+                        </button>
+                      </div>
                     )}
-                    {msg.actionResult.actionType === 'SHOW_APPLICATION_PROGRESS' && (
-                      <button
-                        type="button"
-                        onClick={() => onNavigate('application-tracker')}
-                        className="min-h-[48px] px-4 py-2 bg-[#16733B] hover:bg-[#105C2E] text-white rounded-xl font-bold flex items-center space-x-2 transition-colors cursor-pointer"
-                      >
-                        <ListOrdered className="w-4 h-4" />
-                        <span>{language === 'ta' ? 'விண்ணப்ப வழிகாட்டலை பார்க்க' : 'View Application Tracker'}</span>
-                      </button>
+
+                    {/* 3. Document Mapping Requirements */}
+                    {(msg.actionResult.actionType === 'SHOW_REQUIRED_DOCUMENTS' ||
+                      msg.actionResult.action === 'map_documents') && (
+                      <div className="space-y-2 pt-1 border-t border-emerald-200 dark:border-emerald-800/60">
+                        {msg.actionResult.data?.readiness_score?.score_percentage !== undefined && (
+                          <div className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center space-x-2">
+                            <span>{language === 'ta' ? 'ஆவண தயார் நிலை:' : 'Readiness Score:'}</span>
+                            <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-200 rounded font-mono font-bold">
+                              {msg.actionResult.data.readiness_score.score_percentage}%
+                            </span>
+                          </div>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => onNavigate('document-mapper')}
+                          className="min-h-[48px] px-4 py-2 bg-[#16733B] hover:bg-[#105C2E] text-white rounded-xl font-bold flex items-center space-x-2 transition-colors cursor-pointer"
+                        >
+                          <FileText className="w-4 h-4" />
+                          <span>
+                            {language === 'ta'
+                              ? 'ஆவணங்கள் திட்டமிடலை பார்க்க'
+                              : 'View Document Planner'}
+                          </span>
+                        </button>
+                      </div>
                     )}
-                    {msg.actionResult.actionType === 'GENERATE_READINESS_PASSPORT' && (
-                      <button
-                        type="button"
-                        onClick={() => onNavigate('readiness-passport')}
-                        className="min-h-[48px] px-4 py-2 bg-[#16733B] hover:bg-[#105C2E] text-white rounded-xl font-bold flex items-center space-x-2 transition-colors cursor-pointer"
-                      >
-                        <ShieldCheck className="w-4 h-4" />
-                        <span>{language === 'ta' ? 'தயார் பாஸ்போர்ட்டை பார்க்க' : 'View Readiness Passport'}</span>
-                      </button>
+
+                    {/* 4. Scheme Discovery */}
+                    {(msg.actionResult.actionType === 'DISCOVER_SCHEMES' ||
+                      msg.actionResult.action === 'discover_schemes') && (
+                      <div className="space-y-2 pt-1 border-t border-emerald-200 dark:border-emerald-800/60">
+                        <button
+                          type="button"
+                          onClick={() => onNavigate('discover')}
+                          className="min-h-[48px] px-4 py-2 bg-[#16733B] hover:bg-[#105C2E] text-white rounded-xl font-bold flex items-center space-x-2 transition-colors cursor-pointer"
+                        >
+                          <Compass className="w-4 h-4" />
+                          <span>
+                            {language === 'ta'
+                              ? 'திட்டங்கள் பட்டியலை பார்க்க'
+                              : 'View Scheme Directory'}
+                          </span>
+                        </button>
+                      </div>
                     )}
-                    {msg.actionResult.actionType === 'OPEN_OFFICIAL_APPLICATION_LINK' && msg.actionResult.data?.portalUrl && (
-                      <a
-                        href={msg.actionResult.data.portalUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="min-h-[48px] inline-flex items-center space-x-2 px-4 py-2 bg-[#17324D] hover:bg-[#0F2133] text-white rounded-xl font-bold transition-colors"
-                      >
-                        <span>{language === 'ta' ? 'அதிகாரப்பூர்வ போர்ட்டலை திறக்க' : 'Open Official Portal'}</span>
-                        <ExternalLink className="w-4 h-4" />
-                      </a>
+
+                    {/* 5. Application Guidance & Official Portal Link */}
+                    {(msg.actionResult.actionType === 'SHOW_APPLICATION_PROGRESS' ||
+                      msg.actionResult.action === 'get_application_guidance' ||
+                      msg.actionResult.actionType === 'OPEN_OFFICIAL_APPLICATION_LINK') && (
+                      <div className="space-y-2 pt-1 border-t border-emerald-200 dark:border-emerald-800/60">
+                        {(msg.actionResult.data?.official_portal_url ||
+                          msg.actionResult.data?.portalUrl) && (
+                          <a
+                            href={
+                              msg.actionResult.data.official_portal_url ||
+                              msg.actionResult.data.portalUrl
+                            }
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="min-h-[48px] inline-flex items-center space-x-2 px-4 py-2 bg-[#17324D] hover:bg-[#0F2133] text-white rounded-xl font-bold transition-colors"
+                          >
+                            <span>
+                              {language === 'ta'
+                                ? 'அதிகாரப்பூர்வ போர்ட்டலை திறக்க'
+                                : 'Open Official Portal'}
+                            </span>
+                            <ExternalLink className="w-4 h-4" />
+                          </a>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => onNavigate('application-tracker')}
+                          className="min-h-[48px] px-4 py-2 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-[#17324D] dark:text-slate-200 border border-slate-300 dark:border-slate-600 rounded-xl font-bold flex items-center space-x-2 transition-colors cursor-pointer"
+                        >
+                          <ListOrdered className="w-4 h-4 text-[#16733B]" />
+                          <span>
+                            {language === 'ta'
+                              ? 'விண்ணப்ப வழிகாட்டலை பார்க்க'
+                              : 'View Application Tracker'}
+                          </span>
+                        </button>
+                      </div>
+                    )}
+
+                    {/* Official Verified Sources */}
+                    {msg.actionResult.sources && msg.actionResult.sources.length > 0 && (
+                      <div className="mt-2.5 pt-2 border-t border-emerald-200 dark:border-emerald-800/60 text-xs space-y-1.5">
+                        <div className="font-bold flex items-center space-x-1.5 text-[#17324D] dark:text-slate-200">
+                          <ShieldCheck className="w-4 h-4 text-[#16733B] dark:text-emerald-400 shrink-0" />
+                          <span>
+                            {language === 'ta'
+                              ? 'அதிகாரப்பூர்வ அரசு ஆதாரங்கள் (gov.in)'
+                              : 'Official Government Sources (gov.in)'}
+                          </span>
+                        </div>
+                        <div className="space-y-1">
+                          {msg.actionResult.sources.map((src, sIdx) => (
+                            <div
+                              key={sIdx}
+                              className="flex flex-wrap items-center justify-between gap-1 text-slate-700 dark:text-slate-300"
+                            >
+                              <a
+                                href={src.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center space-x-1 text-[#16733B] dark:text-emerald-400 hover:underline font-semibold"
+                              >
+                                <span>{src.title || src.url}</span>
+                                <ExternalLink className="w-3 h-3" />
+                              </a>
+                              <span className="text-[11px] text-[#596775] dark:text-slate-400 bg-white/60 dark:bg-slate-800/60 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700">
+                                {src.verification_source}
+                                {src.verification_date ? ` • ${src.verification_date}` : ''}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Follow-up Question Prompt */}
+                    {msg.actionResult.next_question && (
+                      <div className="mt-2.5 p-2.5 bg-blue-50 dark:bg-blue-950/50 border border-blue-200 dark:border-blue-800 rounded-lg text-xs sm:text-sm space-y-1.5">
+                        <div className="font-bold text-blue-900 dark:text-blue-300 flex items-center space-x-1">
+                          <HelpCircle className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
+                          <span>
+                            {language === 'ta'
+                              ? 'தகுதியை உறுதிப்படுத்த அடுத்த படி:'
+                              : 'Next step to confirm eligibility:'}
+                          </span>
+                        </div>
+                        <p className="text-blue-950 dark:text-blue-200 font-medium">
+                          {msg.actionResult.next_question}
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleSendQuery(msg.actionResult!.next_question!)
+                          }
+                          className="px-3 py-1.5 bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-xs font-semibold cursor-pointer transition-colors"
+                        >
+                          {language === 'ta' ? 'இதற்கு பதிலளி' : 'Answer Question'}
+                        </button>
+                      </div>
+                    )}
+
+                    {/* Structured Error Notice if Action Failed */}
+                    {!msg.actionResult.success && msg.actionResult.error && (
+                      <div className="mt-2 pt-2 border-t border-amber-300 dark:border-amber-700/60 text-xs text-amber-900 dark:text-amber-200">
+                        <p className="font-mono text-[11px] bg-amber-100/70 dark:bg-amber-900/40 p-1.5 rounded">
+                          {msg.actionResult.error.code ? `[${msg.actionResult.error.code}] ` : ''}
+                          {msg.actionResult.error.message}
+                        </p>
+                      </div>
                     )}
                   </div>
                 )}
