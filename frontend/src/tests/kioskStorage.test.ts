@@ -9,6 +9,11 @@ import {
   persistCitizenProfile,
   persistDocuments,
   persistSelectedSchemes,
+  persistApplicationProgress,
+  persistApplicationNotes,
+  persistApplicationStatus,
+  persistApplicationReminders,
+  isCitizenDataPersisted,
 } from '../utils/kioskStorage';
 import { CitizenProfile, DocumentRecord } from '../types';
 
@@ -137,6 +142,77 @@ describe('Public Kiosk Mode Storage & Privacy Suite', () => {
       mockStorage.setItem(STORAGE_KEYS.SELECTED_SCHEMES, JSON.stringify(['pm-kisan']));
       persistSelectedSchemes([], false, mockStorage);
       expect(mockStorage.getItem(STORAGE_KEYS.SELECTED_SCHEMES)).toBeNull();
+    });
+  });
+
+  describe('Application Tracker zero-persistence helpers', () => {
+    it('persistApplicationProgress: prevents persistence in Kiosk Mode', () => {
+      persistApplicationProgress({ 'pm-kisan': ['step-1', 'step-2'] }, true, mockStorage);
+      expect(mockStorage.getItem(STORAGE_KEYS.APPLICATION_PROGRESS)).toBeNull();
+
+      persistApplicationProgress({ 'pm-kisan': ['step-1'] }, false, mockStorage);
+      expect(mockStorage.getItem(STORAGE_KEYS.APPLICATION_PROGRESS)).not.toBeNull();
+      expect(JSON.parse(mockStorage.getItem(STORAGE_KEYS.APPLICATION_PROGRESS)!)).toEqual({
+        'pm-kisan': ['step-1'],
+      });
+
+      persistApplicationProgress({}, false, mockStorage);
+      expect(mockStorage.getItem(STORAGE_KEYS.APPLICATION_PROGRESS)).toBeNull();
+    });
+
+    it('persistApplicationNotes: prevents persistence in Kiosk Mode', () => {
+      persistApplicationNotes({ 'pm-kisan': 'Visited CSC center today' }, true, mockStorage);
+      expect(mockStorage.getItem(STORAGE_KEYS.APPLICATION_NOTES)).toBeNull();
+
+      persistApplicationNotes({ 'pm-kisan': 'Visited CSC center today' }, false, mockStorage);
+      expect(mockStorage.getItem(STORAGE_KEYS.APPLICATION_NOTES)).not.toBeNull();
+      expect(JSON.parse(mockStorage.getItem(STORAGE_KEYS.APPLICATION_NOTES)!)).toEqual({
+        'pm-kisan': 'Visited CSC center today',
+      });
+
+      persistApplicationNotes({}, false, mockStorage);
+      expect(mockStorage.getItem(STORAGE_KEYS.APPLICATION_NOTES)).toBeNull();
+    });
+
+    it('persistApplicationStatus: prevents persistence in Kiosk Mode', () => {
+      persistApplicationStatus({ 'pm-kisan': 'SUBMITTED' }, true, mockStorage);
+      expect(mockStorage.getItem(STORAGE_KEYS.APPLICATION_STATUS)).toBeNull();
+
+      persistApplicationStatus({ 'pm-kisan': 'SUBMITTED' }, false, mockStorage);
+      expect(mockStorage.getItem(STORAGE_KEYS.APPLICATION_STATUS)).not.toBeNull();
+      expect(JSON.parse(mockStorage.getItem(STORAGE_KEYS.APPLICATION_STATUS)!)).toEqual({
+        'pm-kisan': 'SUBMITTED',
+      });
+
+      persistApplicationStatus({}, false, mockStorage);
+      expect(mockStorage.getItem(STORAGE_KEYS.APPLICATION_STATUS)).toBeNull();
+    });
+
+    it('persistApplicationReminders: prevents persistence in Kiosk Mode', () => {
+      persistApplicationReminders({ 'pm-kisan': { date: '2026-11-01', text: 'Check status' } }, true, mockStorage);
+      expect(mockStorage.getItem(STORAGE_KEYS.APPLICATION_REMINDERS)).toBeNull();
+
+      persistApplicationReminders({ 'pm-kisan': { date: '2026-11-01', text: 'Check status' } }, false, mockStorage);
+      expect(mockStorage.getItem(STORAGE_KEYS.APPLICATION_REMINDERS)).not.toBeNull();
+
+      persistApplicationReminders({}, false, mockStorage);
+      expect(mockStorage.getItem(STORAGE_KEYS.APPLICATION_REMINDERS)).toBeNull();
+    });
+
+    it('isCitizenDataPersisted: correctly detects presence or absence of citizen data', () => {
+      expect(isCitizenDataPersisted(mockStorage)).toBe(false);
+
+      mockStorage.setItem(STORAGE_KEYS.APPLICATION_STATUS, JSON.stringify({ test: 'status' }));
+      expect(isCitizenDataPersisted(mockStorage)).toBe(true);
+
+      purgeCitizenStorage(mockStorage);
+      expect(isCitizenDataPersisted(mockStorage)).toBe(false);
+
+      mockStorage.setItem(STORAGE_KEYS.PROFILE, JSON.stringify(DEMO_PROFILE));
+      expect(isCitizenDataPersisted(mockStorage)).toBe(true);
+
+      purgeCitizenStorage(mockStorage);
+      expect(isCitizenDataPersisted(mockStorage)).toBe(false);
     });
   });
 

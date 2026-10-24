@@ -79,6 +79,8 @@ export interface VoiceAssistantProps {
   profile?: CitizenProfile;
   documents?: DocumentRecord[];
   selectedSchemeIds?: string[];
+  applicationTracking?: Record<string, string>;
+  onVoiceActiveChange?: (isActive: boolean) => void;
   onUpdateProfile?: (profile: Partial<CitizenProfile>) => void;
   onUpdateDocumentStatus?: (docId: string, status: DocumentPossessionStatus) => void;
   onToggleSchemeSelection?: (schemeId: string) => void;
@@ -103,6 +105,8 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
   profile,
   documents = [],
   selectedSchemeIds = [],
+  applicationTracking: externalApplicationTracking,
+  onVoiceActiveChange,
   onUpdateProfile,
   onUpdateDocumentStatus,
   onToggleSchemeSelection,
@@ -266,12 +270,19 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
     };
   }, [language]);
 
+  // Notify parent of active speech recognition or speech playback
+  useEffect(() => {
+    const isVoiceActive = speechState === 'listening' || speechState === 'reviewing' || ttsState.status === 'playing';
+    onVoiceActiveChange?.(isVoiceActive);
+  }, [speechState, ttsState.status, onVoiceActiveChange]);
+
   // Clean up any ongoing speech synthesis and recognition when unmounting
   useEffect(() => {
     return () => {
       stopAllAudio();
+      onVoiceActiveChange?.(false);
     };
-  }, []);
+  }, [onVoiceActiveChange]);
 
   // Scroll to bottom on new messages
   useEffect(() => {
@@ -457,7 +468,7 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
     const finalQuery = speechTranscript.trim();
     if (!finalQuery || isAiLoading) return;
 
-    // Send the user-reviewed transcript to the genuine Gemini API
+    // Send the user-reviewed transcript to the SevAIQ AI backend API
     handleSendQuery(finalQuery);
     setSpeechTranscript('');
     setInterimTranscript('');
@@ -717,7 +728,7 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
   };
 
   // -------------------------------------------------------------
-  // SEND QUERY TO GENUINE GEMINI BACKEND API & PROCESS ACTIONS
+  // SEND QUERY TO SEVAIQ AI BACKEND API & PROCESS ACTIONS
   // -------------------------------------------------------------
   const handleSendQuery = async (textToSend?: string) => {
     const query = (textToSend ?? inputText).trim();
@@ -815,14 +826,16 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
       }));
     chatHistory.push({ role: 'user', content: query });
 
-    let applicationTracking: Record<string, string> | undefined;
-    try {
-      const savedStatuses = localStorage.getItem('SEVAIQ_APPLICATION_STATUS');
-      if (savedStatuses) {
-        applicationTracking = JSON.parse(savedStatuses);
+    let applicationTracking: Record<string, string> | undefined = externalApplicationTracking;
+    if (!applicationTracking && !isKioskMode) {
+      try {
+        const savedStatuses = localStorage.getItem('SEVAIQ_APPLICATION_STATUS');
+        if (savedStatuses) {
+          applicationTracking = JSON.parse(savedStatuses);
+        }
+      } catch {
+        // ignore
       }
-    } catch {
-      // ignore
     }
 
     const citizenContext = buildCitizenChatContext(

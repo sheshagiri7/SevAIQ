@@ -18,6 +18,15 @@ interface ApplicationTrackerProps {
   initialSchemeId?: string;
   onNavigate: (tab: NavigationTab) => void;
   isKioskMode: boolean;
+  // Shared common in-memory tracker state (optional, for syncing with Chatbot and App)
+  completedStepsMap?: Record<string, string[]>;
+  onUpdateCompletedSteps?: (updater: (prev: Record<string, string[]>) => Record<string, string[]>) => void;
+  notesMap?: Record<string, string>;
+  onUpdateNotes?: (updater: (prev: Record<string, string>) => Record<string, string>) => void;
+  statusMap?: Record<string, CitizenApplicationStatus>;
+  onUpdateStatus?: (updater: (prev: Record<string, CitizenApplicationStatus>) => Record<string, CitizenApplicationStatus>) => void;
+  reminderMap?: Record<string, string>;
+  onUpdateReminder?: (updater: (prev: Record<string, string>) => Record<string, string>) => void;
 }
 
 export type CitizenApplicationStatus =
@@ -165,6 +174,14 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
   initialSchemeId,
   onNavigate,
   isKioskMode,
+  completedStepsMap: externalStepsMap,
+  onUpdateCompletedSteps,
+  notesMap: externalNotesMap,
+  onUpdateNotes,
+  statusMap: externalStatusMap,
+  onUpdateStatus,
+  reminderMap: externalReminderMap,
+  onUpdateReminder,
 }) => {
   const { t, getLocalizedScheme, language } = useLanguage();
   const [selectedSchemeId, setSelectedSchemeId] = useState<string>(() => {
@@ -174,8 +191,8 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
     return schemes.length > 0 ? schemes[0].id : 'pm-kisan';
   });
 
-  // Track completed step IDs per scheme
-  const [completedStepsMap, setCompletedStepsMap] = useState<Record<string, string[]>>(() => {
+  // Track completed step IDs per scheme (internal fallback)
+  const [localCompletedStepsMap, setLocalCompletedStepsMap] = useState<Record<string, string[]>>(() => {
     if (!isKioskMode) {
       try {
         const saved = localStorage.getItem('SEVAIQ_APPLICATION_PROGRESS');
@@ -187,8 +204,8 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
     return {};
   });
 
-  // Citizen optional personal note per scheme (no PII)
-  const [notesMap, setNotesMap] = useState<Record<string, string>>(() => {
+  // Citizen optional personal note per scheme (internal fallback)
+  const [localNotesMap, setLocalNotesMap] = useState<Record<string, string>>(() => {
     if (!isKioskMode) {
       try {
         const saved = localStorage.getItem('SEVAIQ_APPLICATION_NOTES');
@@ -200,8 +217,8 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
     return {};
   });
 
-  // Citizen self-reported application status per scheme
-  const [statusMap, setStatusMap] = useState<Record<string, CitizenApplicationStatus>>(() => {
+  // Citizen self-reported application status per scheme (internal fallback)
+  const [localStatusMap, setLocalStatusMap] = useState<Record<string, CitizenApplicationStatus>>(() => {
     if (!isKioskMode) {
       try {
         const saved = localStorage.getItem('SEVAIQ_APPLICATION_STATUS');
@@ -213,8 +230,8 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
     return {};
   });
 
-  // Follow-up reminder date per scheme
-  const [reminderMap, setReminderMap] = useState<Record<string, string>>(() => {
+  // Follow-up reminder date per scheme (internal fallback)
+  const [localReminderMap, setLocalReminderMap] = useState<Record<string, string>>(() => {
     if (!isKioskMode) {
       try {
         const saved = localStorage.getItem('SEVAIQ_APPLICATION_REMINDERS');
@@ -226,51 +243,89 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
     return {};
   });
 
+  // Effective state targets
+  const completedStepsMap = externalStepsMap !== undefined ? externalStepsMap : localCompletedStepsMap;
+  const notesMap = externalNotesMap !== undefined ? externalNotesMap : localNotesMap;
+  const statusMap = externalStatusMap !== undefined ? externalStatusMap : localStatusMap;
+  const reminderMap = externalReminderMap !== undefined ? externalReminderMap : localReminderMap;
+
+  const setCompletedSteps = (updater: (prev: Record<string, string[]>) => Record<string, string[]>) => {
+    if (onUpdateCompletedSteps) {
+      onUpdateCompletedSteps(updater);
+    } else {
+      setLocalCompletedStepsMap(updater);
+    }
+  };
+
+  const setNotes = (updater: (prev: Record<string, string>) => Record<string, string>) => {
+    if (onUpdateNotes) {
+      onUpdateNotes(updater);
+    } else {
+      setLocalNotesMap(updater);
+    }
+  };
+
+  const setStatus = (updater: (prev: Record<string, CitizenApplicationStatus>) => Record<string, CitizenApplicationStatus>) => {
+    if (onUpdateStatus) {
+      onUpdateStatus(updater);
+    } else {
+      setLocalStatusMap(updater);
+    }
+  };
+
+  const setReminder = (updater: (prev: Record<string, string>) => Record<string, string>) => {
+    if (onUpdateReminder) {
+      onUpdateReminder(updater);
+    } else {
+      setLocalReminderMap(updater);
+    }
+  };
+
   const [reminderNotice, setReminderNotice] = useState<string | null>(null);
 
-  // Sync to localStorage only when NOT in kiosk mode
+  // Sync to localStorage only when NOT in kiosk mode and running standalone (no external handlers)
   useEffect(() => {
-    if (isKioskMode) return;
+    if (isKioskMode || externalStepsMap !== undefined) return;
     try {
-      localStorage.setItem('SEVAIQ_APPLICATION_PROGRESS', JSON.stringify(completedStepsMap));
+      localStorage.setItem('SEVAIQ_APPLICATION_PROGRESS', JSON.stringify(localCompletedStepsMap));
     } catch {
       // ignore
     }
-  }, [completedStepsMap, isKioskMode]);
+  }, [localCompletedStepsMap, isKioskMode, externalStepsMap]);
 
   useEffect(() => {
-    if (isKioskMode) return;
+    if (isKioskMode || externalNotesMap !== undefined) return;
     try {
-      localStorage.setItem('SEVAIQ_APPLICATION_NOTES', JSON.stringify(notesMap));
+      localStorage.setItem('SEVAIQ_APPLICATION_NOTES', JSON.stringify(localNotesMap));
     } catch {
       // ignore
     }
-  }, [notesMap, isKioskMode]);
+  }, [localNotesMap, isKioskMode, externalNotesMap]);
 
   useEffect(() => {
-    if (isKioskMode) return;
+    if (isKioskMode || externalStatusMap !== undefined) return;
     try {
-      localStorage.setItem('SEVAIQ_APPLICATION_STATUS', JSON.stringify(statusMap));
+      localStorage.setItem('SEVAIQ_APPLICATION_STATUS', JSON.stringify(localStatusMap));
     } catch {
       // ignore
     }
-  }, [statusMap, isKioskMode]);
+  }, [localStatusMap, isKioskMode, externalStatusMap]);
 
   useEffect(() => {
-    if (isKioskMode) return;
+    if (isKioskMode || externalReminderMap !== undefined) return;
     try {
-      localStorage.setItem('SEVAIQ_APPLICATION_REMINDERS', JSON.stringify(reminderMap));
+      localStorage.setItem('SEVAIQ_APPLICATION_REMINDERS', JSON.stringify(localReminderMap));
     } catch {
       // ignore
     }
-  }, [reminderMap, isKioskMode]);
+  }, [localReminderMap, isKioskMode, externalReminderMap]);
 
   const handleStatusChange = (status: CitizenApplicationStatus) => {
-    setStatusMap((prev) => ({ ...prev, [selectedSchemeId]: status }));
+    setStatus((prev) => ({ ...prev, [selectedSchemeId]: status }));
   };
 
   const handleReminderChange = (date: string) => {
-    setReminderMap((prev) => ({ ...prev, [selectedSchemeId]: date }));
+    setReminder((prev) => ({ ...prev, [selectedSchemeId]: date }));
   };
 
   const handleRequestReminder = async () => {
@@ -392,7 +447,7 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
   const progressPercent = steps.length > 0 ? Math.round((completedCount / steps.length) * 100) : 0;
 
   const toggleStep = (stepId: string) => {
-    setCompletedStepsMap((prev) => {
+    setCompletedSteps((prev) => {
       const schemeSteps = prev[selectedSchemeId] || [];
       const updated = schemeSteps.includes(stepId)
         ? schemeSteps.filter((id) => id !== stepId)
@@ -402,12 +457,12 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
   };
 
   const handleResetProgress = () => {
-    setCompletedStepsMap((prev) => ({ ...prev, [selectedSchemeId]: [] }));
-    setNotesMap((prev) => ({ ...prev, [selectedSchemeId]: '' }));
+    setCompletedSteps((prev) => ({ ...prev, [selectedSchemeId]: [] }));
+    setNotes((prev) => ({ ...prev, [selectedSchemeId]: '' }));
   };
 
   const handleNoteChange = (text: string) => {
-    setNotesMap((prev) => ({ ...prev, [selectedSchemeId]: text }));
+    setNotes((prev) => ({ ...prev, [selectedSchemeId]: text }));
   };
 
   return (

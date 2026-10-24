@@ -21,6 +21,7 @@ import { ApiState, NavigationTab } from '../types';
 import { useLanguage } from '../context/LanguageContext';
 import { useTheme } from '../context/ThemeContext';
 import { LanguageSelector } from './LanguageSelector';
+import { KioskConfirmationDialog } from './KioskDialogs';
 
 interface HeaderProps {
   apiState?: ApiState;
@@ -56,6 +57,7 @@ export const Header: React.FC<HeaderProps> = ({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [moreMenuOpen, setMoreMenuOpen] = useState(false);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
+  const [showKioskConfirm, setShowKioskConfirm] = useState(false);
 
   const triggerButtonRef = useRef<HTMLButtonElement | null>(null);
   const cancelButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -293,15 +295,15 @@ export const Header: React.FC<HeaderProps> = ({
               </span>
             </button>
 
-            {/* Ephemeral Public Kiosk Mode Toggle */}
+            {/* Public Kiosk Mode Control with Safe Confirmation */}
             <button
               type="button"
-              onClick={onToggleKioskMode}
+              onClick={() => setShowKioskConfirm(true)}
               className={`h-7 xl:h-8 px-2 xl:px-2.5 rounded-lg ${
                 isIndic ? 'text-[11px] xl:text-xs' : 'text-xs'
-              } font-semibold inline-flex items-center gap-1 xl:gap-1.5 border transition-all focus:outline-none focus:ring-2 focus:ring-[#16733B] shrink-0 ${
+              } font-semibold inline-flex items-center gap-1 xl:gap-1.5 border transition-all focus:outline-none focus:ring-2 focus:ring-[#16733B] shrink-0 cursor-pointer ${
                 isKioskMode
-                  ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-900 dark:text-amber-200 border-amber-300 dark:border-amber-700/80 shadow-2xs hover:bg-amber-100 dark:hover:bg-amber-900/60'
+                  ? 'bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-200 border-amber-400 dark:border-amber-700 shadow-2xs hover:bg-amber-200 dark:hover:bg-amber-900'
                   : 'bg-white dark:bg-[#17324D] text-[#202B36] dark:text-slate-200 border-[#D7DEE5] dark:border-[#223b56] hover:bg-[#F5F7F8] dark:hover:bg-slate-800'
               }`}
               title={
@@ -309,11 +311,22 @@ export const Header: React.FC<HeaderProps> = ({
                   ? t.header.kioskActiveTooltip
                   : t.header.kioskOffTooltip
               }
+              aria-label={
+                isKioskMode
+                  ? 'Public Kiosk Mode: Active. Click to configure or exit.'
+                  : 'Configure Public Kiosk Mode for shared computers.'
+              }
               aria-pressed={isKioskMode}
             >
-              <Monitor className={`w-3 h-3 xl:w-3.5 xl:h-3.5 shrink-0 ${isKioskMode ? 'text-amber-800 dark:text-amber-300' : 'text-[#596775] dark:text-slate-400'}`} />
-              <span className={isIndic ? 'hidden 2xl:inline' : 'hidden xl:inline'}>{t.header.kioskMode}</span>
-              <span className={isKioskMode ? 'font-bold text-amber-900 dark:text-amber-300' : ''}>
+              {isKioskMode ? (
+                <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse shrink-0" />
+              ) : (
+                <Monitor className="w-3 h-3 xl:w-3.5 xl:h-3.5 shrink-0 text-[#596775] dark:text-slate-400" />
+              )}
+              <span className={isIndic ? 'hidden 2xl:inline' : 'hidden xl:inline'}>
+                {t.header.publicKioskTitle || t.header.kioskMode}
+              </span>
+              <span className={isKioskMode ? 'font-bold text-amber-900 dark:text-amber-300' : 'text-slate-500 dark:text-slate-400'}>
                 {isKioskMode ? t.header.active : t.header.off}
               </span>
             </button>
@@ -448,15 +461,18 @@ export const Header: React.FC<HeaderProps> = ({
             <div className="pt-3 mt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
               <div className="flex items-center justify-between px-3 py-2 bg-slate-50 dark:bg-slate-900/60 rounded-xl text-xs border border-slate-100 dark:border-slate-800">
                 <div>
-                  <span className="font-semibold text-slate-800 dark:text-slate-200 block">{t.header.kioskMode}</span>
+                  <span className="font-semibold text-slate-800 dark:text-slate-200 block">{t.header.publicKioskTitle || t.header.kioskMode}</span>
                   <span className="text-[11px] text-slate-500 dark:text-slate-400">
                     {isKioskMode ? t.header.volatileSession : t.header.standardSession}
                   </span>
                 </div>
                 <button
                   type="button"
-                  onClick={onToggleKioskMode}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors ${
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    setShowKioskConfirm(true);
+                  }}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors cursor-pointer ${
                     isKioskMode
                       ? 'bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-200 border-amber-300 dark:border-amber-700'
                       : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-700'
@@ -536,6 +552,19 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
       )}
+
+      {/* Public Kiosk Mode Confirmation Dialog (Enabling & Disabling) */}
+      <KioskConfirmationDialog
+        isOpen={showKioskConfirm}
+        isEnabling={!isKioskMode}
+        onConfirm={() => {
+          setShowKioskConfirm(false);
+          onToggleKioskMode();
+        }}
+        onCancel={() => {
+          setShowKioskConfirm(false);
+        }}
+      />
     </header>
   );
 };

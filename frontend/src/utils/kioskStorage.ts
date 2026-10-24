@@ -78,8 +78,16 @@ export class MemoryStorage implements Storage {
 }
 
 const memoryStorageFallback = new MemoryStorage();
+let customStorage: Storage | null = null;
+
+export function setCustomStorage(storage: Storage | null): void {
+  customStorage = storage;
+}
 
 export function getDefaultStorage(): Storage {
+  if (customStorage) {
+    return customStorage;
+  }
   try {
     if (typeof window !== 'undefined' && window.localStorage) {
       return window.localStorage;
@@ -120,17 +128,47 @@ export function isProfileEmpty(profile: CitizenProfile | null | undefined): bool
  * Completely purges all citizen-specific data from persistent storage.
  */
 export function purgeCitizenStorage(storage: Storage = getDefaultStorage()): void {
+  const storagesToPurge: Storage[] = [storage];
   try {
-    storage.removeItem(STORAGE_KEYS.PROFILE);
-    storage.removeItem(STORAGE_KEYS.DOCUMENTS);
-    storage.removeItem(STORAGE_KEYS.SELECTED_SCHEMES);
-    storage.removeItem(STORAGE_KEYS.APPLICATION_PROGRESS);
-    storage.removeItem(STORAGE_KEYS.APPLICATION_NOTES);
-    storage.removeItem(STORAGE_KEYS.APPLICATION_TRACKING);
-    storage.removeItem(STORAGE_KEYS.APPLICATION_STATUS);
-    storage.removeItem(STORAGE_KEYS.APPLICATION_REMINDERS);
+    if (typeof window !== 'undefined' && window.sessionStorage && window.sessionStorage !== storage) {
+      storagesToPurge.push(window.sessionStorage);
+    }
   } catch {
-    // Storage access may be restricted in sandboxed iframes
+    // ignore
+  }
+
+  storagesToPurge.forEach((s) => {
+    try {
+      s.removeItem(STORAGE_KEYS.PROFILE);
+      s.removeItem(STORAGE_KEYS.DOCUMENTS);
+      s.removeItem(STORAGE_KEYS.SELECTED_SCHEMES);
+      s.removeItem(STORAGE_KEYS.APPLICATION_PROGRESS);
+      s.removeItem(STORAGE_KEYS.APPLICATION_NOTES);
+      s.removeItem(STORAGE_KEYS.APPLICATION_TRACKING);
+      s.removeItem(STORAGE_KEYS.APPLICATION_STATUS);
+      s.removeItem(STORAGE_KEYS.APPLICATION_REMINDERS);
+    } catch {
+      // Storage access may be restricted in sandboxed iframes
+    }
+  });
+}
+
+/**
+ * Check if any citizen-specific data exists in storage.
+ */
+export function isCitizenDataPersisted(storage: Storage = getDefaultStorage()): boolean {
+  try {
+    return (
+      storage.getItem(STORAGE_KEYS.PROFILE) !== null ||
+      storage.getItem(STORAGE_KEYS.DOCUMENTS) !== null ||
+      storage.getItem(STORAGE_KEYS.SELECTED_SCHEMES) !== null ||
+      storage.getItem(STORAGE_KEYS.APPLICATION_PROGRESS) !== null ||
+      storage.getItem(STORAGE_KEYS.APPLICATION_NOTES) !== null ||
+      storage.getItem(STORAGE_KEYS.APPLICATION_STATUS) !== null ||
+      storage.getItem(STORAGE_KEYS.APPLICATION_REMINDERS) !== null
+    );
+  } catch {
+    return false;
   }
 }
 
@@ -211,3 +249,108 @@ export function persistSelectedSchemes(
     // ignore
   }
 }
+
+/**
+ * Safely persists application tracking completed steps only when Kiosk Mode is disabled.
+ */
+export function persistApplicationProgress(
+  progress: Record<string, string[]>,
+  isKioskMode: boolean,
+  storage: Storage = getDefaultStorage()
+): void {
+  if (isKioskMode) {
+    try {
+      storage.removeItem(STORAGE_KEYS.APPLICATION_PROGRESS);
+    } catch {}
+    return;
+  }
+
+  try {
+    if (!progress || Object.keys(progress).length === 0) {
+      storage.removeItem(STORAGE_KEYS.APPLICATION_PROGRESS);
+    } else {
+      storage.setItem(STORAGE_KEYS.APPLICATION_PROGRESS, JSON.stringify(progress));
+    }
+  } catch {
+    // ignore
+  }
+}
+
+/**
+ * Safely persists citizen application personal notes only when Kiosk Mode is disabled.
+ */
+export function persistApplicationNotes(
+  notes: Record<string, string>,
+  isKioskMode: boolean,
+  storage: Storage = getDefaultStorage()
+): void {
+  if (isKioskMode) {
+    try {
+      storage.removeItem(STORAGE_KEYS.APPLICATION_NOTES);
+    } catch {}
+    return;
+  }
+
+  try {
+    if (!notes || Object.keys(notes).length === 0) {
+      storage.removeItem(STORAGE_KEYS.APPLICATION_NOTES);
+    } else {
+      storage.setItem(STORAGE_KEYS.APPLICATION_NOTES, JSON.stringify(notes));
+    }
+  } catch {
+    // ignore
+  }
+}
+
+/**
+ * Safely persists application status map only when Kiosk Mode is disabled.
+ */
+export function persistApplicationStatus(
+  status: Record<string, any>,
+  isKioskMode: boolean,
+  storage: Storage = getDefaultStorage()
+): void {
+  if (isKioskMode) {
+    try {
+      storage.removeItem(STORAGE_KEYS.APPLICATION_STATUS);
+    } catch {}
+    return;
+  }
+
+  try {
+    if (!status || Object.keys(status).length === 0) {
+      storage.removeItem(STORAGE_KEYS.APPLICATION_STATUS);
+    } else {
+      storage.setItem(STORAGE_KEYS.APPLICATION_STATUS, JSON.stringify(status));
+    }
+  } catch {
+    // ignore
+  }
+}
+
+/**
+ * Safely persists application reminders map only when Kiosk Mode is disabled.
+ */
+export function persistApplicationReminders(
+  reminders: Record<string, any>,
+  isKioskMode: boolean,
+  storage: Storage = getDefaultStorage()
+): void {
+  if (isKioskMode) {
+    try {
+      storage.removeItem(STORAGE_KEYS.APPLICATION_REMINDERS);
+    } catch {}
+    return;
+  }
+
+  try {
+    if (!reminders || Object.keys(reminders).length === 0) {
+      storage.removeItem(STORAGE_KEYS.APPLICATION_REMINDERS);
+    } else {
+      storage.setItem(STORAGE_KEYS.APPLICATION_REMINDERS, JSON.stringify(reminders));
+    }
+  } catch {
+    // ignore
+  }
+}
+
