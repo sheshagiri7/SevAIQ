@@ -245,11 +245,12 @@ export const SevAIQIntro: React.FC<SevAIQIntroProps> = ({
         <button
           type="button"
           onClick={handleSkip}
-          className="group flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-slate-900/80 hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-700/80 hover:border-teal-400/60 backdrop-blur-md text-xs sm:text-sm font-medium tracking-wide shadow-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-offset-2 focus:ring-offset-slate-950 cursor-pointer select-none"
+          className="group flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-slate-900/80 hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-700/80 hover:border-teal-400/60 backdrop-blur-md text-xs sm:text-sm font-medium tracking-wide shadow-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-offset-2 focus:ring-offset-slate-950 cursor-pointer select-none whitespace-nowrap shrink-0"
           aria-label="Skip Introduction"
+          style={{ width: 'fit-content' }}
         >
-          <span>Skip Intro</span>
-          <SkipForward className="w-3.5 h-3.5 text-teal-400 group-hover:translate-x-0.5 transition-transform" />
+          <span className="whitespace-nowrap">Skip Intro</span>
+          <SkipForward className="w-3.5 h-3.5 text-teal-400 group-hover:translate-x-0.5 transition-transform shrink-0" />
         </button>
       </div>
 

@@ -178,5 +178,34 @@ describe('SevAIQ Cinematic Website Intro Suite', () => {
       expect(html).toContain('Play Intro');
       expect(html).toContain('aria-label="Replay SevAIQ Cinematic Intro"');
     });
+
+    it('enforces mobile responsiveness, fit-content, and nowrap on the Play Intro button', () => {
+      sessionStorage.setItem(SEVAIQ_INTRO_SEEN_KEY, 'true');
+
+      const tree = (
+        <LanguageProvider>
+          <AccessibilityProvider>
+            <App />
+          </AccessibilityProvider>
+        </LanguageProvider>
+      );
+
+      const html = renderToString(tree);
+      // Button container must center on mobile
+      expect(html).toContain('justify-center');
+      // Button must have w-fit and whitespace-nowrap
+      expect(html).toContain('w-fit');
+      expect(html).toContain('whitespace-nowrap');
+      // Button must have generous horizontal and vertical padding
+      expect(html).toContain('px-3.5');
+      expect(html).toContain('py-1.5');
+      // Button must have rounded-full pill shape and border
+      expect(html).toContain('rounded-full');
+      expect(html).toContain('border');
+      // Button icon and text must be separated with gap-1.5
+      expect(html).toContain('gap-1.5');
+      // Must contain movie icon
+      expect(html).toContain('🎬');
+    });
   });
 });

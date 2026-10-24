@@ -354,7 +354,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({
 
         {/* Modal Footer */}
         <div className="px-5 sm:px-8 py-4 bg-slate-50 dark:bg-[#0b162f] border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto text-center sm:text-left">
             <span className="text-[11px] text-slate-500 dark:text-slate-400 text-center sm:text-left">
               {isTamil
                 ? 'அனைத்து தரவுகளும் உங்கள் உலாவியில் மட்டுமே பாதுகாப்பாக சேமிக்கப்படுகின்றன.'
@@ -369,11 +369,12 @@ export const AboutModal: React.FC<AboutModalProps> = ({
                   onClose();
                   onReplayIntro();
                 }}
-                className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#17324D] dark:text-teal-400 hover:text-[#16733B] dark:hover:text-teal-300 hover:bg-slate-200/60 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer border border-slate-300 dark:border-slate-700"
+                className="w-fit max-w-full inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-[#17324D] dark:text-teal-400 hover:text-[#16733B] dark:hover:text-teal-300 hover:bg-slate-200/60 dark:hover:bg-slate-800 rounded-full transition-colors cursor-pointer border border-slate-300 dark:border-slate-700 whitespace-nowrap shrink-0 focus:outline-none focus:ring-2 focus:ring-teal-500/40 select-none active:scale-95"
                 aria-label="Replay Cinematic Intro"
+                style={{ width: 'fit-content' }}
               >
-                <span>🎬</span>
-                <span>{isTamil ? 'அறிமுகக் காட்சி' : isHindi ? 'परिचय दृश्य' : 'Replay Intro'}</span>
+                <span aria-hidden="true" className="text-xs shrink-0">🎬</span>
+                <span className="whitespace-nowrap">{isTamil ? 'அறிமுகக் காட்சி' : isHindi ? 'परिचय दृश्य' : 'Replay Intro'}</span>
               </button>
             )}
           </div>
