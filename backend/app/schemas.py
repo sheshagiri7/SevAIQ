@@ -1,6 +1,6 @@
 """Pydantic models for SevAIQ Backend API."""
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Literal, Optional
 from pydantic import BaseModel, Field
 
 
@@ -154,3 +154,44 @@ class PassportRequest(BaseModel):
         max_length=500,
         description="Optional citizen or operator notes to include in report",
     )
+
+
+class ChatMessage(BaseModel):
+    """Single chat turn in conversation."""
+    role: Literal["user", "assistant", "system"] = Field(..., description="Speaker role")
+    content: str = Field(..., min_length=1, description="Message text content")
+
+
+class ChatRequest(BaseModel):
+    """Payload for citizen AI chatbot conversations."""
+    messages: List[ChatMessage] = Field(..., min_length=1, description="Conversation history turns")
+    language: Optional[str] = Field("en", description="Target response language ('en' or 'ta')")
+    context_scheme_id: Optional[str] = Field(None, description="Optional scheme ID for focused context")
+    citizen_context: Optional[Dict[str, Any]] = Field(
+        None,
+        description="Controlled, sanitized citizen context (profile, matches, documents, tracking)",
+    )
+
+
+class ChatResponseSchema(BaseModel):
+    """AI chatbot response returned to the frontend."""
+    reply: str = Field(..., description="Assistant textual answer")
+    provider: str = Field(..., description="AI Provider ID (e.g. 'gemini')")
+    model: str = Field(..., description="Model identifier used")
+    status: Literal["success", "error"] = Field(..., description="Resolution status")
+    latency_ms: Optional[float] = Field(None, description="Inference latency in milliseconds")
+    error_type: Optional[str] = Field(None, description="Classified error type if failed")
+    error_message: Optional[str] = Field(None, description="User-facing error message")
+    suggested_schemes: Optional[List[str]] = Field(default_factory=list, description="IDs of relevant schemes mentioned")
+
+
+class ProviderStatusSchema(BaseModel):
+    """Health and configuration status of an AI Provider."""
+    provider_id: str = Field(..., description="Unique provider ID")
+    display_name: str = Field(..., description="Provider display name")
+    configured: bool = Field(..., description="Whether API credentials are configured")
+    status: Literal["ready", "not_configured", "quota_exhausted", "error"] = Field(
+        ..., description="Current operational readiness"
+    )
+    message: str = Field(..., description="Descriptive status note")
+

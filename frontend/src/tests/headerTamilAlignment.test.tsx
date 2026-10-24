@@ -53,11 +53,11 @@ describe('Header Tamil Transition Alignment and Sizing', () => {
     const html = renderHeaderWithLang('en');
     expect(html).toContain('Dashboard');
     expect(html).toContain('Schemes');
-    expect(html).toContain('Eligibility');
+    expect(html).toContain('Your Details');
     expect(html).toContain('Documents');
     expect(html).toContain('Passport');
     expect(html).toContain('Trust');
-    expect(html).toContain('Guidance');
+    expect(html).toContain('Track Application');
     expect(html).toContain('text-xs font-semibold');
   });
 
@@ -83,11 +83,11 @@ describe('Header Tamil Transition Alignment and Sizing', () => {
     // Tamil labels are all present
     expect(html).toContain('முகப்பு');
     expect(html).toContain('திட்டங்கள்');
-    expect(html).toContain('தகுதி');
+    expect(html).toContain('விவரங்கள்');
     expect(html).toContain('ஆவணங்கள்');
     expect(html).toContain('பாஸ்போர்ட்');
     expect(html).toContain('நம்பகத்தன்மை');
-    expect(html).toContain('வழிகாட்டி');
+    expect(html).toContain('நிலை');
 
     // Sized styling classes are applied for Tamil transition
     expect(html).toContain('text-[11px]');
@@ -123,11 +123,11 @@ describe('Header Tamil Transition Alignment and Sizing', () => {
     // Hindi navigation labels
     expect(html).toContain('डैशबोर्ड');
     expect(html).toContain('योजनाएं');
-    expect(html).toContain('पात्रता');
+    expect(html).toContain('जानकारी');
     expect(html).toContain('दस्तावेज');
     expect(html).toContain('पासपोर्ट');
     expect(html).toContain('विश्वसनीयता');
-    expect(html).toContain('मार्गदर्शन');
+    expect(html).toContain('स्थिति');
 
     // Must NOT contain any Tamil words on Hindi page
     expect(html).not.toContain('தகுதி');

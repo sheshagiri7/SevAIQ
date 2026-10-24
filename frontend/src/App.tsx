@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
-import { Info } from 'lucide-react';
+import { Info, Mic, Sparkles } from 'lucide-react';
 import { Header } from './components/Header';
 import { DemographicProfile } from './components/DemographicProfile';
 import { Dashboard } from './components/Dashboard';
@@ -11,7 +11,6 @@ import { VoiceAssistant } from './components/VoiceAssistant';
 import { TrustMonitor } from './components/TrustMonitor';
 import { ApplicationTracker } from './components/ApplicationTracker';
 import { AccessibilityDrawer } from './components/AccessibilityDrawer';
-import { FloatingAccessibilityButton } from './components/FloatingAccessibilityButton';
 import { ADHDRuler } from './components/ADHDRuler';
 import { AboutModal } from './components/AboutModal';
 import { Footer } from './components/Footer';
@@ -43,8 +42,7 @@ import {
 
 export function App() {
   const { language } = useLanguage();
-  const [activeTab, setActiveTab] = useState<NavigationTab>('dashboard');
-  const [isVoiceAssistantOpen, setIsVoiceAssistantOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<NavigationTab>('chat');
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState('all');
   const [onlyEligibleFilter, setOnlyEligibleFilter] = useState<boolean>(false);
@@ -119,6 +117,25 @@ export function App() {
   // Target scheme for Eligibility Engine Screen
   const [selectedEligibilitySchemeId, setSelectedEligibilitySchemeId] = useState<string | null>(null);
 
+  // Pending query to pass directly to VoiceAssistant
+  const [pendingChatQuery, setPendingChatQuery] = useState<string | null>(null);
+
+  const handleAskAiAboutScheme = (schemeTitle: string) => {
+    setPendingChatQuery(
+      language === 'ta'
+        ? `${schemeTitle} திட்டத்தின் பயன்கள், தகுதி விதிகள் மற்றும் விண்ணப்பிக்கும் முறையை எளிய தமிழில் விளக்குங்கள்.`
+        : `Please explain the benefits, eligibility rules, and application process for ${schemeTitle} in simple words.`
+    );
+    setActiveTab('chat');
+  };
+
+  const handleNavigateToDocuments = (schemeId: string) => {
+    if (!selectedSchemeIds.includes(schemeId)) {
+      setSelectedSchemeIds((prev) => [...prev, schemeId]);
+    }
+    setActiveTab('document-mapper');
+  };
+
   // Guard ref to prevent React transition effects from writing kiosk-session data to localStorage
   const justExitedKioskRef = useRef(false);
 
@@ -142,6 +159,7 @@ export function App() {
       setDocuments(INITIAL_DOCUMENT_RECORDS);
       setSelectedSchemeIds([]);
       setSelectedEligibilitySchemeId(null);
+      setPendingChatQuery(null);
       setIsKioskMode(false);
     } else {
       // Entering Kiosk Mode:
@@ -169,7 +187,6 @@ export function App() {
     setDocuments(INITIAL_DOCUMENT_RECORDS);
     setSelectedSchemeIds([]);
     setSelectedEligibilitySchemeId(null);
-    setIsVoiceAssistantOpen(false);
     setOnlyEligibleFilter(false);
   };
 
@@ -305,7 +322,7 @@ export function App() {
 
   const handleNavigate = (tab: NavigationTab) => {
     if (tab === 'voice-assistant') {
-      setIsVoiceAssistantOpen(true);
+      setActiveTab('chat');
       return;
     }
     if (tab === 'demographic-profile') {
@@ -325,8 +342,7 @@ export function App() {
   // If activeTab is ever voice-assistant or demographic-profile, handle redirection cleanly
   useEffect(() => {
     if (activeTab === 'voice-assistant') {
-      setIsVoiceAssistantOpen(true);
-      setActiveTab('dashboard');
+      setActiveTab('chat');
     } else if (activeTab === 'demographic-profile') {
       setTimeout(() => {
         const el = document.getElementById('demographic-profile');
@@ -362,7 +378,7 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 font-sans relative">
+    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-[#070d1e] text-slate-900 dark:text-slate-100 font-sans relative transition-colors duration-150">
       {/* Universal Header with Tab Navigation & Health Status */}
       <Header
         apiState={apiState}
@@ -376,7 +392,33 @@ export function App() {
       />
 
       {/* Main Screen Content */}
-      <main className="flex-1">
+      <main className="flex-1 flex flex-col">
+        {/* Main Citizen Chat Workspace - Keep mounted so conversation history persists */}
+        <div
+          className={
+            activeTab === 'chat' || activeTab === 'voice-assistant'
+              ? 'flex-1 flex flex-col'
+              : 'hidden'
+          }
+        >
+          <VoiceAssistant
+            schemes={allSchemes}
+            onNavigate={handleNavigate}
+            onSelectSchemeForEligibility={handleSelectSchemeForEligibility}
+            isOpen={true}
+            onToggleOpen={() => {}}
+            onClose={() => {}}
+            isKioskMode={isKioskMode}
+            isMainScreen={true}
+            onOpenAbout={() => setIsAboutOpen(true)}
+            pendingQuery={pendingChatQuery}
+            onClearPendingQuery={() => setPendingChatQuery(null)}
+            profile={profile}
+            documents={documents}
+            selectedSchemeIds={selectedSchemeIds}
+          />
+        </div>
+
         {activeTab === 'dashboard' && (
           <Dashboard
             onNavigate={handleNavigate}
@@ -431,6 +473,10 @@ export function App() {
                 setSelectedTrackerSchemeId(schemeId);
                 setActiveTab('application-tracker');
               }}
+              onNavigateToDocuments={handleNavigateToDocuments}
+              onAskAiAboutScheme={handleAskAiAboutScheme}
+              onNavigateToEligibility={() => setActiveTab('eligibility')}
+              backendSchemesCount={backendSchemes.length}
               selectedCategory={selectedCategoryFilter}
               onSelectCategory={setSelectedCategoryFilter}
               selectedSchemeIdsForMapper={selectedSchemeIds}
@@ -510,7 +556,7 @@ export function App() {
         <button
           type="button"
           onClick={() => setIsAboutOpen(true)}
-          className="group flex items-center space-x-2 sm:space-x-2.5 px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-full bg-white hover:bg-slate-50 text-slate-800 border border-slate-300/90 shadow-lg hover:shadow-xl hover:border-civic-400 transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 active:scale-95 cursor-pointer"
+          className="group flex items-center space-x-2 sm:space-x-2.5 px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-full bg-white dark:bg-[#0c1834] hover:bg-slate-50 dark:hover:bg-[#102046] text-slate-800 dark:text-slate-100 border border-slate-300/90 dark:border-slate-700/80 shadow-lg hover:shadow-xl hover:border-civic-400 dark:hover:border-civic-500 transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 active:scale-95 cursor-pointer"
           aria-label={
             language === 'ta'
               ? 'SevAIQ பற்றி: அம்சங்கள் & செயல்படும் முறை'
@@ -524,14 +570,14 @@ export function App() {
           </div>
           <div className="flex flex-col items-start leading-tight text-left">
             <div className="flex items-center gap-1.5">
-              <span className="text-xs sm:text-sm font-black tracking-tight text-slate-900">
+              <span className="text-xs sm:text-sm font-black tracking-tight text-slate-900 dark:text-white">
                 {language === 'ta' ? 'SevAIQ பற்றி' : language === 'hi' ? 'SevAIQ के बारे में' : 'About SevAIQ'}
               </span>
-              <span className="inline-flex items-center px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-civic-50 text-civic-700 border border-civic-200/60">
+              <span className="inline-flex items-center px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-civic-50 dark:bg-civic-950/80 text-civic-700 dark:text-civic-300 border border-civic-200/60 dark:border-civic-800/60">
                 {language === 'ta' ? 'அம்சங்கள்' : language === 'hi' ? 'कार्यप्रणाली' : 'How it works'}
               </span>
             </div>
-            <span className="text-[10px] text-slate-500 font-medium hidden sm:inline">
+            <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium hidden sm:inline">
               {language === 'ta'
                 ? 'செயல்பாடுகள் & கருவிகள்'
                 : language === 'hi'
@@ -549,21 +595,58 @@ export function App() {
         onNavigate={handleNavigate}
       />
 
-      {/* Floating Bottom-Right Corner Voice AI Assistant */}
-      <VoiceAssistant
-        schemes={allSchemes}
-        onNavigate={handleNavigate}
-        onSelectSchemeForEligibility={handleSelectSchemeForEligibility}
-        isOpen={isVoiceAssistantOpen}
-        onToggleOpen={() => setIsVoiceAssistantOpen((prev) => !prev)}
-        onClose={() => setIsVoiceAssistantOpen(false)}
-      />
+      {/* Floating Bottom-Right Corner Voice AI Assistant Launcher - Rendered on Secondary Pages Only */}
+      {activeTab !== 'chat' && activeTab !== 'voice-assistant' && (
+        <aside aria-label="Voice AI Assistant Controller">
+          <button
+            type="button"
+            onClick={() => handleNavigate('chat')}
+            aria-label={
+              language === 'ta'
+                ? 'SevAIQ வாய்ஸ் AI அரட்டைக்கு செல் (தமிழ் & English)'
+                : language === 'hi'
+                ? 'SevAIQ वॉयस AI चैट पर जाएं (हिंदी, तमिल और अंग्रेजी)'
+                : 'Open SevAIQ Voice AI Chat (Tamil & English)'
+            }
+            className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-40 group flex items-center gap-2.5 px-4 py-3 sm:px-4.5 sm:py-3.5 rounded-full shadow-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-civic-500/40 select-none bg-gradient-to-r from-blue-700 via-civic-700 to-indigo-800 text-white shadow-civic-800/40 hover:shadow-2xl hover:scale-[1.03] active:scale-[0.98] border border-white/25 ring-4 ring-civic-500/15 cursor-pointer"
+          >
+            {/* Animated Glowing Mic Icon Badge */}
+            <div className="relative flex items-center justify-center w-8 h-8 rounded-full bg-white/15 backdrop-blur-xs text-white shrink-0 group-hover:scale-110 transition-transform">
+              <Mic className="w-4.5 h-4.5 text-white" />
+              {/* Live Online Ping Indicator */}
+              <span className="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400 border border-white/80" />
+              </span>
+            </div>
+
+            {/* Bilingual Label & Pill */}
+            <div className="flex flex-col items-start leading-tight text-left">
+              <div className="flex items-center gap-1.5">
+                <span className="text-xs sm:text-sm font-black tracking-tight text-white">
+                  {language === 'ta' ? 'வாய்ஸ் AI' : language === 'hi' ? 'वॉयस AI' : 'Voice AI'}
+                </span>
+                <span className="inline-flex items-center px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-white/20 text-blue-100 tracking-wide font-mono">
+                  ta-IN / en-IN
+                </span>
+              </div>
+              <span className="text-[10px] text-blue-100/90 font-medium whitespace-nowrap">
+                {language === 'ta'
+                  ? 'அரட்டைக்கு செல்'
+                  : language === 'hi'
+                  ? 'चैट पर जाएं'
+                  : 'Return to Chat'}
+              </span>
+            </div>
+
+            {/* Sparkle Accent */}
+            <Sparkles className="w-3.5 h-3.5 text-amber-300 opacity-90 hidden sm:block shrink-0 animate-pulse" />
+          </button>
+        </aside>
+      )}
 
       {/* UX4G Universal Accessibility Options Slide-over Drawer */}
       <AccessibilityDrawer />
-
-      {/* myScheme-Style Left Docked Purple Accessibility Launcher */}
-      <FloatingAccessibilityButton />
 
       {/* ADHD Full-Screen Interactive Reading Focus Ruler */}
       <ADHDRuler />

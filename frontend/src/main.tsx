@@ -4,6 +4,7 @@ import App from './App';
 import './index.css';
 import { LanguageProvider } from './context/LanguageContext';
 import { AccessibilityProvider } from './context/AccessibilityContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { ErrorBoundary } from './components/ErrorBoundary';
 
 // Enforce standard light mode across the entire website
@@ -31,7 +32,9 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <ErrorBoundary>
       <LanguageProvider>
         <AccessibilityProvider>
-          <App />
+          <ThemeProvider>
+            <App />
+          </ThemeProvider>
         </AccessibilityProvider>
       </LanguageProvider>
     </ErrorBoundary>

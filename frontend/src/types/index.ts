@@ -226,6 +226,7 @@ export interface DocumentRecord {
 }
 
 export type NavigationTab =
+  | 'chat'
   | 'dashboard'
   | 'discover'
   | 'demographic-profile'
@@ -238,6 +239,37 @@ export type NavigationTab =
 
 export type AssistantLanguage = 'en' | 'ta' | 'hi';
 
+export interface ChatMessageWire {
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+}
+
+export interface ChatRequestPayload {
+  messages: ChatMessageWire[];
+  language?: string;
+  context_scheme_id?: string;
+  citizen_context?: Record<string, any>;
+}
+
+export interface ChatResponsePayload {
+  reply: string;
+  provider: string;
+  model: string;
+  status: 'success' | 'error';
+  latency_ms?: number;
+  error_type?: string;
+  error_message?: string;
+  suggested_schemes?: string[];
+}
+
+export interface ProviderStatus {
+  provider_id: string;
+  display_name: string;
+  configured: boolean;
+  status: 'ready' | 'not_configured' | 'quota_exhausted' | 'error';
+  message: string;
+}
+
 export interface AssistantMessage {
   id: string;
   sender: 'citizen' | 'assistant';
@@ -248,6 +280,12 @@ export interface AssistantMessage {
     label: string;
     tab: NavigationTab;
   };
+  provider?: string;
+  model?: string;
+  latencyMs?: number;
+  isError?: boolean;
+  errorType?: string;
+  retryable?: boolean;
 }
 
 export interface ApplicationStepProgress {

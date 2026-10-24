@@ -76,6 +76,9 @@ htmlcov/
 *.swo
 *~
 
+# Vercel Project Metadata
+.vercel/
+
 # Nested clone directory protection
 SevAIQ/
 

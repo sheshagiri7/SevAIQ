@@ -4,25 +4,45 @@ Civic Intelligence platform for the Seva First Innovation Challenge 2026.
 """
 
 import json
+import logging
 import os
 from pathlib import Path
 from collections import Counter
 from typing import List, Optional
+
+try:
+    from dotenv import load_dotenv
+    # Load from root .env and backend/.env if present
+    root_env = Path(__file__).resolve().parent.parent.parent / ".env"
+    backend_env = Path(__file__).resolve().parent.parent / ".env"
+    if root_env.exists():
+        load_dotenv(root_env)
+    if backend_env.exists():
+        load_dotenv(backend_env)
+except ImportError:
+    pass
+
+logger = logging.getLogger("sevaiq.main")
 
 from fastapi import FastAPI, HTTPException, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.schemas import (
     CategoryCount,
+    ChatMessage as SchemaChatMessage,
+    ChatRequest,
+    ChatResponseSchema,
     CitizenProfile,
     DocumentMapperRequest,
     DocumentMappingResponse,
     EligibilityCheckResponse,
     HealthResponse,
     PassportRequest,
+    ProviderStatusSchema,
     Scheme,
     SchemeDetail,
 )
+from app.services.ai import AIProviderError, ChatMessage, get_ai_manager
 from app.services.document_mapper import map_scheme_documents
 from app.services.eligibility_engine import evaluate_all_schemes, evaluate_single_scheme
 from app.services.passport_generator import generate_scheme_passport_pdf
@@ -36,16 +56,21 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
-# Configure CORS origins for local development
+# Configure CORS origins for local development and deployed frontend
 cors_origins_env = os.getenv(
     "CORS_ORIGINS",
-    "http://localhost:5173,http://127.0.0.1:5173,http://localhost:3000",
+    "http://localhost:5173,http://127.0.0.1:5173,http://localhost:3000,https://sevaiq.vercel.app,https://frontend-seven-virid-65.vercel.app",
 )
-allowed_origins = [origin.strip() for origin in cors_origins_env.split(",") if origin.strip()]
+allowed_origins: List[str] = []
+for origin in cors_origins_env.split(","):
+    cleaned = origin.strip().rstrip("/")
+    if cleaned and cleaned not in allowed_origins:
+        allowed_origins.append(cleaned)
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
+    allow_origin_regex=r"^https://.*\.vercel\.app$",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -87,6 +112,8 @@ def root():
         "eligibility_check": "/api/eligibility/check",
         "document_mapper": "/api/documents/mapper",
         "passport_pdf": "/api/passport/pdf",
+        "chat": "/api/chat",
+        "chat_providers": "/api/chat/providers",
     }
 
 
@@ -287,6 +314,78 @@ def generate_passport_pdf(request: PassportRequest) -> Response:
             "Content-Type": "application/pdf",
         },
     )
+
+
+@app.get(
+    "/api/chat/providers",
+    response_model=List[ProviderStatusSchema],
+    tags=["AI Chatbot"],
+    summary="List available AI providers and operational status",
+)
+def get_ai_providers() -> List[ProviderStatusSchema]:
+    """Retrieve configured AI providers and their operational health."""
+    manager = get_ai_manager()
+    statuses = manager.list_providers()
+    return [
+        ProviderStatusSchema(
+            provider_id=s.provider_id,
+            display_name=s.display_name,
+            configured=s.configured,
+            status=s.status,
+            message=s.message,
+        )
+        for s in statuses
+    ]
+
+
+@app.post(
+    "/api/chat",
+    response_model=ChatResponseSchema,
+    tags=["AI Chatbot"],
+    summary="Chat with SevAIQ Civic Intelligence AI Assistant",
+)
+def chat_with_ai(request: ChatRequest) -> ChatResponseSchema:
+    """Civic-grounded AI chatbot for welfare scheme discovery and guidance.
+    
+    Routes to the configured AI provider (Google Gemini) and grounds answers
+    in SevAIQ's verified scheme records.
+    """
+    manager = get_ai_manager()
+    try:
+        response = manager.generate_chat_response(
+            messages=[
+                ChatMessage(role=m.role, content=m.content)
+                for m in request.messages
+            ],
+            language=request.language or "en",
+            focused_scheme_id=request.context_scheme_id,
+            citizen_context=request.citizen_context,
+        )
+        return ChatResponseSchema(
+            reply=response.content,
+            provider=response.provider_id,
+            model=response.model_id,
+            status="success",
+            latency_ms=response.latency_ms,
+        )
+    except AIProviderError as e:
+        logger.error(
+            "AI Chatbot error [%s]: %s (provider=%s, retryable=%s)",
+            e.error_type.value,
+            e.message,
+            e.provider_id,
+            e.retryable,
+        )
+        raise HTTPException(
+            status_code=e.status_code,
+            detail={
+                "error_type": e.error_type.value,
+                "message": e.message,
+                "provider_id": e.provider_id,
+                "retryable": e.retryable,
+            },
+        )
+
 
 
 

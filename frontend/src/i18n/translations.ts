@@ -90,15 +90,15 @@ export const SCHEME_TRANSLATIONS: Record<'ta' | 'hi', Record<string, SchemeTrans
         'சமவெளி பகுதிகளில் ₹1.20 லட்சமும், மலைப்பகுதிகளில் ₹1.30 லட்சமும் நேரடி மானியம். கூடுதலாக கழிப்பறை கட்ட ₹12,000 மற்றும் மகாத்மா காந்தி தேசிய ஊரக வேலை உறுதித் திட்டத்தின் கீழ் 90-95 நாட்கள் ஊதியம்.',
     },
     'pmay-u': {
-      title: 'பிரதான் மந்திரி ஆவாஸ் திட்டம் - நகர்ப்புறம் (PMAY-U)',
+      title: 'பிரதான் மந்திரி ஆவாஸ் திட்டம் - நகர்ப்புறம் 2.0 (PMAY-U 2.0)',
       short_description:
-        'நகர்ப்புற ஏழைகள் மற்றும் நடுத்தர வருவாய்ப் பிரிவினருக்கு சொந்த வீடு கட்ட அல்லது வாங்க கடன் இணைக்கப்பட்ட வட்டி மானியம் (CLSS) மற்றும் நிதி உதவி.',
+        'நகர்ப்புற ஏழைகள் மற்றும் நடுத்தர குடும்பங்களுக்கு சொந்த நிலத்தில் வீடு கட்ட, கூட்டாண்மை வீடுகள் வாங்க அல்லது வட்டி மானியம் பெற மத்திய அரசின் 2.0 வீட்டுவசதி திட்டம்.',
       category: 'வீட்டுவசதி & உள்கட்டமைப்பு',
       ministry: 'வீட்டுவசதி மற்றும் நகர்ப்புற விவகாரங்கள் அமைச்சகம்',
-      beneficiary_type: 'நகர்ப்புற பொருளாதாரத்தில் பின்தங்கிய (EWS) மற்றும் குறைந்த வருவாய் பிரிவினர் (LIG)',
-      benefits_summary: 'சொந்த வீட்டுக் கடனுக்கு ₹2.67 லட்சம் வரை வட்டி மானியம்',
+      beneficiary_type: 'நகர்ப்புற EWS, LIG மற்றும் நடுத்தர வருவாய்ப் பிரிவினர் (MIG)',
+      benefits_summary: '4 திட்டப் பிரிவுகள்: ₹2.50 லட்சம் வரை நிதி உதவி (BLC/AHP) அல்லது ₹1.80 லட்சம் வரை 4% வட்டி மானியம் (ISS)',
       detailed_benefits:
-        'வீட்டுக் கடன்களுக்கு 6.5% வரை வட்டி மானியம் (அதிகபட்சம் ₹2.67 லட்சம் வரை முன்வட்டி மானியம்).',
+        '1 கோடி நகர்ப்புற குடும்பங்களுக்கு: சொந்த நிலத்தில் வீடு கட்ட ₹2.50 லட்சம் (BLC), கூட்டாண்மை வீட்டுக்கு ₹2.50 லட்சம் (AHP), வாடகை வீடுகள் (ARH), மற்றும் EWS/LIG/MIG குடும்பங்களுக்கு 4% வட்டி மானியம் (ISS - ₹1.80 லட்சம் வரை).',
     },
     'atal-pension-yojana': {
       title: 'அடல் பென்ஷன் திட்டம் (APY)',
@@ -114,13 +114,13 @@ export const SCHEME_TRANSLATIONS: Record<'ta' | 'hi', Record<string, SchemeTrans
     'pm-mudra-yojana': {
       title: 'பிரதம மந்திரி முத்ரா திட்டம் (PMMY)',
       short_description:
-        'சிறு வணிகங்கள், கடைகள், உற்பத்தி மற்றும் சேவைத் துறை தொழில்முனைவோருக்கு ₹50,000 முதல் ₹20 லட்சம் வரை பிணையில்லா தொழில் கடன் (சிசு, கிஷோர், தருண்).',
+        'சிறு வணிகங்கள், கடைகள், உற்பத்தி மற்றும் சேவைத் துறை தொழில்முனைவோருக்கு ₹50,000 முதல் ₹20 லட்சம் வரை பிணையில்லா வங்கித் தொழில் கடன் (சிசு, கிஷோர், தருண் & தருண் பிளஸ்).',
       category: 'நிதி உள்ளடக்கம் & வாழ்வாதாரம்',
       ministry: 'நிதி அமைச்சகம் (நிதிச் சேவைகள் துறை)',
       beneficiary_type: 'குறு மற்றும் சிறு வணிகர்கள், கடைக்காரர்கள் மற்றும் தொழில்முனைவோர்',
-      benefits_summary: 'பிணையில்லாமல் ₹50,000 முதல் ₹20 லட்சம் வரை தொழில் கடன்',
+      benefits_summary: 'பிணையில்லா தொழில் கடன்: சிசு, கிஷோர், தருண் & தருண் பிளஸ் (₹20 லட்சம் வரை)',
       detailed_benefits:
-        'சிசு (₹50,000 வரை), கிஷோர் (₹50,000 முதல் ₹5 லட்சம் வரை), தருண் (₹5 லட்சம் முதல் ₹10 லட்சம் வரை), தருண் பிளஸ் (₹20 லட்சம் வரை) பிணையில்லா தொழில் கடன்.',
+        'அங்கீகரிக்கப்பட்ட வங்கிகள் மூலம் வழங்கப்படும் திரும்பச் செலுத்த வேண்டிய தொழில் கடன் (இலவச மானியம் அல்ல): சிசு (₹50,000 வரை), கிஷோர் (₹5 லட்சம் வரை), தருண் (₹10 லட்சம் வரை), தருண் பிளஸ் (முன்பு தருண் கடன் பெற்று முறையாக திருப்பிச் செலுத்திய தொழில்முனைவோருக்கு ₹20 லட்சம் வரை கடன்).',
     },
     'pm-vishwakarma': {
       title: 'பிரதம மந்திரி விஸ்வகர்மா திட்டம்',
@@ -380,6 +380,22 @@ export const UI_TRANSLATIONS = {
     // Header
     header: {
       tagline: 'Civic Intelligence & Scheme Readiness',
+      chat: 'Chat',
+      chatMobile: 'AI Assistant',
+      chatDesc: 'Civic AI welfare assistant',
+      details: '1. Your Details',
+      detailsMobile: '1. Details',
+      detailsDesc: 'Guided simple citizen profile',
+      findSchemes: '2. Find Schemes',
+      findSchemesMobile: '2. Schemes',
+      findSchemesDesc: 'Personalized recommendations & search',
+      prepareDocs: '3. Prepare Documents',
+      prepareDocsMobile: '3. Documents',
+      prepareDocsDesc: 'Actionable document checklist',
+      trackApp: '4. Track Application',
+      trackAppMobile: '4. Tracking',
+      trackAppDesc: 'Honest status & next steps',
+      moreTools: 'More',
       dashboard: 'Dashboard',
       schemes: 'Schemes',
       schemesMobile: 'Find Schemes',
@@ -416,6 +432,11 @@ export const UI_TRANSLATIONS = {
       civicDossier: 'Civic Dossier',
       volatileSession: 'Volatile in-memory session',
       standardSession: 'Standard local session',
+      themeToggle: 'Toggle Theme',
+      darkMode: 'Dark Mode',
+      lightMode: 'Light Mode',
+      switchToDark: 'Switch to dark theme',
+      switchToLight: 'Switch to light theme',
     },
 
     // Hero
@@ -755,6 +776,22 @@ export const UI_TRANSLATIONS = {
     // Header
     header: {
       tagline: 'குடிமக்கள் தகவல் நுண்ணறிவு & திட்டத் தகுதி தளம்',
+      chat: 'அரட்டை',
+      chatMobile: 'AI உதவியாளர்',
+      chatDesc: 'அரசு நலத்திட்ட AI வழிகாட்டி',
+      details: '1. உங்கள் விவரங்கள்',
+      detailsMobile: '1. விவரங்கள்',
+      detailsDesc: 'எளிய வழிகாட்டப்பட்ட சுயவிவரம்',
+      findSchemes: '2. திட்டங்கள்',
+      findSchemesMobile: '2. திட்டங்கள்',
+      findSchemesDesc: 'பரிந்துரைகள் & நேரடி தேடல்',
+      prepareDocs: '3. ஆவணங்கள்',
+      prepareDocsMobile: '3. ஆவணங்கள்',
+      prepareDocsDesc: 'தேவையான ஆவணங்கள் சரிபார்ப்பு',
+      trackApp: '4. நிலை அறிதல்',
+      trackAppMobile: '4. கண்காணிப்பு',
+      trackAppDesc: 'விண்ணப்ப நிலை கண்காணிப்பு',
+      moreTools: 'கூடுதல்',
       dashboard: 'முகப்பு',
       schemes: 'திட்டங்கள்',
       schemesMobile: 'திட்டங்களை காண்க',
@@ -791,6 +828,11 @@ export const UI_TRANSLATIONS = {
       civicDossier: 'குடிமக்கள் ஆவணக் கோப்பு',
       volatileSession: 'நினைவகத்தில் மட்டுமே உள்ள அமர்வு',
       standardSession: 'நிலையான உள்ளூர் அமர்வு',
+      themeToggle: 'வண்ணப் பயன்முறை மாற்று',
+      darkMode: 'இருண்ட பயன்முறை',
+      lightMode: 'வெளிச்ச பயன்முறை',
+      switchToDark: 'இருண்ட பயன்முறைக்கு மாறவும்',
+      switchToLight: 'வெளிச்ச பயன்முறைக்கு மாறவும்',
     },
 
     // Hero
@@ -1130,6 +1172,22 @@ export const UI_TRANSLATIONS = {
     // Header
     header: {
       tagline: 'नागरिक सूचना बुद्धिमत्ता एवं योजना तत्परता मंच',
+      chat: 'चैट',
+      chatMobile: 'एआई सहायक',
+      chatDesc: 'नागरिक कल्याण एआई सहायक',
+      details: '1. आपके विवरण',
+      detailsMobile: '1. विवरण',
+      detailsDesc: 'सरल चरणबद्ध प्रोफ़ाइल',
+      findSchemes: '2. योजनाएं खोजें',
+      findSchemesMobile: '2. योजनाएं',
+      findSchemesDesc: 'अनुशंसाएं एवं सरल खोज',
+      prepareDocs: '3. दस्तावेज़',
+      prepareDocsMobile: '3. दस्तावेज़',
+      prepareDocsDesc: 'दस्तावेज़ चेकलिस्ट',
+      trackApp: '4. आवेदन ट्रैक',
+      trackAppMobile: '4. ट्रैकिंग',
+      trackAppDesc: 'आवेदन स्थिति ट्रैकर',
+      moreTools: 'अन्य',
       dashboard: 'डैशबोर्ड',
       schemes: 'योजनाएं',
       schemesMobile: 'सरकारी योजनाएं खोजें',
@@ -1166,6 +1224,11 @@ export const UI_TRANSLATIONS = {
       civicDossier: 'नागरिक डोजियर',
       volatileSession: 'अस्थायी इन-मेमोरी सत्र',
       standardSession: 'स्थानीय ब्राउज़र सत्र',
+      themeToggle: 'थीम बदलें',
+      darkMode: 'डार्क मोड',
+      lightMode: 'लाइट मोड',
+      switchToDark: 'डार्क थीम पर स्विच करें',
+      switchToLight: 'लाइट थीम पर स्विच करें',
     },
 
     // Hero
@@ -1674,3 +1737,5 @@ export const LOCALIZED_OPTIONS = {
     },
   },
 };
+
+export const TRANSLATIONS = UI_TRANSLATIONS;

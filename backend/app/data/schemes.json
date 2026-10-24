@@ -2,27 +2,28 @@
   {
     "id": "pm-kisan",
     "title": "Pradhan Mantri Kisan Samman Nidhi (PM-KISAN)",
-    "short_description": "Income support of \u20b96,000 per year in three equal four-monthly installments of \u20b92,000 directly to landholding farmer families.",
+    "short_description": "Direct income support of ₹6,000 per year transferred in three equal installments of ₹2,000 to landholding farmer families.",
     "category": "Agriculture & Rural",
     "ministry": "Ministry of Agriculture and Farmers Welfare",
     "beneficiary_type": "Small and Marginal Landholding Farmers",
     "official_portal_url": "https://pmkisan.gov.in",
     "verified": true,
     "verification_source": "Official Operational Guidelines, Ministry of Agriculture & Farmers Welfare (pmkisan.gov.in)",
-    "verification_date": "2026-10-22",
-    "nodal_agency": "Department of Agriculture & Farmers Welfare (DA&FW)",
-    "detailed_benefits": "Direct financial benefit of \u20b96,000 per annum per eligible farmer family, payable in three equal installments of \u20b92,000 each every 4 months (April-July, August-November, December-March) transferred directly into Aadhaar-seeded bank accounts through Direct Benefit Transfer (DBT).",
-    "eligibility_summary": "All landholding farmer families having cultivable landholding in their names. Excludes institutional landholders, constitutional post holders, serving/retired government employees, and income tax payers.",
+    "verification_date": "2024-02-28",
+    "nodal_agency": "Department of Agriculture and Farmers Welfare (DA&FW)",
+    "detailed_benefits": "Direct financial benefit of ₹6,000 per annum per eligible farmer family, payable in three equal four-monthly installments of ₹2,000 each. Funds are transferred directly to Aadhaar-seeded bank accounts through Direct Benefit Transfer (DBT) via Public Financial Management System (PFMS).",
+    "eligibility_summary": "All landholding farmer families with cultivable landholding in their names. Excludes institutional landholders, farmer families holding constitutional posts, serving or retired government employees, professionals (doctors, engineers, lawyers, CAs), and persons who paid income tax in last assessment year.",
     "eligibility_criteria": {
       "min_age": 18,
       "occupations": [
         "farmer",
-        "agriculturalist"
+        "cultivator",
+        "agricultural_worker"
       ],
       "land_ownership_required": true,
-      "max_income_limit": null,
+      "max_income_limit": 2000000,
       "tax_payer_allowed": false,
-      "target_group": "Landholder farmer families"
+      "target_group": "Landholding small and marginal farmers"
     },
     "required_documents": [
       "Aadhaar Card",
@@ -30,41 +31,33 @@
       "Bank Account Passbook (Aadhaar linked with NPCI mapper)",
       "Active Mobile Number"
     ],
-    "application_mode": "Online self-registration on pmkisan.gov.in or in-person via Common Service Centres (CSCs)",
+    "application_mode": "Online via pmkisan.gov.in Farmers Corner or CSC / Village Nodal Officer",
     "application_steps": [
-      "Visit pmkisan.gov.in and click on 'New Farmer Registration' under Farmers Corner",
-      "Enter Aadhaar number and select state, then verify via Aadhaar OTP",
-      "Fill landholding details including survey/khasra number, khata number, and land area",
-      "Upload verified Land Ownership Document (RoR)",
-      "Submit application for verification by State Nodal Officer"
-    ],
-    "government_level": "Central",
-    "applicable_states": [
-      "All India"
-    ],
-    "verification_status": "Verified against official source",
-    "source_organization": "Ministry of Agriculture and Farmers Welfare",
-    "source_page_title": "Pradhan Mantri Kisan Samman Nidhi (PM-KISAN) Official Portal",
-    "benefits_summary": "Income support of \u20b96,000 per year in three equal four-monthly installments of \u20b92,000 directly to lan"
+      "Visit official PM-KISAN portal (pmkisan.gov.in) and navigate to 'Farmers Corner'",
+      "Click 'New Farmer Registration' and choose Rural or Urban Farmer",
+      "Enter Aadhaar number and mobile number, select State, and verify via OTP",
+      "Enter land record details (Khasra/Khata number, survey number, area in hectares)",
+      "Upload land document and submit; application is verified by District Nodal Officer"
+    ]
   },
   {
     "id": "pm-jay",
     "title": "Ayushman Bharat - Pradhan Mantri Jan Arogya Yojana (AB-PMJAY)",
-    "short_description": "Health insurance cover of \u20b95,00,000 per family per year for secondary and tertiary hospitalization across empanelled hospitals.",
+    "short_description": "Cashless health insurance cover of ₹5 Lakh per eligible family per year for secondary and tertiary hospitalization across empaneled hospitals.",
     "category": "Healthcare & Wellness",
     "ministry": "Ministry of Health and Family Welfare",
-    "beneficiary_type": "Low-income Families & Senior Citizens 70+",
+    "beneficiary_type": "Deprived Rural Households, Identified Urban Occupational Categories & All Citizens Aged 70+",
     "official_portal_url": "https://pmjay.gov.in",
     "verified": true,
-    "verification_source": "National Health Authority (NHA) Scheme Guidelines (pmjay.gov.in)",
-    "verification_date": "2026-10-22",
+    "verification_source": "National Health Authority (NHA) Scheme Guidelines & Ayushman Bharat Senior Citizen (70+) Expansion (pmjay.gov.in)",
+    "verification_date": "2024-09-11",
     "nodal_agency": "National Health Authority (NHA)",
-    "detailed_benefits": "Provides health protection cover of \u20b95 Lakh per eligible family per annum for secondary and tertiary care hospitalization. Cashless and paperless treatment at all empanelled public and private healthcare facilities nationwide. Covers 3 days pre-hospitalization and 15 days post-hospitalization diagnostics and medicines. Expanded in 2024 to provide universal health coverage to all senior citizens aged 70+ under Ayushman Vay Vandana Card.",
-    "eligibility_summary": "Families identified by SECC 2011 deprivation criteria in rural areas and identified occupational categories in urban areas, active ration card holders under NFSA, and all senior citizens aged 70 and above.",
+    "detailed_benefits": "Provides health protection cover of ₹5 Lakh per eligible family per annum for secondary and tertiary care hospitalization across more than 29,000 public and private empaneled hospitals nationwide. Covers pre-existing conditions from day one, 3 days pre-hospitalization, and 15 days post-hospitalization expenses including diagnostic tests and medicines. Under the 2024 Ayushman Vay Vandana expansion, all senior citizens aged 70 and above receive distinct ₹5 Lakh cover irrespective of family income.",
+    "eligibility_summary": "Households identified through deprivation criteria (D1 to D7) in Socio-Economic Caste Census 2011 (SECC 2011) in rural areas, and 11 occupational categories in urban areas. All Indian citizens aged 70 years and above are eligible for Ayushman Vay Vandana card irrespective of socioeconomic status.",
     "eligibility_criteria": {
       "min_age": 0,
-      "max_income_limit": 300000,
-      "target_group": "Deprived rural and occupational urban households, senior citizens 70+",
+      "max_income_limit": 250000,
+      "target_group": "Vulnerable families identified under SECC 2011 and senior citizens aged 70+",
       "government_employees_allowed": false
     },
     "required_documents": [
@@ -72,168 +65,138 @@
       "Ration Card / Family ID / NFSA Card",
       "Active Mobile Number"
     ],
-    "application_mode": "Online verification on beneficiary.nha.gov.in or in-person at Ayushman Mitra desks in empanelled hospitals",
+    "application_mode": "Online via beneficiary.nha.gov.in, Ayushman App, or walk-in at any Empaneled Health Care Provider (EHCP) / CSC",
     "application_steps": [
-      "Check eligibility on beneficiary.nha.gov.in or Ayushman App using Aadhaar or Ration Card number",
-      "Complete e-KYC using Aadhaar OTP or biometric authentication",
-      "Submit live photo for verification",
-      "Download verified Ayushman Card (Golden Card) instantly upon approval"
-    ],
-    "government_level": "Central",
-    "applicable_states": [
-      "All India"
-    ],
-    "verification_status": "Verified against official source",
-    "source_organization": "Ministry of Health and Family Welfare",
-    "source_page_title": "Ayushman Bharat - Pradhan Mantri Jan Arogya Yojana (AB-PMJAY) Official Portal",
-    "benefits_summary": "Health insurance cover of \u20b95,00,000 per family per year for secondary and tertiary hospitalization a"
+      "Visit beneficiary.nha.gov.in or download the Ayushman App",
+      "Login using mobile number and Aadhaar OTP as Beneficiary",
+      "Search family record using State, Scheme (PM-JAY), Ration Card Number, or Family ID",
+      "Complete instant e-KYC using Aadhaar OTP, IRIS, or facial authentication",
+      "Download verified Ayushman Card immediately for cashless hospital admission"
+    ]
   },
   {
     "id": "pmay-g",
     "title": "Pradhan Mantri Awas Yojana - Gramin (PMAY-G)",
-    "short_description": "Financial grant of \u20b91,20,000 (plain) to \u20b91,30,000 (hilly/difficult) for building a permanent pucca house in rural areas.",
+    "short_description": "Financial assistance of ₹1.20 Lakh in plain areas and ₹1.30 Lakh in hilly/difficult areas for constructing a pucca house with basic amenities.",
     "category": "Housing & Infrastructure",
     "ministry": "Ministry of Rural Development",
-    "beneficiary_type": "Houseless and Kutcha House Dwelling Rural Families",
+    "beneficiary_type": "Rural Houseless Households and Families in Kutcha/Dilapidated Houses",
     "official_portal_url": "https://pmayg.nic.in",
     "verified": true,
-    "verification_source": "Ministry of Rural Development Framework for Implementation (pmayg.nic.in)",
-    "verification_date": "2026-10-22",
-    "nodal_agency": "Department of Rural Development",
-    "detailed_benefits": "Direct financial grant of \u20b91,20,000 per unit in plain areas and \u20b91,30,000 in hilly/difficult/IAP areas for constructing a permanent pucca house with minimum 25 sq.m carpet area. Additional \u20b912,000 for toilet construction via Swachh Bharat Mission-Gramin and 90-95 days of unskilled wage labor under MGNREGA.",
-    "eligibility_summary": "Houseless rural families or households living in zero, one, or two-room houses with kutcha walls and kutcha roof, prioritized by SECC 2011 and Awaas+ waitlists. Must not own a pucca house anywhere in India.",
+    "verification_source": "Ministry of Rural Development Framework for Implementation & Cabinet Extension to 2028-29 (pmayg.nic.in; PIB PRID: 2043924)",
+    "verification_date": "2024-08-09",
+    "nodal_agency": "Department of Rural Development, Ministry of Rural Development",
+    "detailed_benefits": "Direct financial grant of ₹1,20,000 per unit in plain areas and ₹1,30,000 in hilly/difficult/North-Eastern/IAP districts. Additionally provides ₹12,000 for toilet construction under Swachh Bharat Mission-Gramin (SBM-G) and 90 to 95 person-days of unskilled wage labor support under MGNREGS (approx. ₹20,000 to ₹25,000). Total effective benefit exceeds ₹1.50 Lakh.",
+    "eligibility_summary": "Rural households living in zero, one, or two-room houses with kutcha wall and kutcha roof as identified by SECC 2011 and verified Awaas+ lists. Family must not own a pucca house anywhere in India. Excludes households with motorized vehicles, mechanized agricultural equipment, government employees, or paying income/professional tax.",
     "eligibility_criteria": {
       "min_age": 18,
       "area_type": "rural",
       "owns_pucca_house": false,
-      "max_income_limit": 300000,
-      "target_group": "Rural homeless or kutcha house dwellers"
+      "max_income_limit": 150000,
+      "target_group": "Houseless and kutcha-dwelling rural families"
     },
     "required_documents": [
-      "Aadhaar Card",
+      "Aadhaar Card of all adult family members",
       "Bank Account Passbook (Aadhaar linked)",
-      "MGNREGA Job Card Number",
-      "Land Ownership / House Site Document",
-      "Income Certificate / Self-Declaration"
+      "MGNREGS Job Card Number",
+      "Consent letter for Aadhaar usage and geo-tagged photos of existing kutcha house"
     ],
-    "application_mode": "Gram Panchayat verification and enrollment on AwaasSoft portal (pmayg.nic.in)",
+    "application_mode": "Through Gram Panchayat / Village Assembly or Block Development Office (Awaas+ portal)",
     "application_steps": [
-      "Verification by Gram Sabha against Awaas+ permanent waitlist",
-      "Geo-tagging and site inspection of existing kutcha house by Panchayat Secretary",
-      "Registration on AwaasSoft portal with Aadhaar and bank details",
-      "Installment release in 3-4 stages linked directly to construction milestone geo-tagging"
-    ],
-    "government_level": "Central",
-    "applicable_states": [
-      "All India"
-    ],
-    "verification_status": "Verified against official source",
-    "source_organization": "Ministry of Rural Development",
-    "source_page_title": "Pradhan Mantri Awas Yojana - Gramin (PMAY-G) Official Portal",
-    "benefits_summary": "Financial grant of \u20b91,20,000 (plain) to \u20b91,30,000 (hilly/difficult) for building a permanent pucca h"
+      "Gram Sabha identifies eligible beneficiaries from verified SECC/Awaas+ lists",
+      "Block officials conduct geo-tagged inspection of existing living conditions",
+      "Selected beneficiary registers bank account and Aadhaar on AwaasSoft portal",
+      "Sanction order is issued and 1st installment (approx 25%) transferred to bank account",
+      "Subsequent installments released based on geo-tagged construction stage verification"
+    ]
   },
   {
     "id": "pmay-u",
-    "title": "Pradhan Mantri Awas Yojana - Urban (PMAY-U)",
-    "short_description": "Central interest subsidy and financial assistance up to \u20b92.67 Lakh for building or buying a pucca house in urban areas.",
+    "title": "Pradhan Mantri Awas Yojana - Urban 2.0 (PMAY-U 2.0)",
+    "short_description": "Government housing initiative providing financial assistance and interest subsidies to construct, purchase, or rent pucca houses for 1 crore urban poor and middle-class families.",
     "category": "Housing & Infrastructure",
     "ministry": "Ministry of Housing and Urban Affairs",
-    "beneficiary_type": "Urban EWS and LIG Families",
-    "official_portal_url": "https://pmaymis.gov.in",
+    "beneficiary_type": "Urban EWS, LIG, and Middle Income Group (MIG) families",
+    "official_portal_url": "https://pmay-urban.gov.in",
     "verified": true,
-    "verification_source": "Ministry of Housing and Urban Affairs PMAY-U Operational Guidelines (pmaymis.gov.in)",
-    "verification_date": "2026-10-22",
-    "nodal_agency": "Mission Directorate, MoHUA",
-    "detailed_benefits": "Central financial assistance of \u20b91.5 Lakh to \u20b92.67 Lakh across 4 verticals: In-situ Slum Redevelopment (ISSR), Credit Linked Subsidy Scheme (CLSS / ISS interest subsidy), Affordable Housing in Partnership (AHP), and Beneficiary-led individual house Construction (BLC).",
-    "eligibility_summary": "Urban families belonging to Economically Weaker Section (EWS, annual income up to \u20b93 Lakh) or Low Income Group (LIG, annual income \u20b93 to \u20b96 Lakh). Beneficiary family must not own a pucca house anywhere in India.",
+    "verification_source": "Union Cabinet Decision & MoHUA PMAY-U 2.0 Operational Guidelines (PIB PRID: 2043924; pmay-urban.gov.in)",
+    "verification_date": "2024-08-09",
+    "nodal_agency": "Mission Directorate, Ministry of Housing and Urban Affairs & State/UT Housing Departments",
+    "detailed_benefits": "Under the Cabinet-approved PMAY-U 2.0 framework (covering 1 crore urban families over FY 2024-25 to 2028-29 with ₹2.30 lakh crore government assistance and total investment of ₹10 lakh crore), assistance is provided across 4 distinct programme components:\n1. Beneficiary-Led Construction (BLC): Financial assistance up to ₹2.50 Lakh per eligible EWS family to construct a new pucca house on their own land.\n2. Affordable Housing in Partnership (AHP): Financial assistance up to ₹2.50 Lakh per EWS house constructed by States/UTs/ULBs and private developers, with additional Innovation Housing Technology assistance for modern building systems.\n3. Affordable Rental Housing (ARH): Rental accommodations for urban migrants, working women, industrial workers, and street vendors via vacant government housing (Model 1) or newly constructed ARHCs (Model 2).\n4. Interest Subsidy Scheme (ISS): 4% interest subsidy on home loans up to ₹25 Lakh for houses valued up to ₹35 Lakh for EWS, LIG, and MIG families (loan tenure up to 12 years), with a maximum subsidy of up to ₹1.80 Lakh credited via 5-yearly installments through Direct Benefit Transfer (DBT).",
+    "eligibility_summary": "Families living in statutory urban areas belonging to Economically Weaker Section (EWS, annual income up to ₹3 Lakh), Low Income Group (LIG, annual income ₹3 Lakh to ₹6 Lakh), and Middle Income Group (MIG, annual income ₹6 Lakh to ₹9 Lakh). Beneficiary family must not own a pucca house anywhere in India. For BLC, land ownership is required. EWS eligibility applies to BLC, AHP, and ARH; ISS covers EWS, LIG, and MIG categories.",
     "eligibility_criteria": {
       "min_age": 18,
       "area_type": "urban",
       "owns_pucca_house": false,
-      "max_income_limit": 600000,
-      "target_group": "Urban EWS and LIG families"
+      "max_income_limit": 900000,
+      "target_group": "Urban EWS, LIG, and MIG families"
     },
     "required_documents": [
       "Aadhaar Card of all family members",
-      "PAN Card",
-      "Bank Account Statement (past 6 months)",
-      "Income Certificate / Form 16 / Salary Certificate",
-      "Land Title Deed / Patta (for Beneficiary-led Construction)",
-      "Affidavit declaring no pucca house owned across India"
+      "PAN Card (for loan and subsidy processing)",
+      "Proof of Address and Urban Domicile (Ration Card / Voter ID / Utility Bill)",
+      "Income Certificate / Salary Slip / Form 16 / Self-declaration of Income",
+      "Affidavit affirming no pucca house is owned anywhere in India",
+      "Land Title Deed / Patta / Possession Document (for Beneficiary-Led Construction)",
+      "Home Loan Sanction Letter from Lending Institution (for Interest Subsidy Scheme)"
     ],
-    "application_mode": "Online via pmaymis.gov.in Citizen Assessment or through Common Service Centres (CSCs) and Urban Local Bodies",
+    "application_mode": "Online via pmay-urban.gov.in / Unified Web Portal or through Common Service Centres (CSCs) and Urban Local Bodies",
     "application_steps": [
-      "Visit pmaymis.gov.in and click on 'Citizen Assessment'",
-      "Select appropriate vertical (e.g. Beneficiary-led Construction or Affordable Housing)",
-      "Enter Aadhaar details and verify identity",
-      "Fill personal, income, present address, and bank details",
-      "Submit declaration and track application status using Assessment ID"
-    ],
-    "government_level": "Central",
-    "applicable_states": [
-      "All India"
-    ],
-    "verification_status": "Verified against official source",
-    "source_organization": "Ministry of Housing and Urban Affairs",
-    "source_page_title": "Pradhan Mantri Awas Yojana - Urban (PMAY-U) Official Portal",
-    "benefits_summary": "Central interest subsidy and financial assistance up to \u20b92.67 Lakh for building or buying a pucca ho"
+      "Visit the official PMAY-U 2.0 unified portal (pmay-urban.gov.in) or your local Urban Local Body / CSC",
+      "Select the applicable programme component: BLC (own land), AHP (partnership housing), ARH (rental), or ISS (home loan interest subsidy)",
+      "Authenticate identity using Aadhaar and complete biometric / OTP verification",
+      "Enter family income, demographic details, bank account information, and upload required documents",
+      "Submit application and obtain Application Tracking Number for verification by Urban Local Body / SLNA"
+    ]
   },
   {
     "id": "atal-pension-yojana",
     "title": "Atal Pension Yojana (APY)",
-    "short_description": "Guaranteed monthly pension of \u20b91,000 to \u20b95,000 starting at age 60 for citizens aged 18 to 40, especially in the unorganized sector.",
+    "short_description": "Guaranteed lifelong pension of ₹1,000 to ₹5,000 per month from age 60 for unorganized sector workers based on monthly contributions.",
     "category": "Social Security & Pensions",
     "ministry": "Ministry of Finance",
-    "beneficiary_type": "Citizens aged 18-40 (Unorganized Sector Workers)",
+    "beneficiary_type": "Unorganized Sector Workers & Self-Employed Citizens",
     "official_portal_url": "https://www.npscra.nsdl.co.in",
     "verified": true,
-    "verification_source": "Pension Fund Regulatory and Development Authority (PFRDA) APY Rules (npscra.nsdl.co.in)",
-    "verification_date": "2026-10-22",
+    "verification_source": "Pension Fund Regulatory and Development Authority (PFRDA) APY Operational Guidelines & Tax-payer Exclusion Notification (pfrda.org.in)",
+    "verification_date": "2022-10-01",
     "nodal_agency": "Pension Fund Regulatory and Development Authority (PFRDA)",
-    "detailed_benefits": "Guaranteed minimum monthly pension of \u20b91,000, \u20b92,000, \u20b93,000, \u20b94,000, or \u20b95,000 per month starting at age 60 until death based on subscriber monthly contribution. Same pension continues to spouse upon death of subscriber. Complete accumulated pension wealth returned to nominee upon death of both subscriber and spouse.",
-    "eligibility_summary": "All Indian citizens between 18 and 40 years of age with a savings bank account. Ineligible if the citizen is or has been an income tax payer as per rules effective October 1, 2022.",
+    "detailed_benefits": "Guaranteed minimum monthly pension of ₹1,000, ₹2,000, ₹3,000, ₹4,000, or ₹5,000 per month starting at age 60 until death. After subscriber's death, identical pension is paid to spouse for life. On spouse's death, full accumulated pension corpus (up to ₹8.5 Lakh for ₹5,000 pension) is refunded to designated nominee.",
+    "eligibility_summary": "Any Indian citizen between 18 and 40 years of age having a savings bank account or post office savings account. Under statutory amendment effective 1st October 2022, any citizen who is or has been an income-tax payer is not eligible to join APY.",
     "eligibility_criteria": {
       "min_age": 18,
       "max_age": 40,
       "tax_payer_allowed": false,
-      "target_group": "Unorganized sector workers and all eligible citizens"
+      "target_group": "Unorganized sector workers aged 18 to 40"
     },
     "required_documents": [
       "Aadhaar Card",
       "Savings Bank Account Passbook with Auto-Debit facility",
       "Active Mobile Number"
     ],
-    "application_mode": "Online through NetBanking / Mobile Banking or in-person at bank and post office branches",
+    "application_mode": "Online via netbanking / mobile banking or in-person at any Bank branch or Post Office",
     "application_steps": [
-      "Approach the bank or post office branch where savings account is maintained, or log into NetBanking",
-      "Fill APY registration form specifying desired pension amount (\u20b91,000 - \u20b95,000)",
-      "Provide Aadhaar and nominee details",
-      "Authorize auto-debit of monthly/quarterly contribution from savings bank account",
-      "Receive Permanent Retirement Account Number (PRAN) acknowledgment"
-    ],
-    "government_level": "Central",
-    "applicable_states": [
-      "All India"
-    ],
-    "verification_status": "Verified against official source",
-    "source_organization": "Ministry of Finance",
-    "source_page_title": "Atal Pension Yojana (APY) Official Portal",
-    "benefits_summary": "Guaranteed monthly pension of \u20b91,000 to \u20b95,000 starting at age 60 for citizens aged 18 to 40, especi"
+      "Visit the bank branch or post office where you hold a savings bank account, or log in to netbanking",
+      "Fill the APY Subscriber Registration Form specifying chosen monthly pension amount (₹1,000 to ₹5,000)",
+      "Provide Aadhaar number, mobile number, and spouse/nominee details",
+      "Authorize auto-debit of monthly contribution from your savings bank account",
+      "Receive Permanent Retirement Account Number (PRAN) acknowledgment via SMS"
+    ]
   },
   {
     "id": "pm-mudra-yojana",
     "title": "Pradhan Mantri Mudra Yojana (PMMY)",
-    "short_description": "Collateral-free business loans up to \u20b920 Lakhs for non-corporate, non-farm small and micro enterprises.",
+    "short_description": "Institutional collateral-free business loan facility up to ₹20 Lakhs for non-corporate, non-farm small and micro enterprises across Shishu, Kishore, Tarun, and Tarun Plus categories.",
     "category": "Financial Inclusion & Livelihood",
     "ministry": "Ministry of Finance",
-    "beneficiary_type": "Micro and Small Entrepreneurs",
-    "official_portal_url": "https://www.mudra.org.in",
+    "beneficiary_type": "Non-corporate, non-farm small and micro enterprise owners and entrepreneurs",
+    "official_portal_url": "https://financialservices.gov.in/pradhan-mantri-mudra-yojana-pmmy",
     "verified": true,
-    "verification_source": "Micro Units Development and Refinance Agency (MUDRA) Guidelines (mudra.org.in)",
-    "verification_date": "2026-10-22",
-    "nodal_agency": "Department of Financial Services (DFS)",
-    "detailed_benefits": "Institutional collateral-free micro-credit across four tiers: Shishu (loans up to \u20b950,000), Kishore (loans \u20b950,001 to \u20b95 Lakh), Tarun (loans \u20b95,00,001 to \u20b910 Lakh), and Tarun Plus (loans \u20b910,00,001 to \u20b920 Lakh for entrepreneurs who previously repaid Tarun loans). No processing fee or collateral required for Shishu and Kishore loans.",
-    "eligibility_summary": "Any Indian citizen aged 18+ running or planning a non-farm revenue-generating small or micro enterprise in manufacturing, processing, trading, artisanal, or service sectors. Must not be a bank defaulter.",
+    "verification_source": "Department of Financial Services (DFS), Ministry of Finance Notification & MUDRA Guidelines (financialservices.gov.in / mudra.org.in)",
+    "verification_date": "2024-10-24",
+    "nodal_agency": "Department of Financial Services (DFS), Ministry of Finance & MUDRA Ltd (subsidiary of SIDBI)",
+    "detailed_benefits": "Institutional collateral-free micro-credit / business loan facility provided through Commercial Banks, Regional Rural Banks (RRBs), Small Finance Banks, and MFIs. The scheme offers repayable loans (NOT a cash handout, grant, or unconditional subsidy; approval is subject to lending bank appraisal and viability) under four tiers:\n1. Shishu: Loans up to ₹50,000 for early-stage micro-units.\n2. Kishore: Loans above ₹50,000 and up to ₹5,00,000 for established small businesses.\n3. Tarun: Loans above ₹5,00,000 and up to ₹10,00,000 for expanding business enterprises.\n4. Tarun Plus: Loans above ₹10,00,000 and up to ₹20 Lakh (₹20,00,000) (effective October 2024 pursuant to Union Budget 2024-25 enhancement), specifically reserved for entrepreneurs who have previously availed and successfully repaid a loan under the Tarun category.\nCredit guarantee protection is provided to lending institutions through the Credit Guarantee Fund for Micro Units (CGFMU). No collateral is required, but loans carry commercial interest rates and must be repaid over standard bank repayment tenures (typically 3 to 5 years).",
+    "eligibility_summary": "Any Indian citizen aged 18+ who is running or proposing a revenue-generating non-farm business in manufacturing, processing, trading, services, or allied agriculture. The applicant must have a viable business proposal, must not be an institutional loan defaulter, and must have a satisfactory credit history. For the Tarun Plus tier (> ₹10 Lakh up to ₹20 Lakh), the applicant must have previously availed and successfully repaid a Tarun-tier loan without default. Note: Mudra provides repayable credit; loans are sanctioned at the discretion of the lending bank based on credit assessment and are never guaranteed or free subsidies.",
     "eligibility_criteria": {
       "min_age": 18,
       "occupations": [
@@ -247,129 +210,152 @@
     },
     "required_documents": [
       "Proof of Identity (Aadhaar Card / Voter ID / PAN Card / Passport)",
-      "Proof of Residence (Aadhaar Card / Electricity Bill / Ration Card)",
-      "Proof of Business Address and Registration / Udyam Registration",
+      "Proof of Residence (Aadhaar Card / Utility Bill / Domicile Certificate)",
+      "Proof of Business Identity and Registration / Udyam Registration Certificate",
       "Bank Account Statement for past 6 months",
+      "Business Proposal / Project Report with cost of machinery or working capital estimate",
+      "Repayment track record and clearance proof of previous Tarun loan (mandatory for Tarun Plus loans above ₹10 Lakh)",
       "Passport-size Photographs"
     ],
-    "application_mode": "Online via udyamimitra.in portal or in-person at commercial banks, RRBs, Small Finance Banks, and MFIs",
+    "application_mode": "Online via Udyamimitra portal (udyamimitra.in) or offline at Member Lending Institutions (Commercial Banks, RRBs, SFBs, MFIs)",
     "application_steps": [
-      "Prepare business proposal or quotation of machinery/items to be purchased",
-      "Apply online on Udyamimitra portal (udyamimitra.in) or visit nearest lending institution",
-      "Submit standard Mudra loan application form with KYC and business proof",
-      "Bank evaluates application and sanctions loan without requiring collateral",
-      "Loan disbursed with Mudra Card for working capital withdrawals"
-    ],
-    "government_level": "Central",
-    "applicable_states": [
-      "All India"
-    ],
-    "verification_status": "Verified against official source",
-    "source_organization": "Ministry of Finance",
-    "source_page_title": "Pradhan Mantri Mudra Yojana (PMMY) Official Portal",
-    "benefits_summary": "Collateral-free business loans up to \u20b920 Lakhs for non-corporate, non-farm small and micro enterpris"
+      "Formulate a viable business plan and prepare projected income and expenditure or machinery quotations",
+      "Gather KYC proofs, Udyam registration certificate, and 6 months bank statements",
+      "For Tarun Plus (₹10L-₹20L), obtain proof of timely repayment of previous Tarun category loan",
+      "Apply online through Udyamimitra portal (udyamimitra.in) or visit any branch of a scheduled commercial bank, RRB, or Small Finance Bank",
+      "Bank reviews credit score, evaluates business viability, and sanctions repayable credit facility without collateral requirements"
+    ]
   },
   {
     "id": "pm-vishwakarma",
     "title": "PM Vishwakarma Scheme",
-    "short_description": "Certificate & ID card, \u20b9500/day stipend during skill training, \u20b915,000 toolkit grant, and 5% concessional loans up to \u20b93 Lakh for traditional artisans.",
-    "category": "Skill Development & Livelihood",
+    "short_description": "Comprehensive support for traditional artisans and craftspeople: recognition, skill training with stipend, ₹15,000 toolkit incentive, and collateral-free enterprise loans up to ₹3 Lakh.",
+    "category": "Skill Development & Artisans",
     "ministry": "Ministry of Micro, Small and Medium Enterprises",
-    "beneficiary_type": "Traditional Artisans and Craftspersons",
+    "beneficiary_type": "Traditional Artisans and Craftspeople in 18 Specified Trades",
     "official_portal_url": "https://pmvishwakarma.gov.in",
     "verified": true,
-    "verification_source": "Ministry of MSME PM Vishwakarma Guidelines (pmvishwakarma.gov.in)",
-    "verification_date": "2026-10-22",
-    "nodal_agency": "Ministry of MSME & National Council for Vocational Education and Training (NCVET)",
-    "detailed_benefits": "Official PM Vishwakarma Certificate and ID Card. 5-7 days basic skill training with \u20b9500/day stipend. Modern toolkit grant of \u20b915,000 via e-RUPI. Collateral-free credit support up to \u20b93 Lakh in two tranches (Tranche 1: \u20b91 Lakh at 5% interest; Tranche 2: \u20b92 Lakh) with 8% interest subvention by MoMSME. Digital incentive of \u20b91 per digital transaction up to 100 transactions/month.",
-    "eligibility_summary": "Artisan or craftsperson working with hands and tools in one of 18 notified traditional trades (carpenter, blacksmith, potter, goldsmith, cobbler, tailor, mason, barber, washerman, etc.). Minimum age 18. Limited to one member per family. Must not have availed loans under PMEGP, Mudra, or PM SVANidhi in last 5 years.",
+    "verification_source": "Ministry of MSME PM Vishwakarma Operational Scheme Guidelines (pmvishwakarma.gov.in; Cabinet Approval Aug 2023)",
+    "verification_date": "2023-09-17",
+    "nodal_agency": "Ministry of MSME in partnership with Ministry of Skill Development and Entrepreneurship (MSDE) & DFS",
+    "detailed_benefits": "Official PM Vishwakarma Certificate and ID Card. 5-7 days basic skill training with ₹500/day stipend. ₹15,000 digital e-voucher grant for modern toolkit purchase. Collateral-free enterprise development credit at concessional 5% interest rate (with 8% interest subvention paid by MoMSME): 1st tranche up to ₹1,00,000 (18 months tenure) and 2nd tranche up to ₹2,00,000 (30 months tenure). ₹1 per digital transaction incentive (up to 100 transactions monthly) and brand promotion assistance.",
+    "eligibility_summary": "Artisans working with hands and tools in one of 18 traditional family trades (Carpenter, Blacksmith, Goldsmith, Potter, Sculptor, Cobbler, Mason, Weaver, Basket Maker, Doll/Toy Maker, Barber, Garland Maker, Washerman, Tailor, Fishing Net Maker, Boat Builder, Armourer, Locksmith). Minimum age 18 years. One beneficiary per family. Government employees and their family members are excluded.",
     "eligibility_criteria": {
       "min_age": 18,
       "occupations": [
-        "artisan",
-        "craftsperson",
         "carpenter",
         "blacksmith",
+        "goldsmith",
         "potter",
         "sculptor",
         "cobbler",
         "mason",
-        "tailor",
+        "weaver",
         "barber",
-        "washerman"
+        "tailor",
+        "washerman",
+        "artisan"
       ],
       "max_beneficiaries_per_family": 1,
       "government_employees_allowed": false,
-      "target_group": "Traditional artisans across 18 notified trades"
+      "target_group": "Artisans and craftspeople in 18 traditional trades"
     },
     "required_documents": [
-      "Aadhaar Card",
-      "Mobile Number linked to Aadhaar",
-      "Bank Account Passbook (Aadhaar linked)",
-      "Ration Card (for family verification)",
-      "Self-Declaration of Traditional Trade"
+      "Aadhaar Card (biometric verification mandatory)",
+      "Active Mobile Number linked with Aadhaar",
+      "Bank Account Passbook / Details",
+      "Ration Card / Family details (for one-member-per-family verification)",
+      "Skill declaration in one of the 18 specified trades"
     ],
-    "application_mode": "Biometric registration at Common Service Centres (CSCs) on pmvishwakarma.gov.in",
+    "application_mode": "Online via Common Service Centres (CSCs) with biometric authentication",
     "application_steps": [
-      "Visit nearest Common Service Centre (CSC) with Aadhaar and bank passbook",
-      "Complete biometric Aadhaar authentication and register for one of 18 notified trades",
-      "Three-stage verification: Gram Panchayat / Urban Local Body, District Implementation Committee, National Committee",
-      "Download PM Vishwakarma digital Certificate and ID Card upon verification",
-      "Attend 5-day basic skill training and receive \u20b915,000 toolkit voucher"
-    ],
-    "government_level": "Central",
-    "applicable_states": [
-      "All India"
-    ],
-    "verification_status": "Verified against official source",
-    "source_organization": "Ministry of Micro, Small and Medium Enterprises",
-    "source_page_title": "PM Vishwakarma Scheme Official Portal",
-    "benefits_summary": "Certificate & ID card, \u20b9500/day stipend during skill training, \u20b915,000 toolkit grant, and 5% concess"
+      "Visit nearest Common Service Centre (CSC) with Aadhaar, bank passbook, and mobile",
+      "CSC operator performs biometric authentication of applicant",
+      "Select trade from the 18 eligible crafts and fill family & bank details",
+      "Three-stage verification: Stage 1 by Gram Panchayat / ULB; Stage 2 by District Implementation Committee; Stage 3 by Screening Committee",
+      "Download PM Vishwakarma Certificate and receive training schedule SMS"
+    ]
   },
   {
     "id": "pm-svanidhi",
     "title": "PM Street Vendor's AtmaNirbhar Nidhi (PM SVANidhi)",
-    "short_description": "Collateral-free working capital micro-loans from \u20b910,000 up to \u20b950,000 with 7% interest subsidy and cashback for urban street vendors.",
+    "short_description": "Affordable collateral-free working capital micro-loans up to ₹50,000 with 7% interest subsidy and cashback for urban street vendors.",
     "category": "Financial Inclusion & Livelihood",
     "ministry": "Ministry of Housing and Urban Affairs",
-    "beneficiary_type": "Urban and Peri-Urban Street Vendors",
+    "beneficiary_type": "Urban Street Vendors, Hawkers, and Cart-pullers",
     "official_portal_url": "https://pmsvanidhi.mohua.gov.in",
     "verified": true,
-    "verification_source": "Ministry of Housing and Urban Affairs PM SVANidhi Portal (pmsvanidhi.mohua.gov.in)",
-    "verification_date": "2026-10-22",
-    "nodal_agency": "Small Industries Development Bank of India (SIDBI) / MoHUA",
-    "detailed_benefits": "Collateral-free working capital loan: 1st tranche up to \u20b910,000 (1 year tenure); 2nd tranche up to \u20b920,000 upon timely repayment; 3rd tranche up to \u20b950,000 upon timely repayment of 2nd tranche. 7% per annum interest subsidy credited directly to bank account quarterly. Digital cashback of \u20b950 to \u20b9100 per month (up to \u20b91,200 per year) on digital transactions.",
-    "eligibility_summary": "Street vendors and hawkers vending in urban and peri-urban areas who possess a Certificate of Vending (CoV) / ID card issued by Urban Local Body (ULB), or an official Letter of Recommendation (LoR). Minimum age 18.",
+    "verification_source": "Ministry of Housing and Urban Affairs PM SVANidhi Operational Guidelines & Extension (pmsvanidhi.mohua.gov.in)",
+    "verification_date": "2023-06-01",
+    "nodal_agency": "Ministry of Housing and Urban Affairs (MoHUA) & Small Industries Development Bank of India (SIDBI)",
+    "detailed_benefits": "Collateral-free working capital loan: 1st tranche up to ₹10,000 (1 year tenure); 2nd tranche up to ₹20,000 on timely repayment of 1st tranche; 3rd tranche up to ₹50,000 on timely repayment of 2nd tranche. 7% interest subsidy per annum credited directly to bank account on quarterly basis for timely repayment. Monthly cashback incentive up to ₹100 (up to ₹1,200 annually) for conducting digital transactions (₹1 per transaction). Zero penalty for early repayment.",
+    "eligibility_summary": "All street vendors vending in urban areas possessing Certificate of Vending (CoV) or Identity Card issued by Urban Local Bodies (ULBs). Vendors left out of ULB surveys can be recommended through a Letter of Recommendation (LoR) issued by ULB / Town Vending Committee (TVC).",
     "eligibility_criteria": {
       "min_age": 18,
       "area_type": "urban",
       "occupations": [
         "street_vendor",
-        "hawker"
+        "hawker",
+        "vendor",
+        "trader"
       ],
-      "target_group": "Urban street vendors with ULB Certificate of Vending or LoR"
+      "target_group": "Urban street vendors vending in peri-urban and urban areas"
     },
     "required_documents": [
-      "Aadhaar Card",
-      "Certificate of Vending (CoV) / Identity Card / Letter of Recommendation (LoR) from ULB",
-      "Bank Account Passbook (Aadhaar linked)",
-      "Mobile Number linked to Aadhaar"
+      "Certificate of Vending (CoV) / Identity Card or Letter of Recommendation (LoR) from ULB/TVC",
+      "Aadhaar Card (identity proof and Aadhaar-linked mobile number)",
+      "Bank Account Passbook / Details (Aadhaar linked)",
+      "Passport-size Photograph"
     ],
-    "application_mode": "Online via pmsvanidhi.mohua.gov.in portal or PM SVANidhi Mobile App, or via ULB/CSC counters",
+    "application_mode": "Online via pmsvanidhi.mohua.gov.in, PM SVANidhi Mobile App, or via Common Service Centres (CSCs) and Banking Correspondents (BCs)",
     "application_steps": [
-      "Visit pmsvanidhi.mohua.gov.in and select 'Apply for Loan'",
-      "Enter Aadhaar-linked mobile number and verify OTP",
-      "Select vendor category and enter Certificate of Vending (CoV) or Letter of Recommendation (LoR) details",
-      "Fill personal, family, and bank account details",
-      "Select preferred lending institution and submit loan application"
+      "Check vending status on pmsvanidhi.mohua.gov.in using Aadhaar or CoV number",
+      "If name is not in survey, obtain Letter of Recommendation (LoR) from Urban Local Body",
+      "Apply online or through CSC operator by uploading Aadhaar and bank details",
+      "Select preferred Lending Institution (Public/Private Bank, RRB, SHG Bank)",
+      "Bank sanctions and disburses loan directly to vendor's Aadhaar-linked savings account"
+    ]
+  },
+  {
+    "id": "nsp-post-matric",
+    "title": "Post-Matric Scholarship for SC/ST/OBC Students",
+    "short_description": "Centrally sponsored financial scholarship providing 100% compulsory course fee reimbursement and monthly maintenance allowances for eligible SC, ST, and OBC students in higher secondary and higher education.",
+    "category": "Education & Skilling",
+    "ministry": "Ministry of Social Justice and Empowerment / Ministry of Tribal Affairs",
+    "beneficiary_type": "SC, ST, and OBC students pursuing post-matriculation or tertiary education",
+    "official_portal_url": "https://scholarships.gov.in",
+    "verified": true,
+    "verification_source": "National Scholarship Portal Operational Guidelines, Ministry of Social Justice and Empowerment & Ministry of Tribal Affairs (scholarships.gov.in)",
+    "verification_date": "2024-07-01",
+    "nodal_agency": "National Scholarship Division, MoSJE & MoTA in coordination with State Welfare Departments",
+    "detailed_benefits": "Provides Direct Benefit Transfer (DBT) scholarship support covering: 1. Full non-refundable compulsory fees (tuition fees, examination fees, library fees) charged by recognized educational institutions. 2. Monthly maintenance / academic allowance depending on course tier and residential status (day scholar vs. hosteller). Financial assistance is credited directly into the student's Aadhaar-seeded bank account via Public Financial Management System (PFMS).",
+    "eligibility_summary": "Indian national students belonging to Scheduled Caste (SC), Scheduled Tribe (ST), or Other Backward Classes (OBC). Must be enrolled in a post-matric or higher education course (Class 11, Class 12, ITI, Diploma, Undergraduate, Postgraduate, or Doctoral) in an institution recognized by Government / UGC / AICTE. Total family income from all sources must not exceed ₹2,50,000 (₹2.5 Lakh) per annum. The student must not be receiving any other government scholarship for the same study.",
+    "eligibility_criteria": {
+      "min_age": 15,
+      "max_age": 35,
+      "occupations": [
+        "student"
+      ],
+      "max_income_limit": 250000,
+      "tax_payer_allowed": false,
+      "target_group": "SC/ST/OBC Students pursuing Class 11 and above"
+    },
+    "required_documents": [
+      "Aadhaar Card (linked with mobile number for OTP authentication)",
+      "Caste / Community Certificate issued by competent revenue authority (Tahsildar/SDM)",
+      "Income Certificate issued by competent revenue authority (family income ≤ ₹2.50 Lakh)",
+      "Previous Examination Marksheet / Qualifying Educational Certificate",
+      "Bonafide Student Certificate / Current Course Fee Receipt / Admission Letter",
+      "Bank Account Passbook (Aadhaar seeded bank account)",
+      "Domicile / Residential Certificate"
     ],
-    "government_level": "Central",
-    "applicable_states": [
-      "All India"
-    ],
-    "verification_status": "Verified against official source",
-    "source_organization": "Ministry of Housing and Urban Affairs",
-    "source_page_title": "PM Street Vendor's AtmaNirbhar Nidhi (PM SVANidhi) Official Portal",
-    "benefits_summary": "Collateral-free working capital micro-loans from \u20b910,000 up to \u20b950,000 with 7% interest subsidy and "
+    "application_mode": "Online via National Scholarship Portal (scholarships.gov.in) or UMANG App",
+    "application_steps": [
+      "Register on the National Scholarship Portal (scholarships.gov.in) to generate a One-Time Registration (OTR) number",
+      "Log in to the student dashboard and fill personal, academic, and bank account details",
+      "Upload caste certificate, income certificate, and institutional bonafide proof",
+      "Select 'Post-Matric Scholarship' under your state and category department and submit application",
+      "School/college Institute Nodal Officer (INO) and State Nodal Officer (SNO) verify credentials, after which funds are disbursed via DBT PFMS"
+    ]
   }
 ]
