@@ -4,9 +4,10 @@ import { useLanguage } from '../context/LanguageContext';
 
 interface FooterProps {
   onOpenAbout?: () => void;
+  onReplayIntro?: () => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onOpenAbout }) => {
+export const Footer: React.FC<FooterProps> = ({ onOpenAbout, onReplayIntro }) => {
   const { language, t } = useLanguage();
 
   return (
@@ -33,6 +34,26 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAbout }) => {
                     : language === 'hi'
                     ? 'सुविधाएं और विवरण'
                     : 'About & Features'}
+                </button>
+              </>
+            )}
+            {onReplayIntro && (
+              <>
+                <span className="text-xs text-slate-300 dark:text-slate-700">•</span>
+                <button
+                  type="button"
+                  onClick={onReplayIntro}
+                  className="text-xs font-semibold text-[#17324D] dark:text-teal-400 hover:text-[#16733B] dark:hover:text-teal-300 hover:underline cursor-pointer inline-flex items-center gap-1"
+                  aria-label="Replay SevAIQ Cinematic Intro"
+                >
+                  <span aria-hidden="true">🎬</span>
+                  <span>
+                    {language === 'ta'
+                      ? 'அறிமுகக் காட்சி'
+                      : language === 'hi'
+                      ? 'परिचय दृश्य'
+                      : 'Play Intro'}
+                  </span>
                 </button>
               </>
             )}

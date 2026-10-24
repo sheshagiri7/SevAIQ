@@ -14,6 +14,7 @@ import { AccessibilityDrawer } from './components/AccessibilityDrawer';
 import { ADHDRuler } from './components/ADHDRuler';
 import { AboutModal } from './components/AboutModal';
 import { Footer } from './components/Footer';
+import { SevAIQIntro, hasSeenIntro } from './components/SevAIQIntro';
 import { useLanguage } from './context/LanguageContext';
 import { checkBackendHealth, fetchSchemes, getApiBaseUrl } from './services/api';
 import {
@@ -46,6 +47,19 @@ export function App() {
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState('all');
   const [onlyEligibleFilter, setOnlyEligibleFilter] = useState<boolean>(false);
+
+  // Cinematic Website Opening Intro State (Session-persisted)
+  const [showIntro, setShowIntro] = useState<boolean>(() => {
+    return !hasSeenIntro();
+  });
+
+  const handleIntroComplete = useCallback(() => {
+    setShowIntro(false);
+  }, []);
+
+  const handleReplayIntro = useCallback(() => {
+    setShowIntro(true);
+  }, []);
 
   const [apiState, setApiState] = useState<ApiState>({
     status: 'checking',
@@ -379,6 +393,11 @@ export function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F5F7F8] dark:bg-[#0F2133] text-[#202B36] dark:text-[#F1F5F9] font-sans relative transition-colors duration-150">
+      {/* Cinematic Website Opening Intro (Plays once per browser session or on manual replay) */}
+      {showIntro && (
+        <SevAIQIntro onComplete={handleIntroComplete} />
+      )}
+
       {/* Universal Header with Tab Navigation & Health Status */}
       <Header
         apiState={apiState}
@@ -618,6 +637,7 @@ export function App() {
         isOpen={isAboutOpen}
         onClose={() => setIsAboutOpen(false)}
         onNavigate={handleNavigate}
+        onReplayIntro={handleReplayIntro}
       />
 
       {/* Floating Bottom-Right Corner Voice AI Assistant Launcher - Rendered on Secondary Pages Only */}
@@ -676,7 +696,10 @@ export function App() {
       {/* ADHD Full-Screen Interactive Reading Focus Ruler */}
       <ADHDRuler />
 
-      <Footer onOpenAbout={() => setIsAboutOpen(true)} />
+      <Footer
+        onOpenAbout={() => setIsAboutOpen(true)}
+        onReplayIntro={handleReplayIntro}
+      />
     </div>
   );
 }
