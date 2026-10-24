@@ -73,7 +73,7 @@ def test_passport_pdf_contains_required_sections_and_disclaimers():
         # Branding & Headers
         assert b"SevAIQ" in raw_pdf
         assert b"SCHEME PASSPORT" in raw_pdf
-        assert b"Government Benefits. Made Accessible." in raw_pdf
+        assert b"Seva First Innovation Challenge 2026" in raw_pdf
 
         # Statutory Advisory / Non-government disclaimer
         assert b"STATUTORY ADVISORY" in raw_pdf

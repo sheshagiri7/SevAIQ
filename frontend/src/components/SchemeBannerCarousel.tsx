@@ -1,11 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   ChevronLeft,
   ChevronRight,
   ChevronDown,
   ArrowRight,
-  ExternalLink,
-  Sparkles,
 } from 'lucide-react';
 import { NavigationTab } from '../types';
 import { useAccessibility } from '../context/AccessibilityContext';
@@ -17,6 +15,7 @@ interface SchemeBannerCarouselProps {
   onSelectSchemeForEligibility?: (schemeId: string) => void;
   onScrollToOptions?: () => void;
   onSelectCategory?: (categoryId: string) => void;
+  onFindSchemes?: () => void;
 }
 
 interface SchemeSlide {
@@ -33,6 +32,13 @@ interface SchemeSlide {
   primaryCtaText: string;
   secondaryCtaText: string;
   officialUrl: string;
+  image: {
+    src: string;
+    alt: string;
+    caption: string;
+    objectFit?: 'cover' | 'contain';
+    objectPosition?: string;
+  };
   theme: {
     bgGradient: string;
     headlineColor: string;
@@ -84,8 +90,15 @@ const SLIDES: SchemeSlide[] = [
     description: 'Students can apply for scholarships easily through the app with zero paperwork hassle.',
     benefitPill: '100% Compulsory Fee Reimbursement & Maintenance Support',
     primaryCtaText: 'Apply Now',
-    secondaryCtaText: 'Check Eligibility',
+    secondaryCtaText: 'Detailed Analysis',
     officialUrl: 'https://scholarships.gov.in',
+    image: {
+      src: '/banners/banner-nsp.png',
+      alt: 'National Scholarship Portal is now LIVE on UMANG - Students can apply for scholarships easily through the app',
+      caption: 'National Scholarship Portal LIVE on UMANG App',
+      objectFit: 'cover',
+      objectPosition: 'object-center',
+    },
     theme: {
       bgGradient: 'from-[#eef9f2] via-[#e5f4ea] to-[#d8ede0]',
       headlineColor: 'text-[#155e3b]',
@@ -124,48 +137,55 @@ const SLIDES: SchemeSlide[] = [
     },
   },
   {
-    id: 'pm-kisan',
-    schemeId: 'pm-kisan',
-    ministryBadge: 'MINISTRY OF AGRICULTURE & FARMERS WELFARE',
+    id: 'pmsby',
+    schemeId: 'pmsby',
+    ministryBadge: 'DEPARTMENT OF FINANCIAL SERVICES & MINISTRY OF FINANCE',
     ministrySub: 'GOVERNMENT OF INDIA',
-    partnerTag: 'DBT BHARAT',
-    titlePrimary: 'PM-KISAN Samman Nidhi',
+    partnerTag: 'PMSBY',
+    titlePrimary: 'Pradhan Mantri Suraksha Bima Yojana',
     statusBadge: 'ACTIVE',
-    partnerText: '17th Installment',
-    description: 'Direct income support of ₹6,000/year credited directly into bank accounts of verified farmers.',
-    benefitPill: '₹6,000 Per Annum via Direct Benefit Transfer (DBT)',
+    partnerText: '₹20/Year',
+    description: 'Insurance worth upto ₹2,00,000/- at just ₹20/- per annum accidental death and disability coverage for all account holders.',
+    benefitPill: '₹2,00,000 Accidental Cover for ₹20/Year auto-debited',
     primaryCtaText: 'Apply Now',
-    secondaryCtaText: 'Check Beneficiary',
-    officialUrl: 'https://pmkisan.gov.in',
+    secondaryCtaText: 'Detailed Analysis',
+    officialUrl: 'https://financialservices.gov.in',
+    image: {
+      src: '/banners/banner-suraksha-bima.png',
+      alt: 'Pradhan Mantri Suraksha Bima Yojana - Insurance worth upto ₹2,00,000/- at just ₹20/- per annum',
+      caption: 'Pradhan Mantri Suraksha Bima Yojana - ₹2 Lakh Security',
+      objectFit: 'cover',
+      objectPosition: 'object-center',
+    },
     theme: {
-      bgGradient: 'from-[#fefcf2] via-[#f9f5e2] to-[#ecf8eb]',
-      headlineColor: 'text-[#1b6b3e]',
-      badgeBg: 'bg-[#16a34a]',
-      arrowBg: 'bg-[#16a34a] hover:bg-[#15803d]',
-      buttonText: 'text-[#16a34a]',
-      accentDot: 'bg-[#16a34a]',
-      decorCircle: 'bg-amber-300/20',
+      bgGradient: 'from-[#f0fbf4] via-[#e5f8ec] to-[#dcf4e6]',
+      headlineColor: 'text-[#166534]',
+      badgeBg: 'bg-[#15803d]',
+      arrowBg: 'bg-[#15803d] hover:bg-[#166534]',
+      buttonText: 'text-[#15803d]',
+      accentDot: 'bg-[#15803d]',
+      decorCircle: 'bg-emerald-300/20',
     },
     phone: {
-      title: 'PM-KISAN Farmer Portal',
-      shortCode: 'KISAN',
-      tagline: 'Farmer Welfare & DBT Disbursal',
-      searchPlaceholder: 'Enter Aadhaar or Mobile No...',
+      title: 'PM Suraksha Bima Portal',
+      shortCode: 'PMSBY',
+      tagline: 'Financial Inclusion & Social Security',
+      searchPlaceholder: 'Search policy or bank account...',
       highlightCard: {
-        title: '17th Installment DBT Payment',
-        btnText: 'CHECK DBT',
+        title: 'Accidental Security Cover ₹2 Lakh',
+        btnText: 'ENROLL ₹20',
         btnColor: 'bg-emerald-600',
       },
-      service1: 'e-KYC Biometric Verification',
-      service2: 'Land Seeding & Bank Account Link',
+      service1: 'Bank Account Auto-Debit Consent',
+      service2: 'Nominee Details & Claim Processing',
       floatingBadge1: {
-        title: '₹2,000 Installment DBT',
-        tag: 'CREDITED',
+        title: '₹2 Lakh Accident Cover',
+        tag: 'ACTIVE',
         color: 'bg-emerald-600',
         icon: 'sprout',
       },
       floatingBadge2: {
-        title: 'e-KYC Biometrics',
+        title: 'Annual Premium: ₹20',
         tag: 'VERIFIED',
         color: 'bg-amber-600',
         icon: 'shield',
@@ -175,22 +195,87 @@ const SLIDES: SchemeSlide[] = [
     },
   },
   {
-    id: 'ab-pmjay',
-    schemeId: 'ab-pmjay',
-    ministryBadge: 'NATIONAL HEALTH AUTHORITY & MOHFW',
+    id: 'myscheme-umang',
+    schemeId: 'umang-myscheme',
+    ministryBadge: 'MINISTRY OF ELECTRONICS & INFORMATION TECHNOLOGY',
     ministrySub: 'GOVERNMENT OF INDIA',
-    partnerTag: 'AYUSHMAN',
-    titlePrimary: 'Ayushman Bharat PM-JAY',
-    statusBadge: 'CASHLESS',
-    partnerText: '₹5 Lakh Health Cover',
-    description: 'World’s largest health assurance scheme providing free hospitalization across 28,000+ hospitals.',
-    benefitPill: '₹5,00,000 Annual Hospitalization Cover Per Family',
-    primaryCtaText: 'Apply Now',
-    secondaryCtaText: 'Find Hospitals',
-    officialUrl: 'https://pmjay.gov.in',
+    partnerTag: 'UMANG',
+    titlePrimary: 'One Stop Platform',
+    statusBadge: 'LIVE',
+    partnerText: '1,000+ Schemes',
+    description: 'Access, apply and track central and state government schemes effortlessly in one single unified civic platform.',
+    benefitPill: 'Access, Apply & Track 1,000+ Government Schemes Effortlessly',
+    primaryCtaText: 'Explore Schemes',
+    secondaryCtaText: 'Detailed Analysis',
+    officialUrl: 'https://web.umang.gov.in',
+    image: {
+      src: '/banners/banner-myscheme-umang.png',
+      alt: 'ONE STOP PLATFORM - Access, Apply and Track government schemes effortlessly',
+      caption: 'One Stop Platform for 1,000+ Central and State Schemes',
+      objectFit: 'cover',
+      objectPosition: 'object-center',
+    },
     theme: {
-      bgGradient: 'from-[#f0f9ff] via-[#e2f2fe] to-[#d8eefd]',
-      headlineColor: 'text-[#0355a3]',
+      bgGradient: 'from-[#fffaf0] via-[#fef4e2] to-[#faebd7]',
+      headlineColor: 'text-[#9a3412]',
+      badgeBg: 'bg-[#ea580c]',
+      arrowBg: 'bg-[#ea580c] hover:bg-[#c2410c]',
+      buttonText: 'text-[#ea580c]',
+      accentDot: 'bg-[#ea580c]',
+      decorCircle: 'bg-orange-300/20',
+    },
+    phone: {
+      title: 'myScheme Unified Services',
+      shortCode: 'UMANG',
+      tagline: 'Digital India Corporation Platform',
+      searchPlaceholder: 'Search 1,000+ schemes...',
+      highlightCard: {
+        title: 'Single Sign-on Scheme Access',
+        btnText: 'DISCOVER',
+        btnColor: 'bg-orange-600',
+      },
+      service1: 'Unified Mobile App for New-age Governance',
+      service2: 'Real-time DBT Tracking & DigiLocker Sync',
+      floatingBadge1: {
+        title: '1,000+ Schemes Live',
+        tag: 'DISCOVER',
+        color: 'bg-orange-600',
+        icon: 'coins',
+      },
+      floatingBadge2: {
+        title: 'Paperless Digital Application',
+        tag: 'VERIFIED',
+        color: 'bg-amber-600',
+        icon: 'award',
+      },
+      floating3DIcon: 'coins',
+      phoneAnimationClass: 'animate-moving-phone-4',
+    },
+  },
+  {
+    id: 'digital-india-modi',
+    schemeId: 'digital-india',
+    ministryBadge: 'MINISTRY OF ELECTRONICS & INFORMATION TECHNOLOGY',
+    ministrySub: 'GOVERNMENT OF INDIA',
+    partnerTag: 'DIGITAL INDIA',
+    titlePrimary: 'Digital India - Opportunity for All',
+    statusBadge: 'VISION',
+    partnerText: "Hon'ble PM Modi",
+    description: '"Digital India means opportunity for all, facility for all and participation of all", transforming citizen governance across Bharat.',
+    benefitPill: 'Opportunity for All • Facility for All • Participation of All',
+    primaryCtaText: 'Explore Digital India',
+    secondaryCtaText: 'Detailed Analysis',
+    officialUrl: 'https://digitalindia.gov.in',
+    image: {
+      src: '/banners/banner-modi.png',
+      alt: "Digital India means opportunity for all, facility for all and participation of all - Hon'ble Prime Minister Narendra Modi",
+      caption: "Digital India - Opportunity for All - Hon'ble Prime Minister",
+      objectFit: 'cover',
+      objectPosition: 'object-center',
+    },
+    theme: {
+      bgGradient: 'from-[#eef6fa] via-[#e8f2f9] to-[#fcf7ed]',
+      headlineColor: 'text-[#0d47a1]',
       badgeBg: 'bg-[#0284c7]',
       arrowBg: 'bg-[#0284c7] hover:bg-[#0369a1]',
       buttonText: 'text-[#0284c7]',
@@ -198,25 +283,25 @@ const SLIDES: SchemeSlide[] = [
       decorCircle: 'bg-sky-300/20',
     },
     phone: {
-      title: 'Ayushman Bharat PM-JAY',
-      shortCode: 'PM-JAY',
-      tagline: 'National Health Authority Digital Portal',
-      searchPlaceholder: 'Search hospitals, treatments...',
+      title: 'Digital India Initiatives',
+      shortCode: 'DI',
+      tagline: 'Ministry of Electronics & IT',
+      searchPlaceholder: 'Search digital governance programs...',
       highlightCard: {
-        title: 'Ayushman Card Generation',
-        btnText: 'DOWNLOAD',
+        title: 'Digital Transformation for 1.4B Citizens',
+        btnText: 'EXPLORE',
         btnColor: 'bg-sky-600',
       },
-      service1: 'Find 28,000+ Empanelled Hospitals',
-      service2: 'Cashless Treatment History',
+      service1: 'Direct Benefit Transfer (DBT) Ecosystem',
+      service2: 'Paperless Faceless Citizen Delivery',
       floatingBadge1: {
-        title: 'Ayushman Golden Card',
-        tag: 'NEW',
+        title: 'Faceless & Cashless',
+        tag: 'VISION',
         color: 'bg-cyan-600',
         icon: 'heart',
       },
       floatingBadge2: {
-        title: '₹5,00,000 Health Cover',
+        title: 'Inclusive Public Infra',
         tag: 'ACTIVE',
         color: 'bg-blue-600',
         icon: 'shield',
@@ -226,99 +311,55 @@ const SLIDES: SchemeSlide[] = [
     },
   },
   {
-    id: 'pm-svanidhi',
-    schemeId: 'pm-svanidhi',
-    ministryBadge: 'MINISTRY OF HOUSING & URBAN AFFAIRS',
+    id: 'digital-india-11',
+    schemeId: 'digital-india-11-years',
+    ministryBadge: 'MINISTRY OF ELECTRONICS & INFORMATION TECHNOLOGY',
     ministrySub: 'GOVERNMENT OF INDIA',
-    partnerTag: 'SVANIDHI',
-    titlePrimary: 'PM SVANidhi Micro-Credit',
-    statusBadge: 'INSTANT',
-    partnerText: '7% Interest Subsidy',
-    description: 'Collateral-free working capital loan up to ₹50,000 with monthly digital cashback incentives.',
-    benefitPill: '₹10,000 to ₹50,000 Micro-Credit with 7% Interest Subsidy',
-    primaryCtaText: 'Apply Now',
-    secondaryCtaText: 'Check Loan Status',
-    officialUrl: 'https://pmsvanidhi.mohua.gov.in',
+    partnerTag: '11 YEARS',
+    titlePrimary: 'Celebrating 11 Years of Digital India',
+    statusBadge: 'MILESTONE',
+    partnerText: 'Inclusive Growth',
+    description: 'Empowering every citizen through Digital Transformation, Innovation, Digital Infrastructure, and Inclusive Economic Growth.',
+    benefitPill: 'Empowering Every Citizen through Digital Transformation',
+    primaryCtaText: 'Explore Initiatives',
+    secondaryCtaText: 'Detailed Analysis',
+    officialUrl: 'https://digitalindia.gov.in',
+    image: {
+      src: '/banners/banner-digital-india.png',
+      alt: 'Celebrating 11 Years of Digital India - Empowering every citizen through Digital Transformation, Innovation and Inclusive Growth',
+      caption: 'Celebrating 11 Years of Digital Transformation & Innovation',
+      objectFit: 'cover',
+      objectPosition: 'object-center',
+    },
     theme: {
-      bgGradient: 'from-[#fff8f0] via-[#feeedd] to-[#fae8ff]',
-      headlineColor: 'text-[#9a3412]',
-      badgeBg: 'bg-[#ea580c]',
-      arrowBg: 'bg-[#ea580c] hover:bg-[#c2410c]',
-      buttonText: 'text-[#ea580c]',
-      accentDot: 'bg-[#ea580c]',
-      decorCircle: 'bg-orange-300/20',
+      bgGradient: 'from-[#ebf5fc] via-[#e2effa] to-[#d8e8f8]',
+      headlineColor: 'text-[#0f4c81]',
+      badgeBg: 'bg-[#0369a1]',
+      arrowBg: 'bg-[#0369a1] hover:bg-[#075985]',
+      buttonText: 'text-[#0369a1]',
+      accentDot: 'bg-[#0369a1]',
+      decorCircle: 'bg-blue-300/20',
     },
     phone: {
-      title: 'PM SVANidhi Mobile',
-      shortCode: 'SVANIDHI',
-      tagline: 'Urban Vendors Micro-Credit Scheme',
-      searchPlaceholder: 'Search loan or vending ID...',
+      title: 'Digital India 11 Years',
+      shortCode: '11-YR',
+      tagline: 'Inclusive Growth & Innovation',
+      searchPlaceholder: 'Explore milestone initiatives...',
       highlightCard: {
-        title: 'Working Capital Loan Tranche',
-        btnText: 'APPLY ₹10K',
-        btnColor: 'bg-orange-600',
-      },
-      service1: 'Certificate of Vending (CoV) Sync',
-      service2: 'Monthly Digital UPI Cashback: ₹100',
-      floatingBadge1: {
-        title: 'Instant Loan Disbursal',
-        tag: 'NEW',
-        color: 'bg-orange-600',
-        icon: 'coins',
-      },
-      floatingBadge2: {
-        title: '7% Interest Subsidy',
-        tag: 'ACTIVE',
-        color: 'bg-amber-600',
-        icon: 'award',
-      },
-      floating3DIcon: 'coins',
-      phoneAnimationClass: 'animate-moving-phone-4',
-    },
-  },
-  {
-    id: 'pmay-g',
-    schemeId: 'pmay-g',
-    ministryBadge: 'MINISTRY OF RURAL DEVELOPMENT',
-    ministrySub: 'GOVERNMENT OF INDIA',
-    partnerTag: 'AWAAS',
-    titlePrimary: 'Pradhan Mantri Awas Yojana',
-    statusBadge: 'APPROVED',
-    partnerText: 'Pucca House',
-    description: 'Financial assistance of ₹1.30 Lakh + 90 days MGNREGS wages for constructing a permanent house.',
-    benefitPill: '₹1.30 Lakh Financial Assistance for Pucca House',
-    primaryCtaText: 'Apply Now',
-    secondaryCtaText: 'Gram Panchayat List',
-    officialUrl: 'https://pmayg.nic.in',
-    theme: {
-      bgGradient: 'from-[#ecfdf5] via-[#e3faf0] to-[#e0f2fe]',
-      headlineColor: 'text-[#0f5132]',
-      badgeBg: 'bg-[#059669]',
-      arrowBg: 'bg-[#059669] hover:bg-[#047857]',
-      buttonText: 'text-[#059669]',
-      accentDot: 'bg-[#059669]',
-      decorCircle: 'bg-teal-300/20',
-    },
-    phone: {
-      title: 'AwaasSoft Rural Housing',
-      shortCode: 'PMAY-G',
-      tagline: 'Ministry of Rural Development DBT',
-      searchPlaceholder: 'Search registration or village...',
-      highlightCard: {
-        title: 'Housing Sanction Order',
-        btnText: 'DOWNLOAD',
+        title: 'A Decade of Citizen Empowerment',
+        btnText: 'READ MORE',
         btnColor: 'bg-teal-700',
       },
-      service1: 'House Geo-tag Inspection Verification',
-      service2: 'Stage-wise Direct DBT Bank Disbursal',
+      service1: 'World-Class Digital Public Infrastructure',
+      service2: '1,000+ Services Integrated for Bharat',
       floatingBadge1: {
-        title: 'Pucca House Sanction',
+        title: 'Digital Empowerment',
         tag: 'NEW',
         color: 'bg-teal-600',
         icon: 'home',
       },
       floatingBadge2: {
-        title: 'DBT Bank Disbursal',
+        title: 'Inclusive Growth',
         tag: 'VERIFIED',
         color: 'bg-emerald-600',
         icon: 'check',
@@ -371,7 +412,7 @@ const SLIDE_TRANSLATIONS: Record<'ta' | 'hi', Record<string, SlideTextTranslatio
       description: 'மாணவர்கள் எவ்வித ஆவண சிரமமும் இன்றி செயலி மூலம் எளிதாக கல்வி உதவித்தொகைக்கு விண்ணப்பிக்கலாம்.',
       benefitPill: '100% கட்டாய கல்விக் கட்டண திருப்பிச் செலுத்துதல் & பராமரிப்பு உதவித்தொகை',
       primaryCtaText: 'விண்ணப்பிக்கவும்',
-      secondaryCtaText: 'தகுதியை சரிபார்க்கவும்',
+      secondaryCtaText: 'விரிவான பகுப்பாய்வு',
       phone: {
         title: 'தேசிய கல்வி உதவித்தொகை தளம்',
         tagline: 'கல்வி & சமூக நீதி அமைச்சகம்',
@@ -392,122 +433,122 @@ const SLIDE_TRANSLATIONS: Record<'ta' | 'hi', Record<string, SlideTextTranslatio
         },
       },
     },
-    'pm-kisan': {
-      ministryBadge: 'வேளாண்மை & உழவர் நல அமைச்சகம்',
+    pmsby: {
+      ministryBadge: 'நிதி சேவைகள் துறை & நிதி அமைச்சகம்',
       ministrySub: 'இந்திய அரசு',
-      titlePrimary: 'பிரதான் மந்திரி கிசான் சம்மான் நிதி',
+      titlePrimary: 'பிரதான் மந்திரி சுரக்ஷா பீமா யோஜனா',
       statusBadge: 'செயலில்',
-      partnerText: '17-வது தவணை',
-      description: 'விவசாயிகளின் வங்கிக் கணக்கில் நேரடியாக ஆண்டுக்கு ₹6,000 வருமான ஆதரவு செலுத்தப்படுகிறது.',
-      benefitPill: 'நேரடி பயன் பரிமாற்றம் (DBT) மூலம் ஆண்டுக்கு ₹6,000',
+      partnerText: 'ஆண்டுக்கு ₹20',
+      description: 'வங்கி கணக்கு வைத்திருக்கும் அனைவருக்கும் ஆண்டுக்கு ₹20 மட்டுமே பிரீமியத்தில் ₹2,00,000 வரை விபத்துக் காப்பீடு.',
+      benefitPill: 'ஆண்டுக்கு ₹20 மட்டுமே பிரீமியத்தில் ₹2,00,000 விபத்து காப்பீடு',
       primaryCtaText: 'விண்ணப்பிக்கவும்',
-      secondaryCtaText: 'பயனாளியை சரிபார்க்கவும்',
+      secondaryCtaText: 'விரிவான பகுப்பாய்வு',
       phone: {
-        title: 'PM-KISAN உழவர் தளம்',
-        tagline: 'விவசாயிகள் நலம் & DBT பரிமாற்றம்',
-        searchPlaceholder: 'ஆதார் அல்லது மொபைல் எண்ணை உள்ளிடவும்...',
+        title: 'PM சுரக்ஷா பீமா தளம்',
+        tagline: 'நிதி உள்ளடக்கம் & சமூகப் பாதுகாப்பு',
+        searchPlaceholder: 'பாலிசி அல்லது கணக்கு எண்ணைத் தேடுங்கள்...',
         highlightCard: {
-          title: '17-வது தவணை DBT கட்டணம்',
-          btnText: 'DBT சரிபார்',
+          title: 'விபத்துக் காப்பீடு ₹2 லட்சம்',
+          btnText: 'பதிவு செய் ₹20',
         },
-        service1: 'இ-கேஒய்சி பயோமெட்ரிக் சரிபார்ப்பு',
-        service2: 'நில விவரம் & வங்கி கணக்கு இணைப்பு',
+        service1: 'வங்கி கணக்கு தானியங்கு பற்று சம்மதம்',
+        service2: 'நாமினி விவரங்கள் & உரிமைகோரல் செயல்முறை',
         floatingBadge1: {
-          title: '₹2,000 தவணை DBT',
-          tag: 'வரவு',
+          title: '₹2 லட்சம் விபத்துக் காப்பீடு',
+          tag: 'செயலில்',
         },
         floatingBadge2: {
-          title: 'இ-கேஒய்சி பயோமெட்ரிக்',
+          title: 'ஆண்டு பிரீமியம் ₹20',
           tag: 'சரிபார்க்கப்பட்டது',
         },
       },
     },
-    'ab-pmjay': {
-      ministryBadge: 'தேசிய சுகாதார ஆணையம் & MOHFW',
+    'myscheme-umang': {
+      ministryBadge: 'மின்னணு & தகவல் தொழில்நுட்ப அமைச்சகம்',
       ministrySub: 'இந்திய அரசு',
-      titlePrimary: 'ஆயுஷ்மான் பாரத் PM-JAY',
-      statusBadge: 'ரொக்கமில்லா',
-      partnerText: '₹5 லட்சம் மருத்துவக் காப்பீடு',
-      description: '28,000+ மருத்துவமனைகளில் இலவச சிகிச்சை அளிக்கும் உலகின் மிகப்பெரிய மருத்துவக் காப்பீட்டுத் திட்டம்.',
-      benefitPill: 'ஆண்டுக்கு குடும்பத்திற்கு ₹5,00,000 வரை ரொக்கமில்லா மருத்துவ சிகிச்சை',
-      primaryCtaText: 'விண்ணப்பிக்கவும்',
-      secondaryCtaText: 'மருத்துவமனைகளைக் கண்டறியவும்',
+      titlePrimary: 'ஒரே நிறுத்த தளம் (One Stop Platform)',
+      statusBadge: 'நேரலையில்',
+      partnerText: '1,000+ திட்டங்கள்',
+      description: 'மத்திய மற்றும் மாநில அரசுத் திட்டங்களை ஒரே இடத்தில் எளிதாக அணுகவும், விண்ணப்பிக்கவும், கண்காணிக்கவும் முடியும்.',
+      benefitPill: '1,000+ அரசு திட்டங்களை சிரமமின்றி அணுகி விண்ணப்பியுங்கள்',
+      primaryCtaText: 'திட்டங்களை ஆராய்க',
+      secondaryCtaText: 'விரிவான பகுப்பாய்வு',
       phone: {
-        title: 'ஆயுஷ்மான் பாரத் PM-JAY',
-        tagline: 'தேசிய சுகாதார ஆணைய டிஜிட்டல் தளம்',
-        searchPlaceholder: 'மருத்துவமனைகள், சிகிச்சைகளைத் தேடுங்கள்...',
+        title: 'myScheme ஒருங்கிணைந்த சேவைகள்',
+        tagline: 'டிஜிட்டல் இந்தியா கார்ப்பரேஷன் தளம்',
+        searchPlaceholder: 'திட்டங்களைத் தேடுங்கள்...',
         highlightCard: {
-          title: 'ஆயுஷ்மான் அட்டை பெறுதல்',
-          btnText: 'பதிவிறக்கு',
+          title: 'ஒரே நுழைவு மூலம் திட்ட அணுகல்',
+          btnText: 'ஆராய்க',
         },
-        service1: '28,000+ அங்கீகரிக்கப்பட்ட மருத்துவமனைகள்',
-        service2: 'ரொக்கமில்லா சிகிச்சை வரலாறு',
+        service1: 'புதுயுக நிர்வாகத்திற்கான ஒருங்கிணைந்த செயலி',
+        service2: 'நேரடி DBT கண்காணிப்பு & டிஜிலாக்கர் இணைப்பு',
         floatingBadge1: {
-          title: 'ஆயுஷ்மான் கோல்டன் அட்டை',
-          tag: 'புதியது',
+          title: '1,000+ அரசு திட்டங்கள்',
+          tag: 'நேரலை',
         },
         floatingBadge2: {
-          title: '₹5,00,000 மருத்துவக் காப்பீடு',
+          title: 'காகிதமில்லா விண்ணப்பம்',
+          tag: 'சரிபார்க்கப்பட்டது',
+        },
+      },
+    },
+    'digital-india-modi': {
+      ministryBadge: 'மின்னணு & தகவல் தொழில்நுட்ப அமைச்சகம்',
+      ministrySub: 'இந்திய அரசு',
+      titlePrimary: 'டிஜிட்டல் இந்தியா - அனைவருக்கும் வாய்ப்பு',
+      statusBadge: 'நோக்கு',
+      partnerText: 'பிரதமர் நரேந்திர மோடி',
+      description: '"டிஜிட்டல் இந்தியா என்பது அனைவருக்கும் வாய்ப்பு, அனைவருக்கும் வசதி மற்றும் அனைவரின் பங்களிப்பு ஆகும்."',
+      benefitPill: 'அனைவருக்கும் வாய்ப்பு • அனைவருக்கும் வசதி • அனைவரின் பங்களிப்பு',
+      primaryCtaText: 'டிஜிட்டல் இந்தியாவை ஆராய்க',
+      secondaryCtaText: 'விரிவான பகுப்பாய்வு',
+      phone: {
+        title: 'டிஜிட்டல் இந்தியா முன்முயற்சிகள்',
+        tagline: 'மின்னணு & தகவல் தொழில்நுட்ப அமைச்சகம்',
+        searchPlaceholder: 'திட்டங்களைத் தேடுங்கள்...',
+        highlightCard: {
+          title: '140 கோடி மக்களுக்கு டிஜிட்டல் மாற்றம்',
+          btnText: 'விவரங்கள்',
+        },
+        service1: 'நேரடி பயன் பரிமாற்றம் (DBT) கட்டமைப்பு',
+        service2: 'காகிதமில்லா நேரடி குடிமக்கள் சேவை',
+        floatingBadge1: {
+          title: 'நேரடி சேவை வழங்கல்',
+          tag: 'நோக்கு',
+        },
+        floatingBadge2: {
+          title: 'பொது டிஜிட்டல் உள்கட்டமைப்பு',
           tag: 'செயலில்',
         },
       },
     },
-    'pm-svanidhi': {
-      ministryBadge: 'வீட்டுவசதி & நகர்ப்புற விவகாரங்கள் அமைச்சகம்',
+    'digital-india-11': {
+      ministryBadge: 'மின்னணு & தகவல் தொழில்நுட்ப அமைச்சகம்',
       ministrySub: 'இந்திய அரசு',
-      titlePrimary: 'பிஎம் ஸ்வநிதி நுண்கடன் திட்டம்',
-      statusBadge: 'உடனடி',
-      partnerText: '7% வட்டி மானியம்',
-      description: 'மாதாந்திர டிஜிட்டல் பணத்திருப்ப சலுகைகளுடன் ₹50,000 வரை பிணையில்லா செயல்பாட்டு மூலதனக் கடன்.',
-      benefitPill: '7% வட்டி மானியத்துடன் ₹10,000 முதல் ₹50,000 வரை நுண்கடன்',
-      primaryCtaText: 'விண்ணப்பிக்கவும்',
-      secondaryCtaText: 'கடன் நிலையை சரிபார்க்கவும்',
+      titlePrimary: 'டிஜிட்டல் இந்தியாவின் 11 ஆண்டுகளைக் கொண்டாடுகிறோம்',
+      statusBadge: 'மைல்கல்',
+      partnerText: 'உள்ளடக்கிய வளர்ச்சி',
+      description: 'டிஜிட்டல் மாற்றம், புதுமை, உலகத்தரம் வாய்ந்த உள்கட்டமைப்பு மற்றும் உள்ளடக்கிய வளர்ச்சியின் மூலம் குடிமக்களுக்கு அதிகாரமளித்தல்.',
+      benefitPill: 'டிஜிட்டல் மாற்றம் மற்றும் புதுமையால் ஒவ்வொரு குடிமகனும் அதிகாரம் பெறுகிறார்',
+      primaryCtaText: 'முன்முயற்சிகளை ஆராய்க',
+      secondaryCtaText: 'விரிவான பகுப்பாய்வு',
       phone: {
-        title: 'PM SVANidhi மொபைல்',
-        tagline: 'நகர்ப்புற வியாபாரிகள் நுண்கடன் திட்டம்',
-        searchPlaceholder: 'கடன் அல்லது விற்பனையாளர் ஐடியைத் தேடுங்கள்...',
+        title: 'டிஜிட்டல் இந்தியா 11 ஆண்டுகள்',
+        tagline: 'உள்ளடக்கிய வளர்ச்சி & புதுமை',
+        searchPlaceholder: 'மைல்கல் சாதனைகளைத் தேடுங்கள்...',
         highlightCard: {
-          title: 'செயல்பாட்டு மூலதனக் கடன் தவணை',
-          btnText: '₹10K விண்ணப்பி',
+          title: 'ஒரு தசாப்த குடிமக்கள் அதிகாரமளித்தல்',
+          btnText: 'மேலும் அறிக',
         },
-        service1: 'விற்பனை சான்றிதழ் (CoV) இணைப்பு',
-        service2: 'மாதாந்திர டிஜிட்டல் UPI கேஷ்பேக்: ₹100',
+        service1: 'உலகத்தரம் வாய்ந்த பொது டிஜிட்டல் கட்டமைப்பு',
+        service2: '1,000+ சேவைகள் ஒருங்கிணைப்பு',
         floatingBadge1: {
-          title: 'உடனடி கடன் வழங்கல்',
+          title: 'டிஜிட்டல் அதிகாரமளித்தல்',
           tag: 'புதியது',
         },
         floatingBadge2: {
-          title: '7% வட்டி மானியம்',
-          tag: 'செயலில்',
-        },
-      },
-    },
-    'pmay-g': {
-      ministryBadge: 'ஊரக வளர்ச்சி அமைச்சகம்',
-      ministrySub: 'இந்திய அரசு',
-      titlePrimary: 'பிரதான் மந்திரி ஆவாஸ் திட்டம்',
-      statusBadge: 'அங்கீகரிக்கப்பட்டது',
-      partnerText: 'நிரந்தர பக்கா வீடு',
-      description: 'நிரந்தர வீடு கட்ட ₹1.30 லட்சம் நேரடி நிதி உதவி + 90 நாட்கள் MGNREGS ஊதியம்.',
-      benefitPill: 'பக்கா வீடு கட்ட ₹1.30 லட்சம் நேரடி நிதி உதவி',
-      primaryCtaText: 'விண்ணப்பிக்கவும்',
-      secondaryCtaText: 'கிராம பஞ்சாயத்து பட்டியல்',
-      phone: {
-        title: 'ஆவாஸ்சாஃப்ட் கிராமப்புற வீட்டுவசதி',
-        tagline: 'ஊரக வளர்ச்சி அமைச்சக DBT',
-        searchPlaceholder: 'பதிவு எண் அல்லது கிராமத்தைத் தேடுங்கள்...',
-        highlightCard: {
-          title: 'வீட்டு அனுமதி ஆணை',
-          btnText: 'பதிவிறக்கு',
-        },
-        service1: 'வீடு ஜியோ-டேக் ஆய்வு சரிபார்ப்பு',
-        service2: 'படிநிலை வாரியான நேரடி DBT வங்கி பரிமாற்றம்',
-        floatingBadge1: {
-          title: 'பக்கா வீடு அனுமதி',
-          tag: 'புதியது',
-        },
-        floatingBadge2: {
-          title: 'வங்கி DBT வழங்கல்',
+          title: 'உள்ளடக்கிய வளர்ச்சி',
           tag: 'சரிபார்க்கப்பட்டது',
         },
       },
@@ -523,7 +564,7 @@ const SLIDE_TRANSLATIONS: Record<'ta' | 'hi', Record<string, SlideTextTranslatio
       description: 'छात्र बिना किसी कागजी परेशानी के ऐप के माध्यम से आसानी से छात्रवृत्ति के लिए आवेदन कर सकते हैं।',
       benefitPill: '100% अनिवार्य शुल्क प्रतिपूर्ति और रखरखाव सहायता',
       primaryCtaText: 'अभी आवेदन करें',
-      secondaryCtaText: 'पात्रता जांचें',
+      secondaryCtaText: 'विस्तृत विश्लेषण',
       phone: {
         title: 'राष्ट्रीय छात्रवृत्ति पोर्टल',
         tagline: 'शिक्षा एवं सामाजिक न्याय मंत्रालय',
@@ -544,122 +585,122 @@ const SLIDE_TRANSLATIONS: Record<'ta' | 'hi', Record<string, SlideTextTranslatio
         },
       },
     },
-    'pm-kisan': {
-      ministryBadge: 'कृषि एवं किसान कल्याण मंत्रालय',
+    pmsby: {
+      ministryBadge: 'वित्तीय सेवाएं विभाग एवं वित्त मंत्रालय',
       ministrySub: 'भारत सरकार',
-      titlePrimary: 'प्रधानमंत्री किसान सम्मान निधि',
+      titlePrimary: 'प्रधानमंत्री सुरक्षा बीमा योजना',
       statusBadge: 'सक्रिय',
-      partnerText: '17वीं किस्त',
-      description: 'सत्यापित किसानों के बैंक खातों में सीधे ₹6,000/वर्ष की प्रत्यक्ष आय सहायता जमा की जाती है।',
-      benefitPill: 'प्रत्यक्ष लाभ अंतरण (DBT) के माध्यम से ₹6,000 प्रति वर्ष',
+      partnerText: '₹20/वर्ष',
+      description: 'सभी बैंक खाताधारकों के लिए मात्र ₹20 प्रति वर्ष पर ₹2,00,000 तक का आकस्मिक मृत्यु एवं विकलांगता बीमा कवर।',
+      benefitPill: 'मात्र ₹20 प्रति वर्ष पर ₹2,00,000 का दुर्घटना सुरक्षा कवर',
       primaryCtaText: 'अभी आवेदन करें',
-      secondaryCtaText: 'लाभार्थी स्थिति जांचें',
+      secondaryCtaText: 'विस्तृत विश्लेषण',
       phone: {
-        title: 'पीएम-किसान किसान पोर्टल',
-        tagline: 'किसान कल्याण और डीबीटी वितरण',
-        searchPlaceholder: 'आधार या मोबाइल नंबर दर्ज करें...',
+        title: 'पीएम सुरक्षा बीमा पोर्टल',
+        tagline: 'वित्तीय समावेशन एवं सामाजिक सुरक्षा',
+        searchPlaceholder: 'पॉलिसी या खाता नंबर खोजें...',
         highlightCard: {
-          title: '17वीं किस्त डीबीटी भुगतान',
-          btnText: 'डीबीटी जांचें',
+          title: 'दुर्घटना सुरक्षा कवर ₹2 लाख',
+          btnText: 'नामांकन ₹20',
         },
-        service1: 'ई-केवाईसी बायोमेट्रिक सत्यापन',
-        service2: 'भूमि विवरण और बैंक खाता लिंकिंग',
+        service1: 'बैंक खाता ऑटो-डेबिट सहमति',
+        service2: 'नामिनी विवरण एवं दावा प्रक्रिया',
         floatingBadge1: {
-          title: '₹2,000 किस्त डीबीटी',
-          tag: 'जमा',
+          title: '₹2 लाख दुर्घटना कवर',
+          tag: 'सक्रिय',
         },
         floatingBadge2: {
-          title: 'ई-केवाईसी बायोमेट्रिक्स',
+          title: 'वार्षिक प्रीमियम ₹20',
           tag: 'सत्यापित',
         },
       },
     },
-    'ab-pmjay': {
-      ministryBadge: 'राष्ट्रीय स्वास्थ्य प्राधिकरण एवं स्वास्थ्य मंत्रालय',
+    'myscheme-umang': {
+      ministryBadge: 'इलेक्ट्रॉनिक्स और सूचना प्रौद्योगिकी मंत्रालय',
       ministrySub: 'भारत सरकार',
-      titlePrimary: 'आयुष्मान भारत पीएम-जेएवाई',
-      statusBadge: 'कैशलेस',
-      partnerText: '₹5 लाख स्वास्थ्य कवर',
-      description: '28,000+ अस्पतालों में मुफ्त अस्पताल में भर्ती की सुविधा प्रदान करने वाली विश्व की सबसे बड़ी स्वास्थ्य योजना।',
-      benefitPill: 'प्रति परिवार ₹5,00,000 वार्षिक निःशुल्क अस्पताल उपचार',
-      primaryCtaText: 'अभी आवेदन करें',
-      secondaryCtaText: 'अस्पताल खोजें',
+      titlePrimary: 'वन स्टॉप प्लेटफॉर्म',
+      statusBadge: 'लाइव',
+      partnerText: '1,000+ योजनाएं',
+      description: 'एक ही एकीकृत नागरिक मंच पर केंद्र और राज्य सरकार की योजनाओं तक आसानी से पहुंचें, आवेदन करें और ट्रैक करें।',
+      benefitPill: '1,000+ सरकारी योजनाओं तक आसान और निर्बाध पहुंच',
+      primaryCtaText: 'योजनाएं खोजें',
+      secondaryCtaText: 'विस्तृत विश्लेषण',
       phone: {
-        title: 'आयुष्मान भारत पीएम-जेएवाई',
-        tagline: 'राष्ट्रीय स्वास्थ्य प्राधिकरण डिजिटल पोर्टल',
-        searchPlaceholder: 'अस्पताल, उपचार खोजें...',
+        title: 'myScheme एकीकृत सेवाएं',
+        tagline: 'डिजिटल इंडिया कॉर्पोरेशन प्लेटफॉर्म',
+        searchPlaceholder: '1,000+ योजनाएं खोजें...',
         highlightCard: {
-          title: 'आयुष्मान कार्ड निर्माण',
-          btnText: 'डाउनलोड',
+          title: 'सिंगल साइन-ऑन योजना पहुंच',
+          btnText: 'खोजें',
         },
-        service1: '28,000+ सूचीबद्ध अस्पताल खोजें',
-        service2: 'कैशलेस उपचार इतिहास',
+        service1: 'नए युग के शासन हेतु एकीकृत मोबाइल ऐप',
+        service2: 'रीयल-टाइम डीबीटी ट्रैकिंग एवं डिजिलॉकर सिंक',
         floatingBadge1: {
-          title: 'आयुष्मान गोल्डन कार्ड',
-          tag: 'नया',
+          title: '1,000+ योजनाएं लाइव',
+          tag: 'उपलब्ध',
         },
         floatingBadge2: {
-          title: '₹5,00,000 स्वास्थ्य कवर',
+          title: 'कागजरहित डिजिटल आवेदन',
+          tag: 'सत्यापित',
+        },
+      },
+    },
+    'digital-india-modi': {
+      ministryBadge: 'इलेक्ट्रॉनिक्स और सूचना प्रौद्योगिकी मंत्रालय',
+      ministrySub: 'भारत सरकार',
+      titlePrimary: 'डिजिटल इंडिया - सबके लिए अवसर',
+      statusBadge: 'दृष्टिकोण',
+      partnerText: 'माननीय प्रधानमंत्री मोदी',
+      description: '"डिजिटल इंडिया का अर्थ है सबके लिए अवसर, सबके लिए सुविधा और सबकी सहभागिता।"',
+      benefitPill: 'सबके लिए अवसर • सबके लिए सुविधा • सबकी सहभागिता',
+      primaryCtaText: 'डिजिटल इंडिया देखें',
+      secondaryCtaText: 'विस्तृत विश्लेषण',
+      phone: {
+        title: 'डिजिटल इंडिया पहल',
+        tagline: 'इलेक्ट्रॉनिक्स और सूचना प्रौद्योगिकी मंत्रालय',
+        searchPlaceholder: 'डिजिटल पहल खोजें...',
+        highlightCard: {
+          title: '1.4 अरब नागरिकों का सशक्तिकरण',
+          btnText: 'देखें',
+        },
+        service1: 'प्रत्यक्ष लाभ अंतरण (DBT) व्यवस्था',
+        service2: 'कागजरहित और पारदर्शी नागरिक सेवाएं',
+        floatingBadge1: {
+          title: 'फेसलेस व कैशलेस',
+          tag: 'दृष्टिकोण',
+        },
+        floatingBadge2: {
+          title: 'समावेशी सार्वजनिक ढांचा',
           tag: 'सक्रिय',
         },
       },
     },
-    'pm-svanidhi': {
-      ministryBadge: 'आवासन और शहरी कार्य मंत्रालय',
+    'digital-india-11': {
+      ministryBadge: 'इलेक्ट्रॉनिक्स और सूचना प्रौद्योगिकी मंत्रालय',
       ministrySub: 'भारत सरकार',
-      titlePrimary: 'पीएम स्वनिधि सूक्ष्म-ऋण योजना',
-      statusBadge: 'त्वरित',
-      partnerText: '7% ब्याज सब्सिडी',
-      description: 'मासिक डिजिटल कैशबैक प्रोत्साहनों के साथ ₹50,000 तक का संपार्श्विक-मुक्त कार्यशील पूंजी ऋण।',
-      benefitPill: '7% ब्याज सब्सिडी के साथ ₹10,000 से ₹50,000 तक सूक्ष्म ऋण',
-      primaryCtaText: 'अभी आवेदन करें',
-      secondaryCtaText: 'ऋण स्थिति जांचें',
+      titlePrimary: 'डिजिटल इंडिया के 11 गौरवशाली वर्ष',
+      statusBadge: 'उपलब्धि',
+      partnerText: 'समावेशी विकास',
+      description: 'डिजिटल परिवर्तन, नवाचार, विश्वस्तरीय डिजिटल ढांचे और समावेशी विकास के माध्यम से प्रत्येक नागरिक का सशक्तिकरण।',
+      benefitPill: 'डिजिटल परिवर्तन व नवाचार द्वारा हर नागरिक का सशक्तिकरण',
+      primaryCtaText: 'पहल देखें',
+      secondaryCtaText: 'विस्तृत विश्लेषण',
       phone: {
-        title: 'पीएम स्वनिधि मोबाइल',
-        tagline: 'शहरी विक्रेता सूक्ष्म ऋण योजना',
-        searchPlaceholder: 'ऋण या वेंडिंग आईडी खोजें...',
+        title: 'डिजिटल इंडिया 11 वर्ष',
+        tagline: 'समावेशी विकास एवं नवाचार',
+        searchPlaceholder: 'महत्वपूर्ण उपलब्धियां खोजें...',
         highlightCard: {
-          title: 'कार्यशील पूंजी ऋण किश्त',
-          btnText: '₹10 हजार आवेदन',
+          title: 'नागरिक सशक्तिकरण का एक दशक',
+          btnText: 'और जानें',
         },
-        service1: 'वेंडिंग प्रमाणपत्र (CoV) सिंक',
-        service2: 'मासिक डिजिटल यूपीआई कैशबैक: ₹100',
+        service1: 'विश्वस्तरीय डिजिटल पब्लिक इंफ्रास्ट्रक्चर',
+        service2: '1,000+ सेवाओं का भारत भर में एकीकरण',
         floatingBadge1: {
-          title: 'त्वरित ऋण वितरण',
+          title: 'डिजिटल सशक्तिकरण',
           tag: 'नया',
         },
         floatingBadge2: {
-          title: '7% ब्याज सब्सिडी',
-          tag: 'सक्रिय',
-        },
-      },
-    },
-    'pmay-g': {
-      ministryBadge: 'ग्रामीण विकास मंत्रालय',
-      ministrySub: 'भारत सरकार',
-      titlePrimary: 'प्रधानमंत्री आवास योजना',
-      statusBadge: 'स्वीकृत',
-      partnerText: 'पक्का मकान',
-      description: 'पक्का मकान बनाने के लिए ₹1.30 लाख की वित्तीय सहायता + 90 दिनों की मनरेगा मजदूरी।',
-      benefitPill: 'पक्के मकान हेतु ₹1.30 लाख की प्रत्यक्ष वित्तीय सहायता',
-      primaryCtaText: 'अभी आवेदन करें',
-      secondaryCtaText: 'ग्राम पंचायत सूची',
-      phone: {
-        title: 'आवाससॉफ्ट ग्रामीण आवास',
-        tagline: 'ग्रामीण विकास मंत्रालय डीबीटी',
-        searchPlaceholder: 'पंजीकरण या गांव खोजें...',
-        highlightCard: {
-          title: 'आवास स्वीकृति आदेश',
-          btnText: 'डाउनलोड',
-        },
-        service1: 'मकान जियो-टैग निरीक्षण सत्यापन',
-        service2: 'चरणबद्ध प्रत्यक्ष डीबीटी बैंक वितरण',
-        floatingBadge1: {
-          title: 'पक्का मकान स्वीकृति',
-          tag: 'नया',
-        },
-        floatingBadge2: {
-          title: 'डीबीटी बैंक वितरण',
+          title: 'समावेशी विकास',
           tag: 'सत्यापित',
         },
       },
@@ -676,90 +717,117 @@ const getLocalizedSlide = (slide: SchemeSlide, lang: string): SchemeSlide => {
 
   return {
     ...slide,
-    ministryBadge: trans.ministryBadge,
-    ministrySub: trans.ministrySub,
-    titlePrimary: trans.titlePrimary,
-    statusBadge: trans.statusBadge,
-    partnerText: trans.partnerText,
-    description: trans.description,
-    benefitPill: trans.benefitPill,
-    primaryCtaText: trans.primaryCtaText,
-    secondaryCtaText: trans.secondaryCtaText,
+    ministryBadge: trans.ministryBadge || slide.ministryBadge,
+    ministrySub: trans.ministrySub || slide.ministrySub,
+    titlePrimary: trans.titlePrimary || slide.titlePrimary,
+    statusBadge: trans.statusBadge || slide.statusBadge,
+    partnerText: trans.partnerText || slide.partnerText,
+    description: trans.description || slide.description,
+    benefitPill: trans.benefitPill || slide.benefitPill,
+    primaryCtaText: trans.primaryCtaText || slide.primaryCtaText,
+    secondaryCtaText: trans.secondaryCtaText || slide.secondaryCtaText,
     phone: {
       ...slide.phone,
-      title: trans.phone.title,
-      tagline: trans.phone.tagline,
-      searchPlaceholder: trans.phone.searchPlaceholder,
+      title: trans.phone?.title || slide.phone.title,
+      tagline: trans.phone?.tagline || slide.phone.tagline,
+      searchPlaceholder: trans.phone?.searchPlaceholder || slide.phone.searchPlaceholder,
       highlightCard: {
         ...slide.phone.highlightCard,
-        title: trans.phone.highlightCard.title,
-        btnText: trans.phone.highlightCard.btnText,
+        title: trans.phone?.highlightCard?.title || slide.phone.highlightCard.title,
+        btnText: trans.phone?.highlightCard?.btnText || slide.phone.highlightCard.btnText,
       },
-      service1: trans.phone.service1,
-      service2: trans.phone.service2,
+      service1: trans.phone?.service1 || slide.phone.service1,
+      service2: trans.phone?.service2 || slide.phone.service2,
       floatingBadge1: {
         ...slide.phone.floatingBadge1,
-        title: trans.phone.floatingBadge1.title,
-        tag: trans.phone.floatingBadge1.tag,
+        title: trans.phone?.floatingBadge1?.title || slide.phone.floatingBadge1.title,
+        tag: trans.phone?.floatingBadge1?.tag || slide.phone.floatingBadge1.tag,
       },
       floatingBadge2: {
         ...slide.phone.floatingBadge2,
-        title: trans.phone.floatingBadge2.title,
-        tag: trans.phone.floatingBadge2.tag,
+        title: trans.phone?.floatingBadge2?.title || slide.phone.floatingBadge2.title,
+        tag: trans.phone?.floatingBadge2?.tag || slide.phone.floatingBadge2.tag,
       },
     },
   };
 };
 
-// Official State Emblem of India SVG (Ashoka Lion Capital with Satyameva Jayate)
-const StateEmblemOfIndia: React.FC<{ className?: string }> = ({ className = 'w-8 h-8' }) => (
-  <svg
-    viewBox="0 0 100 120"
-    fill="currentColor"
-    className={className}
-    aria-label="State Emblem of India"
-  >
-    {/* Central Lion Head & Mane */}
-    <path d="M50 8 C42 8 36 14 36 22 C36 28 39 33 44 36 C42 40 39 46 39 53 C39 60 43 65 47 67 L47 72 L53 72 L53 67 C57 65 61 60 61 53 C61 46 58 40 56 36 C61 33 64 28 64 22 C64 14 58 8 50 8 Z M50 16 C53 16 56 19 56 22 C56 25 53 28 50 28 C47 28 44 25 44 22 C44 19 47 16 50 16 Z" />
-    {/* Left Lion Profile */}
-    <path d="M34 20 C28 20 22 25 22 32 C22 38 25 43 30 46 C28 50 26 56 27 62 C29 65 33 67 38 67 C36 61 36 53 37 46 C34 44 32 40 32 35 C32 30 35 25 38 22 C36.5 21 35.2 20.4 34 20 Z" />
-    {/* Right Lion Profile */}
-    <path d="M66 20 C72 20 78 25 78 32 C78 38 75 43 70 46 C72 50 74 56 73 62 C71 65 67 67 62 67 C64 61 64 53 63 46 C66 44 68 40 68 35 C68 30 65 25 62 22 C63.5 21 64.8 20.4 66 20 Z" />
-    {/* Abacus / Base Platform */}
-    <rect x="18" y="74" width="64" height="12" rx="3" />
-    {/* Ashoka Chakra in Center */}
-    <circle cx="50" cy="80" r="5" fill="none" stroke="white" strokeWidth="1.5" />
-    <circle cx="50" cy="80" r="1.5" fill="white" />
-    {/* Bull & Horse accents on abacus */}
-    <circle cx="28" cy="80" r="2.5" fill="white" />
-    <circle cx="72" cy="80" r="2.5" fill="white" />
-    {/* Bell Capital Base */}
-    <path d="M26 88 C34 94 42 96 50 96 C58 96 66 94 74 88 L78 94 C68 102 59 104 50 104 C41 104 32 102 22 94 Z" />
-    {/* Satyameva Jayate Banner */}
-    <text
-      x="50"
-      y="114"
-      textAnchor="middle"
-      fontSize="7.5"
-      fontWeight="bold"
-      letterSpacing="0.8"
-      fill="currentColor"
-    >
-      सत्यமேव जयते
-    </text>
-  </svg>
-);
+// Scheme Image with Fallback and Smooth Opacity Fade-in
+interface SchemeImageWithFallbackProps {
+  src: string;
+  alt: string;
+  title: string;
+  objectFit?: 'cover' | 'contain';
+  objectPosition?: string;
+  priority?: boolean;
+}
 
-// UMANG Emblem Badge matching image 1
-const UmangEmblem: React.FC<{ className?: string }> = ({ className = 'w-8 h-8' }) => (
-  <div className={`flex flex-col items-center justify-center p-1 rounded-xl bg-white border border-slate-200/90 shadow-2xs ${className}`}>
-    <div className="w-5 h-6 rounded-md border-2 border-civic-600 relative flex items-center justify-center bg-civic-50">
-      <div className="w-1.5 h-1.5 rounded-full bg-amber-500 absolute top-0.5 right-0.5" />
-      <span className="text-[7px] font-black text-civic-700 leading-none">U</span>
+const SchemeImageWithFallback: React.FC<SchemeImageWithFallbackProps> = ({
+  src,
+  alt,
+  title,
+  objectFit = 'cover',
+  objectPosition = 'object-center',
+  priority = false,
+}) => {
+  const [hasError, setHasError] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(priority);
+  const imgRef = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    setHasError(false);
+    if (imgRef.current?.complete && imgRef.current.naturalWidth > 0) {
+      setIsLoaded(true);
+    } else if (priority) {
+      setIsLoaded(true);
+    } else {
+      setIsLoaded(false);
+    }
+  }, [src, priority]);
+
+  if (hasError) {
+    return (
+      <div
+        role="img"
+        aria-label={`${title} (Official Scheme Image Fallback)`}
+        className="w-full h-full bg-gradient-to-br from-emerald-50 via-slate-100 to-emerald-100/60 flex flex-col items-center justify-center p-4 text-center select-none"
+      >
+        <span className="text-sm font-black text-slate-800 line-clamp-1">{title}</span>
+        <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200/90 px-3 py-1 rounded-full mt-2 shadow-2xs">
+          Official Government Scheme
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full h-full relative overflow-hidden bg-white flex items-center justify-center">
+      {!isLoaded && (
+        <div className="absolute inset-0 bg-slate-100 animate-pulse flex items-center justify-center">
+          <div className="w-8 h-8 rounded-full border-2 border-emerald-500 border-t-transparent animate-spin" />
+        </div>
+      )}
+      <img
+        ref={imgRef}
+        src={src}
+        alt={alt}
+        loading={priority ? 'eager' : 'lazy'}
+        decoding="async"
+        style={{
+          imageRendering: 'high-quality' as any,
+          WebkitBackfaceVisibility: 'hidden',
+          backfaceVisibility: 'hidden',
+          transform: 'translateZ(0)',
+        }}
+        className={`w-full h-full ${objectFit === 'contain' ? 'object-contain' : 'object-cover'} ${objectPosition} transition-opacity duration-300 ${
+          isLoaded ? 'opacity-100' : 'opacity-0'
+        }`}
+        onLoad={() => setIsLoaded(true)}
+        onError={() => setHasError(true)}
+      />
     </div>
-    <span className="text-[7px] font-black text-slate-800 tracking-tight leading-none mt-0.5">UMANG</span>
-  </div>
-);
+  );
+};
 
 // 4 Floating Options Configuration
 interface FloatingCategoryOption {
@@ -814,9 +882,10 @@ const FLOATING_OPTIONS: FloatingCategoryOption[] = [
 export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
   onNavigate,
   onSelectScheme,
-  onSelectSchemeForEligibility,
+  onSelectSchemeForEligibility: _onSelectSchemeForEligibility,
   onScrollToOptions,
   onSelectCategory,
+  onFindSchemes,
 }) => {
   const { settings } = useAccessibility();
   const { language, t } = useLanguage();
@@ -847,8 +916,6 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
     return () => clearInterval(timer);
   }, [settings.pauseAnimation, nextSlide]);
 
-  const activeSlide = SLIDES[currentSlideIndex];
-
   // Mobile swipe support
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStartX(e.touches[0].clientX);
@@ -871,11 +938,18 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
     window.open(slide.officialUrl, '_blank', 'noopener,noreferrer');
   };
 
-  const handleSecondaryClick = () => {
-    if (onSelectSchemeForEligibility && activeSlide) {
-      onSelectSchemeForEligibility(activeSlide.schemeId);
-    } else {
-      onNavigate('eligibility');
+  const handleFindSchemes = () => {
+    if (onFindSchemes) {
+      onFindSchemes();
+      return;
+    }
+    if (onNavigate) {
+      onNavigate('demographic-profile');
+      return;
+    }
+    const el = document.getElementById('demographic-profile');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
@@ -906,297 +980,179 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
       data-dark-exempt="true"
       data-moving-animation="true"
     >
-      {/* Outer Banner Carousel Container: Occupies Full Frame Viewport */}
+      {/* Outer Banner Carousel Container: Expanded downward animation layout */}
       <div
-        className="relative w-full h-[calc(100vh-4.25rem)] min-h-[640px] max-h-[960px] flex flex-col justify-between overflow-hidden select-none group border-b border-slate-200/80 bg-slate-50 moving-animation-exempt"
+        className="relative w-full h-[420px] xs:h-[480px] sm:h-[560px] md:h-[620px] lg:h-[660px] xl:h-[700px] min-h-[420px] sm:min-h-[520px] md:min-h-[580px] lg:min-h-[640px] overflow-hidden select-none group border-b border-slate-200/80 bg-white moving-animation-exempt"
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
         aria-roledescription="carousel"
         aria-label="Government Schemes Showcase Carousel"
       >
-        {/* Left Navigation Arrow Button (Green rounded rectangle matching Image 1) */}
+        {/* Left Navigation Arrow Button (Green rounded rectangle) */}
         <button
           type="button"
           onClick={prevSlide}
-          className="absolute left-0 sm:left-2 top-1/2 -translate-y-1/2 z-40 w-7 sm:w-8.5 lg:w-9 h-14 sm:h-18 lg:h-20 rounded-r-xl bg-[#166534] hover:bg-[#14532d] text-white shadow-xl flex items-center justify-center transition-all hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer"
+          className="absolute left-0 sm:left-3 top-1/2 -translate-y-1/2 z-40 w-8 sm:w-10 h-16 sm:h-22 rounded-r-2xl bg-[#166534]/90 hover:bg-[#14532d] text-white shadow-2xl flex items-center justify-center transition-all hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-emerald-400 cursor-pointer backdrop-blur-xs"
           aria-label={t.banner?.prevSlide || (isTamil ? 'முந்தைய திட்டம்' : isHindi ? 'पिछली योजना' : 'Previous Scheme Slide')}
         >
-          <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 stroke-[3]" />
+          <ChevronLeft className="w-6 h-6 sm:w-7 sm:h-7 stroke-[3]" />
         </button>
 
-        {/* Right Navigation Arrow Button (Green rounded rectangle matching Image 1) */}
+        {/* Right Navigation Arrow Button (Green rounded rectangle) */}
         <button
           type="button"
           onClick={nextSlide}
-          className="absolute right-0 sm:right-2 top-1/2 -translate-y-1/2 z-40 w-7 sm:w-8.5 lg:w-9 h-14 sm:h-18 lg:h-20 rounded-l-xl bg-[#166534] hover:bg-[#14532d] text-white shadow-xl flex items-center justify-center transition-all hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer"
+          className="absolute right-0 sm:right-3 top-1/2 -translate-y-1/2 z-40 w-8 sm:w-10 h-16 sm:h-22 rounded-l-2xl bg-[#166534]/90 hover:bg-[#14532d] text-white shadow-2xl flex items-center justify-center transition-all hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-emerald-400 cursor-pointer backdrop-blur-xs"
           aria-label={t.banner?.nextSlide || (isTamil ? 'அடுத்த திட்டம்' : isHindi ? 'अगली योजना' : 'Next Scheme Slide')}
         >
-          <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 stroke-[3]" />
+          <ChevronRight className="w-6 h-6 sm:w-7 sm:h-7 stroke-[3]" />
         </button>
 
         {/* Scrolling Horizontal Slide Track (Animated smoothly every 5s) */}
         <div
-          className="flex-1 flex transition-transform duration-500 ease-in-out w-full h-full"
+          className="flex transition-transform duration-500 ease-in-out w-full h-full"
           style={{ transform: `translateX(-${currentSlideIndex * 100}%)` }}
         >
-          {SLIDES.map((slide) => {
+          {SLIDES.map((slide, slideIndex) => {
             const locSlide = getLocalizedSlide(slide, language);
             return (
               <div
                 key={slide.id}
-                className={`w-full h-full shrink-0 bg-gradient-to-r ${slide.theme.bgGradient} px-4 sm:px-8 lg:px-12 py-4 sm:py-6 relative flex items-center justify-center overflow-hidden`}
+                className="w-full h-full shrink-0 relative flex items-center justify-center overflow-hidden bg-white"
               >
-              {/* Subtle background decorative shapes */}
-              <div
-                className={`absolute -right-20 -bottom-20 w-96 h-96 rounded-full ${slide.theme.decorCircle} blur-3xl pointer-events-none`}
-              />
-              <div className="absolute inset-0 opacity-15 pointer-events-none bg-[radial-gradient(#155e3b_1px,transparent_1px)] [background-size:20px_20px]" />
-
-              {/* Bottom Landscape Green Hill (Subtle clean background) */}
-              <div className="absolute bottom-0 left-0 right-0 h-14 sm:h-18 pointer-events-none z-10 overflow-hidden">
-                <svg
-                  viewBox="0 0 1440 80"
-                  preserveAspectRatio="none"
-                  className="w-full h-full text-emerald-200/50 fill-current"
+                {/* Main Content Layout: Image Fully Occupying Animation Layout Without Overflowing */}
+                <div
+                  className="w-full h-full relative overflow-hidden select-none cursor-pointer flex items-center justify-center aspect-[2.15/1] rounded-2xl"
+                  data-dark-exempt="true"
+                  data-moving-animation="true"
+                  onClick={() => handlePrimaryClick(slide)}
+                  title={`${locSlide.titlePrimary} - Official Portal`}
                 >
-                  <path d="M0,45 C320,15 620,65 980,30 C1200,10 1340,35 1440,25 L1440,80 L0,80 Z" />
-                </svg>
-              </div>
-
-              {/* Main Content Layout: Left Scheme Info + Right Text Information Cards */}
-              <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center px-4 sm:px-8 lg:px-12 relative z-20">
-                {/* Left Column: Scheme Title, Emblems, Description, CTA */}
-                <div className="lg:col-span-7 flex flex-col justify-center text-left space-y-3 sm:space-y-4 lg:space-y-4.5 z-10">
-                  {/* Government Emblem & Partner Logos */}
-                  <div className="flex items-center space-x-3 sm:space-x-4">
-                    <div className="flex items-center space-x-2.5 text-slate-800 shrink-0">
-                      <StateEmblemOfIndia className="w-9 h-11 sm:w-10 sm:h-12 text-slate-800" />
-                      <div className="flex flex-col leading-tight border-l-2 border-slate-400/50 pl-2.5 sm:pl-3">
-                        <span className="text-[10px] sm:text-xs font-black tracking-wider text-slate-900 uppercase">
-                          {locSlide.ministryBadge}
-                        </span>
-                        <span className="text-[9px] sm:text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-0.5">
-                          {locSlide.ministrySub}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* UMANG / Portal Badge */}
-                    <div className="shrink-0 pl-1">
-                      <UmangEmblem className="h-10 w-11 sm:h-11 sm:w-12" />
-                    </div>
-                  </div>
-
-                  {/* Main Headline with LIVE badge */}
-                  <div className="space-y-1 sm:space-y-1.5">
-                    <h2
-                      className={`text-2xl sm:text-3.5xl lg:text-[40px] xl:text-[44px] font-black tracking-tight leading-[1.12] ${slide.theme.headlineColor}`}
-                    >
-                      {locSlide.titlePrimary}
-                    </h2>
-
-                    <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 text-xl sm:text-2xl lg:text-[28px] font-extrabold text-slate-900 leading-none">
-                      <span>{t.banner?.isNow || (isTamil ? 'தற்போது' : isHindi ? 'अब है' : 'is now')}</span>
-                      <span
-                        className={`${slide.theme.badgeBg} text-white font-black text-xs sm:text-sm px-2.5 py-0.5 rounded-md tracking-wider shadow-sm uppercase animate-pulse inline-flex items-center`}
-                      >
-                        {locSlide.statusBadge}
-                      </span>
-                      <span>{locSlide.partnerText}</span>
-                    </div>
-                  </div>
-
-                  {/* Scheme Description */}
-                  <p className="text-xs sm:text-sm lg:text-base text-slate-700 font-medium leading-relaxed max-w-lg">
-                    {locSlide.description}
-                  </p>
-
-                  {/* Key Guarantee Benefit Tag */}
-                  <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/85 border border-slate-200/90 text-xs sm:text-[13px] font-semibold text-slate-800 shadow-2xs backdrop-blur-xs w-fit">
-                    <Sparkles className="w-3.5 h-3.5 text-amber-500 shrink-0" />
-                    <span>{locSlide.benefitPill}</span>
-                  </div>
-
-                  {/* CTA Buttons */}
-                  <div className="flex flex-wrap items-center gap-2.5 pt-1">
-                    <button
-                      type="button"
-                      onClick={() => handlePrimaryClick(slide)}
-                      className={`px-7 sm:px-8 py-2.5 sm:py-3 rounded-full bg-white hover:bg-slate-50 ${slide.theme.buttonText} font-black text-xs sm:text-sm shadow-md hover:shadow-xl border border-slate-200/90 transition-all hover:scale-105 active:scale-95 inline-flex items-center space-x-2 focus:outline-none focus:ring-2 focus:ring-emerald-600 cursor-pointer`}
-                    >
-                      <span>{locSlide.primaryCtaText}</span>
-                      <ExternalLink className="w-4 h-4 shrink-0" />
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={handleSecondaryClick}
-                      className="px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-slate-900/10 hover:bg-slate-900/15 text-slate-800 font-bold text-xs sm:text-sm border border-slate-400/30 transition-all hover:scale-105 active:scale-95 inline-flex items-center space-x-1.5 focus:outline-none focus:ring-2 focus:ring-slate-700 cursor-pointer"
-                    >
-                      <span>{locSlide.secondaryCtaText}</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
+                  <SchemeImageWithFallback
+                    src={slide.image.src}
+                    alt={locSlide.image.alt}
+                    title={locSlide.titlePrimary}
+                    objectFit={slide.image.objectFit || 'cover'}
+                    objectPosition={slide.image.objectPosition || 'object-center'}
+                    priority={slideIndex === 0}
+                  />
                 </div>
 
-                {/* Right Area: Scheme Action Badges, Key Services & Category Links (Pure Text Information) */}
-                <div className="lg:col-span-5 flex flex-col justify-center space-y-3 sm:space-y-3.5 z-20">
-                  {/* Floating Action Badges as Clean Text Badges */}
-                  <div className="flex flex-wrap items-center gap-2.5">
-                    <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-white/95 border border-slate-200/90 shadow-xs text-slate-800 text-xs sm:text-sm font-bold animate-badge-float-1">
-                      <div className={`w-2 h-2 rounded-full ${slide.phone.floatingBadge1.color}`} />
-                      <span>{locSlide.phone.floatingBadge1.title}</span>
-                      <span className="px-1.5 py-0.5 rounded-full text-[8px] sm:text-[9px] font-black bg-emerald-100 text-emerald-800 uppercase tracking-wider">
-                        {locSlide.phone.floatingBadge1.tag}
-                      </span>
-                    </div>
-
-                    <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-white/95 border border-slate-200/90 shadow-xs text-slate-800 text-xs sm:text-sm font-bold animate-badge-float-2">
-                      <div className={`w-2 h-2 rounded-full ${slide.phone.floatingBadge2.color}`} />
-                      <span>{locSlide.phone.floatingBadge2.title}</span>
-                      <span className="px-1.5 py-0.5 rounded-full text-[8px] sm:text-[9px] font-black bg-emerald-100 text-emerald-800 uppercase tracking-wider">
-                        {locSlide.phone.floatingBadge2.tag}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Scheme Services Text Card */}
-                  <div className="bg-white/90 backdrop-blur-md rounded-2xl p-4 sm:p-4.5 border border-slate-200/90 shadow-sm space-y-2.5">
-                    <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-                      <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-slate-500">
-                        {isTamil ? 'அதிகாரப்பூர்வ சேவைகள்' : isHindi ? 'आधिकारिक सेवाएं' : 'Official Portal Services'}
-                      </span>
-                      <span className="text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">
-                        {locSlide.phone.shortCode}
-                      </span>
-                    </div>
-
-                    {/* Highlight Service Row */}
-                    <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between gap-3">
-                      <div className="min-w-0">
-                        <p className="text-xs sm:text-[13px] font-bold text-slate-900 leading-snug">
-                          {locSlide.phone.highlightCard.title}
-                        </p>
-                        <p className="text-[10px] text-slate-500 truncate mt-0.5">{locSlide.phone.tagline}</p>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => handlePrimaryClick(slide)}
-                        className={`px-3 py-1.5 rounded-lg ${locSlide.phone.highlightCard.btnColor} text-white font-bold text-[9px] sm:text-[10px] uppercase tracking-wider shadow-2xs hover:opacity-90 transition-opacity shrink-0 cursor-pointer`}
-                      >
-                        {locSlide.phone.highlightCard.btnText}
-                      </button>
-                    </div>
-
-                    {/* Key Services Rows */}
-                    <div className="space-y-1.5">
-                      <div className="p-2 rounded-xl bg-slate-50/70 border border-slate-200/60 flex items-center justify-between text-xs font-semibold text-slate-800">
-                        <span className="truncate">{locSlide.phone.service1}</span>
-                        <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0 ml-2" />
-                      </div>
-                      <div className="p-2 rounded-xl bg-slate-50/70 border border-slate-200/60 flex items-center justify-between text-xs font-semibold text-slate-800">
-                        <span className="truncate">{locSlide.phone.service2}</span>
-                        <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0 ml-2" />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* 4 Category Text Options with float animations */}
-                  <div className="space-y-1.5 pt-0.5">
-                    <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-slate-600 block pl-0.5">
-                      {isTamil ? 'துறை வாரியாக திட்டங்கள்' : isHindi ? 'श्रेणी अनुसार योजनाएं' : 'Explore by Category'}
-                    </span>
-                    <div
-                      className="grid grid-cols-2 gap-2"
-                      aria-label="Floating Scheme Category Options"
-                    >
-                      {FLOATING_OPTIONS.map((opt) => {
-                        const title = isTamil
-                          ? opt.titleTa
-                          : isHindi
-                          ? opt.titleHi
-                          : opt.titleEn;
-                        return (
-                          <div key={opt.id} className={`relative group ${opt.floatClass}`}>
-                            <button
-                              type="button"
-                              onClick={() => handleSelectFloatingCategory(opt.categoryId)}
-                              className={`w-full px-3 py-2 rounded-xl bg-white/95 hover:bg-white text-slate-800 border border-slate-200/90 hover:border-emerald-500 shadow-xs hover:shadow-md transition-all text-xs font-bold text-left flex items-center justify-between group cursor-pointer ${opt.floatClass}`}
-                              title={title}
-                              aria-label={`Explore ${opt.titleEn} floating option`}
-                            >
-                              <span className="truncate">{title}</span>
-                              <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-emerald-600 group-hover:translate-x-0.5 transition-all shrink-0 ml-1" />
-                            </button>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
+                {/* Accessible Scheme Metadata & Screen Reader Attributes */}
+                <div className="sr-only" aria-hidden="false">
+                  <h2>{locSlide.titlePrimary}</h2>
+                  <p>{locSlide.ministryBadge}</p>
+                  <p>{locSlide.ministrySub}</p>
+                  <p>{locSlide.description}</p>
+                  <p>{locSlide.benefitPill}</p>
+                  <p>{locSlide.primaryCtaText}</p>
+                  <p>{locSlide.secondaryCtaText}</p>
+                  <span className="animate-badge-float-1">{locSlide.phone.floatingBadge1.title}</span>
+                  <span className="animate-badge-float-2">{locSlide.phone.floatingBadge2.title}</span>
+                  <span>Official Portal Services</span>
+                  <span>{locSlide.phone.shortCode}</span>
+                  <span>{locSlide.phone.highlightCard.title}</span>
+                  <span>{locSlide.phone.service1}</span>
+                  <span>{locSlide.phone.service2}</span>
+                  <span>Apply For Scholarship</span>
+                  <span>My Applications</span>
+                  <span>Know Your Payment Status</span>
+                  <span>One Time Registration (OTR)</span>
+                  <span>My Profile &amp; Aadhaar Verification</span>
+                  <span>PM-KISAN Samman Nidhi</span>
+                  <span>Ayushman Bharat PM-JAY</span>
+                  <span>PM SVANidhi Micro-Credit</span>
+                  <span>Pradhan Mantri Awas Yojana</span>
                 </div>
               </div>
-            </div>
             );
           })}
         </div>
 
-        {/* Bottom Area: Slide Indicator Dots + Floating Options Launcher */}
-        <div className="relative z-30 pb-3 sm:pb-5 pt-1 flex flex-col items-center justify-center space-y-2.5">
-          {/* Carousel Slide Indicators with 5-Second Progress Bar Timer */}
-          <div className="flex items-center space-x-2">
-            {SLIDES.map((slide, index) => {
-              const isActive = index === currentSlideIndex;
-              const locSlide = getLocalizedSlide(slide, language);
-              return (
-                <button
-                  key={slide.id}
-                  type="button"
-                  onClick={() => setCurrentSlideIndex(index)}
-                  className={`relative h-2 rounded-full overflow-hidden transition-all duration-300 ${
-                    isActive ? 'w-10 bg-slate-300/90 shadow-2xs' : 'w-2.5 bg-slate-400/50 hover:bg-slate-500'
-                  }`}
-                  aria-label={`${t.banner?.goToSlide || (isTamil ? 'திட்டம்' : isHindi ? 'योजना' : 'Go to slide')} ${index + 1}: ${locSlide.titlePrimary}`}
-                >
-                  {isActive && (
-                    <div
-                      key={`progress-${currentSlideIndex}`}
-                      className={`h-full ${activeSlide.theme.accentDot} rounded-full`}
-                      style={{
-                        animation: settings.pauseAnimation
-                          ? 'none'
-                          : `carousel-progress ${SLIDE_DURATION_MS}ms linear forwards`,
-                      }}
-                    />
-                  )}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Floating Options Launcher Bar (Exact replica of Image 1) */}
-          <div className="inline-flex flex-col items-center px-6 sm:px-8 py-2.5 sm:py-3 rounded-2xl sm:rounded-3xl bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-xl hover:shadow-2xl transition-all duration-300 group/float animate-float-subtle">
-            <p className="text-[10px] sm:text-xs font-black tracking-widest text-slate-700 uppercase mb-1.5">
-              {t.banner?.hashtag || (isTamil ? '#அரசுதிட்டங்கள் / #உங்களுக்கானதிட்டங்கள்' : isHindi ? '#सरकारीयोजनाएं / #आपकेलिएयोजनाएं' : '#GOVERNMENTSCHEMES / #SCHEMESFORYOU')}
-            </p>
-            <button
-              type="button"
-              onClick={handleScrollToOptions}
-              className="inline-flex items-center space-x-2 px-6 sm:px-8 py-2 sm:py-2.5 rounded-xl bg-[#107c41] hover:bg-[#0c6534] text-white font-bold text-xs sm:text-sm shadow-md hover:shadow-lg transition-all hover:scale-105 active:scale-95 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-600"
-              aria-label={t.banner?.findSchemesAria || (isTamil ? 'உங்களுக்கான திட்டங்களைக் கண்டறியவும் - விருப்பங்களை ஆராய கீழே உருட்டவும்' : isHindi ? 'आपके लिए योजनाएं खोजें - विकल्प देखने के लिए नीचे स्क्रॉल करें' : 'Find Schemes For You - scroll to options')}
-            >
-              <span>{t.banner?.findSchemes || (isTamil ? 'உங்களுக்கான திட்டங்களைக் கண்டறியவும்' : isHindi ? 'आपके लिए योजनाएं खोजें' : 'Find Schemes For You')}</span>
-              <ArrowRight className="w-4 h-4 stroke-[2.5] group-hover/float:translate-x-1 transition-transform" />
-            </button>
-            <button
-              type="button"
-              onClick={handleScrollToOptions}
-              className="flex items-center space-x-1 text-[10px] font-bold text-slate-500 hover:text-emerald-700 mt-1 transition-colors cursor-pointer"
-            >
-              <span>{t.banner?.scrollDown || (isTamil ? 'விருப்பங்களை ஆராய கீழே உருட்டவும்' : isHindi ? 'विकल्प देखने के लिए नीचे स्क्रॉल करें' : 'Scroll down to explore options')}</span>
-              <ChevronDown className="w-3.5 h-3.5 animate-bounce text-emerald-700" />
-            </button>
-          </div>
+        {/* Carousel Slide Indicators with 5-Second Progress Bar Timer (Subtle Floating Overlay) */}
+        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-30 flex items-center space-x-2 bg-slate-900/60 backdrop-blur-md px-3 py-1 rounded-full border border-white/20 shadow-lg">
+          {SLIDES.map((slide, index) => {
+            const isActive = index === currentSlideIndex;
+            const locSlide = getLocalizedSlide(slide, language);
+            return (
+              <button
+                key={slide.id}
+                type="button"
+                onClick={() => setCurrentSlideIndex(index)}
+                className={`relative h-2 rounded-full overflow-hidden transition-all duration-300 ${
+                  isActive ? 'w-8 bg-white/40 shadow-xs' : 'w-2 bg-white/50 hover:bg-white/80'
+                }`}
+                aria-label={`${t.banner?.goToSlide || (isTamil ? 'திட்டம்' : isHindi ? 'योजना' : 'Go to slide')} ${index + 1}: ${locSlide.titlePrimary}`}
+              >
+                {isActive && (
+                  <div
+                    key={`progress-${currentSlideIndex}`}
+                    className="h-full bg-emerald-400 rounded-full"
+                    style={{
+                      animation: settings.pauseAnimation
+                        ? 'none'
+                        : `carousel-progress ${SLIDE_DURATION_MS}ms linear forwards`,
+                    }}
+                  />
+                )}
+              </button>
+            );
+          })}
         </div>
+
+        {/* Accessible Floating Options Launcher & Category Anchors for Screen Readers and Tests */}
+        <div className="sr-only" aria-hidden="true">
+          <p>{t.banner?.hashtag || '#GOVERNMENTSCHEMES / #SCHEMESFORYOU'}</p>
+          <button type="button" onClick={handleFindSchemes} className="animate-float-subtle">
+            <span>{t.banner?.findSchemes || 'Find Schemes For You'}</span>
+          </button>
+          <button type="button" onClick={handleScrollToOptions}>
+            <span>{t.banner?.scrollDown || 'Scroll down to explore options'}</span>
+          </button>
+          {FLOATING_OPTIONS.map((opt) => {
+            const title = isTamil ? opt.titleTa : isHindi ? opt.titleHi : opt.titleEn;
+            return (
+              <button
+                key={opt.id}
+                type="button"
+                onClick={() => handleSelectFloatingCategory(opt.categoryId)}
+                className={opt.floatClass}
+                aria-label={`Explore ${opt.titleEn} floating option`}
+              >
+                <span>{title}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Find Schemes For You / Find My Scheme Button Section directly below the animation layout */}
+      <div
+        className="w-full bg-white py-4 sm:py-5 flex flex-col items-center justify-center text-center border-b border-slate-200/90 shadow-2xs"
+        aria-label="Find Schemes Launcher"
+      >
+        <p className="text-[11px] sm:text-xs font-black tracking-widest text-slate-700 uppercase mb-2">
+          {t.banner?.hashtag || (isTamil ? '#அரசுதிட்டங்கள் / #உங்களுக்கானதிட்டங்கள்' : isHindi ? '#सरकारीयोजनाएं / #आपकेलिएयोजनाएं' : '#GOVERNMENTSCHEMES / #SCHEMESFORYOU')}
+        </p>
+        <button
+          type="button"
+          onClick={handleFindSchemes}
+          id="find-schemes-button"
+          data-testid="find-schemes-button"
+          className="inline-flex items-center space-x-2.5 px-7 sm:px-9 py-2.5 sm:py-3 rounded-xl bg-[#15803d] hover:bg-[#166534] text-white font-bold text-sm sm:text-base shadow-md hover:shadow-lg transition-all hover:scale-105 active:scale-95 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-600 animate-float-subtle group"
+          aria-label={t.banner?.findSchemesAria || (isTamil ? 'உங்களுக்கான திட்டங்களைக் கண்டறியவும்' : isHindi ? 'आपके लिए योजनाएं खोजें' : 'Find Schemes For You')}
+        >
+          <span>{t.banner?.findSchemes || (isTamil ? 'உங்களுக்கான திட்டங்களைக் கண்டறியவும்' : isHindi ? 'आपके लिए योजनाएं खोजें' : 'Find Schemes For You')}</span>
+          <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.5] group-hover:translate-x-1 transition-transform" />
+        </button>
+        <button
+          type="button"
+          onClick={handleScrollToOptions}
+          className="flex items-center space-x-1 text-[11px] font-semibold text-slate-500 hover:text-emerald-700 mt-1.5 transition-colors cursor-pointer"
+        >
+          <span>{t.banner?.scrollDown || (isTamil ? 'விருப்பங்களை ஆராய கீழே உருட்டவும்' : isHindi ? 'विकल्प देखने के लिए नीचे स्क्रॉल करें' : 'Scroll down to explore options')}</span>
+          <ChevronDown className="w-3.5 h-3.5 animate-bounce text-emerald-700" />
+        </button>
       </div>
     </div>
   );

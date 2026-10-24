@@ -431,7 +431,7 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
                         onClick={() => onSelectSchemeForEligibility(scheme)}
                         className="px-3 py-1.5 rounded-xl bg-civic-50 hover:bg-civic-100 text-civic-800 font-semibold text-xs transition-colors"
                       >
-                        {language === 'ta' ? 'தகுதி சரிபார்க்க' : language === 'hi' ? 'पात्रता जांचें' : 'Check Eligibility'}
+                        {language === 'ta' ? 'விரிவான பகுப்பாய்வு' : language === 'hi' ? 'विस्तृत विश्लेषण' : 'Detailed Analysis'}
                       </button>
                     )}
                     {scheme.official_portal_url && (

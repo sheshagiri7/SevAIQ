@@ -135,7 +135,7 @@ describe('Dashboard Category Grid and Bottom-Left About Modal', () => {
     // 4-stage readiness workflow
     expect(html).toContain('Discover Schemes');
     expect(html).toContain('01');
-    expect(html).toContain('Check Eligibility');
+    expect(html).toContain('Detailed Analysis');
     expect(html).toContain('02');
     expect(html).toContain('Map Documents');
     expect(html).toContain('03');

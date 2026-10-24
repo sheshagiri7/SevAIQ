@@ -133,4 +133,42 @@ describe('Scheme-to-Eligibility Redirect & Focused Breakdown', () => {
     expect(html).toContain('பிரதம மந்திரி தெருவோர வியாபாரிகள் ஆத்மநிர்பர் நிதி (PM SVANidhi)');
     expect(html).toContain('அனைத்து திட்டங்கள்');
   });
+
+  it('does not render the Citizen Demographic Profile form questionnaire card on EligibilityScreen', () => {
+    // English wrapper to ensure consistent locale
+    const EnglishWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+      (globalThis as any).localStorage = {
+        getItem: (k: string) => (k === 'SEVAIQ_APP_LANGUAGE' ? 'en' : null),
+        setItem: vi.fn(),
+        removeItem: vi.fn(),
+      };
+      return <LanguageProvider>{children}</LanguageProvider>;
+    };
+
+    const html = renderToString(
+      <EnglishWrapper>
+        <EligibilityScreen
+          schemes={VERIFIED_REFERENCE_SCHEMES}
+          profile={EMPTY_PROFILE}
+          documents={INITIAL_DOCUMENT_RECORDS}
+          onNavigate={vi.fn()}
+          onSelectForMapper={vi.fn()}
+          selectedSchemeIdsForMapper={[]}
+        />
+      </EnglishWrapper>
+    );
+
+    // Demographic profile form fields and actions should not be present
+    expect(html).not.toContain('Citizen Demographic Profile');
+    expect(html).not.toContain('Enter Your Details');
+    expect(html).not.toContain('id="field-age"');
+    expect(html).not.toContain('id="field-gender"');
+    expect(html).not.toContain('id="field-income"');
+    expect(html).not.toContain('Load Demo Profile');
+    expect(html).not.toContain('Reset Answers');
+
+    // But official legal transparency notice and scheme evaluation section must still be present
+    expect(html).toContain('Statutory Legal Notice &amp; Transparency Mandate:');
+    expect(html).toContain('PM-KISAN');
+  });
 });

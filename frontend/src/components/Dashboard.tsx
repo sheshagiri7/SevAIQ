@@ -24,6 +24,7 @@ interface DashboardProps {
   onSelectCategory?: (categoryId: string) => void;
   onOpenAbout?: () => void;
   onSelectSchemeForEligibility?: (schemeId: string) => void;
+  onFindSchemes?: () => void;
 }
 
 export const Dashboard: React.FC<DashboardProps> = ({
@@ -36,6 +37,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
   onSelectCategory,
   onOpenAbout,
   onSelectSchemeForEligibility,
+  onFindSchemes,
 }) => {
   const { language, t } = useLanguage();
 
@@ -47,6 +49,14 @@ export const Dashboard: React.FC<DashboardProps> = ({
   const totalDocsCount = documents.length;
   const readinessPercentage =
     totalDocsCount > 0 ? Math.round((readyDocsCount / totalDocsCount) * 100) : 0;
+
+  const handleFindSchemes = () => {
+    if (onFindSchemes) {
+      onFindSchemes();
+    } else {
+      onNavigate('demographic-profile');
+    }
+  };
 
   const handleScrollToOptions = () => {
     const el = document.getElementById('options-section');
@@ -81,6 +91,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
           onSelectSchemeForEligibility={onSelectSchemeForEligibility}
           onScrollToOptions={handleScrollToOptions}
           onSelectCategory={onSelectCategory}
+          onFindSchemes={handleFindSchemes}
         />
       </section>
 

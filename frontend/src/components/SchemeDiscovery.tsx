@@ -9,39 +9,52 @@ import {
   Layers,
   ArrowRight,
   CheckCircle,
+  CheckCircle2,
   Calendar,
   Building2,
   FileText,
   ListOrdered,
-  Sparkles,
   X,
 } from 'lucide-react';
-import { Scheme, SchemeDetail, CategoryCount } from '../types';
+import { Scheme, SchemeDetail, CategoryCount, CitizenProfile } from '../types';
 import { CATEGORY_OPTIONS, matchesCategory } from '../utils/categoryMatcher';
 import { fetchCategories, fetchSchemeById } from '../services/api';
 import { matchesBilingualQuery } from '../utils/bilingualSearch';
+import { evaluateSchemeEligibility } from '../utils/eligibilityEngine';
+import { isProfileEmpty } from '../utils/kioskStorage';
 import { useLanguage } from '../context/LanguageContext';
 
 interface SchemeDiscoveryProps {
   schemes: Scheme[];
   isLoading: boolean;
-  onRefreshSchemes: () => void;
+  onRefreshSchemes?: () => void;
   error?: string | null;
   onSelectForEligibility?: (scheme: Scheme) => void;
   onNavigateToTracker?: (schemeId: string) => void;
   selectedCategory?: string;
   onSelectCategory?: (category: string) => void;
+  selectedSchemeIdsForMapper?: string[];
+  onSelectForMapper?: (schemeId: string) => void;
+  profile?: CitizenProfile;
+  onlyEligibleFilter?: boolean;
+  onToggleOnlyEligible?: (val: boolean) => void;
+  eligibleCount?: number;
 }
 
 export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
   schemes,
   isLoading,
-  onRefreshSchemes,
   error,
   onSelectForEligibility,
   onNavigateToTracker,
   selectedCategory: propCategory,
   onSelectCategory: propOnSelectCategory,
+  selectedSchemeIdsForMapper = [],
+  onSelectForMapper,
+  profile,
+  onlyEligibleFilter = false,
+  onToggleOnlyEligible,
+  eligibleCount,
 }) => {
   const { language, t, getLocalizedScheme, getLocalizedOption } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
@@ -123,7 +136,14 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
       matchesBilingualQuery(s, searchQuery) ||
       matchesBilingualQuery(localized, searchQuery);
     const matchesCat = matchesCategory(s.category, selectedCategory);
-    return matchesSearch && matchesCat;
+    if (!matchesSearch || !matchesCat) return false;
+
+    if (onlyEligibleFilter && profile && !isProfileEmpty(profile)) {
+      const evaluation = evaluateSchemeEligibility(s, profile);
+      if (evaluation.overallStatus !== 'met') return false;
+    }
+
+    return true;
   });
 
   const modalScheme = fullSchemeDetail
@@ -133,7 +153,7 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
     : null;
 
   return (
-    <section id="discover" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    <section id="discover" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-12 space-y-6">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-slate-200">
         <div>
@@ -200,6 +220,25 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
           >
             {t.discover.allCategories}
           </button>
+          {profile && !isProfileEmpty(profile) && onToggleOnlyEligible && (
+            <button
+              type="button"
+              onClick={() => onToggleOnlyEligible(!onlyEligibleFilter)}
+              aria-pressed={onlyEligibleFilter}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 flex items-center space-x-1.5 ${
+                onlyEligibleFilter
+                  ? 'bg-emerald-600 text-white shadow-xs'
+                  : 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200'
+              }`}
+            >
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              <span>
+                {onlyEligibleFilter
+                  ? (language === 'ta' ? `தகுதியானவை மட்டும் (${eligibleCount ?? ''}) ✓` : language === 'hi' ? `केवल पात्र (${eligibleCount ?? ''}) ✓` : `Eligible Only (${eligibleCount ?? ''}) ✓`)
+                  : (language === 'ta' ? `தகுதியானவை மட்டும் (${eligibleCount ?? ''})` : language === 'hi' ? `केवल पात्र (${eligibleCount ?? ''})` : `Show Eligible Only (${eligibleCount ?? ''})`)}
+              </span>
+            </button>
+          )}
           {categories.length > 0
             ? categories.map((cat) => {
                 const isSelected = selectedCategory.toLowerCase() === cat.category.toLowerCase();
@@ -263,6 +302,9 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredSchemes.map((rawScheme) => {
               const scheme = getLocalizedScheme(rawScheme);
+              const eligibility = profile && !isProfileEmpty(profile)
+                ? evaluateSchemeEligibility(rawScheme, profile)
+                : null;
               return (
                 <div
                   key={scheme.id}
@@ -284,6 +326,43 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                         </span>
                       )}
                     </div>
+
+                    {eligibility && (
+                      <div className="mb-2.5">
+                        {eligibility.overallStatus === 'met' ? (
+                          <span className="inline-flex items-center space-x-1 text-[11px] font-bold text-emerald-800 bg-emerald-100/90 px-2.5 py-0.5 rounded-full border border-emerald-300">
+                            <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                            <span>
+                              {language === 'ta'
+                                ? 'உங்கள் சுயவிவரத்திற்கு தகுதியுடையது ✓'
+                                : language === 'hi'
+                                ? 'आपकी प्रोफ़ाइल के लिए पात्र ✓'
+                                : 'Eligible for You ✓'}
+                            </span>
+                          </span>
+                        ) : eligibility.overallStatus === 'not_met' ? (
+                          <span className="inline-flex items-center space-x-1 text-[11px] font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200">
+                            <span>
+                              {language === 'ta'
+                                ? 'தகுதி நிபந்தனை பொருந்தவில்லை'
+                                : language === 'hi'
+                                ? 'शर्तें पूरी नहीं'
+                                : 'Criteria Not Met'}
+                            </span>
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center space-x-1 text-[11px] font-medium text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200">
+                            <span>
+                              {language === 'ta'
+                                ? 'கூடுதல் விவரங்களை சரிபார்க்கவும்'
+                                : language === 'hi'
+                                ? 'शर्तें जांचें'
+                                : 'Check Criteria'}
+                            </span>
+                          </span>
+                        )}
+                      </div>
+                    )}
 
                     <h3 className="text-base font-bold text-slate-900 mb-1 leading-snug">
                       {scheme.title}
@@ -328,6 +407,23 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                     </div>
 
                     <div className="space-y-2">
+                      {onSelectForMapper && (
+                        <button
+                          type="button"
+                          onClick={() => onSelectForMapper(scheme.id)}
+                          className={`w-full flex items-center justify-center space-x-1.5 py-1.5 px-3 rounded-xl text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500 ${
+                            selectedSchemeIdsForMapper.includes(scheme.id)
+                              ? 'bg-emerald-50 text-emerald-800 border border-emerald-300'
+                              : 'bg-white hover:bg-slate-50 text-slate-700 border border-slate-300'
+                          }`}
+                        >
+                          <span>
+                            {selectedSchemeIdsForMapper.includes(scheme.id)
+                              ? 'In Document Mapper ✓'
+                              : '+ Add to Mapper'}
+                          </span>
+                        </button>
+                      )}
                       {onSelectForEligibility && (
                         <button
                           type="button"

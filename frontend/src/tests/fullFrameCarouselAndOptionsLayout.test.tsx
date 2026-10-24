@@ -23,7 +23,7 @@ describe('Full-Frame Scheme Carousel Banner & Floating Options Section', () => {
     vi.restoreAllMocks();
   });
 
-  it('SchemeBannerCarousel renders with full-frame viewport height classes and floating launcher', () => {
+  it('SchemeBannerCarousel renders with proportional reduced viewport height classes and floating launcher', () => {
     const html = renderToString(
       <LanguageProvider>
         <AccessibilityProvider>
@@ -32,9 +32,9 @@ describe('Full-Frame Scheme Carousel Banner & Floating Options Section', () => {
       </LanguageProvider>
     );
 
-    // Full frame classes (h-[calc(100vh-4.25rem)] and min-h)
-    expect(html).toContain('h-[calc(100vh-4.25rem)]');
-    expect(html).toContain('min-h-[640px]');
+    // Expanded downward height classes (lg:h-[660px] and lg:min-h-[640px])
+    expect(html).toContain('lg:h-[660px]');
+    expect(html).toContain('lg:min-h-[640px]');
 
     // Floating option launcher bar with government hashtags
     expect(html).toContain('#GOVERNMENTSCHEMES / #SCHEMESFORYOU');
@@ -96,7 +96,7 @@ describe('Full-Frame Scheme Carousel Banner & Floating Options Section', () => {
 
     // Carousel is rendered in full-width section
     expect(html).toContain('aria-label="Featured Government Schemes Showcase"');
-    expect(html).toContain('h-[calc(100vh-4.25rem)]');
+    expect(html).toContain('lg:h-[660px]');
 
     // Options layout is separated with id="options-section"
     expect(html).toContain('id="options-section"');
@@ -131,7 +131,7 @@ describe('Full-Frame Scheme Carousel Banner & Floating Options Section', () => {
     expect(html).toContain('தேசிய கல்வி உதவித்தொகை தளம்');
     expect(html).toContain('மின்னணு &amp; தகவல் தொழில்நுட்ப அமைச்சகம்');
     expect(html).toContain('விண்ணப்பிக்கவும்');
-    expect(html).toContain('தகுதியை சரிபார்க்கவும்');
+    expect(html).toContain('விரிவான பகுப்பாய்வு');
     expect(html).toContain('முந்தைய திட்டம்');
     expect(html).toContain('அடுத்த திட்டம்');
   });
@@ -156,7 +156,7 @@ describe('Full-Frame Scheme Carousel Banner & Floating Options Section', () => {
     expect(html).toContain('राष्ट्रीय छात्रवृत्ति पोर्टल');
     expect(html).toContain('इलेक्ट्रॉनिक्स और सूचना प्रौद्योगिकी मंत्रालय');
     expect(html).toContain('अभी आवेदन करें');
-    expect(html).toContain('पात्रता जांचें');
+    expect(html).toContain('विस्तृत विश्लेषण');
     expect(html).toContain('पिछली योजना');
     expect(html).toContain('अगली योजना');
   });

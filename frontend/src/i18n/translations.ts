@@ -443,7 +443,7 @@ export const UI_TRANSLATIONS = {
     banner: {
       hashtag: '#GOVERNMENTSCHEMES / #SCHEMESFORYOU',
       findSchemes: 'Find Schemes For You',
-      findSchemesAria: 'Find Schemes For You - scroll to options',
+      findSchemesAria: 'Find Schemes For You - redirect to demographic profile',
       scrollDown: 'Scroll down to explore options',
       prevSlide: 'Previous Scheme Slide',
       nextSlide: 'Next Scheme Slide',
@@ -485,7 +485,7 @@ export const UI_TRANSLATIONS = {
       step1Desc:
         'Browse verified central and state welfare initiatives with zero simulated data.',
       step1Action: 'Explore catalog',
-      step2Title: 'Check Eligibility',
+      step2Title: 'Detailed Analysis',
       step2Desc:
         'Fill an anonymous profile to evaluate criteria with Met, Not Met, and Unknown explanations.',
       step2Action: 'Assess profile',
@@ -537,7 +537,7 @@ export const UI_TRANSLATIONS = {
       targetBeneficiary: 'Target Beneficiary:',
       benefits: 'Benefits:',
       requiredDocs: 'Required Documents:',
-      checkEligibility: 'Check Eligibility',
+      checkEligibility: 'Detailed Analysis',
       trackGuidance: 'Track Guidance',
       officialPortal: 'Official Portal',
       viewFullDetails: 'View Full Details & Application Steps',
@@ -553,6 +553,8 @@ export const UI_TRANSLATIONS = {
       applicationSteps: 'Official Application Steps',
       close: 'Close',
       applicationMode: 'Mode:',
+      addToMapper: '+ Add to Mapper',
+      inMapper: 'In Document Mapper ✓',
     },
 
     // Eligibility Screen
@@ -561,7 +563,7 @@ export const UI_TRANSLATIONS = {
       title: 'Explainable Scheme Eligibility',
       subtitle:
         'Enter basic demographic details to evaluate statutory criteria with transparent, rule-by-rule explanations.',
-      profileTitle: 'Citizen Demographic Profile',
+      profileTitle: 'Enter Your Details',
       privacyNotice:
         'Zero PII Collection: No Aadhaar or phone numbers are stored. Evaluation runs strictly on demographic rules.',
       loadDemo: 'Load Demo Profile',
@@ -620,6 +622,21 @@ export const UI_TRANSLATIONS = {
       filterByScheme: 'Scheme:',
       allSchemesOption: 'All Schemes',
       clearSchemeFilter: 'Clear Scheme Filter',
+      giveSchemeOptions: 'Give Scheme Options',
+      hideSchemeOptions: 'Hide Scheme Options',
+      schemeOptionsTitle: 'Scheme Options According to Profile',
+      schemeOptionsSubtitle:
+        'Welfare schemes matched specifically to your demographic and livelihood parameters.',
+      matchedDemographicsBadge: 'Demographic Match ✓',
+      noMatchingSchemes:
+        'No schemes match your exact demographic details. Adjust parameters or explore all schemes.',
+      viewSchemeDetails: 'Detailed Analysis',
+      schemeOptionsCount: 'Scheme Options',
+      whyMatched: 'Why this scheme matches your profile:',
+      filterAllOptions: 'All Scheme Options',
+      filterEligibleOnly: 'Fully Eligible Only',
+      emptyProfilePrompt:
+        'Enter your demographic details above to see personalized scheme options.',
     },
 
     // Document Mapper
@@ -635,6 +652,8 @@ export const UI_TRANSLATIONS = {
       haveDocs: 'Have in Hand',
       missingDocs: 'Missing / Needed',
       selectedSchemes: 'Target Schemes for Synergy Analysis:',
+      emptyState:
+        'No schemes added yet. Explore schemes and click ‘Add to Mapper’ to compare document requirements.',
       noSchemesSelected: 'Please select at least one scheme to map required documents.',
       issuingAuthority: 'Issuing Authority:',
       usedInSchemes: 'Required by Schemes:',
@@ -799,7 +818,7 @@ export const UI_TRANSLATIONS = {
     banner: {
       hashtag: '#அரசுதிட்டங்கள் / #உங்களுக்கானதிட்டங்கள்',
       findSchemes: 'உங்களுக்கான திட்டங்களைக் கண்டறியவும்',
-      findSchemesAria: 'உங்களுக்கான திட்டங்களைக் கண்டறியவும் - விருப்பங்களை ஆராய கீழே உருட்டவும்',
+      findSchemesAria: 'உங்களுக்கான திட்டங்களைக் கண்டறியவும் - புள்ளிவிவரக் குறிப்புக்குச் செல்லவும்',
       scrollDown: 'விருப்பங்களை ஆராய கீழே உருட்டவும்',
       prevSlide: 'முந்தைய திட்டம்',
       nextSlide: 'அடுத்த திட்டம்',
@@ -841,7 +860,7 @@ export const UI_TRANSLATIONS = {
       step1Desc:
         'போலியான தகவல்கள் இன்றி, சரிபார்க்கப்பட்ட மத்திய & மாநில திட்டங்களை பார்வையிடுங்கள்.',
       step1Action: 'பட்டியலை காண்க',
-      step2Title: 'தகுதியை சரிபார்த்தல்',
+      step2Title: 'விரிவான பகுப்பாய்வு',
       step2Desc:
         'பெயர் குறிப்பிடாத சுயவிவரத்தை பூர்த்தி செய்து தகுதிக்கான காரணங்களுடன் முடிவுகளைப் பெறுங்கள்.',
       step2Action: 'சுயவிவரத்தை சரிபார்',
@@ -893,7 +912,7 @@ export const UI_TRANSLATIONS = {
       targetBeneficiary: 'பயனாளிகள்:',
       benefits: 'நலத்திட்ட பயன்கள்:',
       requiredDocs: 'தேவைப்படும் ஆவணங்கள்:',
-      checkEligibility: 'தகுதி சரிபார்க்கவும்',
+      checkEligibility: 'விரிவான பகுப்பாய்வு',
       trackGuidance: 'விண்ணப்ப வழிகாட்டி',
       officialPortal: 'அதிகாரப்பூர்வ தளம்',
       viewFullDetails: 'முழு விவரங்கள் & விண்ணப்ப முறைகள்',
@@ -909,6 +928,8 @@ export const UI_TRANSLATIONS = {
       applicationSteps: 'அதிகாரப்பூர்வ விண்ணப்ப முறைகள்',
       close: 'மூடு',
       applicationMode: 'விண்ணப்ப முறை:',
+      addToMapper: '+ வரைபடத்தில் சேர்',
+      inMapper: 'வரைபடத்தில் உள்ளது ✓',
     },
 
     // Eligibility Screen
@@ -917,7 +938,7 @@ export const UI_TRANSLATIONS = {
       title: 'விளக்கமான அரசு திட்ட தகுதி சரிபார்ப்பு',
       subtitle:
         'விதிமுறை அடிப்படையிலான வெளிப்படையான காரணங்களுடன் தகுதியை சரிபார்க்க அடிப்படை புள்ளிவிவரங்களை உள்ளிடுங்கள்.',
-      profileTitle: 'குடிமக்கள் புள்ளிவிவரக் குறிப்பு',
+      profileTitle: 'உங்கள் விவரங்களை உள்ளிடவும்',
       privacyNotice:
         'பெயர் குறிப்பிடாத சரிபார்ப்பு: ஆதார் அல்லது தொலைபேசி எண்கள் ஒருபோதும் சேகரிக்கப்படுவதில்லை. புள்ளிவிவர விதிகளின்படி மட்டுமே மதிப்பீடு செய்யப்படுகிறது.',
       loadDemo: 'மாதிரி விவரத்தை ஏற்று',
@@ -976,6 +997,21 @@ export const UI_TRANSLATIONS = {
       filterByScheme: 'திட்டம்:',
       allSchemesOption: 'அனைத்து திட்டங்கள்',
       clearSchemeFilter: 'வடிகட்டலை நீக்கு',
+      giveSchemeOptions: 'திட்ட விருப்பங்களைப் பெறுக',
+      hideSchemeOptions: 'திட்ட விருப்பங்களை மறை',
+      schemeOptionsTitle: 'சுயவிவரத்திற்கு ஏற்ற திட்ட விருப்பங்கள்',
+      schemeOptionsSubtitle:
+        'உங்கள் புள்ளிவிவரங்கள் மற்றும் வாழ்வாதார விவரங்களின் அடிப்படையில் பரிந்துரைக்கப்படும் நலத்திட்டங்கள்.',
+      matchedDemographicsBadge: 'சுயவிவரப் பொருத்தம் ✓',
+      noMatchingSchemes:
+        'இந்த விவரங்களுக்கு பொருந்தும் திட்டங்கள் எதுவும் இல்லை. விவரங்களை மாற்றி முயற்சிக்கவும்.',
+      viewSchemeDetails: 'விரிவான பகுப்பாய்வு',
+      schemeOptionsCount: 'திட்ட விருப்பங்கள்',
+      whyMatched: 'சுயவிவரத்துடன் பொருந்தும் காரணங்கள்:',
+      filterAllOptions: 'அனைத்து திட்ட விருப்பங்கள்',
+      filterEligibleOnly: 'முழு தகுதியுடையவை மட்டும்',
+      emptyProfilePrompt:
+        'பொருத்தமான திட்ட விருப்பங்களைக் காண உங்கள் புள்ளிவிவரங்களை மேலே உள்ளிடவும்.',
     },
 
     // Document Mapper
@@ -991,6 +1027,8 @@ export const UI_TRANSLATIONS = {
       haveDocs: 'கையில் உள்ளவை',
       missingDocs: 'விடுபட்டவை / தேவை',
       selectedSchemes: 'ஆவண இணைப்பிற்காக தேர்ந்தெடுக்கப்பட்ட திட்டங்கள்:',
+      emptyState:
+        'திட்டங்கள் எதுவும் இதுவரை சேர்க்கப்படவில்லை. திட்டங்களை ஆராய்ந்து ஆவணத் தேவைகளை ஒப்பிட ‘வரைபடத்தில் சேர்’ என்பதைக் கிளிக் செய்யவும்.',
       noSchemesSelected: 'ஆவணங்களை இணைக்க குறைந்தபட்சம் ஒரு திட்டத்தையாவது தேர்ந்தெடுக்கவும்.',
       issuingAuthority: 'வழங்கும் அதிகாரம்:',
       usedInSchemes: 'பயன்படும் திட்டங்கள்:',
@@ -1155,7 +1193,7 @@ export const UI_TRANSLATIONS = {
     banner: {
       hashtag: '#सरकारीयोजनाएं / #आपकेलिएयोजनाएं',
       findSchemes: 'आपके लिए योजनाएं खोजें',
-      findSchemesAria: 'आपके लिए योजनाएं खोजें - विकल्प देखने के लिए नीचे स्क्रॉल करें',
+      findSchemesAria: 'आपके लिए योजनाएं खोजें - जनसांख्यिकीय प्रोफाइल पर जाएं',
       scrollDown: 'विकल्प देखने के लिए नीचे स्क्रॉल करें',
       prevSlide: 'पिछली योजना',
       nextSlide: 'अगली योजना',
@@ -1197,7 +1235,7 @@ export const UI_TRANSLATIONS = {
       step1Desc:
         'बिना किसी भ्रामक जानकारी के, सत्यापित केंद्रीय और राज्य सरकारी योजनाओं को ब्राउज़ करें।',
       step1Action: 'कैटलॉग देखें',
-      step2Title: 'पात्रता जांचें',
+      step2Title: 'विस्तृत विश्लेषण',
       step2Desc:
         'गुमनाम प्रोफाइल भरकर नियमों के आधार पर स्पष्ट कारणों के साथ पात्रता परिणाम प्राप्त करें।',
       step2Action: 'प्रोफाइल जांचें',
@@ -1249,7 +1287,7 @@ export const UI_TRANSLATIONS = {
       targetBeneficiary: 'लक्षित लाभार्थी:',
       benefits: 'योजना लाभ:',
       requiredDocs: 'आवश्यक दस्तावेज:',
-      checkEligibility: 'पात्रता जांचें',
+      checkEligibility: 'विस्तृत विश्लेषण',
       trackGuidance: 'मार्गदर्शन ट्रैक करें',
       officialPortal: 'आधिकारिक पोर्टल',
       viewFullDetails: 'पूर्ण विवरण एवं आवेदन प्रक्रिया',
@@ -1265,6 +1303,8 @@ export const UI_TRANSLATIONS = {
       applicationSteps: 'आधिकारिक आवेदन चरण',
       close: 'बंद करें',
       applicationMode: 'आवेदन माध्यम:',
+      addToMapper: '+ मैपर में जोड़ें',
+      inMapper: 'मैपर में मौजूद ✓',
     },
 
     // Eligibility Screen
@@ -1273,7 +1313,7 @@ export const UI_TRANSLATIONS = {
       title: 'पारदर्शी सरकारी योजना पात्रता',
       subtitle:
         'संवैधानिक नियमों के आधार पर स्पष्ट, नियम-दर-नियम स्पष्टीकरण के साथ पात्रता जांचने हेतु बुनियादी जानकारी दर्ज करें।',
-      profileTitle: 'नागरिक जनसांख्यिकीय प्रोफाइल',
+      profileTitle: 'अपना विवरण दर्ज करें',
       privacyNotice:
         'शून्य व्यक्तिगत पहचान संग्रह: कोई आधार या फोन नंबर संग्रहीत नहीं किया जाता। मूल्यांकन पूरी तरह से गुमनाम नियमों पर चलता है।',
       loadDemo: 'डेमो प्रोफाइल लोड करें',
@@ -1332,6 +1372,21 @@ export const UI_TRANSLATIONS = {
       filterByScheme: 'योजना:',
       allSchemesOption: 'सभी योजनाएं',
       clearSchemeFilter: 'योजना फ़िल्टर हटाएं',
+      giveSchemeOptions: 'योजना विकल्प प्राप्त करें',
+      hideSchemeOptions: 'योजना विकल्प छुपाएं',
+      schemeOptionsTitle: 'प्रोफ़ाइल के अनुसार योजना विकल्प',
+      schemeOptionsSubtitle:
+        'आपके जनसांख्यिकीय और आजीविका विवरणों के आधार पर उपयुक्त कल्याणकारी योजनाएं।',
+      matchedDemographicsBadge: 'प्रोफ़ाइल से मेल ✓',
+      noMatchingSchemes:
+        'इन विवरणों के अनुसार कोई योजना नहीं मिली। कृपया प्रोफ़ाइल विवरण बदलें।',
+      viewSchemeDetails: 'विस्तृत विश्लेषण',
+      schemeOptionsCount: 'योजना विकल्प',
+      whyMatched: 'प्रोफ़ाइल से मेल खाने के कारण:',
+      filterAllOptions: 'सभी योजना विकल्प',
+      filterEligibleOnly: 'केवल पूरी तरह पात्र',
+      emptyProfilePrompt:
+        'व्यक्तिगत योजना विकल्प देखने के लिए अपने जनसांख्यिकीय विवरण ऊपर दर्ज करें।',
     },
 
     // Document Mapper
@@ -1347,6 +1402,8 @@ export const UI_TRANSLATIONS = {
       haveDocs: 'उपलब्ध दस्तावेज',
       missingDocs: 'लापता / आवश्यक दस्तावेज',
       selectedSchemes: 'दस्तावेज तालमेल हेतु चयनित योजनाएं:',
+      emptyState:
+        'अभी तक कोई योजना नहीं जोड़ी गई है। योजनाएं देखें और दस्तावेज आवश्यकताओं की तुलना करने के लिए ‘मैपर में जोड़ें’ पर क्लिक करें।',
       noSchemesSelected: 'दस्तावेजों का मिलान करने के लिए कम से कम एक योजना चुनें।',
       issuingAuthority: 'जारीकर्ता प्राधिकारी:',
       usedInSchemes: 'आवश्यक योजनाएं:',

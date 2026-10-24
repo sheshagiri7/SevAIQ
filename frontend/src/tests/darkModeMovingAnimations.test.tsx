@@ -43,6 +43,10 @@ describe('Dark Mode Removal & Moving Animation Images Exemption', () => {
     expect(html).not.toContain('Switch to high contrast dark theme');
     expect(html).not.toContain('High Contrast Theme (Dark)');
     expect(html).not.toContain('Standard Theme');
+    expect(html).not.toContain('dark-mode-toggle');
+    expect(html).not.toContain('Switch to dark mode');
+    expect(html).not.toContain('Dark Mode');
+    expect(html).not.toContain('Switch to standard light theme');
   });
 
   it('verifies dark mode option is completely removed from AccessibilityDrawer', () => {

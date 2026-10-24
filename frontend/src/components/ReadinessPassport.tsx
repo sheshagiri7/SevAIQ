@@ -318,10 +318,10 @@ export const ReadinessPassport: React.FC<ReadinessPassportProps> = ({
             <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-200">
               <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700">
                 {language === 'ta'
-                  ? '1. குடிமக்கள் புள்ளிவிவரக் குறிப்பு (பெயர் குறிப்பிடாதது)'
+                  ? '1. உங்கள் விவரங்களை உள்ளிடவும் (பெயர் குறிப்பிடாதது)'
                   : language === 'hi'
-                  ? '1. नागरिक जनसांख्यिकीय प्रोफ़ाइल (गुमनाम)'
-                  : '1. Citizen Demographic Profile (Anonymous)'}
+                  ? '1. अपना विवरण दर्ज करें (गुमनाम)'
+                  : '1. Enter Your Details (Anonymous)'}
               </h3>
               <span className="text-[11px] text-emerald-700 font-medium">
                 {language === 'ta'

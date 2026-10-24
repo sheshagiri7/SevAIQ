@@ -59,7 +59,7 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
-        return { ...DEFAULT_A11Y_SETTINGS, ...JSON.parse(saved), invertColors: false, pauseAnimation: false };
+        return { ...DEFAULT_A11Y_SETTINGS, ...JSON.parse(saved), pauseAnimation: false };
       }
     } catch {
       // ignore
@@ -117,8 +117,16 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
       body.classList.add('a11y-saturation-gray');
     }
 
-    // 6. Invert Colors (Option removed - ensure dark mode inversion class is stripped)
-    root.classList.remove('a11y-invert');
+    // 6. Invert Colors (High Contrast Dark Mode)
+    if (settings.invertColors) {
+      root.classList.add('a11y-invert');
+      root.classList.add('dark');
+      root.setAttribute('data-theme', 'dark');
+    } else {
+      root.classList.remove('a11y-invert');
+      root.classList.remove('dark');
+      root.removeAttribute('data-theme');
+    }
 
     // 7. Highlight Links
     if (settings.highlightLinks) {

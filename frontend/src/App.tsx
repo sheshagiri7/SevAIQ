@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { Info } from 'lucide-react';
 import { Header } from './components/Header';
-import { Hero } from './components/Hero';
+import { DemographicProfile } from './components/DemographicProfile';
 import { Dashboard } from './components/Dashboard';
 import { SchemeDiscovery } from './components/SchemeDiscovery';
 import { EligibilityScreen } from './components/EligibilityScreen';
@@ -47,6 +47,7 @@ export function App() {
   const [isVoiceAssistantOpen, setIsVoiceAssistantOpen] = useState(false);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState('all');
+  const [onlyEligibleFilter, setOnlyEligibleFilter] = useState<boolean>(false);
 
   const [apiState, setApiState] = useState<ApiState>({
     status: 'checking',
@@ -109,7 +110,7 @@ export function App() {
     } catch {
       // ignore
     }
-    return ['pm-kisan', 'ab-pmjay'];
+    return [];
   });
 
   // Target scheme for Application Guidance Tracker
@@ -169,6 +170,7 @@ export function App() {
     setSelectedSchemeIds([]);
     setSelectedEligibilitySchemeId(null);
     setIsVoiceAssistantOpen(false);
+    setOnlyEligibleFilter(false);
   };
 
   const handlePreFillDemoProfile = () => {
@@ -178,6 +180,7 @@ export function App() {
 
   const handleResetProfile = () => {
     setProfile(EMPTY_PROFILE);
+    setOnlyEligibleFilter(false);
     if (!isKioskMode) {
       try {
         localStorage.removeItem(STORAGE_KEYS.PROFILE);
@@ -290,8 +293,14 @@ export function App() {
 
   const handleToggleSchemeSelection = (schemeId: string) => {
     setSelectedSchemeIds((prev) =>
-      prev.includes(schemeId) ? prev.filter((id) => id !== schemeId) : [...prev, schemeId]
+      prev.includes(schemeId)
+        ? prev.filter((id) => id !== schemeId)
+        : [...new Set([...prev, schemeId])]
     );
+  };
+
+  const handleRemoveSchemeFromMapper = (schemeId: string) => {
+    setSelectedSchemeIds((prev) => prev.filter((id) => id !== schemeId));
   };
 
   const handleNavigate = (tab: NavigationTab) => {
@@ -299,14 +308,33 @@ export function App() {
       setIsVoiceAssistantOpen(true);
       return;
     }
+    if (tab === 'demographic-profile') {
+      setActiveTab('demographic-profile');
+      setTimeout(() => {
+        const el = document.getElementById('demographic-profile');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          el.focus?.({ preventScroll: true });
+        }
+      }, 50);
+      return;
+    }
     setActiveTab(tab);
   };
 
-  // If activeTab is ever voice-assistant, open the corner assistant and show dashboard
+  // If activeTab is ever voice-assistant or demographic-profile, handle redirection cleanly
   useEffect(() => {
     if (activeTab === 'voice-assistant') {
       setIsVoiceAssistantOpen(true);
       setActiveTab('dashboard');
+    } else if (activeTab === 'demographic-profile') {
+      setTimeout(() => {
+        const el = document.getElementById('demographic-profile');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          el.focus?.({ preventScroll: true });
+        }
+      }, 50);
     }
   }, [activeTab]);
 
@@ -360,15 +388,39 @@ export function App() {
             onSelectCategory={handleCategorySelect}
             onOpenAbout={() => setIsAboutOpen(true)}
             onSelectSchemeForEligibility={handleSelectSchemeForEligibility}
+            onFindSchemes={() => handleNavigate('demographic-profile')}
           />
         )}
 
-        {activeTab === 'discover' && (
-          <>
-            <Hero onExploreClick={() => {
-              const el = document.getElementById('discover');
-              if (el) el.scrollIntoView({ behavior: 'smooth' });
-            }} />
+        {(activeTab === 'discover' || activeTab === 'demographic-profile') && (
+          <div className="py-6 space-y-6">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <DemographicProfile
+                id="demographic-profile"
+                profile={profile}
+                onUpdateProfile={handleUpdateProfile}
+                onResetProfile={handleResetProfile}
+                onPreFillDemoProfile={handlePreFillDemoProfile}
+                isKioskMode={isKioskMode}
+                eligibleCount={eligibleCount}
+                totalSchemesCount={allSchemes.length}
+                showFilterToggle={true}
+                onlyEligibleFilter={onlyEligibleFilter}
+                onToggleOnlyEligible={setOnlyEligibleFilter}
+                onNavigateToEligibility={(scheme) => {
+                  if (scheme) {
+                    setSelectedEligibilitySchemeId(scheme.id);
+                  }
+                  setActiveTab('eligibility');
+                }}
+                forceOpen={activeTab === 'demographic-profile'}
+                schemes={allSchemes}
+                onSelectSchemeForEligibility={handleSelectSchemeForEligibility}
+                selectedSchemeIdsForMapper={selectedSchemeIds}
+                onSelectForMapper={handleToggleSchemeSelection}
+                defaultShowSchemeOptions={activeTab === 'demographic-profile'}
+              />
+            </div>
             <SchemeDiscovery
               schemes={allSchemes}
               isLoading={isSchemesLoading}
@@ -381,8 +433,14 @@ export function App() {
               }}
               selectedCategory={selectedCategoryFilter}
               onSelectCategory={setSelectedCategoryFilter}
+              selectedSchemeIdsForMapper={selectedSchemeIds}
+              onSelectForMapper={handleToggleSchemeSelection}
+              profile={profile}
+              onlyEligibleFilter={onlyEligibleFilter}
+              onToggleOnlyEligible={setOnlyEligibleFilter}
+              eligibleCount={eligibleCount}
             />
-          </>
+          </div>
         )}
 
         {activeTab === 'eligibility' && (
@@ -409,6 +467,7 @@ export function App() {
             profile={profile}
             selectedSchemeIds={selectedSchemeIds}
             onToggleSchemeSelection={handleToggleSchemeSelection}
+            onRemoveScheme={handleRemoveSchemeFromMapper}
             onResetSchemeSelection={handleResetSchemeSelection}
             onUpdateDocumentStatus={handleUpdateDocumentStatus}
             onNavigate={handleNavigate}

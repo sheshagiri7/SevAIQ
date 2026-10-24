@@ -5,12 +5,10 @@ import {
   CheckCircle2,
   HelpCircle,
   XCircle,
-  User,
   Shield,
   ChevronDown,
   ChevronUp,
   FileText,
-  Lock,
   ArrowRight,
   Filter,
   RefreshCw,
@@ -41,7 +39,7 @@ interface EligibilityScreenProps {
   schemes: Scheme[];
   profile: CitizenProfile;
   documents?: DocumentRecord[];
-  onUpdateProfile: (updated: Partial<CitizenProfile>) => void;
+  onUpdateProfile?: (updated: Partial<CitizenProfile>) => void;
   onNavigate: (tab: NavigationTab) => void;
   onSelectForMapper: (schemeId: string) => void;
   selectedSchemeIdsForMapper: string[];
@@ -52,47 +50,21 @@ interface EligibilityScreenProps {
   onClearTargetScheme?: () => void;
 }
 
-const INDIAN_STATES = [
-  'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh',
-  'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand', 'Karnataka',
-  'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur', 'Meghalaya', 'Mizoram',
-  'Nagaland', 'Odisha', 'Punjab', 'Rajasthan', 'Sikkim', 'Tamil Nadu',
-  'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal',
-  'Delhi (NCT)', 'Jammu and Kashmir', 'Ladakh', 'Puducherry',
-];
-
-const OCCUPATIONS = [
-  'Farmer / Cultivator',
-  'Agricultural Worker',
-  'Street Vendor / Hawker',
-  'Small Business / Artisan',
-  'Daily Wage / Informal Worker',
-  'Self-Employed',
-  'Student / Scholar',
-  'Salaried Employee (Private)',
-  'Homemaker',
-  'Senior Citizen / Retired',
-  'Unemployed / Jobseeker',
-];
-
 export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
   schemes,
   profile,
   documents = [],
-  onUpdateProfile,
+  onUpdateProfile: _onUpdateProfile,
   onNavigate,
   onSelectForMapper,
   selectedSchemeIdsForMapper,
-  isKioskMode = false,
-  onResetProfile,
-  onPreFillDemoProfile,
+  isKioskMode: _isKioskMode = false,
+  onResetProfile: _onResetProfile,
+  onPreFillDemoProfile: _onPreFillDemoProfile,
   targetSchemeId,
   onClearTargetScheme,
 }) => {
-  const { language, t, getLocalizedScheme, getLocalizedOption } = useLanguage();
-  const [profileEditorOpen, setProfileEditorOpen] = useState(
-    !profile.age || !profile.occupation
-  );
+  const { language, t, getLocalizedScheme } = useLanguage();
   const [statusFilter, setStatusFilter] = useState<'all' | EligibilityStatus>('all');
   const isSchemeMatching = useCallback((schemeId: string, filterId: string) => {
     if (!schemeId || !filterId) return false;
@@ -209,10 +181,6 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
     return r.overallStatus === statusFilter;
   });
 
-  const handleProfileFieldChange = (field: keyof CitizenProfile, value: any) => {
-    onUpdateProfile({ [field]: value });
-  };
-
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       {/* Screen Title */}
@@ -229,15 +197,6 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
             {t.eligibility.subtitle}
           </p>
         </div>
-
-        <button
-          onClick={() => setProfileEditorOpen(!profileEditorOpen)}
-          className="inline-flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 transition-colors shadow-xs self-start md:self-auto"
-        >
-          <User className="w-4 h-4 text-civic-700" />
-          <span>{profileEditorOpen ? t.eligibility.collapseProfile : t.eligibility.editProfile}</span>
-          {profileEditorOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-        </button>
       </div>
 
       {/* Statutory Legal Notice & Non-Guarantee Advisory */}
@@ -260,413 +219,6 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
           </p>
         </div>
       </div>
-
-      {/* Citizen Profile Configuration Card */}
-      {profileEditorOpen && (
-        <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-slate-100">
-            <div className="flex items-center space-x-3">
-              <div className="p-2.5 rounded-xl bg-civic-50 text-civic-700">
-                <Shield className="w-5 h-5" />
-              </div>
-              <div>
-                <h3 className="text-base font-bold text-slate-900">
-                  {t.eligibility.profileTitle}
-                </h3>
-                <p className="text-xs text-slate-500">
-                  {t.eligibility.privacyNotice}
-                </p>
-              </div>
-            </div>
-
-            {/* Privacy Guarantee Pill */}
-            <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-medium self-start sm:self-auto">
-              <Lock className="w-3.5 h-3.5 text-emerald-600" />
-              <span>
-                {language === 'ta'
-                  ? 'ஆதார் / வங்கி கணக்கு தேவையில்லை'
-                  : language === 'hi'
-                  ? 'आधार / बैंक खाते की आवश्यकता नहीं'
-                  : 'No Aadhaar / Bank account required'}
-              </span>
-            </div>
-          </div>
-
-          {/* Form Fields */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
-            {/* Age */}
-            <div>
-              <label htmlFor="field-age" className="block font-semibold text-slate-700 mb-1.5">
-                {t.eligibility.ageLabel}
-              </label>
-              <input
-                id="field-age"
-                type="number"
-                min="0"
-                max="130"
-                value={profile.age ?? ''}
-                onChange={(e) =>
-                  handleProfileFieldChange(
-                    'age',
-                    e.target.value === '' ? null : parseInt(e.target.value, 10)
-                  )
-                }
-                placeholder={t.eligibility.agePlaceholder}
-                className={`w-full px-3 py-2.5 bg-slate-50 border rounded-xl focus:ring-2 focus:ring-civic-500 focus:bg-white text-slate-900 ${
-                  profile.age !== null && (profile.age < 0 || profile.age > 130)
-                    ? 'border-rose-400 bg-rose-50/50'
-                    : 'border-slate-300'
-                }`}
-              />
-              {profile.age !== null && (profile.age < 0 || profile.age > 130) && (
-                <p className="text-[11px] text-rose-600 mt-1">Please enter a valid age between 0 and 130.</p>
-              )}
-            </div>
-
-            {/* Gender */}
-            <div>
-              <label htmlFor="field-gender" className="block font-semibold text-slate-700 mb-1.5">
-                {t.eligibility.genderLabel}
-              </label>
-              <select
-                id="field-gender"
-                value={profile.gender}
-                onChange={(e) => handleProfileFieldChange('gender', e.target.value)}
-                className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-civic-500 focus:bg-white text-slate-900"
-              >
-                <option value="">{t.eligibility.genderSelect}</option>
-                <option value="Female">{getLocalizedOption('genders', 'Female')}</option>
-                <option value="Male">{getLocalizedOption('genders', 'Male')}</option>
-                <option value="Transgender">{getLocalizedOption('genders', 'Transgender')}</option>
-                <option value="Prefer not to say">{getLocalizedOption('genders', 'Prefer not to say')}</option>
-              </select>
-            </div>
-
-            {/* State / UT */}
-            <div>
-              <label htmlFor="field-state" className="block font-semibold text-slate-700 mb-1.5">
-                {t.eligibility.stateLabel}
-              </label>
-              <select
-                id="field-state"
-                value={profile.state}
-                onChange={(e) => handleProfileFieldChange('state', e.target.value)}
-                className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-civic-500 focus:bg-white text-slate-900"
-              >
-                <option value="">{t.eligibility.stateSelect}</option>
-                {INDIAN_STATES.map((st) => (
-                  <option key={st} value={st}>
-                    {st === 'Tamil Nadu'
-                      ? language === 'ta'
-                        ? 'தமிழ்நாடு (Tamil Nadu)'
-                        : language === 'hi'
-                        ? 'तमिलनाडु (Tamil Nadu)'
-                        : st
-                      : st}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Residence Area */}
-            <div>
-              <label htmlFor="field-area" className="block font-semibold text-slate-700 mb-1.5">
-                {t.eligibility.areaLabel}
-              </label>
-              <select
-                id="field-area"
-                value={profile.area}
-                onChange={(e) => handleProfileFieldChange('area', e.target.value)}
-                className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-civic-500 focus:bg-white text-slate-900"
-              >
-                <option value="">{t.eligibility.areaSelect}</option>
-                <option value="Rural">{getLocalizedOption('areas', 'Rural')}</option>
-                <option value="Urban">{getLocalizedOption('areas', 'Urban')}</option>
-              </select>
-            </div>
-
-            {/* Occupation */}
-            <div>
-              <label htmlFor="field-occupation" className="block font-semibold text-slate-700 mb-1.5">
-                {t.eligibility.occupationLabel}
-              </label>
-              <select
-                id="field-occupation"
-                value={profile.occupation}
-                onChange={(e) => handleProfileFieldChange('occupation', e.target.value)}
-                className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-civic-500 focus:bg-white text-slate-900"
-              >
-                <option value="">{t.eligibility.occupationSelect}</option>
-                {OCCUPATIONS.map((occ) => (
-                  <option key={occ} value={occ}>
-                    {getLocalizedOption('occupations', occ)}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Annual Family Income */}
-            <div>
-              <label htmlFor="field-income" className="block font-semibold text-slate-700 mb-1.5">
-                {t.eligibility.incomeLabel}
-              </label>
-              <select
-                id="field-income"
-                value={profile.incomeBracket}
-                onChange={(e) => handleProfileFieldChange('incomeBracket', e.target.value)}
-                className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-civic-500 focus:bg-white text-slate-900"
-              >
-                <option value="">{t.eligibility.incomeSelect}</option>
-                <option value="< 1 Lakh">{getLocalizedOption('incomes', '< 1 Lakh')}</option>
-                <option value="1 - 2.5 Lakh">{getLocalizedOption('incomes', '1 - 2.5 Lakh')}</option>
-                <option value="2.5 - 5 Lakh">{getLocalizedOption('incomes', '2.5 - 5 Lakh')}</option>
-                <option value="5 - 8 Lakh">{getLocalizedOption('incomes', '5 - 8 Lakh')}</option>
-                <option value="> 8 Lakh">{getLocalizedOption('incomes', '> 8 Lakh')}</option>
-              </select>
-            </div>
-
-            {/* Social Category */}
-            <div>
-              <label htmlFor="field-category" className="block font-semibold text-slate-700 mb-1.5">
-                {t.eligibility.categoryLabel}
-              </label>
-              <select
-                id="field-category"
-                value={profile.category}
-                onChange={(e) => handleProfileFieldChange('category', e.target.value)}
-                className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-civic-500 focus:bg-white text-slate-900"
-              >
-                <option value="">{t.eligibility.categorySelect}</option>
-                <option value="General">{getLocalizedOption('categories', 'General')}</option>
-                <option value="OBC">{getLocalizedOption('categories', 'OBC')}</option>
-                <option value="SC">{getLocalizedOption('categories', 'SC')}</option>
-                <option value="ST">{getLocalizedOption('categories', 'ST')}</option>
-                <option value="EWS">{getLocalizedOption('categories', 'EWS')}</option>
-              </select>
-            </div>
-
-            {/* Landholding Status */}
-            <div>
-              <label htmlFor="field-landholding" className="block font-semibold text-slate-700 mb-1.5">
-                {t.eligibility.landholdingLabel}
-              </label>
-              <select
-                id="field-landholding"
-                value={profile.landholding}
-                onChange={(e) => handleProfileFieldChange('landholding', e.target.value)}
-                className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-civic-500 focus:bg-white text-slate-900"
-              >
-                <option value="">{t.eligibility.landholdingSelect}</option>
-                <option value="None">{getLocalizedOption('landholdings', 'None')}</option>
-                <option value="Marginal (< 1 ha)">{getLocalizedOption('landholdings', 'Marginal (< 1 ha)')}</option>
-                <option value="Small (1-2 ha)">{getLocalizedOption('landholdings', 'Small (1-2 ha)')}</option>
-                <option value="Medium/Large (> 2 ha)">{getLocalizedOption('landholdings', 'Medium/Large (> 2 ha)')}</option>
-              </select>
-            </div>
-
-            {/* Exact Annual Household Income */}
-            <div>
-              <label htmlFor="field-annual-income" className="block font-semibold text-slate-700 mb-1.5">
-                {language === 'ta'
-                  ? 'துல்லிய ஆண்டு வருமானம் (₹)'
-                  : language === 'hi'
-                  ? 'सटीक वार्षिक आय (₹)'
-                  : 'Exact Annual Income (₹)'}{' '}
-                <span className="text-[10px] text-slate-500 font-normal">
-                  ({language === 'ta' ? 'விருப்பம்' : language === 'hi' ? 'वैकल्पिक' : 'Optional'})
-                </span>
-              </label>
-              <input
-                id="field-annual-income"
-                type="number"
-                min="0"
-                step="5000"
-                value={profile.annualIncome ?? ''}
-                onChange={(e) =>
-                  handleProfileFieldChange(
-                    'annualIncome',
-                    e.target.value === '' ? null : parseFloat(e.target.value)
-                  )
-                }
-                placeholder="e.g. 120000"
-                className={`w-full px-3 py-2.5 bg-slate-50 border rounded-xl focus:ring-2 focus:ring-civic-500 focus:bg-white text-slate-900 ${
-                  profile.annualIncome !== null && profile.annualIncome !== undefined && profile.annualIncome < 0
-                    ? 'border-rose-400 bg-rose-50/50'
-                    : 'border-slate-300'
-                }`}
-              />
-              {profile.annualIncome !== null && profile.annualIncome !== undefined && profile.annualIncome < 0 && (
-                <p className="text-[11px] text-rose-600 mt-1">Income cannot be negative.</p>
-              )}
-            </div>
-
-            {/* Owns Pucca House */}
-            <div>
-              <label htmlFor="field-pucca-house" className="block font-semibold text-slate-700 mb-1.5">
-                {language === 'ta'
-                  ? 'சொந்த கான்கிரீட் வீடு உள்ளதா?'
-                  : language === 'hi'
-                  ? 'क्या पक्का मकान है?'
-                  : 'Owns Pucca House?'}{' '}
-                <span className="text-[10px] text-slate-500 font-normal">
-                  ({language === 'ta' ? 'விருப்பம்' : language === 'hi' ? 'वैकल्पिक' : 'Optional'})
-                </span>
-              </label>
-              <select
-                id="field-pucca-house"
-                value={
-                  profile.ownsPuccaHouse === true
-                    ? 'true'
-                    : profile.ownsPuccaHouse === false
-                    ? 'false'
-                    : ''
-                }
-                onChange={(e) =>
-                  handleProfileFieldChange(
-                    'ownsPuccaHouse',
-                    e.target.value === '' ? null : e.target.value === 'true'
-                  )
-                }
-                className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-civic-500 focus:bg-white text-slate-900"
-              >
-                <option value="">{language === 'ta' ? 'குறிப்பிடப்படவில்லை' : language === 'hi' ? 'उत्तर नहीं दिया (अज्ञात)' : 'Unanswered (Unknown)'}</option>
-                <option value="false">{language === 'ta' ? 'இல்லை (குடிசை / வீடற்ற)' : language === 'hi' ? 'नहीं (कच्चा मकान / बेघर)' : 'No (Kutcha / Homeless)'}</option>
-                <option value="true">{language === 'ta' ? 'ஆம் (சொந்த கான்கிரீட் வீடு உண்டு)' : language === 'hi' ? 'हाँ (स्वयं का पक्का मकान है)' : 'Yes (Owns Pucca House)'}</option>
-              </select>
-            </div>
-
-            {/* Income Tax Payer */}
-            <div>
-              <label htmlFor="field-tax-payer" className="block font-semibold text-slate-700 mb-1.5">
-                {language === 'ta'
-                  ? 'வருமான வரி செலுத்துபவரா?'
-                  : language === 'hi'
-                  ? 'क्या आयकर दाता हैं?'
-                  : 'Income Tax Payer?'}{' '}
-                <span className="text-[10px] text-slate-500 font-normal">
-                  ({language === 'ta' ? 'விருப்பம்' : language === 'hi' ? 'वैकल्पिक' : 'Optional'})
-                </span>
-              </label>
-              <select
-                id="field-tax-payer"
-                value={
-                  profile.isTaxPayer === true
-                    ? 'true'
-                    : profile.isTaxPayer === false
-                    ? 'false'
-                    : ''
-                }
-                onChange={(e) =>
-                  handleProfileFieldChange(
-                    'isTaxPayer',
-                    e.target.value === '' ? null : e.target.value === 'true'
-                  )
-                }
-                className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-civic-500 focus:bg-white text-slate-900"
-              >
-                <option value="">{language === 'ta' ? 'குறிப்பிடப்படவில்லை' : language === 'hi' ? 'उत्तर नहीं दिया (अज्ञात)' : 'Unanswered (Unknown)'}</option>
-                <option value="false">{language === 'ta' ? 'இல்லை (வரி செலுத்துவதில்லை)' : language === 'hi' ? 'नहीं (गैर-करदाता)' : 'No (Non-Taxpayer)'}</option>
-                <option value="true">{language === 'ta' ? 'ஆம் (வருமான வரி செலுத்துகிறார்)' : language === 'hi' ? 'हाँ (आयकर दाता)' : 'Yes (Income Tax Payer)'}</option>
-              </select>
-            </div>
-
-            {/* Government Employee */}
-            <div>
-              <label htmlFor="field-govt-employee" className="block font-semibold text-slate-700 mb-1.5">
-                {language === 'ta'
-                  ? 'அரசு ஊழியரா?'
-                  : language === 'hi'
-                  ? 'क्या सरकारी कर्मचारी हैं?'
-                  : 'Govt Employee?'}{' '}
-                <span className="text-[10px] text-slate-500 font-normal">
-                  ({language === 'ta' ? 'விருப்பம்' : language === 'hi' ? 'वैकल्पिक' : 'Optional'})
-                </span>
-              </label>
-              <select
-                id="field-govt-employee"
-                value={
-                  profile.isGovernmentEmployee === true
-                    ? 'true'
-                    : profile.isGovernmentEmployee === false
-                    ? 'false'
-                    : ''
-                }
-                onChange={(e) =>
-                  handleProfileFieldChange(
-                    'isGovernmentEmployee',
-                    e.target.value === '' ? null : e.target.value === 'true'
-                  )
-                }
-                className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-civic-500 focus:bg-white text-slate-900"
-              >
-                <option value="">{language === 'ta' ? 'குறிப்பிடப்படவில்லை' : language === 'hi' ? 'उत्तर नहीं दिया (अज्ञात)' : 'Unanswered (Unknown)'}</option>
-                <option value="false">{language === 'ta' ? 'இல்லை (அரசு ஊழியர் அல்ல)' : language === 'hi' ? 'नहीं (गैर-सरकारी)' : 'No (Non-Govt Worker)'}</option>
-                <option value="true">{language === 'ta' ? 'ஆம் (பணியிலுள்ள/ஓய்வுபெற்ற அரசு ஊழியர்)' : language === 'hi' ? 'हाँ (कार्यरत/सेवानिवृत्त सरकारी कर्मचारी)' : 'Yes (Serving/Retired Govt Employee)'}</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Toggle Checkboxes */}
-          <div className="pt-2 flex flex-wrap gap-6 text-xs text-slate-700">
-            <label htmlFor="field-student" className="flex items-center space-x-2 cursor-pointer">
-              <input
-                id="field-student"
-                type="checkbox"
-                checked={profile.isStudent}
-                onChange={(e) => handleProfileFieldChange('isStudent', e.target.checked)}
-                className="w-4 h-4 rounded text-civic-600 focus:ring-civic-500 border-slate-300"
-              />
-              <span className="font-semibold">{t.eligibility.isStudent}</span>
-            </label>
-
-            <label htmlFor="field-disability" className="flex items-center space-x-2 cursor-pointer">
-              <input
-                id="field-disability"
-                type="checkbox"
-                checked={profile.hasDisability}
-                onChange={(e) => handleProfileFieldChange('hasDisability', e.target.checked)}
-                className="w-4 h-4 rounded text-civic-600 focus:ring-civic-500 border-slate-300"
-              />
-              <span className="font-semibold">{t.eligibility.hasDisability}</span>
-            </label>
-          </div>
-
-          {/* Profile Actions: Pre-fill & Clear */}
-          <div className="pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
-            <div className="text-[11px] text-slate-600 font-medium">
-              {isKioskMode && (
-                <span className="font-semibold text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
-                  {language === 'ta'
-                    ? 'பொது கியோஸ்க் முறை: விவரங்கள் நினைவகத்தில் மட்டுமே இருக்கும்'
-                    : language === 'hi'
-                    ? 'सार्वजनिक कियोस्क मोड: उत्तर केवल मेमोरी में सुरक्षित रहते हैं'
-                    : 'Public Kiosk Mode: Answers stored in memory only'}
-                </span>
-              )}
-            </div>
-            <div className="flex items-center space-x-2">
-              {onResetProfile && (
-                <button
-                  type="button"
-                  onClick={onResetProfile}
-                  className="px-3 py-1.5 text-xs font-semibold text-rose-700 hover:bg-rose-50 border border-rose-200 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-rose-500"
-                >
-                  {t.eligibility.resetProfile}
-                </button>
-              )}
-              {onPreFillDemoProfile && (
-                <button
-                  type="button"
-                  onClick={onPreFillDemoProfile}
-                  className="px-3 py-1.5 text-xs font-semibold text-civic-800 hover:bg-civic-50 border border-civic-200 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500"
-                >
-                  {t.eligibility.loadDemo}
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Backend Evaluation Status Notice */}
       {isEvaluatingBackend && (

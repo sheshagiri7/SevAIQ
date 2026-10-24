@@ -142,25 +142,19 @@ export const Header: React.FC<HeaderProps> = ({
     <header className="sticky top-0 z-50 bg-white border-b border-slate-200/90 shadow-2xs w-full">
       <div className="w-full px-2 sm:px-4 lg:px-5 xl:px-6 2xl:px-8">
         <div className="flex items-center justify-between min-h-[3.75rem] sm:min-h-[4.25rem] py-1 sm:py-1.5 w-full gap-1.5 sm:gap-2 lg:gap-3">
-          {/* Top Left: Logo & Tagline */}
+          {/* Top Left: Official SevAIQ Logo */}
           <div className="flex items-center shrink-0 pr-1">
             <button
               type="button"
               onClick={() => handleNavClick('dashboard')}
-              className="flex items-center space-x-2 text-left group focus:outline-none focus:ring-2 focus:ring-civic-500 rounded-xl p-0.5"
+              className="flex items-center group focus:outline-none focus:ring-2 focus:ring-civic-500 rounded-xl p-0.5 sm:p-1 transition-opacity hover:opacity-90 cursor-pointer"
               aria-label="SevAIQ - Civic Intelligence & Scheme Readiness Dashboard"
             >
-              <div className="w-7 h-7 sm:w-8 sm:h-8 xl:w-9 xl:h-9 rounded-xl bg-gradient-to-br from-blue-800 via-civic-700 to-indigo-900 flex items-center justify-center text-white shadow-xs group-hover:scale-105 transition-transform shrink-0">
-                <ShieldCheck className="w-4 h-4 sm:w-4.5 sm:h-4.5 xl:w-5 xl:h-5 stroke-[2.2]" />
-              </div>
-              <div className="flex flex-col justify-center min-w-0">
-                <span className="text-base sm:text-lg xl:text-xl font-black tracking-tight text-slate-900 leading-none">
-                  Sev<span className="text-civic-600">AI</span>Q
-                </span>
-                <span className={`text-[9px] xl:text-[10px] text-slate-500 font-medium tracking-normal leading-none mt-1 ${isIndic ? 'max-w-[185px] sm:max-w-[215px] 2xl:max-w-none' : 'max-w-[200px] xl:max-w-none'} truncate`}>
-                  {t.header.tagline}
-                </span>
-              </div>
+              <img
+                src="/sevaiq-logo.png"
+                alt="SevAIQ"
+                className="h-8 sm:h-9 xl:h-10 w-auto max-w-[130px] sm:max-w-[150px] xl:max-w-[170px] object-contain shrink-0 sevaiq-header-logo transition-transform group-hover:scale-[1.02]"
+              />
             </button>
           </div>
 
@@ -171,7 +165,7 @@ export const Header: React.FC<HeaderProps> = ({
           >
             {navItems.map((item) => {
               const Icon = item.icon;
-              const isActive = activeTab === item.id;
+              const isActive = activeTab === item.id || (item.id === 'discover' && activeTab === 'demographic-profile');
               return (
                 <button
                   key={item.id}
@@ -296,7 +290,7 @@ export const Header: React.FC<HeaderProps> = ({
             <div className="space-y-1">
               {navItems.map((item) => {
                 const Icon = item.icon;
-                const isActive = activeTab === item.id;
+                const isActive = activeTab === item.id || (item.id === 'discover' && activeTab === 'demographic-profile');
                 return (
                   <button
                     key={item.id}

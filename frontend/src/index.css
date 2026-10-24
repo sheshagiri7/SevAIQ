@@ -458,6 +458,15 @@ html.a11y-invert {
 }
 
 /* Re-invert media, moving animation images, illustrations, and accessibility widgets so they keep their original vibrant colors and don't look weirdly negative in dark mode */
+.scheme-banner-carousel img {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: high-quality;
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+}
+
 html.a11y-invert img,
 html.a11y-invert video,
 html.a11y-invert .a11y-exempt,
@@ -502,4 +511,18 @@ body.a11y-hide-images [role="img"] {
   visibility: hidden !important;
   opacity: 0 !important;
 }
+
+/* SevAIQ Official Logo enhancement in Dark Mode & Invert Mode */
+html.a11y-invert .sevaiq-header-logo,
+.dark .sevaiq-header-logo,
+[data-theme="dark"] .sevaiq-header-logo {
+  filter: invert(100%) hue-rotate(180deg) drop-shadow(0 0 1px rgba(255, 255, 255, 0.45)) !important;
+}
+
+/* Exempt SevAIQ Header Logo from 'Hide Images' tool so official brand identity stays visible */
+body.a11y-hide-images .sevaiq-header-logo {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
 

@@ -228,6 +228,7 @@ export interface DocumentRecord {
 export type NavigationTab =
   | 'dashboard'
   | 'discover'
+  | 'demographic-profile'
   | 'eligibility'
   | 'document-mapper'
   | 'readiness-passport'

@@ -13,6 +13,7 @@ import {
   Server,
   AlertCircle,
   ExternalLink,
+  X,
 } from 'lucide-react';
 import {
   DocumentRecord,
@@ -35,6 +36,7 @@ interface DocumentMapperProps {
   selectedSchemeIds: string[];
   profile?: CitizenProfile;
   onToggleSchemeSelection: (schemeId: string) => void;
+  onRemoveScheme?: (schemeId: string) => void;
   onResetSchemeSelection: () => void;
   onUpdateDocumentStatus: (docId: string, status: DocumentPossessionStatus) => void;
   onNavigate: (tab: NavigationTab) => void;
@@ -46,6 +48,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
   selectedSchemeIds,
   profile,
   onToggleSchemeSelection,
+  onRemoveScheme,
   onResetSchemeSelection,
   onUpdateDocumentStatus,
   onNavigate,
@@ -62,6 +65,18 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
   const activeSchemeIds = useMemo(() => {
     return selectedSchemeIds.length > 0 ? selectedSchemeIds : [];
   }, [selectedSchemeIds]);
+
+  // Selected schemes to display in the Target Schemes for Synergy Analysis panel
+  const selectedSchemes = useMemo(() => {
+    const uniqueIds = Array.from(new Set(selectedSchemeIds));
+    return uniqueIds
+      .map((id) =>
+        schemes.find(
+          (s) => s.id === id || resolveBackendSchemeId(s.id) === resolveBackendSchemeId(id)
+        )
+      )
+      .filter((s): s is Scheme => Boolean(s));
+  }, [schemes, selectedSchemeIds]);
 
   // Resolve valid backend scheme IDs (normalizing aliases like ab-pmjay -> pm-jay)
   const resolvedBackendIds = useMemo(() => {
@@ -277,52 +292,72 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
               {t.documentMapper.selectedSchemes}
             </span>
             <span className="text-xs text-slate-400">
-              (
-              {selectedSchemeIds.length === 0
-                ? language === 'ta'
-                  ? 'அனைத்து திட்டங்களும் தேர்வில்'
-                  : language === 'hi'
-                  ? 'सभी योजनाएं सक्रिय'
-                  : 'All schemes active'
-                : language === 'ta'
-                ? `${selectedSchemeIds.length} தேர்வு செய்யப்பட்டுள்ளது`
+              {language === 'ta'
+                ? `(${selectedSchemes.length} தேர்வு செய்யப்பட்டுள்ளது)`
                 : language === 'hi'
-                ? `${selectedSchemeIds.length} चयनित`
-                : `${selectedSchemeIds.length} selected`}
-              )
+                ? `(${selectedSchemes.length} चयनित)`
+                : `(${selectedSchemes.length} selected)`}
             </span>
           </div>
-          {selectedSchemeIds.length > 0 && (
+          {selectedSchemes.length > 0 && (
             <button
               type="button"
               onClick={onResetSchemeSelection}
-              className="text-xs text-slate-600 hover:text-slate-900 self-start sm:self-auto underline focus:outline-none focus:ring-2 focus:ring-civic-500 rounded px-1"
+              className="text-xs text-slate-600 hover:text-slate-900 self-start sm:self-auto underline focus:outline-none focus:ring-2 focus:ring-civic-500 rounded px-1 cursor-pointer"
             >
               {t.documentMapper.resetSelection}
             </button>
           )}
         </div>
 
-        <div className="flex flex-wrap gap-2 pt-1">
-          {schemes.map((s) => {
-            const isSelected = selectedSchemeIds.includes(s.id);
-            const locScheme = getLocalizedScheme(s);
-            return (
-              <button
-                key={s.id}
-                onClick={() => onToggleSchemeSelection(s.id)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all flex items-center space-x-1.5 ${
-                  isSelected
-                    ? 'bg-civic-800 text-white shadow-xs'
-                    : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
-                }`}
-              >
-                <span>{locScheme.title.split('(')[0].trim()}</span>
-                {isSelected && <span className="text-[10px]">✓</span>}
-              </button>
-            );
-          })}
-        </div>
+        {selectedSchemes.length === 0 ? (
+          <div className="py-6 px-4 bg-slate-50 border border-dashed border-slate-300 rounded-2xl text-center space-y-2">
+            <div className="w-10 h-10 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center mx-auto">
+              <Files className="w-5 h-5" />
+            </div>
+            <p className="text-sm font-medium text-slate-700">
+              {t.documentMapper.emptyState ||
+                'No schemes added yet. Explore schemes and click ‘Add to Mapper’ to compare document requirements.'}
+            </p>
+            <button
+              type="button"
+              onClick={() => onNavigate('discover')}
+              className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 text-xs font-semibold text-civic-800 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl transition-colors shadow-2xs cursor-pointer"
+            >
+              <span>{language === 'ta' ? 'திட்டங்களை ஆராய்க' : language === 'hi' ? 'योजनाएं खोजें' : 'Explore Schemes'}</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        ) : (
+          <div className="flex flex-wrap gap-2 pt-1">
+            {selectedSchemes.map((s) => {
+              const locScheme = getLocalizedScheme(s);
+              return (
+                <div
+                  key={s.id}
+                  className="inline-flex items-center gap-1.5 pl-3 pr-2 py-1.5 rounded-xl text-xs font-semibold bg-civic-800 text-white shadow-xs group"
+                >
+                  <span className="truncate max-w-[220px] sm:max-w-xs">{locScheme.title.split('(')[0].trim()}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (onRemoveScheme) {
+                        onRemoveScheme(s.id);
+                      } else {
+                        onToggleSchemeSelection(s.id);
+                      }
+                    }}
+                    aria-label={`Remove ${locScheme.title} from synergy analysis`}
+                    title={language === 'ta' ? 'நீக்கு' : language === 'hi' ? 'हटाएं' : 'Remove scheme'}
+                    className="p-0.5 hover:bg-civic-700 rounded-md transition-colors text-slate-300 hover:text-white focus:outline-none focus:ring-1 focus:ring-white cursor-pointer"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Readiness Progress Bar & Synergy Card */}
@@ -677,10 +712,23 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
           <div className="p-12 bg-white rounded-3xl border border-slate-200 text-center space-y-2">
             <Info className="w-8 h-8 text-slate-400 mx-auto" />
             <h3 className="text-sm font-bold text-slate-800">
-              {language === 'ta' ? 'இப்பிரிவில் ஆவணங்கள் எதுவும் இல்லை' : language === 'hi' ? 'इस श्रेणी में कोई दस्तावेज़ नहीं' : 'No documents in this view'}
+              {selectedSchemes.length === 0
+                ? language === 'ta'
+                  ? 'திட்டங்கள் எதுவும் சேர்க்கப்படவில்லை'
+                  : language === 'hi'
+                  ? 'कोई योजना नहीं जोड़ी गई है'
+                  : 'No schemes added yet'
+                : language === 'ta'
+                ? 'இப்பிரிவில் ஆவணங்கள் எதுவும் இல்லை'
+                : language === 'hi'
+                ? 'इस श्रेणी में कोई दस्तावेज़ नहीं'
+                : 'No documents in this view'}
             </h3>
-            <p className="text-xs text-slate-500">
-              {language === 'ta'
+            <p className="text-xs text-slate-500 max-w-md mx-auto">
+              {selectedSchemes.length === 0
+                ? t.documentMapper.emptyState ||
+                  'No schemes added yet. Explore schemes and click ‘Add to Mapper’ to compare document requirements.'
+                : language === 'ta'
                 ? 'அனைத்து ஆவணங்களையும் காண மேலே உள்ள வடிகட்டியை மாற்றவும்.'
                 : language === 'hi'
                 ? 'सभी आवश्यक प्रमाणपत्र देखने के लिए ऊपर फ़िल्टर टैब बदलें।'

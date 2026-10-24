@@ -159,7 +159,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({
                 </div>
               </button>
 
-              {/* Step 2: Check Eligibility */}
+              {/* Step 2: Detailed Analysis */}
               <button
                 type="button"
                 onClick={() => handleActionClick('eligibility')}
