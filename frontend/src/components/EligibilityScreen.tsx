@@ -302,7 +302,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
       )}
 
       {profileEditorOpen && profileMode === 'all' && (
-        <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-6">
+        <div className="bg-white dark:bg-[#17324D] rounded-xl border border-[#D7DEE5] dark:border-[#223B56] shadow-xs p-6 sm:p-8 space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-slate-100">
             <div className="flex items-center space-x-3">
               <div className="p-2.5 rounded-xl bg-civic-50 text-civic-700">
@@ -793,9 +793,9 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
 
       {/* Target Scheme Focused Banner */}
       {activeTargetScheme && selectedSchemeFilter !== 'all' && (
-        <div className="p-4 sm:p-5 bg-gradient-to-r from-civic-50 via-blue-50/50 to-indigo-50/40 border-2 border-civic-400/80 rounded-3xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm animate-fadeIn">
+        <div className="p-4 sm:p-5 bg-[#EDF6EF] dark:bg-[#17324D] border border-[#16733B]/40 dark:border-[#223B56] rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
           <div className="flex items-start sm:items-center space-x-3.5">
-            <div className="w-10 h-10 rounded-2xl bg-civic-700 text-white flex items-center justify-center shrink-0 shadow-sm">
+            <div className="w-10 h-10 rounded-lg bg-[#16733B] text-white flex items-center justify-center shrink-0">
               <CheckSquare className="w-5 h-5" />
             </div>
             <div>
@@ -961,10 +961,10 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
               <div
                 key={scheme.id}
                 id={`eligibility-scheme-${scheme.id}`}
-                className={`bg-white rounded-3xl border transition-all overflow-hidden ${
+                className={`bg-white dark:bg-[#17324D] rounded-xl border transition-all overflow-hidden ${
                   isTargetScheme
-                    ? 'border-civic-500 shadow-md ring-4 ring-civic-100/90'
-                    : 'border-slate-200 shadow-xs hover:shadow-md'
+                    ? 'border-[#16733B] shadow-xs ring-1 ring-[#16733B]'
+                    : 'border-[#D7DEE5] dark:border-[#223B56] shadow-xs hover:border-[#16733B]'
                 }`}
               >
                 {/* Scheme Header Row */}
@@ -1218,7 +1218,7 @@ export const EligibilityScreen: React.FC<EligibilityScreenProps> = ({
             );
           })
         ) : (
-          <div className="p-12 bg-white rounded-3xl border border-slate-200 text-center space-y-3">
+          <div className="p-12 bg-white dark:bg-[#17324D] rounded-xl border border-[#D7DEE5] dark:border-[#223B56] text-center space-y-3">
             <AlertCircle className="w-10 h-10 text-slate-400 mx-auto" />
             <h3 className="text-base font-bold text-slate-900">{t.eligibility.noResultsMatching}</h3>
             <p className="text-xs text-slate-500">

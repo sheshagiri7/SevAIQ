@@ -32,7 +32,7 @@ describe('VoiceAssistant Component UI Suite', () => {
     );
 
     // Title and branding
-    expect(html).toContain('Sev<span class="text-civic-600">AI</span>Q Voice AI');
+    expect(html).toContain('Sev<span class="text-civic-600">AI</span>Q Assistant');
     // Language selector with BCP 47 tags
     expect(html).toContain('தமிழ் (ta-IN)');
     expect(html).toContain('English (en-IN)');
@@ -76,7 +76,7 @@ describe('VoiceAssistant Component UI Suite', () => {
       </LanguageProvider>
     );
 
-    expect(html).toContain('Sev<span class="text-civic-600">AI</span>Q Voice AI');
+    expect(html).toContain('Sev<span class="text-civic-600">AI</span>Q Assistant');
     expect(html).toContain('Welcome! I am the SevAIQ Voice &amp; Text Assistant.');
   });
 });

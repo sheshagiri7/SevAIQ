@@ -471,17 +471,17 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
       </div>
 
       {/* Truthful Tracking Notice */}
-      <div className="p-4 bg-slate-100 border border-slate-200 rounded-3xl text-slate-700 text-xs flex items-start space-x-3.5">
-        <ShieldCheck className="w-5 h-5 text-civic-700 shrink-0 mt-0.5" />
+      <div className="p-4 bg-white dark:bg-[#17324D] border border-[#D7DEE5] dark:border-[#223B56] rounded-xl text-[#596775] dark:text-slate-300 text-xs flex items-start space-x-3.5">
+        <ShieldCheck className="w-5 h-5 text-[#16733B] shrink-0 mt-0.5" />
         <div className="space-y-1">
-          <span className="font-bold text-slate-900 block text-sm">
+          <span className="font-bold text-[#202B36] dark:text-white block text-sm">
             {language === 'ta'
               ? 'அதிகாரப்பூர்வ இணையதள ஆய்வு & விண்ணப்ப நிலை கொள்கை:'
               : language === 'hi'
               ? 'आधिकारिक पोर्टल सत्यापन एवं आवेदन स्थिति नीति:'
               : 'Official Portal Scrutiny & Status Policy:'}
           </span>
-          <p className="text-slate-600 leading-relaxed text-xs">
+          <p className="text-[#596775] dark:text-slate-300 leading-relaxed text-xs">
             {language === 'ta'
               ? 'விண்ணப்ப செயலாக்கம், சரிபார்ப்பு மற்றும் வங்கி கணக்கு சரிபார்த்தல் ஆகியவை அதிகாரப்பூர்வ அரசு அமைப்புகளில் மட்டுமே நடைபெறும். SevAIQ தயார்நிலை சரிபார்ப்பு பட்டியல் மற்றும் நேரடி இணையதள இணைப்புகளை மட்டுமே வழங்குகிறது. போலியான கண்காணிப்பு எண்களையோ ஒப்புதல் நிலைகளையோ உருவாக்குவதில்லை. விண்ணப்பதாரர்கள் தங்கள் நேரடி நிலையை அதிகாரப்பூர்வ அரசு தளத்திலேயே சரிபார்க்க வேண்டும்.'
               : language === 'hi'
@@ -493,18 +493,18 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
 
       {/* Active Scheme Summary & User-Reported Status Card */}
       {locActiveScheme && (
-        <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-xs space-y-5">
+        <div className="bg-white dark:bg-[#17324D] rounded-xl border border-[#D7DEE5] dark:border-[#223B56] p-6 shadow-xs space-y-5">
           <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
             <div>
-              <span className="px-2.5 py-0.5 rounded text-[11px] font-semibold bg-civic-50 text-civic-700 border border-civic-200">
+              <span className="px-2.5 py-0.5 rounded text-[11px] font-semibold bg-[#EDF6EF] dark:bg-[#105C2E]/30 text-[#16733B] dark:text-emerald-300 border border-[#D7DEE5] dark:border-[#223B56]">
                 {locActiveScheme.category}
               </span>
-              <h2 className="text-xl font-bold text-slate-900 mt-2">{locActiveScheme.title}</h2>
-              <p className="text-xs text-slate-500 flex items-center space-x-1.5 mt-1">
-                <Building className="w-3.5 h-3.5 text-slate-400" />
+              <h2 className="text-xl font-bold text-[#202B36] dark:text-white mt-2">{locActiveScheme.title}</h2>
+              <p className="text-xs text-[#596775] dark:text-slate-400 flex items-center space-x-1.5 mt-1">
+                <Building className="w-3.5 h-3.5 text-[#596775]" />
                 <span>{locActiveScheme.ministry}</span>
               </p>
-              <p className="text-xs text-slate-700 mt-2 leading-relaxed">
+              <p className="text-xs text-[#202B36] dark:text-slate-300 mt-2 leading-relaxed">
                 {locActiveScheme.short_description}
               </p>
             </div>
@@ -514,7 +514,7 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
                 href={locActiveScheme.official_portal_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-civic-700 hover:bg-civic-800 text-white font-semibold text-xs shadow-md transition-all shrink-0 self-start sm:self-auto cursor-pointer"
+                className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-[#16733B] hover:bg-[#105C2E] text-white font-semibold text-xs shadow-xs transition-all shrink-0 self-start sm:self-auto cursor-pointer"
               >
                 <span>{t.tracker.visitPortal}</span>
                 <ExternalLink className="w-3.5 h-3.5" />
@@ -655,9 +655,9 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
                   : `${progressPercent}% Complete (${completedCount}/${steps.length} steps)`}
               </span>
             </div>
-            <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden">
+            <div className="w-full h-3 bg-[#F5F7F8] dark:bg-[#0F2133] rounded-full overflow-hidden border border-[#D7DEE5] dark:border-[#223B56]">
               <div
-                className="h-full bg-gradient-to-r from-blue-600 to-emerald-500 rounded-full transition-all duration-300"
+                className="h-full bg-[#16733B] rounded-full transition-all duration-300"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
@@ -667,7 +667,7 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
 
       {/* Step-by-Step Interactive Checklist */}
       <div className="space-y-3">
-        <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700">
+        <h3 className="text-xs font-bold uppercase tracking-wider text-[#202B36] dark:text-white">
           {language === 'ta'
             ? 'படிபடியான தயாரிப்பு சரிபார்ப்பு பட்டியல்:'
             : language === 'hi'
@@ -680,10 +680,10 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
             <div
               key={step.id}
               onClick={() => toggleStep(step.id)}
-              className={`p-5 rounded-3xl border transition-all cursor-pointer flex items-start space-x-3.5 ${
+              className={`p-4 sm:p-5 rounded-xl border transition-all cursor-pointer flex items-start space-x-3.5 ${
                 step.isCompleted
-                  ? 'bg-emerald-50/60 border-emerald-300 shadow-2xs'
-                  : 'bg-white border-slate-200 hover:border-civic-300 shadow-xs'
+                  ? 'bg-[#EDF6EF] dark:bg-[#105C2E]/20 border-[#16733B]/40 shadow-xs'
+                  : 'bg-white dark:bg-[#17324D] border-[#D7DEE5] dark:border-[#223B56] hover:border-[#16733B] shadow-xs'
               }`}
             >
               <div className="mt-0.5 shrink-0">
@@ -692,7 +692,7 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
                   checked={step.isCompleted}
                   onChange={() => toggleStep(step.id)}
                   onClick={(e) => e.stopPropagation()}
-                  className="w-5 h-5 rounded text-civic-600 focus:ring-civic-500 border-slate-300 cursor-pointer"
+                  className="w-5 h-5 rounded text-[#16733B] focus:ring-[#16733B] border-[#D7DEE5] cursor-pointer"
                   aria-label={step.title}
                 />
               </div>
@@ -701,16 +701,16 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
                 <div className="flex items-center justify-between">
                   <h4
                     className={`text-sm font-bold ${
-                      step.isCompleted ? 'text-emerald-950 line-through' : 'text-slate-900'
+                      step.isCompleted ? 'text-[#16733B] dark:text-emerald-300 line-through' : 'text-[#202B36] dark:text-white'
                     }`}
                   >
                     {step.title}
                   </h4>
-                  <span className="text-[11px] font-mono text-slate-400">
+                  <span className="text-[11px] font-mono text-[#596775] dark:text-slate-400">
                     {language === 'ta' ? `படி ${idx + 1}` : language === 'hi' ? `चरण ${idx + 1}` : `Step ${idx + 1}`}
                   </span>
                 </div>
-                <p className="text-xs text-slate-600 leading-relaxed">{step.description}</p>
+                <p className="text-xs text-[#596775] dark:text-slate-300 leading-relaxed">{step.description}</p>
               </div>
             </div>
           ))}
@@ -719,18 +719,18 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
 
       {/* Application Steps from Gazette */}
       {activeScheme && (activeScheme as any).application_steps && (activeScheme as any).application_steps.length > 0 && (
-        <div className="p-6 bg-white rounded-3xl border border-slate-200 shadow-xs space-y-3">
-          <span className="text-xs font-bold uppercase tracking-wider text-slate-800 block">
+        <div className="p-6 bg-white dark:bg-[#17324D] rounded-xl border border-[#D7DEE5] dark:border-[#223B56] shadow-xs space-y-3">
+          <span className="text-xs font-bold uppercase tracking-wider text-[#202B36] dark:text-white block">
             {language === 'ta'
               ? 'அதிகாரப்பூர்வ விண்ணப்ப நடைமுறை:'
               : language === 'hi'
               ? 'आधिकारिक आवेदन प्रक्रिया:'
               : 'Official Application Procedure:'}
           </span>
-          <ol className="space-y-2 list-decimal list-inside text-xs text-slate-700">
+          <ol className="space-y-2 list-decimal list-inside text-xs text-[#596775] dark:text-slate-300">
             {((activeScheme as any).application_steps as string[]).map((st, i) => (
               <li key={i} className="leading-relaxed pl-1">
-                <span className="font-semibold text-slate-800">{st}</span>
+                <span className="font-semibold text-[#202B36] dark:text-white">{st}</span>
               </li>
             ))}
           </ol>
@@ -738,9 +738,9 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
       )}
 
       {/* Citizen Personal Reference Notes (Local Only, Kiosk Safe) */}
-      <div className="p-6 bg-white rounded-3xl border border-slate-200 shadow-xs space-y-3">
+      <div className="p-6 bg-white dark:bg-[#17324D] rounded-xl border border-[#D7DEE5] dark:border-[#223B56] shadow-xs space-y-3">
         <div className="flex items-center justify-between">
-          <span className="text-xs font-bold uppercase tracking-wider text-slate-800">
+          <span className="text-xs font-bold uppercase tracking-wider text-[#202B36] dark:text-white">
             {t.tracker.notesTitle}
           </span>
           {isKioskMode && (

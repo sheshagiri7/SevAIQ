@@ -29,13 +29,13 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({ onSelectCategory }) 
   return (
     <section
       aria-labelledby="categories-heading"
-      className="p-6 sm:p-8 bg-white rounded-3xl border border-slate-200/90 shadow-xs space-y-6"
+      className="p-6 sm:p-8 bg-white dark:bg-[#17324D] rounded-xl border border-[#D7DEE5] dark:border-[#223B56] shadow-xs space-y-6"
     >
       {/* Section Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-4 border-b border-slate-100">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-4 border-b border-[#D7DEE5] dark:border-[#223B56]">
         <div>
-          <div className="inline-flex items-center space-x-1.5 text-xs font-bold uppercase tracking-wider text-civic-700 mb-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-civic-600" />
+          <div className="inline-flex items-center space-x-1.5 text-xs font-bold uppercase tracking-wider text-[#16733B] dark:text-emerald-400 mb-1.5">
+            <Sparkles className="w-3.5 h-3.5 text-[#16733B]" />
             <span>
               {t.banner?.hashtag ||
                 (isTamil
@@ -47,18 +47,18 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({ onSelectCategory }) 
           </div>
           <h2
             id="categories-heading"
-            className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight"
+            className="text-2xl sm:text-3xl font-bold text-[#202B36] dark:text-white tracking-tight"
           >
             {headingText}
           </h2>
-          <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-2xl leading-relaxed">
+          <p className="text-xs sm:text-sm text-[#596775] dark:text-slate-300 mt-1 max-w-2xl leading-relaxed">
             {subText}
           </p>
         </div>
 
         <div className="flex items-center space-x-2 shrink-0 self-start md:self-auto">
-          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">
-            <Layers className="w-3.5 h-3.5 mr-1.5 text-civic-700" />
+          <span className="inline-flex items-center px-3 py-1 rounded-md text-xs font-bold bg-[#F5F7F8] dark:bg-[#0F2133] text-[#202B36] dark:text-slate-200 border border-[#D7DEE5] dark:border-[#223B56]">
+            <Layers className="w-3.5 h-3.5 mr-1.5 text-[#16733B]" />
             {categoryCountLabel}
           </span>
         </div>
@@ -77,7 +77,7 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({ onSelectCategory }) 
               key={cat.id}
               type="button"
               onClick={() => onSelectCategory(cat.categoryFilterId)}
-              className={`group relative flex flex-col items-center justify-between p-4 sm:p-5 bg-slate-50/70 hover:bg-white rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-lg hover:-translate-y-1.5 ${cat.accentBorder} transition-all duration-300 text-center focus:outline-none focus:ring-2 focus:ring-civic-500 min-h-[170px] sm:min-h-[190px] cursor-pointer`}
+              className="group relative flex flex-col items-center justify-between p-4 sm:p-5 bg-white dark:bg-[#0F2133] hover:bg-[#EDF6EF] dark:hover:bg-[#17324D] rounded-xl border border-[#D7DEE5] dark:border-[#223B56] hover:border-[#16733B] shadow-xs transition-colors duration-150 text-center focus:outline-none focus:ring-2 focus:ring-[#16733B] min-h-[170px] sm:min-h-[190px] cursor-pointer"
               aria-label={`${title} - ${schemesText}`}
             >
               <div className="flex flex-col items-center w-full">

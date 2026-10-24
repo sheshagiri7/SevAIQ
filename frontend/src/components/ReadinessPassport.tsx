@@ -256,13 +256,13 @@ export const ReadinessPassport: React.FC<ReadinessPassportProps> = ({
       {/* Printable Passport Card Shell */}
       <div
         id="passport-dossier"
-        className="bg-white rounded-3xl border-2 border-slate-300 shadow-xl overflow-hidden print:border-none print:shadow-none"
+        className="bg-white dark:bg-[#17324D] rounded-xl border border-[#D7DEE5] dark:border-[#223B56] shadow-xs overflow-hidden print:border-none print:shadow-none"
       >
         {/* Passport Header Ribbon */}
-        <div className="bg-gradient-to-r from-blue-900 via-civic-900 to-indigo-950 text-white p-6 sm:p-8 relative">
+        <div className="bg-[#17324D] text-white p-6 sm:p-8 relative border-b border-[#223B56]">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center space-x-4">
-              <div className="w-14 h-14 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center text-white backdrop-blur-xs">
+              <div className="w-14 h-14 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-white backdrop-blur-xs">
                 <ShieldCheck className="w-8 h-8 text-amber-300 stroke-[2.2]" />
               </div>
               <div>
@@ -596,8 +596,8 @@ export const ReadinessPassport: React.FC<ReadinessPassportProps> = ({
           </div>
 
           {/* Official Next Steps Guidance */}
-          <div className="p-5 bg-gradient-to-r from-slate-900 to-civic-950 text-white rounded-2xl space-y-3">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-cyan-300 flex items-center space-x-1.5">
+          <div className="p-5 bg-[#17324D] text-white rounded-xl border border-[#223B56] space-y-3">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#EDF6EF] flex items-center space-x-1.5">
               <Sparkles className="w-4 h-4" />
               <span>
                 {language === 'ta'

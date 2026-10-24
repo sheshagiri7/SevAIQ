@@ -154,7 +154,7 @@ Income support guidelines.
       );
 
       // Verify header, language selectors with BCP 47 tags
-      expect(html).toContain('Sev<span class="text-civic-600">AI</span>Q Voice AI');
+      expect(html).toContain('Sev<span class="text-civic-600">AI</span>Q Assistant');
       expect(html).toContain('தமிழ் (ta-IN)');
       expect(html).toContain('English (en-IN)');
       // Truthful privacy disclosure

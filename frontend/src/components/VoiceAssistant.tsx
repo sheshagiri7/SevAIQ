@@ -23,6 +23,7 @@ import {
   ListOrdered,
   FileText,
   MessageSquare,
+  Compass,
 } from 'lucide-react';
 import { Scheme, AssistantLanguage, AssistantMessage, NavigationTab, ChatMessageWire } from '../types';
 import {
@@ -717,30 +718,27 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
 
   const renderChatContent = () => (
     <>
-      {/* Top Decorative Gradient Accent */}
-      <div className="h-1 bg-gradient-to-r from-blue-700 via-civic-600 to-indigo-700 w-full shrink-0" />
-
       {/* Window / Workspace Header */}
-      <div className="p-3 sm:px-5 sm:py-3.5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2 bg-white dark:bg-[#0b162f] shrink-0">
+      <div className="p-3 sm:px-5 sm:py-3.5 border-b border-[#D7DEE5] dark:border-[#223b56] flex items-center justify-between gap-2 bg-white dark:bg-[#17324D] shrink-0">
         {/* Left: Branding & Status Dot */}
         <div className="flex items-center space-x-2.5 sm:space-x-3 min-w-0">
-          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-civic-700 to-indigo-800 text-white flex items-center justify-center shadow-xs shrink-0">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-[#16733B] text-white flex items-center justify-center shadow-xs shrink-0">
             <Mic className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
           </div>
           <div className="min-w-0">
             <div className="flex items-center space-x-2">
-              <span className="text-xs sm:text-sm md:text-base font-black text-slate-900 dark:text-white tracking-tight leading-none">
-                Sev<span className="text-civic-600">AI</span>Q Voice AI
+              <span className="text-xs sm:text-sm md:text-base font-bold text-[#17324D] dark:text-white tracking-tight leading-none">
+                Sev<span className="text-civic-600">AI</span>Q Assistant
               </span>
-              <span className="inline-flex items-center space-x-1 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/60 leading-none shrink-0">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="inline-flex items-center space-x-1 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-[#EDF6EF] dark:bg-emerald-950/70 text-[#16733B] dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/60 leading-none shrink-0">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 dark:bg-emerald-400" />
                 <span>Active</span>
               </span>
             </div>
-            <div className="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium truncate leading-tight mt-0.5">
+            <div className="text-[10px] sm:text-[11px] text-[#596775] dark:text-slate-400 font-normal truncate leading-tight mt-0.5">
               {language === 'ta'
-                ? 'தமிழ் (ta-IN) & English (en-IN) குரல் வழிகாட்டி'
-                : 'Bilingual Civic Assistant (ta-IN / en-IN)'}
+                ? 'தமிழ் மற்றும் ஆங்கில நலத்திட்ட உதவி'
+                : 'Tamil and English welfare-scheme assistance'}
             </div>
           </div>
         </div>
@@ -749,17 +747,17 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
         <div className="flex items-center space-x-1.5 shrink-0">
           {/* Distinct BCP 47 Language Selector */}
           <div
-            className="flex items-center bg-slate-100 dark:bg-slate-800 p-0.5 rounded-xl border border-slate-200 dark:border-slate-700 text-[10px] font-bold"
+            className="flex items-center bg-[#F5F7F8] dark:bg-[#0F2133] p-0.5 rounded-lg border border-[#D7DEE5] dark:border-[#223b56] text-[10px] font-bold"
             role="group"
             aria-label="Speech and language selector"
           >
             <button
               type="button"
               onClick={() => handleLanguageChange('ta')}
-              className={`px-2 py-1 rounded-lg transition-all flex items-center space-x-1 cursor-pointer ${
+              className={`px-2 py-1 rounded-md transition-all flex items-center space-x-1 cursor-pointer ${
                 language === 'ta'
-                  ? 'bg-civic-800 text-white shadow-2xs font-extrabold'
-                  : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                  ? 'bg-[#16733B] text-white shadow-2xs font-bold'
+                  : 'text-[#596775] dark:text-slate-300 hover:text-[#17324D] dark:hover:text-white'
               }`}
               aria-label="Switch to Tamil (ta-IN)"
               aria-pressed={language === 'ta'}
@@ -771,10 +769,10 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
             <button
               type="button"
               onClick={() => handleLanguageChange('en')}
-              className={`px-2 py-1 rounded-lg transition-all flex items-center space-x-1 cursor-pointer ${
+              className={`px-2 py-1 rounded-md transition-all flex items-center space-x-1 cursor-pointer ${
                 language === 'en'
-                  ? 'bg-civic-800 text-white shadow-2xs font-extrabold'
-                  : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                  ? 'bg-[#16733B] text-white shadow-2xs font-bold'
+                  : 'text-[#596775] dark:text-slate-300 hover:text-[#17324D] dark:hover:text-white'
               }`}
               aria-label="Switch to English (en-IN)"
               aria-pressed={language === 'en'}
@@ -788,7 +786,7 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
           <button
             type="button"
             onClick={handleResetChat}
-            className="w-7 h-7 inline-flex items-center justify-center text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+            className="w-7 h-7 inline-flex items-center justify-center text-[#596775] dark:text-slate-400 hover:text-[#17324D] dark:hover:text-white hover:bg-[#F5F7F8] dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
             title="Reset conversation"
             aria-label="Reset conversation"
           >
@@ -800,7 +798,7 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
             <button
               type="button"
               onClick={onOpenAbout}
-              className="w-7 h-7 inline-flex items-center justify-center text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+              className="w-7 h-7 inline-flex items-center justify-center text-[#596775] dark:text-slate-400 hover:text-[#17324D] dark:hover:text-white hover:bg-[#F5F7F8] dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
               title="About SevAIQ"
               aria-label="About SevAIQ"
             >
@@ -813,7 +811,7 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
             <button
               type="button"
               onClick={() => setIsMaximized(!isMaximized)}
-              className="hidden sm:inline-flex w-7 h-7 items-center justify-center text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+              className="hidden sm:inline-flex w-7 h-7 items-center justify-center text-[#596775] dark:text-slate-400 hover:text-[#17324D] dark:hover:text-white hover:bg-[#F5F7F8] dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
               title={isMaximized ? 'Restore compact widget' : 'Maximize window'}
               aria-label={isMaximized ? 'Restore compact widget' : 'Maximize window'}
             >
@@ -830,7 +828,7 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
             <button
               type="button"
               onClick={handleClose}
-              className="w-7 h-7 inline-flex items-center justify-center text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+              className="w-7 h-7 inline-flex items-center justify-center text-[#596775] dark:text-slate-400 hover:text-[#17324D] dark:hover:text-white hover:bg-[#F5F7F8] dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
               title="Close Voice Assistant (Esc)"
               aria-label="Close Voice Assistant"
             >
@@ -841,15 +839,15 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
       </div>
 
       {/* Truthful Privacy Disclosure Strip (No false 'local on-device' claim) */}
-      <div className="px-3.5 py-1.5 bg-blue-50/90 border-b border-blue-100/80 flex items-center justify-between text-[10px] text-blue-900 shrink-0">
+      <div className="px-3.5 py-1.5 bg-[#EDF6EF] dark:bg-emerald-950/30 border-b border-emerald-100 dark:border-emerald-900/40 flex items-center justify-between text-[10px] text-[#16733B] dark:text-emerald-300 shrink-0">
         <div className="flex items-center space-x-1.5 truncate">
-          <ShieldCheck className="w-3.5 h-3.5 text-civic-700 shrink-0" />
-          <span className="font-semibold truncate" title={privacyNotice.detailed}>
+          <ShieldCheck className="w-3.5 h-3.5 text-[#16733B] dark:text-emerald-400 shrink-0" />
+          <span className="font-medium truncate" title={privacyNotice.detailed}>
             {privacyNotice.badge}
           </span>
         </div>
         {activeVoiceLabel && (
-          <span className="text-civic-800 text-[9px] font-semibold bg-blue-100 px-1.5 py-0.5 rounded shrink-0 hidden sm:inline">
+          <span className="text-[#16733B] dark:text-emerald-300 text-[9px] font-semibold bg-white/70 dark:bg-emerald-900/40 px-1.5 py-0.5 rounded shrink-0 hidden sm:inline border border-emerald-200/60 dark:border-emerald-800/40">
             {activeVoiceLabel.split(' ')[0]}
           </span>
         )}
@@ -932,29 +930,29 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
       )}
 
       {/* Chat Messages Scroll Container */}
-      <div className="flex-1 p-3.5 sm:p-5 overflow-y-auto space-y-3.5 bg-slate-50/60 dark:bg-[#070e22]/80 scroll-smooth">
+      <div className="flex-1 p-3.5 sm:p-5 overflow-y-auto space-y-3.5 bg-[#F5F7F8] dark:bg-[#0F2133] scroll-smooth">
         {/* Welcoming Starter Experience with Large Suggested Question Cards */}
         {messages.length <= 1 && (
-          <div className="p-4 sm:p-6 bg-gradient-to-br from-slate-50 via-blue-50/40 to-indigo-50/20 dark:from-[#0d1a38] dark:via-[#0c1834] dark:to-[#081228] rounded-3xl border border-slate-200/90 dark:border-slate-800/80 shadow-2xs space-y-6 my-1 animate-in fade-in">
+          <div className="p-4 sm:p-6 bg-white dark:bg-[#17324D] rounded-xl border border-[#D7DEE5] dark:border-[#223b56] shadow-xs space-y-5 my-1 animate-in fade-in">
             {/* Greeting Header */}
             <div className="flex items-start space-x-3.5">
-              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-civic-700 to-indigo-900 text-white flex items-center justify-center shadow-xs shrink-0 mt-0.5">
-                <Sparkles className="w-5 h-5 text-amber-300" />
+              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#16733B] text-white flex items-center justify-center shadow-xs shrink-0 mt-0.5">
+                <ShieldCheck className="w-5 h-5 text-white" />
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white tracking-tight">
+                  <h3 className="text-base sm:text-lg font-bold text-[#17324D] dark:text-white tracking-tight">
                     {language === 'ta'
                       ? 'இன்று SevAIQ உங்களுக்கு எவ்வாறு உதவ முடியும்?'
                       : language === 'hi'
                       ? 'आज SevAIQ आपकी क्या मदद कर सकता है?'
                       : 'How can SevAIQ help you today?'}
                   </h3>
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300 border border-emerald-200">
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#EDF6EF] text-[#16733B] dark:bg-emerald-950/80 dark:text-emerald-300 border border-emerald-200">
                     {language === 'ta' ? 'அதிகாரப்பூர்வ அரசு வழிகாட்டுதல்' : language === 'hi' ? 'आधिकारिक सरकारी मार्गदर्शन' : 'Verified Official Guidance'}
                   </span>
                 </div>
-                <p className="text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
+                <p className="text-xs sm:text-[13px] text-[#596775] dark:text-slate-300 mt-1 leading-relaxed">
                   {language === 'ta'
                     ? 'விவசாயி நிதி உதவி, மருத்துவ காப்பீடு, வீடு கட்ட மானியம், ஓய்வூதியம், மற்றும் கல்வி உதவித்தொகை குறித்த உங்கள் உரிமைகளை எளிதாக அறியலாம்.'
                     : language === 'hi'
@@ -970,10 +968,10 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
               <button
                 type="button"
                 onClick={() => onNavigate('eligibility')}
-                className="group relative p-4 bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white rounded-2xl shadow-sm hover:shadow-md transition-all text-left flex items-start justify-between space-x-3 cursor-pointer border border-emerald-500/30"
+                className="group relative p-4 bg-[#16733B] hover:bg-[#105C2E] text-white rounded-xl shadow-xs transition-colors text-left flex items-start justify-between space-x-3 cursor-pointer border border-[#105C2E]"
               >
                 <div className="space-y-1 flex-1">
-                  <div className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-white/20 text-white">
+                  <div className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-white/20 text-white">
                     <span>
                       {language === 'ta' ? 'படி 1: பரிந்துரைக்கப்பட்டது' : language === 'hi' ? 'चरण 1: अनुशंसित' : 'Step 1: Recommended'}
                     </span>
@@ -987,7 +985,7 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
                         : 'Find Government Schemes for Me'}
                     </span>
                   </h4>
-                  <p className="text-[11px] sm:text-xs text-emerald-100/90 leading-snug">
+                  <p className="text-[11px] sm:text-xs text-white/90 leading-snug">
                     {language === 'ta'
                       ? 'எளிய 4 கேள்விகளுக்கு பதிலளித்து, உங்களுக்கு பொருந்தக்கூடிய திட்டங்களை உடனடியாகக் காண்க (2 நிமிடங்கள்).'
                       : language === 'hi'
@@ -995,7 +993,7 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
                       : 'Answer 4 simple questions to see which welfare schemes match your needs in 2 minutes.'}
                   </p>
                 </div>
-                <div className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center shrink-0 group-hover:translate-x-1 transition-transform">
+                <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center shrink-0 group-hover:translate-x-1 transition-transform">
                   <ArrowRight className="w-4 h-4 text-white" />
                 </div>
               </button>
@@ -1007,23 +1005,23 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
                   inputRef.current?.focus();
                   inputRef.current?.scrollIntoView({ behavior: 'smooth' });
                 }}
-                className="group relative p-4 bg-white dark:bg-[#0f2146] hover:bg-civic-50/60 dark:hover:bg-[#142a59] text-slate-900 dark:text-white rounded-2xl border-2 border-civic-300 dark:border-civic-600 shadow-2xs hover:shadow-xs transition-all text-left flex items-start justify-between space-x-3 cursor-pointer"
+                className="group relative p-4 bg-white dark:bg-[#0F2133] hover:bg-[#EDF6EF] dark:hover:bg-[#1A334E] text-[#17324D] dark:text-white rounded-xl border border-[#D7DEE5] dark:border-[#223b56] shadow-xs transition-colors text-left flex items-start justify-between space-x-3 cursor-pointer"
               >
                 <div className="space-y-1 flex-1">
-                  <div className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-civic-100 dark:bg-civic-950/80 text-civic-800 dark:text-civic-300">
-                    <MessageSquare className="w-3 h-3 text-civic-600" />
+                  <div className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-[#EDF6EF] dark:bg-emerald-950/80 text-[#16733B] dark:text-emerald-300">
+                    <MessageSquare className="w-3 h-3 text-[#16733B]" />
                     <span>
-                      {language === 'ta' ? 'குரல் & உரை AI' : language === 'hi' ? 'आवाज और टेक्स्ट AI' : 'Voice & Text AI'}
+                      {language === 'ta' ? 'உதவி உரை & குரல்' : language === 'hi' ? 'आवाज और टेक्स्ट' : 'Voice & Text Assistant'}
                     </span>
                   </div>
-                  <h4 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white tracking-tight">
+                  <h4 className="text-sm sm:text-base font-bold text-[#17324D] dark:text-white tracking-tight">
                     {language === 'ta'
                       ? 'SevAIQ-விடம் நேரடியாக கேட்கவும்'
                       : language === 'hi'
                       ? 'SevAIQ से सीधे प्रश्न पूछें'
                       : 'Ask SevAIQ a Question'}
                   </h4>
-                  <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-300 leading-snug">
+                  <p className="text-[11px] sm:text-xs text-[#596775] dark:text-slate-300 leading-snug">
                     {language === 'ta'
                       ? 'தமிழில் அல்லது ஆங்கிலத்தில் மைக் மூலம் பேசலாம் அல்லது தட்டச்சு செய்யலாம்.'
                       : language === 'hi'
@@ -1031,7 +1029,7 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
                       : 'Speak via microphone or type your question in English or தமிழ்.'}
                   </p>
                 </div>
-                <div className="w-8 h-8 rounded-xl bg-civic-100 dark:bg-civic-900/60 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform text-civic-700 dark:text-civic-300">
+                <div className="w-8 h-8 rounded-lg bg-[#EDF6EF] dark:bg-emerald-950/60 flex items-center justify-center shrink-0 text-[#16733B] dark:text-emerald-300">
                   <Mic className="w-4 h-4" />
                 </div>
               </button>
@@ -1053,16 +1051,16 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
                 <button
                   type="button"
                   onClick={() => onNavigate('eligibility')}
-                  className="p-3 bg-white dark:bg-[#0c1834] hover:bg-civic-50/60 dark:hover:bg-[#12244c] rounded-xl border border-slate-200/90 dark:border-slate-800 text-left transition-all shadow-2xs group cursor-pointer"
+                  className="p-3 bg-white dark:bg-[#0F2133] hover:bg-[#EDF6EF] dark:hover:bg-[#1A334E] rounded-xl border border-[#D7DEE5] dark:border-[#223b56] text-left transition-colors shadow-2xs group cursor-pointer"
                 >
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-black text-civic-700 dark:text-civic-400">1</span>
-                    <CheckSquare className="w-3.5 h-3.5 text-civic-600" />
+                    <span className="text-xs font-bold text-[#16733B] dark:text-emerald-400">1</span>
+                    <CheckSquare className="w-3.5 h-3.5 text-[#16733B]" />
                   </div>
-                  <div className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-civic-700 transition-colors">
+                  <div className="text-xs font-bold text-[#17324D] dark:text-white group-hover:text-[#16733B] transition-colors">
                     {language === 'ta' ? '1. உங்கள் விவரங்கள்' : language === 'hi' ? '1. आपकी जानकारी' : '1. Your Details'}
                   </div>
-                  <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-1">
+                  <p className="text-[10px] text-[#596775] dark:text-slate-400 mt-0.5 line-clamp-1">
                     {language === 'ta' ? '2 நிமிட சுயவிவரம்' : 'Quick eligibility check'}
                   </p>
                 </button>
@@ -1071,16 +1069,16 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
                 <button
                   type="button"
                   onClick={() => onNavigate('discover')}
-                  className="p-3 bg-white dark:bg-[#0c1834] hover:bg-civic-50/60 dark:hover:bg-[#12244c] rounded-xl border border-slate-200/90 dark:border-slate-800 text-left transition-all shadow-2xs group cursor-pointer"
+                  className="p-3 bg-white dark:bg-[#0F2133] hover:bg-[#EDF6EF] dark:hover:bg-[#1A334E] rounded-xl border border-[#D7DEE5] dark:border-[#223b56] text-left transition-colors shadow-2xs group cursor-pointer"
                 >
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-black text-civic-700 dark:text-civic-400">2</span>
-                    <Sparkles className="w-3.5 h-3.5 text-civic-600" />
+                    <span className="text-xs font-bold text-[#16733B] dark:text-emerald-400">2</span>
+                    <Compass className="w-3.5 h-3.5 text-[#16733B]" />
                   </div>
-                  <div className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-civic-700 transition-colors">
+                  <div className="text-xs font-bold text-[#17324D] dark:text-white group-hover:text-[#16733B] transition-colors">
                     {language === 'ta' ? '2. திட்டங்களை தேடவும்' : language === 'hi' ? '2. योजनाएं खोजें' : '2. Find Schemes'}
                   </div>
-                  <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-1">
+                  <p className="text-[10px] text-[#596775] dark:text-slate-400 mt-0.5 line-clamp-1">
                     {language === 'ta' ? 'பொருந்தும் நலத்திட்டங்கள்' : 'Personalized matches'}
                   </p>
                 </button>
@@ -1089,16 +1087,16 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
                 <button
                   type="button"
                   onClick={() => onNavigate('document-mapper')}
-                  className="p-3 bg-white dark:bg-[#0c1834] hover:bg-civic-50/60 dark:hover:bg-[#12244c] rounded-xl border border-slate-200/90 dark:border-slate-800 text-left transition-all shadow-2xs group cursor-pointer"
+                  className="p-3 bg-white dark:bg-[#0F2133] hover:bg-[#EDF6EF] dark:hover:bg-[#1A334E] rounded-xl border border-[#D7DEE5] dark:border-[#223b56] text-left transition-colors shadow-2xs group cursor-pointer"
                 >
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-black text-civic-700 dark:text-civic-400">3</span>
-                    <FileText className="w-3.5 h-3.5 text-civic-600" />
+                    <span className="text-xs font-bold text-[#16733B] dark:text-emerald-400">3</span>
+                    <FileText className="w-3.5 h-3.5 text-[#16733B]" />
                   </div>
-                  <div className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-civic-700 transition-colors">
+                  <div className="text-xs font-bold text-[#17324D] dark:text-white group-hover:text-[#16733B] transition-colors">
                     {language === 'ta' ? '3. ஆவணங்கள் தயார்' : language === 'hi' ? '3. दस्तावेज़ तैयारी' : '3. Prepare Docs'}
                   </div>
-                  <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-1">
+                  <p className="text-[10px] text-[#596775] dark:text-slate-400 mt-0.5 line-clamp-1">
                     {language === 'ta' ? 'சரிபார்ப்பு பட்டியல்' : 'Checklist & Kendra guidance'}
                   </p>
                 </button>
@@ -1107,16 +1105,16 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
                 <button
                   type="button"
                   onClick={() => onNavigate('application-tracker')}
-                  className="p-3 bg-white dark:bg-[#0c1834] hover:bg-civic-50/60 dark:hover:bg-[#12244c] rounded-xl border border-slate-200/90 dark:border-slate-800 text-left transition-all shadow-2xs group cursor-pointer"
+                  className="p-3 bg-white dark:bg-[#0F2133] hover:bg-[#EDF6EF] dark:hover:bg-[#1A334E] rounded-xl border border-[#D7DEE5] dark:border-[#223b56] text-left transition-colors shadow-2xs group cursor-pointer"
                 >
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-black text-civic-700 dark:text-civic-400">4</span>
-                    <ListOrdered className="w-3.5 h-3.5 text-civic-600" />
+                    <span className="text-xs font-bold text-[#16733B] dark:text-emerald-400">4</span>
+                    <ListOrdered className="w-3.5 h-3.5 text-[#16733B]" />
                   </div>
-                  <div className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-civic-700 transition-colors">
+                  <div className="text-xs font-bold text-[#17324D] dark:text-white group-hover:text-[#16733B] transition-colors">
                     {language === 'ta' ? '4. விண்ணப்ப நிலை' : language === 'hi' ? '4. आवेदन स्थिति' : '4. Track Application'}
                   </div>
-                  <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-1">
+                  <p className="text-[10px] text-[#596775] dark:text-slate-400 mt-0.5 line-clamp-1">
                     {language === 'ta' ? 'அதிகாரப்பூர்வ இணைப்புகள்' : 'Official links & reminders'}
                   </p>
                 </button>
@@ -1125,9 +1123,9 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
 
             {/* Context-Aware Smart Suggestions (When profile or schemes are active) */}
             {Boolean(profile?.occupation || profile?.age || selectedSchemeIds.length > 0) && (
-              <div className="p-3 bg-civic-50/70 dark:bg-civic-950/50 rounded-2xl border border-civic-200/70 dark:border-civic-800/70">
-                <div className="text-[11px] font-bold text-civic-800 dark:text-civic-300 uppercase tracking-wider mb-2 flex items-center space-x-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+              <div className="p-3 bg-[#EDF6EF] dark:bg-emerald-950/40 rounded-xl border border-emerald-200 dark:border-emerald-800/60">
+                <div className="text-[11px] font-bold text-[#16733B] dark:text-emerald-300 uppercase tracking-wider mb-2 flex items-center space-x-1.5">
+                  <ShieldCheck className="w-3.5 h-3.5 text-[#16733B]" />
                   <span>
                     {language === 'ta'
                       ? 'உங்கள் அமர்வுக்கான சிறப்பு கேள்விகள் (Context-Aware):'
@@ -1144,7 +1142,7 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
                         handleSendQuery(prompt.query);
                       }}
                       disabled={isAiLoading}
-                      className="px-3 py-1.5 bg-white dark:bg-[#0c1834] hover:bg-civic-100 dark:hover:bg-civic-900 text-civic-900 dark:text-civic-200 border border-civic-200 dark:border-civic-700 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition-all shadow-2xs cursor-pointer disabled:opacity-50"
+                      className="px-3 py-1.5 bg-white dark:bg-[#17324D] hover:bg-[#EDF6EF] dark:hover:bg-[#1A334E] text-[#17324D] dark:text-emerald-200 border border-[#D7DEE5] dark:border-[#223b56] rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition-colors shadow-2xs cursor-pointer disabled:opacity-50"
                     >
                       <span>{prompt.icon}</span>
                       <span>{prompt.label}</span>
@@ -1156,13 +1154,13 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
 
             {/* Suggested 1-Click Questions */}
             <div>
-              <div className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2.5 flex items-center justify-between">
+              <div className="text-[11px] font-bold text-[#596775] dark:text-slate-400 uppercase tracking-wider mb-2.5 flex items-center justify-between">
                 <span>
                   {language === 'ta'
                     ? 'பரிந்துரைக்கப்பட்ட கேள்விகள் (1-கிளிக்):'
                     : 'Suggested Questions (1-Click Ask):'}
                 </span>
-                <span className="text-[10px] text-civic-700 dark:text-civic-400 font-semibold normal-case">
+                <span className="text-[10px] text-[#16733B] dark:text-emerald-400 font-semibold normal-case">
                   {language === 'ta' ? 'கார்டை கிளிக் செய்து கேட்கலாம்' : 'Tap any card to ask'}
                 </span>
               </div>
@@ -1177,20 +1175,20 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
                       handleSendQuery(prompt.query);
                     }}
                     disabled={isAiLoading}
-                    className="group p-3 bg-white dark:bg-[#0d1c3a] hover:bg-civic-50/80 dark:hover:bg-[#13274e] active:bg-civic-100/60 dark:active:bg-[#183060] rounded-xl border border-slate-200/90 dark:border-slate-700/80 hover:border-civic-300 dark:hover:border-civic-500 text-left transition-all shadow-2xs hover:shadow-xs flex flex-col justify-between gap-1.5 cursor-pointer disabled:opacity-60"
+                    className="group p-3 bg-white dark:bg-[#17324D] hover:bg-[#EDF6EF]/50 dark:hover:bg-[#1A334E] rounded-xl border border-[#D7DEE5] dark:border-[#223b56] hover:border-[#16733B] dark:hover:border-emerald-600 text-left transition-colors shadow-2xs flex flex-col justify-between gap-1.5 cursor-pointer disabled:opacity-60"
                   >
                     <div className="flex items-center space-x-2">
                       <span className="text-base sm:text-lg leading-none shrink-0">{prompt.icon || '📌'}</span>
-                      <span className="text-xs sm:text-[13px] font-bold text-slate-900 dark:text-white group-hover:text-civic-800 dark:group-hover:text-civic-300 transition-colors line-clamp-1">
+                      <span className="text-xs sm:text-[13px] font-bold text-[#202B36] dark:text-white group-hover:text-[#16733B] dark:group-hover:text-emerald-300 transition-colors line-clamp-1">
                         {prompt.label}
                       </span>
                     </div>
                     {prompt.description && (
-                      <p className="text-[11px] text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-200 line-clamp-2 leading-snug">
+                      <p className="text-[11px] text-[#596775] dark:text-slate-300 line-clamp-2 leading-snug">
                         {prompt.description}
                       </p>
                     )}
-                    <div className="flex items-center space-x-1 text-[10px] font-semibold text-civic-700 dark:text-civic-400 group-hover:text-civic-900 dark:group-hover:text-civic-200 mt-0.5">
+                    <div className="flex items-center space-x-1 text-[10px] font-semibold text-[#16733B] dark:text-emerald-400 mt-0.5">
                       <span>{language === 'ta' ? 'கேட்க கிளிக் செய்க' : 'Click to ask'}</span>
                       <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
                     </div>
@@ -1210,12 +1208,12 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
               className={`flex flex-col ${isBot ? 'items-start' : 'items-end'} space-y-1`}
             >
               <div
-                className={`max-w-[92%] sm:max-w-[85%] p-3.5 sm:p-4 rounded-2xl text-xs sm:text-[13px] leading-relaxed ${
+                className={`max-w-[92%] sm:max-w-[85%] p-3.5 sm:p-4 rounded-xl text-xs sm:text-[13px] leading-relaxed ${
                   isBot
                     ? msg.isError
-                      ? 'bg-amber-50/90 dark:bg-amber-950/70 text-amber-950 dark:text-amber-200 border border-amber-300 dark:border-amber-700 shadow-2xs rounded-tl-xs'
-                      : 'bg-white dark:bg-[#0e1c3b] text-slate-800 dark:text-slate-100 border border-slate-200/80 dark:border-slate-700/80 shadow-2xs rounded-tl-xs'
-                    : 'bg-gradient-to-br from-civic-700 to-civic-800 text-white rounded-tr-xs shadow-xs font-medium'
+                      ? 'bg-[#FFFBEB] dark:bg-amber-950/70 text-[#92400E] dark:text-amber-200 border border-[#FDE68A] dark:border-amber-800 shadow-2xs'
+                      : 'bg-white dark:bg-[#17324D] text-[#202B36] dark:text-slate-100 border border-[#D7DEE5] dark:border-[#223b56] shadow-xs'
+                    : 'bg-[#16733B] text-white rounded-xl shadow-xs font-medium'
                 }`}
               >
                 {isBot ? (
@@ -1230,15 +1228,15 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
 
                 {/* Retry button for retryable provider errors */}
                 {isBot && msg.isError && msg.retryable && (
-                  <div className="mt-2.5 pt-2 border-t border-amber-200/70 flex items-center justify-between">
-                    <span className="text-[10px] text-amber-700 font-medium">
+                  <div className="mt-2.5 pt-2 border-t border-[#FDE68A] dark:border-amber-800 flex items-center justify-between">
+                    <span className="text-[10px] text-amber-800 font-medium">
                       {language === 'ta' ? 'மீண்டும் முயற்சிக்கலாம்' : 'Retry available'}
                     </span>
                     <button
                       type="button"
                       onClick={handleRetryLastQuery}
                       disabled={isAiLoading}
-                      className="inline-flex items-center space-x-1 px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-lg text-[10px] shadow-2xs transition-colors cursor-pointer"
+                      className="inline-flex items-center space-x-1 px-2.5 py-1 bg-amber-700 hover:bg-amber-800 text-white font-semibold rounded-lg text-[10px] shadow-2xs transition-colors cursor-pointer"
                     >
                       <RefreshCw className="w-2.5 h-2.5" />
                       <span>{language === 'ta' ? 'மீண்டும் முயற்சி' : 'Retry Query'}</span>
@@ -1246,18 +1244,18 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
                   </div>
                 )}
 
-                {/* Card Footer: AI Attribution & Audio Speaker Controls */}
+                {/* Card Footer: Attribution & Audio Speaker Controls */}
                 {isBot && !msg.isError && (
-                  <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-500">
+                  <div className="mt-2.5 pt-2 border-t border-[#D7DEE5] dark:border-[#223b56] flex items-center justify-between text-[10px] text-[#596775] dark:text-slate-400">
                     <div className="flex items-center space-x-1.5">
-                      <span className="inline-flex items-center space-x-1 font-bold text-civic-700 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-100">
-                        <Sparkles className="w-2.5 h-2.5 text-civic-600" />
+                      <span className="inline-flex items-center space-x-1 font-semibold text-[#16733B] dark:text-emerald-300 bg-[#EDF6EF] dark:bg-emerald-950/70 px-1.5 py-0.5 rounded border border-emerald-200 dark:border-emerald-800/60">
+                        <ShieldCheck className="w-2.5 h-2.5 text-[#16733B] dark:text-emerald-400" />
                         <span>
                           {msg.provider ? `AI • ${msg.provider.toUpperCase()}` : 'AI • GEMINI'}
                         </span>
                       </span>
                       {msg.latencyMs && (
-                        <span className="text-slate-400 font-mono text-[9px] hidden sm:inline">
+                        <span className="text-[#596775] dark:text-slate-400 font-mono text-[9px] hidden sm:inline">
                           {msg.latencyMs}ms
                         </span>
                       )}
@@ -1567,11 +1565,11 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
       )}
 
       {/* Quick 1-Click Suggested Query Chips */}
-      <div className="px-3 py-2 bg-slate-50 dark:bg-[#091329] border-t border-slate-200/80 dark:border-slate-800/80 shrink-0">
-        <div className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1 flex items-center justify-between">
-          <span>{language === 'ta' ? '1-கிளிக் கேள்விகள் (Quick Ask):' : 'Suggested Questions:'}</span>
+      <div className="px-3 py-2 bg-[#F5F7F8] dark:bg-[#0F2133] border-t border-[#D7DEE5] dark:border-[#223b56] shrink-0">
+        <div className="text-[10px] font-bold text-[#596775] dark:text-slate-400 uppercase tracking-wider mb-1 flex items-center justify-between">
+          <span>{language === 'ta' ? '1-கிளிக் கேள்விகள்:' : 'Suggested Questions:'}</span>
           {!hasInteracted && (
-            <span className="text-civic-700 dark:text-civic-400 font-semibold normal-case">Tap any chip to ask</span>
+            <span className="text-[#16733B] dark:text-emerald-400 font-semibold normal-case">Tap any chip to ask</span>
           )}
         </div>
         <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
@@ -1583,7 +1581,7 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
                 setInputText(sample.query);
                 handleSendQuery(sample.query);
               }}
-              className="px-2.5 py-1 bg-white dark:bg-[#0e1d3d] hover:bg-civic-50 dark:hover:bg-[#162a52] hover:border-civic-300 dark:hover:border-civic-500 border border-slate-200 dark:border-slate-700/80 text-slate-700 dark:text-slate-200 hover:text-civic-900 dark:hover:text-civic-300 text-[11px] font-medium rounded-xl whitespace-nowrap transition-all shadow-2xs shrink-0 active:scale-95 cursor-pointer"
+              className="px-2.5 py-1 bg-white dark:bg-[#17324D] hover:bg-[#EDF6EF] dark:hover:bg-[#1A334E] hover:border-[#16733B] dark:hover:border-emerald-600 border border-[#D7DEE5] dark:border-[#223b56] text-[#202B36] dark:text-slate-200 hover:text-[#16733B] dark:hover:text-emerald-300 text-[11px] font-medium rounded-lg whitespace-nowrap transition-colors shadow-2xs shrink-0 cursor-pointer"
             >
               <span>{sample.label}</span>
             </button>
@@ -1592,20 +1590,20 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
       </div>
 
       {/* Bottom Dock Input Bar: Tactile Mic & Text Box */}
-      <div className="p-3 sm:p-4 bg-white dark:bg-[#0b162f] border-t border-slate-200 dark:border-slate-800 shrink-0">
+      <div className="p-3 sm:p-4 bg-white dark:bg-[#0F2133] border-t border-[#D7DEE5] dark:border-[#223b56] shrink-0">
         <div className="flex items-center space-x-2 sm:space-x-2.5">
           {/* Large Tactile Microphone Button */}
           <button
             type="button"
             onClick={toggleListening}
-            className={`w-11 h-11 sm:w-12 sm:h-12 rounded-2xl transition-all flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-civic-500 shrink-0 cursor-pointer ${
+            className={`w-11 h-11 sm:w-12 sm:h-12 rounded-xl transition-colors flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-[#16733B] shrink-0 cursor-pointer ${
               speechState === 'listening'
-                ? 'bg-rose-600 text-white animate-pulse shadow-md shadow-rose-500/40 ring-2 ring-rose-400'
+                ? 'bg-rose-600 text-white shadow-xs ring-2 ring-rose-400'
                 : speechState === 'reviewing'
-                ? 'bg-blue-600 text-white shadow-md shadow-blue-500/30 ring-2 ring-blue-300'
+                ? 'bg-[#17324D] text-white shadow-xs ring-2 ring-slate-400'
                 : speechSupported
-                ? 'bg-civic-50 dark:bg-civic-950/70 hover:bg-civic-100 dark:hover:bg-civic-900 text-civic-700 dark:text-civic-300 border border-civic-200/80 dark:border-civic-800 shadow-2xs active:scale-95'
-                : 'bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed border border-slate-200 dark:border-slate-700'
+                ? 'bg-[#16733B] hover:bg-[#105C2E] text-white shadow-xs'
+                : 'bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed border border-[#D7DEE5] dark:border-[#223b56]'
             }`}
             title={
               !speechSupported
@@ -1628,9 +1626,9 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
             data-testid="microphone-toggle-button"
           >
             {speechState === 'listening' ? (
-              <MicOff className="w-5 h-5" />
+              <MicOff className="w-5 h-5 text-white" />
             ) : (
-              <Mic className="w-5 h-5 text-civic-700 dark:text-civic-300" />
+              <Mic className="w-5 h-5 text-white" />
             )}
           </button>
 
@@ -1651,8 +1649,8 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
               placeholder={
                 isAiLoading
                   ? language === 'ta'
-                    ? 'Gemini AI பதிலளிக்கிறது...'
-                    : 'Gemini AI is generating response...'
+                    ? 'AI பதிலளிக்கிறது...'
+                    : 'AI is generating response...'
                   : speechState === 'listening'
                   ? language === 'ta'
                     ? 'கேட்கிறது... தமிழில் பேசவும்...'
@@ -1661,8 +1659,8 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
                   ? 'தமிழில் கேட்கவும் அல்லது தட்டச்சு செய்யவும்...'
                   : 'Ask welfare questions in English or Tamil...'
               }
-              className={`w-full px-4 py-2.5 sm:py-3 text-xs sm:text-sm bg-slate-50 dark:bg-[#070e22] border border-slate-300 dark:border-slate-700 focus:bg-white dark:focus:bg-[#0a142c] focus:outline-none focus:ring-2 focus:ring-civic-500 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-2xl transition-colors ${
-                speechState === 'listening' ? 'border-rose-400 bg-rose-50/30 dark:bg-rose-950/30' : ''
+              className={`w-full px-4 py-2.5 sm:py-3 text-xs sm:text-sm bg-white dark:bg-[#17324D] border border-[#D7DEE5] dark:border-[#223b56] focus:bg-white dark:focus:bg-[#17324D] focus:outline-none focus:border-[#16733B] focus:ring-1 focus:ring-[#16733B] text-[#202B36] dark:text-white placeholder-[#596775] dark:placeholder-slate-400 rounded-xl transition-colors ${
+                speechState === 'listening' ? 'border-rose-400 bg-rose-50/20' : ''
               } ${isAiLoading ? 'opacity-70 cursor-wait' : ''}`}
             />
             {inputText && !isAiLoading && (
@@ -1682,19 +1680,19 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
             type="button"
             onClick={() => handleSendQuery()}
             disabled={!inputText.trim() || isAiLoading}
-            className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-civic-700 hover:bg-civic-800 disabled:bg-slate-100 dark:disabled:bg-slate-800 disabled:text-slate-400 text-white flex items-center justify-center transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 shrink-0 shadow-2xs active:scale-95 cursor-pointer disabled:cursor-not-allowed"
+            className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-[#16733B] hover:bg-[#105C2E] disabled:bg-slate-200 dark:disabled:bg-slate-800 disabled:text-slate-400 text-white flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-[#16733B] shrink-0 shadow-xs cursor-pointer disabled:cursor-not-allowed"
             aria-label="Send query"
           >
             {isAiLoading ? (
-              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 animate-spin text-civic-300" />
+              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             ) : (
-              <Send className="w-4 h-4 sm:w-5 sm:h-5" />
+              <Send className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             )}
           </button>
         </div>
 
         {/* Micro Caption */}
-        <div className="text-[10px] text-slate-400 dark:text-slate-500 text-center mt-2 flex items-center justify-center gap-1.5">
+        <div className="text-[10px] text-[#596775] dark:text-slate-400 text-center mt-2 flex items-center justify-center gap-1.5">
           <span>Press Enter to send</span>
           <span>•</span>
           <span>Speak in தமிழ் (ta-IN) or English (en-IN)</span>
@@ -1710,7 +1708,7 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
         <section
           role="region"
           aria-label="SevAIQ Tamil & English Voice Assistant"
-          className="bg-white dark:bg-[#0b162f] rounded-2xl sm:rounded-3xl shadow-sm border border-slate-200/90 dark:border-slate-800/80 flex flex-col flex-1 min-h-[580px] sm:min-h-[640px] h-[calc(100vh-8.5rem)] max-h-[920px] overflow-hidden"
+          className="bg-white dark:bg-[#17324D] rounded-xl shadow-xs border border-[#D7DEE5] dark:border-[#223b56] flex flex-col flex-1 min-h-[580px] sm:min-h-[640px] h-[calc(100vh-8.5rem)] max-h-[920px] overflow-hidden"
         >
           {renderChatContent()}
         </section>
@@ -1734,10 +1732,10 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
               ? 'Close Voice AI Assistant'
               : 'Open SevAIQ Voice AI Assistant (Tamil and English)'
           }
-          className={`fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-40 group flex items-center gap-2.5 px-4 py-3 sm:px-4.5 sm:py-3.5 rounded-full shadow-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-civic-500/40 select-none ${
+          className={`fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-40 group flex items-center gap-2.5 px-4 py-3 sm:px-4.5 sm:py-3.5 rounded-full shadow-lg transition-colors focus:outline-none focus:ring-4 focus:ring-[#16733B]/30 select-none ${
             isWidgetOpen
-              ? 'bg-slate-900 text-white hover:bg-slate-800 shadow-slate-900/30 ring-2 ring-slate-700'
-              : 'bg-gradient-to-r from-blue-700 via-civic-700 to-indigo-800 text-white shadow-civic-800/40 hover:shadow-2xl hover:scale-[1.03] active:scale-[0.98] border border-white/25 ring-4 ring-civic-500/15'
+              ? 'bg-[#17324D] text-white hover:bg-[#0F2133] shadow-md border border-slate-700'
+              : 'bg-[#16733B] hover:bg-[#105C2E] text-white shadow-md border border-white/20'
           }`}
         >
           {/* Animated Glowing Mic Icon Badge */}

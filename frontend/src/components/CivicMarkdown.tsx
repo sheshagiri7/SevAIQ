@@ -147,7 +147,7 @@ export function renderInlineContent(text: string): React.ReactNode[] {
           href={rawUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 font-semibold text-blue-700 hover:text-blue-900 underline underline-offset-2 decoration-blue-300 hover:decoration-blue-700 transition-colors"
+          className="inline-flex items-center gap-1 font-semibold text-[#16733B] hover:text-[#105C2E] dark:text-emerald-400 dark:hover:text-emerald-300 underline underline-offset-2 decoration-[#9ECCA8] hover:decoration-[#16733B] transition-colors"
           title={
             trust === 'official_gov'
               ? 'Official Government Portal (.gov.in / .nic.in) - opens in new tab'
@@ -157,19 +157,19 @@ export function renderInlineContent(text: string): React.ReactNode[] {
           }
         >
           {trust === 'official_gov' && (
-            <span className="inline-flex items-center px-1.5 py-0.2 rounded text-[9px] font-bold bg-blue-100 text-blue-900 border border-blue-200/80 mr-0.5 select-none shrink-0">
-              <ShieldCheck className="w-2.5 h-2.5 mr-0.5 text-civic-700 inline" />
+            <span className="inline-flex items-center px-1.5 py-0.2 rounded text-[9px] font-bold bg-[#EDF6EF] dark:bg-emerald-950/70 text-[#16733B] dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 mr-0.5 select-none shrink-0">
+              <ShieldCheck className="w-2.5 h-2.5 mr-0.5 text-[#16733B] dark:text-emerald-400 inline" />
               Govt Portal
             </span>
           )}
           {trust === 'authorized_agency' && (
-            <span className="inline-flex items-center px-1.5 py-0.2 rounded text-[9px] font-bold bg-slate-100 text-slate-800 border border-slate-300 mr-0.5 select-none shrink-0">
-              <Building2 className="w-2.5 h-2.5 mr-0.5 text-slate-600 inline" />
+            <span className="inline-flex items-center px-1.5 py-0.2 rounded text-[9px] font-bold bg-[#F5F7F8] dark:bg-slate-800 text-[#202B36] dark:text-slate-200 border border-[#D7DEE5] dark:border-slate-700 mr-0.5 select-none shrink-0">
+              <Building2 className="w-2.5 h-2.5 mr-0.5 text-[#596775] dark:text-slate-400 inline" />
               Authorized Agency
             </span>
           )}
           <span>{label}</span>
-          <ExternalLink className="w-3 h-3 text-blue-600 inline shrink-0" aria-hidden="true" />
+          <ExternalLink className="w-3 h-3 text-[#16733B] dark:text-emerald-400 inline shrink-0" aria-hidden="true" />
         </a>
       );
     }
@@ -184,7 +184,7 @@ export function renderInlineContent(text: string): React.ReactNode[] {
           href={token}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 font-semibold text-blue-700 hover:text-blue-900 underline underline-offset-2 decoration-blue-300 hover:decoration-blue-700 transition-colors"
+          className="inline-flex items-center gap-1 font-semibold text-[#16733B] hover:text-[#105C2E] dark:text-emerald-400 dark:hover:text-emerald-300 underline underline-offset-2 decoration-[#9ECCA8] hover:decoration-[#16733B] transition-colors"
           title={
             trust === 'official_gov'
               ? 'Official Government Portal (.gov.in / .nic.in) - opens in new tab'
@@ -194,19 +194,19 @@ export function renderInlineContent(text: string): React.ReactNode[] {
           }
         >
           {trust === 'official_gov' && (
-            <span className="inline-flex items-center px-1.5 py-0.2 rounded text-[9px] font-bold bg-blue-100 text-blue-900 border border-blue-200/80 mr-0.5 select-none shrink-0">
-              <ShieldCheck className="w-2.5 h-2.5 mr-0.5 text-civic-700 inline" />
+            <span className="inline-flex items-center px-1.5 py-0.2 rounded text-[9px] font-bold bg-[#EDF6EF] dark:bg-emerald-950/70 text-[#16733B] dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 mr-0.5 select-none shrink-0">
+              <ShieldCheck className="w-2.5 h-2.5 mr-0.5 text-[#16733B] dark:text-emerald-400 inline" />
               Govt Portal
             </span>
           )}
           {trust === 'authorized_agency' && (
-            <span className="inline-flex items-center px-1.5 py-0.2 rounded text-[9px] font-bold bg-slate-100 text-slate-800 border border-slate-300 mr-0.5 select-none shrink-0">
-              <Building2 className="w-2.5 h-2.5 mr-0.5 text-slate-600 inline" />
+            <span className="inline-flex items-center px-1.5 py-0.2 rounded text-[9px] font-bold bg-[#F5F7F8] dark:bg-slate-800 text-[#202B36] dark:text-slate-200 border border-[#D7DEE5] dark:border-slate-700 mr-0.5 select-none shrink-0">
+              <Building2 className="w-2.5 h-2.5 mr-0.5 text-[#596775] dark:text-slate-400 inline" />
               Authorized Agency
             </span>
           )}
           <span>{label}</span>
-          <ExternalLink className="w-3 h-3 text-blue-600 inline shrink-0" aria-hidden="true" />
+          <ExternalLink className="w-3 h-3 text-[#16733B] dark:text-emerald-400 inline shrink-0" aria-hidden="true" />
         </a>
       );
     }

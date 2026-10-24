@@ -163,16 +163,16 @@ export const Header: React.FC<HeaderProps> = ({
   }, [showClearConfirm]);
 
   return (
-    <header className="sticky top-0 z-50 bg-white dark:bg-[#0b162f] border-b border-slate-200/90 dark:border-slate-800/80 shadow-2xs w-full transition-colors duration-150">
+    <header className="sticky top-0 z-50 bg-white dark:bg-[#0f2133] border-b border-[#D7DEE5] dark:border-[#223b56] shadow-xs w-full transition-colors duration-150">
       <div className="w-full px-2 sm:px-4 lg:px-5 xl:px-6 2xl:px-8">
         <div className="flex items-center justify-between min-h-[3.75rem] sm:min-h-[4.25rem] py-1 sm:py-1.5 w-full gap-1.5 sm:gap-2 lg:gap-3">
           {/* Top Left: Official SevAIQ Logo */}
           <div className="flex items-center shrink-0 pr-1">
             <button
               type="button"
-              onClick={() => handleNavClick('dashboard')}
-              className="flex items-center group focus:outline-none focus:ring-2 focus:ring-civic-500 rounded-xl p-0.5 sm:p-1 transition-opacity hover:opacity-90 cursor-pointer"
-              aria-label="SevAIQ - Civic Intelligence & Scheme Readiness Dashboard"
+              onClick={() => handleNavClick('chat')}
+              className="flex items-center group focus:outline-none focus:ring-2 focus:ring-[#16733B] rounded-lg p-0.5 sm:p-1 transition-opacity hover:opacity-90 cursor-pointer"
+              aria-label="SevAIQ - Civic Intelligence & AI Assistant"
             >
               <img
                 src="/sevaiq-logo.png"
@@ -200,21 +200,21 @@ export const Header: React.FC<HeaderProps> = ({
                     isIndic
                       ? 'gap-1 xl:gap-1.5 px-1.5 py-1 xl:px-2 xl:py-1.5 2xl:px-2.5 text-[11px] xl:text-xs font-semibold'
                       : 'gap-1.5 px-2 py-1 xl:px-2.5 xl:py-1.5 text-xs font-semibold'
-                  } rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 whitespace-nowrap shrink-0 ${
+                  } rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-[#16733B] whitespace-nowrap shrink-0 ${
                     isActive
-                      ? 'bg-civic-50 text-civic-800 dark:bg-civic-950/80 dark:text-civic-300 shadow-2xs font-bold border border-civic-200/50 dark:border-civic-800/60'
-                      : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
+                      ? 'bg-civic-50 text-civic-800 dark:bg-emerald-950/40 dark:text-emerald-300 shadow-2xs font-bold border border-emerald-200/60 dark:border-emerald-800/40'
+                      : 'text-[#596775] dark:text-slate-300 hover:text-[#17324D] dark:hover:text-white hover:bg-[#F5F7F8] dark:hover:bg-slate-800/60'
                   }`}
                 >
-                  <Icon className={`${isIndic ? 'w-3 h-3 xl:w-3.5 xl:h-3.5' : 'w-3.5 h-3.5'} shrink-0 ${isActive ? 'text-civic-700 dark:text-civic-400' : 'text-slate-500 dark:text-slate-400'}`} />
+                  <Icon className={`${isIndic ? 'w-3 h-3 xl:w-3.5 xl:h-3.5' : 'w-3.5 h-3.5'} shrink-0 ${isActive ? 'text-[#16733B] dark:text-emerald-400' : 'text-[#596775] dark:text-slate-400'}`} />
                   <span>{item.label}</span>
                   {item.badge !== undefined && (
-                    <span className="inline-flex items-center px-1.5 py-0.2 rounded-full text-[8px] xl:text-[9px] font-bold bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60">
+                    <span className="inline-flex items-center px-1.5 py-0.2 rounded-full text-[8px] xl:text-[9px] font-bold bg-[#EDF6EF] dark:bg-emerald-950/80 text-[#16733B] dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60">
                       {item.badge}
                     </span>
                   )}
                   {isActive && (
-                    <span className="absolute bottom-0 left-1.5 right-1.5 h-0.5 bg-civic-600 dark:bg-civic-400 rounded-full" />
+                    <span className="absolute bottom-0 left-1.5 right-1.5 h-0.5 bg-[#16733B] dark:bg-emerald-400 rounded-full" />
                   )}
                 </button>
               );
@@ -227,21 +227,21 @@ export const Header: React.FC<HeaderProps> = ({
                 onClick={() => setMoreMenuOpen((prev) => !prev)}
                 aria-expanded={moreMenuOpen}
                 aria-haspopup="true"
-                className={`relative flex items-center gap-1 px-2 py-1 xl:px-2.5 xl:py-1.5 text-xs font-semibold rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 whitespace-nowrap ${
+                className={`relative flex items-center gap-1 px-2 py-1 xl:px-2.5 xl:py-1.5 text-xs font-semibold rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-[#16733B] whitespace-nowrap ${
                   isSecondaryActive
-                    ? 'bg-civic-50 text-civic-800 dark:bg-civic-950/80 dark:text-civic-300 shadow-2xs font-bold border border-civic-200/50 dark:border-civic-800/60'
-                    : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
+                    ? 'bg-civic-50 text-civic-800 dark:bg-emerald-950/40 dark:text-emerald-300 shadow-2xs font-bold border border-emerald-200/60 dark:border-emerald-800/40'
+                    : 'text-[#596775] dark:text-slate-300 hover:text-[#17324D] dark:hover:text-white hover:bg-[#F5F7F8] dark:hover:bg-slate-800/60'
                 }`}
               >
                 <span>{t.header.moreTools || 'More'}</span>
                 <ChevronDown className={`w-3.5 h-3.5 transition-transform ${moreMenuOpen ? 'rotate-180' : ''}`} />
                 {isSecondaryActive && (
-                  <span className="absolute bottom-0 left-1.5 right-1.5 h-0.5 bg-civic-600 dark:bg-civic-400 rounded-full" />
+                  <span className="absolute bottom-0 left-1.5 right-1.5 h-0.5 bg-[#16733B] dark:bg-emerald-400 rounded-full" />
                 )}
               </button>
 
-              <div className={`absolute right-0 top-full mt-1.5 w-48 bg-white dark:bg-[#0c1834] rounded-xl shadow-xl border border-slate-200 dark:border-slate-700/80 py-1.5 z-50 animate-in fade-in ${moreMenuOpen ? 'block' : 'hidden'}`}>
-                <div className="px-3 py-1 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+              <div className={`absolute right-0 top-full mt-1.5 w-48 bg-white dark:bg-[#17324D] rounded-xl shadow-lg border border-[#D7DEE5] dark:border-[#223b56] py-1.5 z-50 animate-in fade-in ${moreMenuOpen ? 'block' : 'hidden'}`}>
+                <div className="px-3 py-1 text-[10px] font-bold text-[#596775] dark:text-slate-400 uppercase tracking-wider">
                   {language === 'ta' ? 'கூடுதல் கருவிகள்' : language === 'hi' ? 'अन्य विकल्प' : 'Secondary Tools'}
                 </div>
                 {secondaryTools.map((tool) => {
@@ -254,11 +254,11 @@ export const Header: React.FC<HeaderProps> = ({
                       onClick={() => handleNavClick(tool.id)}
                       className={`w-full flex items-center space-x-2 px-3 py-2 text-xs text-left font-medium transition-colors ${
                         isToolActive
-                          ? 'bg-civic-50 dark:bg-civic-950 text-civic-800 dark:text-civic-300 font-bold'
-                          : 'text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800'
+                          ? 'bg-[#EDF6EF] dark:bg-[#0F2133] text-[#16733B] dark:text-emerald-300 font-bold'
+                          : 'text-[#202B36] dark:text-slate-200 hover:bg-[#F5F7F8] dark:hover:bg-slate-800'
                       }`}
                     >
-                      <ToolIcon className="w-3.5 h-3.5 text-civic-600 dark:text-civic-400 shrink-0" />
+                      <ToolIcon className="w-3.5 h-3.5 text-[#16733B] dark:text-emerald-400 shrink-0" />
                       <span>{tool.label}</span>
                     </button>
                   );
@@ -278,7 +278,7 @@ export const Header: React.FC<HeaderProps> = ({
               onClick={toggleTheme}
               className={`h-7 xl:h-8 px-2 xl:px-2.5 rounded-lg ${
                 isIndic ? 'text-[11px] xl:text-xs' : 'text-xs'
-              } font-semibold inline-flex items-center gap-1 xl:gap-1.5 border transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 shrink-0 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 shadow-2xs cursor-pointer`}
+              } font-semibold inline-flex items-center gap-1 xl:gap-1.5 border transition-all focus:outline-none focus:ring-2 focus:ring-[#16733B] shrink-0 bg-white dark:bg-[#17324D] text-[#202B36] dark:text-slate-200 border-[#D7DEE5] dark:border-[#223b56] hover:bg-[#F5F7F8] dark:hover:bg-slate-800 shadow-2xs cursor-pointer`}
               title={isDark ? t.header.switchToLight : t.header.switchToDark}
               aria-label={isDark ? t.header.switchToLight : t.header.switchToDark}
               aria-pressed={isDark}
@@ -286,7 +286,7 @@ export const Header: React.FC<HeaderProps> = ({
               {isDark ? (
                 <Sun className="w-3 h-3 xl:w-3.5 xl:h-3.5 text-amber-400 shrink-0" />
               ) : (
-                <Moon className="w-3 h-3 xl:w-3.5 xl:h-3.5 text-slate-600 dark:text-slate-300 shrink-0" />
+                <Moon className="w-3 h-3 xl:w-3.5 xl:h-3.5 text-[#596775] dark:text-slate-300 shrink-0" />
               )}
               <span className={isIndic ? 'hidden 2xl:inline' : 'hidden xl:inline'}>
                 {isDark ? t.header.lightMode : t.header.darkMode}
@@ -299,10 +299,10 @@ export const Header: React.FC<HeaderProps> = ({
               onClick={onToggleKioskMode}
               className={`h-7 xl:h-8 px-2 xl:px-2.5 rounded-lg ${
                 isIndic ? 'text-[11px] xl:text-xs' : 'text-xs'
-              } font-semibold inline-flex items-center gap-1 xl:gap-1.5 border transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 shrink-0 ${
+              } font-semibold inline-flex items-center gap-1 xl:gap-1.5 border transition-all focus:outline-none focus:ring-2 focus:ring-[#16733B] shrink-0 ${
                 isKioskMode
                   ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-900 dark:text-amber-200 border-amber-300 dark:border-amber-700/80 shadow-2xs hover:bg-amber-100 dark:hover:bg-amber-900/60'
-                  : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-600'
+                  : 'bg-white dark:bg-[#17324D] text-[#202B36] dark:text-slate-200 border-[#D7DEE5] dark:border-[#223b56] hover:bg-[#F5F7F8] dark:hover:bg-slate-800'
               }`}
               title={
                 isKioskMode
@@ -311,7 +311,7 @@ export const Header: React.FC<HeaderProps> = ({
               }
               aria-pressed={isKioskMode}
             >
-              <Monitor className={`w-3 h-3 xl:w-3.5 xl:h-3.5 shrink-0 ${isKioskMode ? 'text-amber-800 dark:text-amber-300' : 'text-slate-500 dark:text-slate-400'}`} />
+              <Monitor className={`w-3 h-3 xl:w-3.5 xl:h-3.5 shrink-0 ${isKioskMode ? 'text-amber-800 dark:text-amber-300' : 'text-[#596775] dark:text-slate-400'}`} />
               <span className={isIndic ? 'hidden 2xl:inline' : 'hidden xl:inline'}>{t.header.kioskMode}</span>
               <span className={isKioskMode ? 'font-bold text-amber-900 dark:text-amber-300' : ''}>
                 {isKioskMode ? t.header.active : t.header.off}

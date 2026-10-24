@@ -110,11 +110,11 @@ export const GuidedProfile: React.FC<GuidedProfileProps> = ({
   ];
 
   return (
-    <div className="bg-white dark:bg-[#0c1834] rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 sm:p-8 space-y-6">
+    <div className="bg-white dark:bg-[#17324D] rounded-xl border border-[#D7DEE5] dark:border-[#223B56] shadow-xs p-5 sm:p-8 space-y-6">
       {/* Top Banner: Step Progress & Privacy Guarantee */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-slate-100 dark:border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-[#D7DEE5] dark:border-[#223B56]">
         <div>
-          <div className="flex items-center space-x-2 text-xs font-bold text-civic-700 dark:text-civic-400 uppercase tracking-wider">
+          <div className="flex items-center space-x-2 text-xs font-bold text-[#16733B] dark:text-emerald-400 uppercase tracking-wider">
             <User className="w-4 h-4" />
             <span>
               {language === 'ta'
@@ -124,14 +124,14 @@ export const GuidedProfile: React.FC<GuidedProfileProps> = ({
                 : `Step ${currentStep} of ${totalSteps}`}
             </span>
           </div>
-          <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1 tracking-tight">
+          <h2 className="text-xl sm:text-2xl font-bold text-[#202B36] dark:text-white mt-1 tracking-tight">
             {language === 'ta'
               ? 'உங்கள் விவரங்கள்: எளிய வழிகாட்டி'
               : language === 'hi'
               ? 'आपके विवरण: सरल चरणबद्ध मार्गदर्शिका'
               : 'Your Details: Guided Scheme Matcher'}
           </h2>
-          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-0.5">
+          <p className="text-xs sm:text-sm text-[#596775] dark:text-slate-300 mt-0.5">
             {language === 'ta'
               ? 'சில எளிய கேள்விகளுக்கு பதிலளியுங்கள். எந்த அரசு திட்டங்கள் உங்களுக்கு உதவும் என்பதை நாங்கள் சரிபார்ப்போம்.'
               : language === 'hi'
@@ -141,8 +141,8 @@ export const GuidedProfile: React.FC<GuidedProfileProps> = ({
         </div>
 
         {/* Reassurance Privacy Pill */}
-        <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 text-xs font-semibold self-start sm:self-auto shrink-0">
-          <Lock className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+        <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-[#EDF6EF] dark:bg-[#105C2E]/30 text-[#16733B] dark:text-emerald-300 border border-[#D7DEE5] dark:border-[#223B56] text-xs font-semibold self-start sm:self-auto shrink-0">
+          <Lock className="w-3.5 h-3.5 text-[#16733B] dark:text-emerald-400" />
           <span>
             {language === 'ta'
               ? 'ஆதார் / வங்கி விவரங்கள் தேவையில்லை'
@@ -168,28 +168,28 @@ export const GuidedProfile: React.FC<GuidedProfileProps> = ({
               key={step.num}
               type="button"
               onClick={() => setCurrentStep(step.num)}
-              className={`p-2 sm:p-3 rounded-2xl border text-left transition-all flex items-center space-x-2 cursor-pointer ${
+              className={`p-2 sm:p-3 rounded-xl border text-left transition-all flex items-center space-x-2 cursor-pointer ${
                 isCurrent
-                  ? 'bg-civic-50 dark:bg-civic-950/70 border-civic-400 dark:border-civic-600 ring-2 ring-civic-500/20 shadow-xs'
+                  ? 'bg-[#EDF6EF] dark:bg-[#105C2E]/40 border-[#16733B] dark:border-[#16733B] ring-1 ring-[#16733B]/30'
                   : isDone
-                  ? 'bg-emerald-50/70 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300'
-                  : 'bg-slate-50 dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 opacity-80'
+                  ? 'bg-[#EDF6EF]/60 dark:bg-[#105C2E]/20 border-[#D7DEE5] dark:border-[#223B56] text-[#16733B] dark:text-emerald-300'
+                  : 'bg-[#F5F7F8] dark:bg-[#0F2133] border-[#D7DEE5] dark:border-[#223B56] text-[#596775] dark:text-slate-400'
               }`}
             >
               <div
-                className={`w-6 h-6 sm:w-7 sm:h-7 rounded-xl flex items-center justify-center shrink-0 text-xs font-bold ${
+                className={`w-6 h-6 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center shrink-0 text-xs font-bold ${
                   isCurrent
-                    ? 'bg-civic-700 text-white'
+                    ? 'bg-[#16733B] text-white'
                     : isDone
-                    ? 'bg-emerald-600 text-white'
-                    : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
+                    ? 'bg-[#16733B] text-white'
+                    : 'bg-[#D7DEE5] dark:bg-[#223B56] text-[#596775] dark:text-slate-400'
                 }`}
               >
                 {isDone ? <Check className="w-3.5 h-3.5 stroke-[3]" /> : step.num}
               </div>
               <div className="hidden md:block min-w-0">
-                <p className="text-[11px] font-bold truncate leading-tight">{step.title}</p>
-                <p className="text-[9px] text-slate-500 dark:text-slate-400 leading-none mt-0.5">
+                <p className="text-[11px] font-bold truncate leading-tight text-[#202B36] dark:text-white">{step.title}</p>
+                <p className="text-[9px] text-[#596775] dark:text-slate-400 leading-none mt-0.5">
                   {isDone
                     ? language === 'ta' ? 'முடிந்தது' : 'Done'
                     : isCurrent
@@ -208,14 +208,14 @@ export const GuidedProfile: React.FC<GuidedProfileProps> = ({
           <div className="space-y-4">
             {/* Question 1: State */}
             <div>
-              <label htmlFor="guided-state" className="block text-sm font-bold text-slate-900 dark:text-white mb-1.5">
+              <label htmlFor="guided-state" className="block text-sm font-bold text-[#202B36] dark:text-white mb-1.5">
                 {language === 'ta' ? '1. நீங்கள் எந்த மாநிலத்தில் வசிக்கிறீர்கள்?' : language === 'hi' ? '1. आप किस राज्य में रहते हैं?' : '1. Which state or union territory do you live in?'}
               </label>
               <select
                 id="guided-state"
                 value={profile.state}
                 onChange={(e) => onUpdateProfile({ state: e.target.value })}
-                className="w-full sm:w-80 px-3.5 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-sm font-medium text-slate-900 dark:text-white focus:ring-2 focus:ring-civic-500 focus:bg-white dark:focus:bg-slate-900"
+                className="w-full sm:w-80 px-3.5 py-2.5 bg-white dark:bg-[#0F2133] border border-[#D7DEE5] dark:border-[#223B56] rounded-xl text-sm font-medium text-[#202B36] dark:text-white focus:ring-2 focus:ring-[#16733B] focus:border-[#16733B]"
               >
                 <option value="">{language === 'ta' ? '-- மாநிலத்தை தேர்ந்தெடுக்கவும் --' : language === 'hi' ? '-- राज्य चुनें --' : '-- Select your State / UT --'}</option>
                 {INDIAN_STATES.map((s) => (
@@ -226,10 +226,10 @@ export const GuidedProfile: React.FC<GuidedProfileProps> = ({
 
             {/* Question 2: Age */}
             <div>
-              <label htmlFor="guided-age" className="block text-sm font-bold text-slate-900 dark:text-white mb-1">
+              <label htmlFor="guided-age" className="block text-sm font-bold text-[#202B36] dark:text-white mb-1">
                 {language === 'ta' ? '2. உங்கள் வயது என்ன?' : language === 'hi' ? '2. आपकी आयु क्या है?' : '2. How old are you?'}
               </label>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
+              <p className="text-xs text-[#596775] dark:text-slate-400 mb-2">
                 {language === 'ta'
                   ? 'காரணம்: அடல் பென்ஷன் (18-40), ஆயுஷ்மான் மூத்தோர் அட்டை (70+) போன்ற திட்டங்கள் வயதை அடிப்படையாகக் கொண்டவை.'
                   : language === 'hi'
@@ -248,9 +248,9 @@ export const GuidedProfile: React.FC<GuidedProfileProps> = ({
                     onUpdateProfile({ age: val });
                   }}
                   placeholder="e.g. 35"
-                  className="w-36 px-3.5 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-base font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-civic-500 text-center"
+                  className="w-36 px-3.5 py-2 bg-white dark:bg-[#0F2133] border border-[#D7DEE5] dark:border-[#223B56] rounded-xl text-base font-bold text-[#202B36] dark:text-white focus:ring-2 focus:ring-[#16733B] focus:border-[#16733B] text-center"
                 />
-                <span className="text-sm font-semibold text-slate-600 dark:text-slate-400">
+                <span className="text-sm font-semibold text-[#596775] dark:text-slate-400">
                   {language === 'ta' ? 'ஆண்டுகள்' : language === 'hi' ? 'वर्ष' : 'years old'}
                 </span>
               </div>
@@ -258,39 +258,39 @@ export const GuidedProfile: React.FC<GuidedProfileProps> = ({
 
             {/* Question 3: Area (Village vs City) */}
             <div>
-              <label className="block text-sm font-bold text-slate-900 dark:text-white mb-1.5">
+              <label className="block text-sm font-bold text-[#202B36] dark:text-white mb-1.5">
                 {language === 'ta' ? '3. நீங்கள் கிராமத்தில் வசிக்கிறீர்களா அல்லது நகரத்திலா?' : language === 'hi' ? '3. आप गांव में रहते हैं या शहर में?' : '3. Do you live in a village or a town/city?'}
               </label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-md">
                 <button
                   type="button"
                   onClick={() => onUpdateProfile({ area: 'Rural' })}
-                  className={`p-3.5 rounded-2xl border text-left transition-all flex items-center space-x-3 cursor-pointer ${
+                  className={`p-3.5 rounded-xl border text-left transition-all flex items-center space-x-3 cursor-pointer ${
                     profile.area === 'Rural'
-                      ? 'bg-civic-50 dark:bg-civic-950 border-civic-500 ring-2 ring-civic-500/20 text-civic-900 dark:text-civic-200'
-                      : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'
+                      ? 'bg-[#EDF6EF] dark:bg-[#105C2E]/40 border-[#16733B] ring-1 ring-[#16733B] text-[#17324D] dark:text-emerald-200'
+                      : 'bg-white dark:bg-[#0F2133] border-[#D7DEE5] dark:border-[#223B56] hover:bg-[#F5F7F8] dark:hover:bg-[#17324D] text-[#202B36] dark:text-slate-300'
                   }`}
                 >
                   <span className="text-2xl">🌾</span>
                   <div>
                     <p className="text-sm font-bold">{language === 'ta' ? 'கிராமப்புறம் (Village)' : language === 'hi' ? 'ग्रामीण (गांव)' : 'Village (Rural)'}</p>
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400">{language === 'ta' ? 'விவசாயம் & கிராம திட்டங்கள்' : 'Gramin & village schemes'}</p>
+                    <p className="text-[11px] text-[#596775] dark:text-slate-400">{language === 'ta' ? 'விவசாயம் & கிராம திட்டங்கள்' : 'Gramin & village schemes'}</p>
                   </div>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => onUpdateProfile({ area: 'Urban' })}
-                  className={`p-3.5 rounded-2xl border text-left transition-all flex items-center space-x-3 cursor-pointer ${
+                  className={`p-3.5 rounded-xl border text-left transition-all flex items-center space-x-3 cursor-pointer ${
                     profile.area === 'Urban'
-                      ? 'bg-civic-50 dark:bg-civic-950 border-civic-500 ring-2 ring-civic-500/20 text-civic-900 dark:text-civic-200'
-                      : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'
+                      ? 'bg-[#EDF6EF] dark:bg-[#105C2E]/40 border-[#16733B] ring-1 ring-[#16733B] text-[#17324D] dark:text-emerald-200'
+                      : 'bg-white dark:bg-[#0F2133] border-[#D7DEE5] dark:border-[#223B56] hover:bg-[#F5F7F8] dark:hover:bg-[#17324D] text-[#202B36] dark:text-slate-300'
                   }`}
                 >
                   <span className="text-2xl">🏙️</span>
                   <div>
                     <p className="text-sm font-bold">{language === 'ta' ? 'நகர்ப்புறம் (Town / City)' : language === 'hi' ? 'शहरी (नगर / शहर)' : 'Town / City (Urban)'}</p>
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400">{language === 'ta' ? 'நகர வாழ்வாதாரம் & ஸ்வநிதி' : 'Urban livelihood & SVANidhi'}</p>
+                    <p className="text-[11px] text-[#596775] dark:text-slate-400">{language === 'ta' ? 'நகர வாழ்வாதாரம் & ஸ்வநிதி' : 'Urban livelihood & SVANidhi'}</p>
                   </div>
                 </button>
               </div>
@@ -304,10 +304,10 @@ export const GuidedProfile: React.FC<GuidedProfileProps> = ({
         <div className="space-y-5 animate-in fade-in duration-200">
           {/* Question 4: Occupation */}
           <div>
-            <label htmlFor="guided-occupation" className="block text-sm font-bold text-slate-900 dark:text-white mb-1">
+            <label htmlFor="guided-occupation" className="block text-sm font-bold text-[#202B36] dark:text-white mb-1">
               {language === 'ta' ? '4. உங்கள் முக்கிய தொழில் அல்லது வாழ்வாதாரம் என்ன?' : language === 'hi' ? '4. आपका मुख्य कार्य या आजीविका क्या है?' : '4. What best describes your work or daily occupation?'}
             </label>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mb-2.5">
+            <p className="text-xs text-[#596775] dark:text-slate-400 mb-2.5">
               {language === 'ta'
                 ? 'காரணம்: பல நலத்திட்டங்கள் (விவசாயி உதவி, தெருவோர வியாபாரி கடன், கைவினைஞர் நிதி) குறிப்பிட்ட தொழில்களுக்காக உருவாக்கப்பட்டவை.'
                 : 'Why we ask: Many welfare schemes are created for specific occupations like farming, street vending, and traditional craftsmanship.'}
@@ -323,8 +323,8 @@ export const GuidedProfile: React.FC<GuidedProfileProps> = ({
                     onClick={() => onUpdateProfile({ occupation: occ.id })}
                     className={`p-3 rounded-xl border text-left transition-all text-xs font-bold cursor-pointer ${
                       isSelected
-                        ? 'bg-civic-50 dark:bg-civic-950 border-civic-500 ring-2 ring-civic-500/20 text-civic-900 dark:text-civic-200'
-                        : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200'
+                        ? 'bg-[#EDF6EF] dark:bg-[#105C2E]/40 border-[#16733B] ring-1 ring-[#16733B] text-[#17324D] dark:text-emerald-200'
+                        : 'bg-white dark:bg-[#0F2133] border-[#D7DEE5] dark:border-[#223B56] hover:bg-[#F5F7F8] dark:hover:bg-[#17324D] text-[#202B36] dark:text-slate-200'
                     }`}
                   >
                     {label}
@@ -336,10 +336,10 @@ export const GuidedProfile: React.FC<GuidedProfileProps> = ({
 
           {/* Question 5: Annual Household Income */}
           <div>
-            <label className="block text-sm font-bold text-slate-900 dark:text-white mb-1">
+            <label className="block text-sm font-bold text-[#202B36] dark:text-white mb-1">
               {language === 'ta' ? '5. உங்கள் குடும்பத்தின் தோராயமான ஆண்டு வருமானம் என்ன?' : language === 'hi' ? '5. आपके परिवार की अनुमानित वार्षिक आय क्या है?' : '5. What is your approximate annual household income?'}
             </label>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
+            <p className="text-xs text-[#596775] dark:text-slate-400 mb-2">
               {language === 'ta'
                 ? 'தோராயமான தொகையை தேர்வு செய்யலாம். சான்றிதழ் எண் தேவையில்லை.'
                 : 'Select an approximate bracket. You do not need an official income certificate number to check.'}
@@ -353,10 +353,10 @@ export const GuidedProfile: React.FC<GuidedProfileProps> = ({
                     key={inc.id}
                     type="button"
                     onClick={() => onUpdateProfile({ incomeBracket: inc.id as any })}
-                    className={`px-3.5 py-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
+                    className={`px-3.5 py-2 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
                       isSelected
-                        ? 'bg-civic-700 text-white border-civic-700 shadow-xs'
-                        : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                        ? 'bg-[#16733B] text-white border-[#16733B] shadow-xs'
+                        : 'bg-white dark:bg-[#0F2133] border-[#D7DEE5] dark:border-[#223B56] text-[#202B36] dark:text-slate-300 hover:bg-[#F5F7F8] dark:hover:bg-[#17324D]'
                     }`}
                   >
                     {label}
@@ -366,8 +366,8 @@ export const GuidedProfile: React.FC<GuidedProfileProps> = ({
               <button
                 type="button"
                 onClick={() => onUpdateProfile({ incomeBracket: '' })}
-                className={`px-3 py-2 rounded-xl border text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 ${
-                  profile.incomeBracket === '' ? 'border-slate-400' : 'border-dashed border-slate-200 dark:border-slate-800'
+                className={`px-3 py-2 rounded-xl border text-xs font-medium text-[#596775] dark:text-slate-400 hover:text-[#202B36] dark:hover:text-slate-200 ${
+                  profile.incomeBracket === '' ? 'border-[#16733B] bg-[#EDF6EF] text-[#16733B]' : 'border-dashed border-[#D7DEE5] dark:border-[#223B56]'
                 }`}
               >
                 {language === 'ta' ? 'தெரியவில்லை / பின்னர் முடிவு செய்கிறேன்' : 'Not sure / Skip'}
@@ -382,15 +382,15 @@ export const GuidedProfile: React.FC<GuidedProfileProps> = ({
         <div className="space-y-5 animate-in fade-in duration-200">
           {/* Progressive Landholding Question for Farmers / Rural Citizens */}
           {isFarmer ? (
-            <div className="p-4 rounded-2xl bg-amber-50/60 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/60 space-y-2">
-              <label className="block text-sm font-bold text-amber-950 dark:text-amber-200">
+            <div className="p-4 rounded-xl bg-[#FEF3C7]/40 dark:bg-amber-950/30 border border-[#FDE68A] dark:border-amber-900/60 space-y-2">
+              <label className="block text-sm font-bold text-[#92400E] dark:text-amber-200">
                 {language === 'ta'
                   ? '6. உங்கள் பெயரில் சாகுபடி செய்யக்கூடிய விவசாய நிலம் உள்ளதா?'
                   : language === 'hi'
                   ? '6. क्या आपके नाम पर कृषि भूमि दर्ज है?'
                   : '6. Do you own cultivable agricultural land registered in your name?'}
               </label>
-              <p className="text-xs text-amber-800/90 dark:text-amber-300/80">
+              <p className="text-xs text-[#92400E]/80 dark:text-amber-300/80">
                 {language === 'ta'
                   ? 'PM-KISAN ₹6,000 ஆண்டு நிதியுதவிக்கு நில உரிமை ஆவணம் (பட்டா / சிட்டா) அவசியம்.'
                   : 'PM-KISAN ₹6,000 annual assistance requires cultivable land title (Patta / Khasra).'}
@@ -408,8 +408,8 @@ export const GuidedProfile: React.FC<GuidedProfileProps> = ({
                     onClick={() => onUpdateProfile({ landholding: land.id as any })}
                     className={`p-2.5 rounded-xl border text-xs font-semibold text-left transition-all ${
                       profile.landholding === land.id
-                        ? 'bg-amber-600 text-white border-amber-600 shadow-xs'
-                        : 'bg-white dark:bg-slate-900 border-amber-200 dark:border-amber-900 text-slate-800 dark:text-slate-200 hover:bg-amber-100/50'
+                        ? 'bg-[#D97735] text-white border-[#D97735] shadow-xs'
+                        : 'bg-white dark:bg-[#0F2133] border-[#D7DEE5] dark:border-amber-900 text-[#202B36] dark:text-slate-200 hover:bg-amber-50 dark:hover:bg-amber-950/40'
                     }`}
                   >
                     {language === 'ta' ? land.labelTa : land.labelEn}
@@ -418,8 +418,8 @@ export const GuidedProfile: React.FC<GuidedProfileProps> = ({
               </div>
             </div>
           ) : (
-            <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400 flex items-center space-x-2">
-              <Info className="w-4 h-4 text-slate-400 shrink-0" />
+            <div className="p-3.5 rounded-xl bg-[#F5F7F8] dark:bg-[#0F2133] border border-[#D7DEE5] dark:border-[#223B56] text-xs text-[#596775] dark:text-slate-400 flex items-center space-x-2">
+              <Info className="w-4 h-4 text-[#596775] shrink-0" />
               <span>
                 {language === 'ta'
                   ? 'நில உரிமை தேவையில்லாத நகர்ப்புற அல்லது மாற்றுத் தொழில் தேர்ந்தெடுக்கப்பட்டுள்ளது.'
@@ -430,7 +430,7 @@ export const GuidedProfile: React.FC<GuidedProfileProps> = ({
 
           {/* Housing Status Question */}
           <div>
-            <label className="block text-sm font-bold text-slate-900 dark:text-white mb-1.5">
+            <label className="block text-sm font-bold text-[#202B36] dark:text-white mb-1.5">
               {language === 'ta' ? '7. நீங்கள் தற்போது எத்தகைய வீட்டில் வசிக்கிறீர்கள்?' : language === 'hi' ? '7. आप वर्तमान में किस प्रकार के मकान में रहते हैं?' : '7. What type of house do you currently live in?'}
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-md">
@@ -439,12 +439,12 @@ export const GuidedProfile: React.FC<GuidedProfileProps> = ({
                 onClick={() => onUpdateProfile({ ownsPuccaHouse: false })}
                 className={`p-3 rounded-xl border text-left transition-all ${
                   profile.ownsPuccaHouse === false
-                    ? 'bg-civic-50 dark:bg-civic-950 border-civic-500 ring-2 ring-civic-500/20 text-civic-900 dark:text-civic-200'
-                    : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300'
+                    ? 'bg-[#EDF6EF] dark:bg-[#105C2E]/40 border-[#16733B] ring-1 ring-[#16733B] text-[#17324D] dark:text-emerald-200'
+                    : 'bg-white dark:bg-[#0F2133] border-[#D7DEE5] dark:border-[#223B56] text-[#202B36] dark:text-slate-300 hover:bg-[#F5F7F8]'
                 }`}
               >
                 <p className="text-xs font-bold">{language === 'ta' ? 'குடிசை / தகர வீடு (Kutcha House)' : 'Kutcha / Temporary House'}</p>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400">{language === 'ta' ? 'PMAY வீட்டு மானியத்திற்கு முன்னுரிமை' : 'Eligible for PMAY house grant'}</p>
+                <p className="text-[11px] text-[#596775] dark:text-slate-400">{language === 'ta' ? 'PMAY வீட்டு மானியத்திற்கு முன்னுரிமை' : 'Eligible for PMAY house grant'}</p>
               </button>
 
               <button
@@ -452,38 +452,38 @@ export const GuidedProfile: React.FC<GuidedProfileProps> = ({
                 onClick={() => onUpdateProfile({ ownsPuccaHouse: true })}
                 className={`p-3 rounded-xl border text-left transition-all ${
                   profile.ownsPuccaHouse === true
-                    ? 'bg-civic-50 dark:bg-civic-950 border-civic-500 ring-2 ring-civic-500/20 text-civic-900 dark:text-civic-200'
-                    : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300'
+                    ? 'bg-[#EDF6EF] dark:bg-[#105C2E]/40 border-[#16733B] ring-1 ring-[#16733B] text-[#17324D] dark:text-emerald-200'
+                    : 'bg-white dark:bg-[#0F2133] border-[#D7DEE5] dark:border-[#223B56] text-[#202B36] dark:text-slate-300 hover:bg-[#F5F7F8]'
                 }`}
               >
                 <p className="text-xs font-bold">{language === 'ta' ? 'கான்கிரீட் / பக்கா வீடு (Pucca House)' : 'Own Pucca / Concrete House'}</p>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400">{language === 'ta' ? 'ஏற்கனவே சொந்த பக்கா வீடு உள்ளது' : 'Already own permanent pucca house'}</p>
+                <p className="text-[11px] text-[#596775] dark:text-slate-400">{language === 'ta' ? 'ஏற்கனவே சொந்த பக்கா வீடு உள்ளது' : 'Already own permanent pucca house'}</p>
               </button>
             </div>
           </div>
 
           {/* Additional Criteria Checkboxes (Student, Disability) */}
-          <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
-            <span className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+          <div className="space-y-2 pt-2 border-t border-[#D7DEE5] dark:border-[#223B56]">
+            <span className="block text-xs font-bold text-[#202B36] dark:text-slate-300 uppercase tracking-wider">
               {language === 'ta' ? 'கூடுதல் தகுதி விவரங்கள் (பொருந்தினால்):' : 'Additional Applicable Criteria (Optional):'}
             </span>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <label className="flex items-center space-x-2.5 p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 cursor-pointer text-xs font-semibold text-slate-800 dark:text-slate-200">
+              <label className="flex items-center space-x-2.5 p-3 rounded-xl bg-white dark:bg-[#0F2133] border border-[#D7DEE5] dark:border-[#223B56] cursor-pointer text-xs font-semibold text-[#202B36] dark:text-slate-200">
                 <input
                   type="checkbox"
                   checked={profile.isStudent}
                   onChange={(e) => onUpdateProfile({ isStudent: e.target.checked })}
-                  className="w-4 h-4 text-civic-600 rounded focus:ring-civic-500"
+                  className="w-4 h-4 text-[#16733B] rounded focus:ring-[#16733B]"
                 />
                 <span>{language === 'ta' ? 'பள்ளி அல்லது கல்லூரி மாணவர் (Student)' : 'Enrolled Student in School / College'}</span>
               </label>
 
-              <label className="flex items-center space-x-2.5 p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 cursor-pointer text-xs font-semibold text-slate-800 dark:text-slate-200">
+              <label className="flex items-center space-x-2.5 p-3 rounded-xl bg-white dark:bg-[#0F2133] border border-[#D7DEE5] dark:border-[#223B56] cursor-pointer text-xs font-semibold text-[#202B36] dark:text-slate-200">
                 <input
                   type="checkbox"
                   checked={profile.hasDisability}
                   onChange={(e) => onUpdateProfile({ hasDisability: e.target.checked })}
-                  className="w-4 h-4 text-civic-600 rounded focus:ring-civic-500"
+                  className="w-4 h-4 text-[#16733B] rounded focus:ring-[#16733B]"
                 />
                 <span>{language === 'ta' ? 'மாற்றுத்திறனாளி (Divyangjan / PwD)' : 'Person with Disability (Divyangjan)'}</span>
               </label>
@@ -496,14 +496,14 @@ export const GuidedProfile: React.FC<GuidedProfileProps> = ({
       {currentStep === 4 && (
         <div className="space-y-5 animate-in fade-in duration-200">
           <div>
-            <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white mb-1">
+            <h3 className="text-sm sm:text-base font-bold text-[#202B36] dark:text-white mb-1">
               {language === 'ta'
                 ? '8. அரசு திட்டங்கள் மூலம் உங்களுக்கு எந்த வகையான உதவி தேவை?'
                 : language === 'hi'
                 ? '8. आपको किस प्रकार की सरकारी सहायता की आवश्यकता है?'
                 : '8. What kind of government assistance are you looking for?'}
             </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">
+            <p className="text-xs text-[#596775] dark:text-slate-400 mb-3">
               {language === 'ta'
                 ? 'உங்களுக்குத் தேவையானதை தேர்வு செய்யுங்கள். உங்கள் சுயவிவரத்துடன் பொருந்தும் திட்டங்களை உடனடியாகக் காண்பிப்போம்.'
                 : 'Select the primary help you need. We will match you with authentic, verified welfare schemes.'}
@@ -520,14 +520,14 @@ export const GuidedProfile: React.FC<GuidedProfileProps> = ({
               ].map((need) => (
                 <div
                   key={need.id}
-                  className="p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 hover:border-civic-300 dark:hover:border-civic-600 transition-all flex items-start space-x-3 text-left"
+                  className="p-3.5 rounded-xl border border-[#D7DEE5] dark:border-[#223B56] bg-white dark:bg-[#0F2133] hover:border-[#16733B] dark:hover:border-[#16733B] transition-all flex items-start space-x-3 text-left"
                 >
                   <span className="text-2xl mt-0.5">{need.icon}</span>
                   <div>
-                    <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">
+                    <h4 className="text-xs sm:text-sm font-bold text-[#202B36] dark:text-white">
                       {language === 'ta' ? need.titleTa : need.titleEn}
                     </h4>
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                    <p className="text-[11px] text-[#596775] dark:text-slate-400 mt-0.5">
                       {language === 'ta' ? need.descTa : need.descEn}
                     </p>
                   </div>
@@ -537,12 +537,12 @@ export const GuidedProfile: React.FC<GuidedProfileProps> = ({
           </div>
 
           {/* Quick Review Summary Box */}
-          <div className="p-4 rounded-2xl bg-civic-50/70 dark:bg-civic-950/60 border border-civic-200 dark:border-civic-800 text-xs text-civic-950 dark:text-civic-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="p-4 rounded-xl bg-[#EDF6EF] dark:bg-[#17324D] border border-[#D7DEE5] dark:border-[#223B56] text-xs text-[#202B36] dark:text-white flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <span className="font-bold block text-sm">
+              <span className="font-bold block text-sm text-[#17324D] dark:text-white">
                 {language === 'ta' ? 'அனைத்து விவரங்களும் தயாராக உள்ளன!' : 'Your details are ready!'}
               </span>
-              <p className="text-slate-600 dark:text-slate-300 mt-0.5 text-xs">
+              <p className="text-[#596775] dark:text-slate-300 mt-0.5 text-xs">
                 {language === 'ta'
                   ? `${profile.state || 'இந்தியா'} • ${profile.age ? `${profile.age} வயது` : 'வயது பதிவு செய்யப்படவில்லை'} • ${profile.occupation || 'தொழில் பதிவு செய்யப்படவில்லை'}`
                   : `${profile.state || 'India'} • ${profile.age ? `${profile.age} years old` : 'Age pending'} • ${profile.occupation || 'Occupation general'}`}
@@ -551,7 +551,7 @@ export const GuidedProfile: React.FC<GuidedProfileProps> = ({
             <button
               type="button"
               onClick={onComplete}
-              className="px-5 py-2.5 rounded-xl bg-civic-700 hover:bg-civic-800 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center space-x-2 shrink-0 cursor-pointer"
+              className="px-5 py-2.5 rounded-xl bg-[#16733B] hover:bg-[#105C2E] text-white font-bold text-xs shadow-xs transition-all flex items-center justify-center space-x-2 shrink-0 cursor-pointer"
             >
               <Sparkles className="w-4 h-4 text-amber-300" />
               <span>{language === 'ta' ? 'எனக்கான திட்டங்களை காண்க' : 'Find Government Schemes for Me'}</span>
@@ -562,13 +562,13 @@ export const GuidedProfile: React.FC<GuidedProfileProps> = ({
       )}
 
       {/* Bottom Controls: Back, Continue, Demo Fill & Reset */}
-      <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
+      <div className="pt-4 border-t border-[#D7DEE5] dark:border-[#223B56] flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center space-x-2">
           {currentStep > 1 && (
             <button
               type="button"
               onClick={handleBack}
-              className="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-bold transition-colors flex items-center space-x-1.5 cursor-pointer"
+              className="px-4 py-2 rounded-xl border border-[#D7DEE5] dark:border-[#223B56] text-[#202B36] dark:text-slate-300 hover:bg-[#F5F7F8] dark:hover:bg-[#0F2133] text-xs font-bold transition-colors flex items-center space-x-1.5 cursor-pointer"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>{language === 'ta' ? 'முந்தைய படி' : 'Back'}</span>
@@ -579,7 +579,7 @@ export const GuidedProfile: React.FC<GuidedProfileProps> = ({
             <button
               type="button"
               onClick={handleNext}
-              className="px-5 py-2 rounded-xl bg-civic-700 hover:bg-civic-800 text-white text-xs font-bold shadow-xs transition-colors flex items-center space-x-1.5 cursor-pointer"
+              className="px-5 py-2 rounded-xl bg-[#16733B] hover:bg-[#105C2E] text-white text-xs font-bold shadow-xs transition-colors flex items-center space-x-1.5 cursor-pointer"
             >
               <span>{language === 'ta' ? 'அடுத்த படி' : 'Continue'}</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -588,7 +588,7 @@ export const GuidedProfile: React.FC<GuidedProfileProps> = ({
             <button
               type="button"
               onClick={onComplete}
-              className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs transition-colors flex items-center space-x-1.5 cursor-pointer"
+              className="px-5 py-2.5 rounded-xl bg-[#16733B] hover:bg-[#105C2E] text-white text-xs font-bold shadow-xs transition-colors flex items-center space-x-1.5 cursor-pointer"
             >
               <Check className="w-4 h-4 stroke-[3]" />
               <span>{language === 'ta' ? 'திட்டங்களைக் கண்டறியவும்' : 'Find Government Schemes for Me'}</span>
@@ -602,7 +602,7 @@ export const GuidedProfile: React.FC<GuidedProfileProps> = ({
             <button
               type="button"
               onClick={onPreFillDemoProfile}
-              className="px-3 py-1.5 rounded-lg text-[11px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors cursor-pointer"
+              className="px-3 py-1.5 rounded-lg text-[11px] font-semibold bg-[#F5F7F8] dark:bg-[#0F2133] text-[#202B36] dark:text-slate-300 hover:bg-[#EDF6EF] dark:hover:bg-[#17324D] border border-[#D7DEE5] dark:border-[#223B56] transition-colors cursor-pointer"
             >
               {language === 'ta' ? 'மாதிரி விவரங்கள் (Demo)' : 'Sample Profile (Demo)'}
             </button>
@@ -612,7 +612,7 @@ export const GuidedProfile: React.FC<GuidedProfileProps> = ({
             <button
               type="button"
               onClick={onResetProfile}
-              className="px-3 py-1.5 rounded-lg text-[11px] font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors flex items-center space-x-1 cursor-pointer"
+              className="px-3 py-1.5 rounded-lg text-[11px] font-semibold text-rose-700 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-transparent hover:border-rose-200 transition-colors flex items-center space-x-1 cursor-pointer"
             >
               <RotateCcw className="w-3 h-3" />
               <span>{language === 'ta' ? 'அழித்து தொடங்கு' : 'Clear Form'}</span>

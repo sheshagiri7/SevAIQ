@@ -188,17 +188,17 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
       </div>
 
       {/* Honest Labeling & Transparency Banner */}
-      <div className="p-4 bg-blue-50 border border-blue-200 rounded-3xl text-blue-950 text-xs flex items-start space-x-3.5">
-        <Info className="w-5 h-5 text-civic-700 shrink-0 mt-0.5" />
+      <div className="p-4 bg-white dark:bg-[#17324D] border border-[#D7DEE5] dark:border-[#223B56] rounded-xl text-[#596775] dark:text-slate-300 text-xs flex items-start space-x-3.5">
+        <Info className="w-5 h-5 text-[#16733B] shrink-0 mt-0.5" />
         <div className="space-y-1">
-          <span className="font-bold text-civic-900 block text-sm">
+          <span className="font-bold text-[#17324D] dark:text-white block text-sm">
             {language === 'ta'
               ? 'அரசிதழ் தகவல் மற்றும் மூல நம்பகத்தன்மை தணிக்கை:'
               : language === 'hi'
               ? 'मेटाडेटा-आधारित राजपत्र एवं स्रोत सत्यनिष्ठा ऑडिट:'
               : 'Metadata-Based Official Gazette & Source Integrity Audit:'}
           </span>
-          <p className="text-slate-700 leading-relaxed text-xs">
+          <p className="text-[#596775] dark:text-slate-300 leading-relaxed text-xs">
             {language === 'ta'
               ? 'SevAIQ ஒரு திட்டத்தின் இணைய இணைப்பு உள்ளதால் மட்டுமே அதை சரிபார்க்கப்பட்டதாக அறிவிப்பதில்லை. ஒவ்வொரு பதிவும் வெளியிடப்பட்ட வழிகாட்டுதல்கள், அமைச்சக அரசிதழ்கள் மற்றும் அதிகாரப்பூர்வ .gov.in / .nic.in இணையதளங்களுடன் ஒப்பிடப்பட்டு சரிபார்க்கப்படுகிறது. தானியங்கி தரவு என்ற பொய்யான உரிமை கோரலின்றி உண்மையான சரிபார்ப்பு தேதிகள் இங்கு காட்டப்படுகின்றன.'
               : language === 'hi'
@@ -211,19 +211,19 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
       {/* Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {/* Total Schemes Audited */}
-        <div className="p-5 bg-white rounded-3xl border border-slate-200 shadow-xs flex flex-col justify-between">
+        <div className="p-5 bg-white dark:bg-[#17324D] rounded-xl border border-[#D7DEE5] dark:border-[#223B56] shadow-xs flex flex-col justify-between">
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#596775] dark:text-slate-400">
               {language === 'ta' ? 'தணிக்கை செய்யப்பட்ட மொத்த திட்டங்கள்' : language === 'hi' ? 'ऑडिट की गई कुल योजनाएं' : 'Total Schemes Audited'}
             </span>
             <div className="mt-2 flex items-baseline space-x-2">
-              <span className="text-3xl font-extrabold text-slate-900">{schemes.length}</span>
-              <span className="text-xs text-slate-600 font-semibold">
+              <span className="text-3xl font-extrabold text-[#202B36] dark:text-white">{schemes.length}</span>
+              <span className="text-xs text-[#596775] dark:text-slate-300 font-semibold">
                 {language === 'ta' ? 'செயலில் உள்ள அட்டவணை' : language === 'hi' ? 'सक्रिय कैटलॉग' : 'Active catalog'}
               </span>
             </div>
           </div>
-          <p className="mt-2 text-xs text-slate-500">
+          <p className="mt-2 text-xs text-[#596775] dark:text-slate-400">
             {language === 'ta'
               ? 'FastAPI பின்தளத்துடன் ஒப்பிட்டு சரிபார்க்கப்பட்டது'
               : language === 'hi'
@@ -233,19 +233,19 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
         </div>
 
         {/* Fully Verified Records */}
-        <div className="p-5 bg-white rounded-3xl border border-slate-200 shadow-xs flex flex-col justify-between">
+        <div className="p-5 bg-white dark:bg-[#17324D] rounded-xl border border-[#D7DEE5] dark:border-[#223B56] shadow-xs flex flex-col justify-between">
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-emerald-700">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#16733B] dark:text-emerald-400">
               {language === 'ta' ? 'முழுமையாக சரிபார்க்கப்பட்ட பதிவுகள்' : language === 'hi' ? 'पूर्णतः सत्यापित रिकॉर्ड' : 'Fully Verified Records'}
             </span>
             <div className="mt-2 flex items-baseline space-x-2">
-              <span className="text-3xl font-extrabold text-emerald-700">{fullyVerifiedCount}</span>
-              <span className="text-xs text-emerald-600 font-semibold">
+              <span className="text-3xl font-extrabold text-[#16733B] dark:text-emerald-400">{fullyVerifiedCount}</span>
+              <span className="text-xs text-[#16733B] dark:text-emerald-300 font-semibold">
                 ({schemes.length > 0 ? Math.round((fullyVerifiedCount / schemes.length) * 100) : 0}%)
               </span>
             </div>
           </div>
-          <p className="mt-2 text-xs text-slate-500">
+          <p className="mt-2 text-xs text-[#596775] dark:text-slate-400">
             {language === 'ta'
               ? 'உண்மையான .gov.in முகவரி & அரசிதழ் நாள் கொண்டது'
               : language === 'hi'
@@ -255,7 +255,7 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
         </div>
 
         {/* Records with Flags */}
-        <div className="p-5 bg-white rounded-3xl border border-slate-200 shadow-xs flex flex-col justify-between">
+        <div className="p-5 bg-white dark:bg-[#17324D] rounded-xl border border-[#D7DEE5] dark:border-[#223B56] shadow-xs flex flex-col justify-between">
           <div>
             <span className="text-xs font-bold uppercase tracking-wider text-amber-700">
               {language === 'ta' ? 'கூடுதல் ஆய்வு தேவைப்படும் பதிவுகள்' : language === 'hi' ? 'समीक्षाधीन / नोटिस युक्त रिकॉर्ड' : 'Metadata Notices / Pending'}
@@ -370,7 +370,7 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
             return (
               <div
                 key={scheme.id}
-                className="p-6 bg-white rounded-3xl border border-slate-200 shadow-xs hover:border-civic-300 transition-all space-y-4"
+                className="p-6 bg-white dark:bg-[#17324D] rounded-xl border border-[#D7DEE5] dark:border-[#223B56] shadow-xs hover:border-[#16733B] transition-all space-y-4"
               >
                 {/* Header Row */}
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
@@ -534,7 +534,7 @@ export const TrustMonitor: React.FC<TrustMonitorProps> = ({
             );
           })
         ) : (
-          <div className="p-12 bg-white rounded-3xl border border-slate-200 text-center space-y-3">
+          <div className="p-12 bg-white dark:bg-[#17324D] rounded-xl border border-[#D7DEE5] dark:border-[#223B56] text-center space-y-3">
             <ShieldCheck className="w-10 h-10 text-slate-300 mx-auto" />
             <h3 className="text-base font-bold text-slate-900">
               {language === 'ta'

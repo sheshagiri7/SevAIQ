@@ -66,18 +66,18 @@ export const AboutModal: React.FC<AboutModalProps> = ({
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="bg-white dark:bg-[#0c1834] rounded-3xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden my-auto">
+      <div className="bg-white dark:bg-[#17324D] rounded-xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-md border border-[#D7DEE5] dark:border-[#223B56] overflow-hidden my-auto">
         {/* Top Header */}
-        <div className="px-5 sm:px-8 py-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-gradient-to-r from-slate-50 via-white to-blue-50/40 dark:from-[#0d1a38] dark:via-[#0c1834] dark:to-[#081228] shrink-0">
+        <div className="px-5 sm:px-8 py-5 border-b border-[#D7DEE5] dark:border-[#223B56] flex items-center justify-between bg-[#F5F7F8] dark:bg-[#0F2133] shrink-0">
           <div className="flex items-center space-x-3 min-w-0">
-            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-blue-800 via-civic-700 to-indigo-900 text-white flex items-center justify-center shadow-xs shrink-0">
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-lg bg-[#17324D] text-white flex items-center justify-center shadow-xs shrink-0">
               <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.2]" />
             </div>
             <div className="min-w-0">
               <div className="flex items-center space-x-2">
                 <h2
                   id="about-modal-title"
-                  className="text-lg sm:text-xl font-black text-slate-900 dark:text-white tracking-tight leading-tight"
+                  className="text-lg sm:text-xl font-bold text-[#202B36] dark:text-white tracking-tight leading-tight"
                 >
                   {isTamil
                     ? 'SevAIQ பற்றி: அம்சங்கள் & செயல்படும் முறை'
@@ -85,11 +85,11 @@ export const AboutModal: React.FC<AboutModalProps> = ({
                     ? 'SevAIQ के बारे में: विशेषताएं और कार्यप्रणाली'
                     : 'About SevAIQ: Features & Working'}
                 </h2>
-                <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-civic-100 dark:bg-civic-950/80 text-civic-800 dark:text-civic-300 border border-civic-200 dark:border-civic-800">
+                <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-[#EDF6EF] dark:bg-[#105C2E]/40 text-[#16733B] dark:text-emerald-300 border border-[#D7DEE5] dark:border-[#223B56]">
                   {t.header.challengeBadge}
                 </span>
               </div>
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium truncate mt-0.5">
+              <p className="text-xs text-[#596775] dark:text-slate-400 font-medium truncate mt-0.5">
                 {t.header.tagline}
               </p>
             </div>

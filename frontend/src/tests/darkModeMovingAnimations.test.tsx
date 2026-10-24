@@ -141,7 +141,7 @@ describe('Professional Light / Dark Mode & Moving Animation Images Exemption', (
     expect(mockClassList.add).toHaveBeenCalledWith('dark');
   });
 
-  it('verifies ThemeContext detects system preference when no localStorage entry exists', () => {
+  it('verifies first-time visitors default to light government portal theme without OS dark override', () => {
     // Simulate OS dark mode preference
     (globalThis as any).window.matchMedia = vi.fn().mockImplementation((query: string) => ({
       matches: query.includes('prefers-color-scheme: dark'),
@@ -151,8 +151,8 @@ describe('Professional Light / Dark Mode & Moving Animation Images Exemption', (
     }));
 
     const TestConsumer: React.FC = () => {
-      const { isDark } = useTheme();
-      return <div>{`system-dark:${isDark}`}</div>;
+      const { isDark, theme } = useTheme();
+      return <div>{`theme:${theme}:isDark:${isDark}`}</div>;
     };
 
     const html = renderToString(
@@ -161,7 +161,8 @@ describe('Professional Light / Dark Mode & Moving Animation Images Exemption', (
       </ThemeProvider>
     );
 
-    expect(html).toContain('system-dark:true');
+    // Prompt Section 6: First-time visitors must default to light theme regardless of OS preference
+    expect(html).toContain('theme:light:isDark:false');
   });
 
   it('renders SchemeBannerCarousel with dark mode exempt classes and data attributes', () => {

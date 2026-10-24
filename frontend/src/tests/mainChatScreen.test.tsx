@@ -40,7 +40,7 @@ describe('Main Chatbot Screen Experience Suite', () => {
     // Chat is the default active nav item in the header
     expect(html).toContain('Chat');
     // Welcoming assistant workspace is rendered
-    expect(html).toContain('Sev<span class="text-civic-600">AI</span>Q Voice AI');
+    expect(html).toContain('Sev<span class="text-civic-600">AI</span>Q Assistant');
     expect(html).toContain('How can SevAIQ help you today?');
     // The 5 large suggested question cards are visible in the hero
     expect(html).toContain('Farmer Financial Assistance');

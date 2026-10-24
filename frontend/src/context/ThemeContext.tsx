@@ -25,15 +25,8 @@ function getInitialTheme(): ThemeMode {
     // ignore
   }
 
-  // System preference detection
-  try {
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'dark';
-    }
-  } catch {
-    // ignore
-  }
-
+  // First-time visitors always default to the professional light government-portal theme.
+  // OS dark-mode preference does not force a dark appearance on first-time visitors.
   return 'light';
 }
 
@@ -93,35 +86,8 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     applyThemeToDOM(theme);
   }, [theme, applyThemeToDOM]);
 
-  // Listen to system preference changes if no manual preference has been set in localStorage
-  useEffect(() => {
-    if (typeof window === 'undefined' || !window.matchMedia) return;
-
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const handleChange = (e: MediaQueryListEvent) => {
-      try {
-        const saved = localStorage.getItem(THEME_STORAGE_KEY);
-        // Only react to OS-level changes if user hasn't pinned a manual preference
-        if (!saved) {
-          const systemTheme: ThemeMode = e.matches ? 'dark' : 'light';
-          setThemeState(systemTheme);
-          applyThemeToDOM(systemTheme);
-        }
-      } catch {
-        const systemTheme: ThemeMode = e.matches ? 'dark' : 'light';
-        setThemeState(systemTheme);
-        applyThemeToDOM(systemTheme);
-      }
-    };
-
-    if (mediaQuery.addEventListener) {
-      mediaQuery.addEventListener('change', handleChange);
-      return () => mediaQuery.removeEventListener('change', handleChange);
-    } else if (mediaQuery.addListener) {
-      mediaQuery.addListener(handleChange);
-      return () => mediaQuery.removeListener(handleChange);
-    }
-  }, [applyThemeToDOM]);
+  // Do not let OS dark-mode preference override the citizen's view unexpectedly.
+  // Dark mode is preserved when manually chosen by the citizen.
 
   const isDark = theme === 'dark';
 

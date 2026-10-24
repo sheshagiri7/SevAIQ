@@ -378,7 +378,7 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-[#070d1e] text-slate-900 dark:text-slate-100 font-sans relative transition-colors duration-150">
+    <div className="min-h-screen flex flex-col bg-[#F5F7F8] dark:bg-[#0F2133] text-[#202B36] dark:text-[#F1F5F9] font-sans relative transition-colors duration-150">
       {/* Universal Header with Tab Navigation & Health Status */}
       <Header
         apiState={apiState}

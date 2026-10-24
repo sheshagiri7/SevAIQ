@@ -400,13 +400,13 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
       )}
 
       {/* Target Schemes Selector Pill Bar */}
-      <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-xs space-y-3">
+      <div className="bg-white dark:bg-[#17324D] rounded-xl border border-[#D7DEE5] dark:border-[#223B56] p-6 shadow-xs space-y-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div className="flex items-center space-x-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#202B36] dark:text-white">
               {t.documentMapper.selectedSchemes}
             </span>
-            <span className="text-xs text-slate-400">
+            <span className="text-xs text-[#596775] dark:text-slate-400">
               {language === 'ta'
                 ? `(${selectedSchemes.length} தேர்வு செய்யப்பட்டுள்ளது)`
                 : language === 'hi'
@@ -418,7 +418,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
             <button
               type="button"
               onClick={onResetSchemeSelection}
-              className="text-xs text-slate-600 hover:text-slate-900 self-start sm:self-auto underline focus:outline-none focus:ring-2 focus:ring-civic-500 rounded px-1 cursor-pointer"
+              className="text-xs text-[#16733B] dark:text-emerald-400 hover:text-[#105C2E] self-start sm:self-auto underline focus:outline-none focus:ring-2 focus:ring-[#16733B] rounded px-1 cursor-pointer"
             >
               {t.documentMapper.resetSelection}
             </button>
@@ -426,18 +426,18 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
         </div>
 
         {selectedSchemes.length === 0 ? (
-          <div className="py-6 px-4 bg-slate-50 border border-dashed border-slate-300 rounded-2xl text-center space-y-2">
-            <div className="w-10 h-10 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center mx-auto">
+          <div className="py-6 px-4 bg-[#F5F7F8] dark:bg-[#0F2133] border border-dashed border-[#D7DEE5] dark:border-[#223B56] rounded-xl text-center space-y-2">
+            <div className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-800 text-[#596775] dark:text-slate-400 flex items-center justify-center mx-auto">
               <Files className="w-5 h-5" />
             </div>
-            <p className="text-sm font-medium text-slate-700">
+            <p className="text-sm font-medium text-[#202B36] dark:text-slate-200">
               {t.documentMapper.emptyState ||
                 'No schemes added yet. Explore schemes and click ‘Add to Mapper’ to compare document requirements.'}
             </p>
             <button
               type="button"
               onClick={() => onNavigate('discover')}
-              className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 text-xs font-semibold text-civic-800 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl transition-colors shadow-2xs cursor-pointer"
+              className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 text-xs font-semibold text-[#16733B] dark:text-emerald-300 bg-white dark:bg-[#17324D] border border-[#D7DEE5] dark:border-[#223B56] hover:bg-[#EDF6EF] dark:hover:bg-slate-800 rounded-xl transition-colors shadow-2xs cursor-pointer"
             >
               <span>{language === 'ta' ? 'திட்டங்களை ஆராய்க' : language === 'hi' ? 'योजनाएं खोजें' : 'Explore Schemes'}</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -450,7 +450,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
               return (
                 <div
                   key={s.id}
-                  className="inline-flex items-center gap-1.5 pl-3 pr-2 py-1.5 rounded-xl text-xs font-semibold bg-civic-800 text-white shadow-xs group"
+                  className="inline-flex items-center gap-1.5 pl-3 pr-2 py-1.5 rounded-xl text-xs font-semibold bg-[#17324D] text-white shadow-xs group"
                 >
                   <span className="truncate max-w-[220px] sm:max-w-xs">{locScheme.title.split('(')[0].trim()}</span>
                   <button
@@ -464,7 +464,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                     }}
                     aria-label={`Remove ${locScheme.title} from synergy analysis`}
                     title={language === 'ta' ? 'நீக்கு' : language === 'hi' ? 'हटाएं' : 'Remove scheme'}
-                    className="p-0.5 hover:bg-civic-700 rounded-md transition-colors text-slate-300 hover:text-white focus:outline-none focus:ring-1 focus:ring-white cursor-pointer"
+                    className="p-0.5 hover:bg-slate-700 rounded-md transition-colors text-slate-300 hover:text-white focus:outline-none focus:ring-1 focus:ring-white cursor-pointer"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -478,14 +478,14 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
       {/* Readiness Progress Bar & Synergy Card */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Progress Card */}
-        <div className="p-6 bg-white rounded-3xl border border-slate-200 shadow-xs flex flex-col justify-between md:col-span-1">
+        <div className="p-6 bg-white dark:bg-[#17324D] rounded-xl border border-[#D7DEE5] dark:border-[#223B56] shadow-xs flex flex-col justify-between md:col-span-1">
           <div>
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+            <span className="text-xs font-bold text-[#596775] dark:text-slate-400 uppercase tracking-wider">
               {t.documentMapper.readinessScore}
             </span>
             <div className="mt-3 flex items-baseline space-x-2">
-              <span className="text-4xl font-extrabold text-slate-900">{readinessPercent}%</span>
-              <span className="text-xs text-slate-500">
+              <span className="text-4xl font-extrabold text-[#202B36] dark:text-white">{readinessPercent}%</span>
+              <span className="text-xs text-[#596775] dark:text-slate-400">
                 (
                 {language === 'ta'
                   ? `${totalCount} இல் ${haveCount} தயார்`
@@ -497,38 +497,38 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
             </div>
 
             {/* Progress Bar */}
-            <div className="mt-4 w-full h-3 bg-slate-100 rounded-full overflow-hidden">
+            <div className="mt-4 w-full h-3 bg-[#F5F7F8] dark:bg-[#0F2133] rounded-full overflow-hidden border border-[#D7DEE5] dark:border-[#223B56]">
               <div
-                className="h-full bg-gradient-to-r from-blue-600 to-emerald-500 rounded-full transition-all duration-500"
+                className="h-full bg-[#16733B] rounded-full transition-all duration-500"
                 style={{ width: `${readinessPercent}%` }}
               />
             </div>
           </div>
 
-          <div className="mt-4 pt-3 border-t border-slate-100 grid grid-cols-3 text-center text-xs">
+          <div className="mt-4 pt-3 border-t border-[#D7DEE5] dark:border-[#223B56] grid grid-cols-3 text-center text-xs">
             <div>
-              <span className="text-emerald-700 font-bold block">{haveCount}</span>
-              <span className="text-slate-500 text-[10px]">
+              <span className="text-[#16733B] font-bold block">{haveCount}</span>
+              <span className="text-[#596775] dark:text-slate-400 text-[10px]">
                 {language === 'ta' ? 'தயார்' : language === 'hi' ? 'तैयार' : 'Ready'}
               </span>
             </div>
             <div>
-              <span className="text-rose-700 font-bold block">{missingCount}</span>
-              <span className="text-slate-500 text-[10px]">
+              <span className="text-[#991B1B] font-bold block">{missingCount}</span>
+              <span className="text-[#596775] dark:text-slate-400 text-[10px]">
                 {language === 'ta' ? 'விடுபட்டவை' : language === 'hi' ? 'अनुपलब्ध' : 'Missing'}
               </span>
             </div>
             <div>
-              <span className="text-amber-700 font-bold block">{unconfirmedCount}</span>
-              <span className="text-slate-500 text-[10px]">
+              <span className="text-[#92400E] font-bold block">{unconfirmedCount}</span>
+              <span className="text-[#596775] dark:text-slate-400 text-[10px]">
                 {language === 'ta' ? 'உறுதிப்படுத்தப்படவில்லை' : language === 'hi' ? 'अपुष्ट' : 'Unconfirmed'}
               </span>
             </div>
           </div>
 
           {backendMapping?.readiness_score && (
-            <div className="mt-3 p-2.5 bg-slate-50 rounded-xl border border-slate-100 text-[10px] text-slate-500 space-y-1">
-              <span className="font-mono text-slate-700 block font-semibold">
+            <div className="mt-3 p-2.5 bg-[#F5F7F8] dark:bg-[#0F2133] rounded-xl border border-[#D7DEE5] dark:border-[#223B56] text-[10px] text-[#596775] dark:text-slate-400 space-y-1">
+              <span className="font-mono text-[#202B36] dark:text-white block font-semibold">
                 {backendMapping.readiness_score.formula}
               </span>
               <p className="italic leading-snug">{backendMapping.readiness_score.disclaimer}</p>
@@ -537,9 +537,9 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
         </div>
 
         {/* Shared Synergy Insight */}
-        <div className="p-6 bg-gradient-to-br from-indigo-900 via-civic-900 to-slate-900 text-white rounded-3xl shadow-sm md:col-span-2 flex flex-col justify-between">
+        <div className="p-6 bg-[#17324D] text-white rounded-xl border border-[#223B56] shadow-xs md:col-span-2 flex flex-col justify-between">
           <div>
-            <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-white/10 text-cyan-200 text-xs font-semibold mb-3 border border-white/10">
+            <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-md bg-white/10 text-[#EDF6EF] text-xs font-semibold mb-3 border border-white/20">
               <Sparkles className="w-3.5 h-3.5 text-amber-300" />
               <span>
                 {language === 'ta'
@@ -741,15 +741,15 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
             return (
               <div
                 key={doc.id}
-                className="p-6 bg-white rounded-3xl border border-slate-200 shadow-xs hover:border-civic-300 transition-all space-y-4"
+                className="p-6 bg-white dark:bg-[#17324D] rounded-xl border border-[#D7DEE5] dark:border-[#223B56] shadow-xs hover:border-[#16733B] dark:hover:border-[#16733B] transition-all space-y-4"
               >
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                   <div className="space-y-1.5">
                     <div className="flex flex-wrap items-center gap-2">
-                      <h3 className="text-base font-bold text-slate-900">{locDoc.name}</h3>
+                      <h3 className="text-base font-bold text-[#202B36] dark:text-white">{locDoc.name}</h3>
                       {isMultiScheme ? (
-                        <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
-                          <Sparkles className="w-3 h-3 text-indigo-500" />
+                        <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-[#EDF6EF] dark:bg-[#105C2E]/30 text-[#16733B] dark:text-emerald-300 border border-[#D7DEE5] dark:border-[#223B56]">
+                          <Sparkles className="w-3 h-3 text-[#16733B]" />
                           <span>
                             {language === 'ta'
                               ? `${applicableInSelection.length} திட்டங்களுக்கு பொதுவானது (மறுபயன்பாடு)`
@@ -759,7 +759,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                           </span>
                         </span>
                       ) : (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-700 border border-slate-200">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-[10px] font-semibold bg-[#F5F7F8] dark:bg-[#0F2133] text-[#596775] dark:text-slate-300 border border-[#D7DEE5] dark:border-[#223B56]">
                           <span>
                             {language === 'ta'
                               ? 'குறிப்பிட்ட திட்டத் தேவை'
@@ -771,19 +771,19 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                       )}
 
                       {isConditionalDoc(doc) ? (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-purple-50 text-purple-700 border border-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:border-purple-800">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold bg-[#FEF3C7] text-[#92400E] border border-[#FDE68A]">
                           {language === 'ta' ? 'நிபந்தனை ஆவணம்' : 'Conditional / Category'}
                         </span>
                       ) : (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold bg-[#EDF6EF] text-[#16733B] border border-[#D7DEE5]">
                           {language === 'ta' ? 'அடிப்படை ஆவணம்' : 'Core Mandatory'}
                         </span>
                       )}
 
                       {/* Possession Status Indicator Badge */}
                       {doc.status === 'have' ? (
-                        <span className="inline-flex items-center space-x-1 text-[11px] font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                          <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                        <span className="inline-flex items-center space-x-1 text-[11px] font-semibold text-[#16733B] bg-[#EDF6EF] px-2 py-0.5 rounded-md border border-[#D7DEE5]">
+                          <CheckCircle2 className="w-3 h-3 text-[#16733B]" />
                           <span>
                             {language === 'ta'
                               ? 'கையில் உள்ளது (தயார்)'
@@ -793,8 +793,8 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                           </span>
                         </span>
                       ) : doc.status === 'missing' ? (
-                        <span className="inline-flex items-center space-x-1 text-[11px] font-semibold text-rose-800 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200">
-                          <XCircle className="w-3 h-3 text-rose-600" />
+                        <span className="inline-flex items-center space-x-1 text-[11px] font-semibold text-[#991B1B] bg-[#FEE2E2] px-2 py-0.5 rounded-md border border-[#FECACA]">
+                          <XCircle className="w-3 h-3 text-[#991B1B]" />
                           <span>
                             {language === 'ta'
                               ? 'விடுபட்டது (பெற வேண்டும்)'
@@ -804,8 +804,8 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                           </span>
                         </span>
                       ) : (
-                        <span className="inline-flex items-center space-x-1 text-[11px] font-semibold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
-                          <HelpCircle className="w-3 h-3 text-amber-600" />
+                        <span className="inline-flex items-center space-x-1 text-[11px] font-semibold text-[#92400E] bg-[#FEF3C7] px-2 py-0.5 rounded-md border border-[#FDE68A]">
+                          <HelpCircle className="w-3 h-3 text-[#92400E]" />
                           <span>
                             {language === 'ta'
                               ? 'உறுதிப்படுத்தப்படவில்லை'
@@ -816,7 +816,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-slate-600 dark:text-slate-400">{locDoc.description}</p>
+                    <p className="text-xs text-[#596775] dark:text-slate-300 leading-relaxed max-w-2xl">{locDoc.description}</p>
                     {applicableInSelection.length > 0 && (
                       <div className="flex flex-wrap items-center gap-1.5 pt-1">
                         <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
@@ -835,14 +835,14 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                   </div>
 
                   {/* Interactive 3-Way Status Selector */}
-                  <div className="flex items-center space-x-1.5 p-1 bg-slate-100 rounded-2xl self-start sm:self-auto shrink-0">
+                  <div className="flex items-center space-x-1.5 p-1 bg-[#F5F7F8] dark:bg-[#0F2133] border border-[#D7DEE5] dark:border-[#223B56] rounded-xl self-start sm:self-auto shrink-0">
                     <button
                       type="button"
                       onClick={() => onUpdateDocumentStatus(doc.id, 'have')}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center space-x-1 transition-all cursor-pointer ${
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1 transition-all cursor-pointer ${
                         doc.status === 'have'
-                          ? 'bg-emerald-600 text-white shadow-xs'
-                          : 'text-slate-600 hover:text-slate-900'
+                          ? 'bg-[#16733B] text-white shadow-xs'
+                          : 'text-[#596775] hover:text-[#202B36] dark:hover:text-white'
                       }`}
                     >
                       <CheckCircle2 className="w-3.5 h-3.5" />
@@ -852,10 +852,10 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                     <button
                       type="button"
                       onClick={() => onUpdateDocumentStatus(doc.id, 'missing')}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center space-x-1 transition-all cursor-pointer ${
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1 transition-all cursor-pointer ${
                         doc.status === 'missing'
-                          ? 'bg-amber-600 text-white shadow-xs'
-                          : 'text-slate-600 hover:text-slate-900'
+                          ? 'bg-[#D97735] text-white shadow-xs'
+                          : 'text-[#596775] hover:text-[#202B36] dark:hover:text-white'
                       }`}
                     >
                       <XCircle className="w-3.5 h-3.5" />
@@ -865,10 +865,10 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                     <button
                       type="button"
                       onClick={() => onUpdateDocumentStatus(doc.id, 'unconfirmed')}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center space-x-1 transition-all cursor-pointer ${
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1 transition-all cursor-pointer ${
                         doc.status === 'unconfirmed'
-                          ? 'bg-slate-700 text-white shadow-xs'
-                          : 'text-slate-600 hover:text-slate-900'
+                          ? 'bg-[#596775] text-white shadow-xs'
+                          : 'text-[#596775] hover:text-[#202B36] dark:hover:text-white'
                       }`}
                     >
                       <HelpCircle className="w-3.5 h-3.5" />
@@ -881,14 +881,14 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                 {doc.status !== 'have' && (() => {
                   const procurement = getProcurementGuidance(doc.name);
                   return (
-                    <div className="p-3 bg-amber-50/80 border border-amber-200/90 rounded-2xl text-xs text-amber-950 flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-in fade-in">
+                    <div className="p-3 bg-[#FEF3C7]/40 dark:bg-amber-950/30 border border-[#FDE68A] dark:border-amber-900/60 rounded-xl text-xs text-[#92400E] dark:text-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-in fade-in">
                       <div className="flex items-start space-x-2.5">
-                        <Info className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
+                        <Info className="w-4 h-4 text-[#92400E] shrink-0 mt-0.5" />
                         <div>
-                          <span className="font-bold text-amber-900 block text-[11px]">
+                          <span className="font-bold text-[#92400E] dark:text-amber-300 block text-[11px]">
                             {language === 'ta' ? 'இதை எவ்வாறு பெறுவது:' : 'How to procure this:'}
                           </span>
-                          <p className="text-[11px] text-amber-900/90 leading-relaxed">
+                          <p className="text-[11px] text-[#92400E]/90 dark:text-amber-200/90 leading-relaxed">
                             {procurement.text}
                           </p>
                         </div>
@@ -898,7 +898,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                           href={procurement.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center space-x-1 px-3 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-semibold text-[11px] self-start sm:self-auto shrink-0 shadow-2xs transition-colors"
+                          className="inline-flex items-center space-x-1 px-3 py-1 bg-[#D97735] hover:bg-[#b86128] text-white rounded-lg font-semibold text-[11px] self-start sm:self-auto shrink-0 shadow-xs transition-colors"
                         >
                           <span>{procurement.label}</span>
                           <ExternalLink className="w-3 h-3" />
@@ -939,9 +939,9 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
             );
           })
         ) : (
-          <div className="p-12 bg-white rounded-3xl border border-slate-200 text-center space-y-2">
-            <Info className="w-8 h-8 text-slate-400 mx-auto" />
-            <h3 className="text-sm font-bold text-slate-800">
+          <div className="p-12 bg-white dark:bg-[#17324D] rounded-xl border border-[#D7DEE5] dark:border-[#223B56] text-center space-y-2">
+            <Info className="w-8 h-8 text-[#596775] mx-auto" />
+            <h3 className="text-sm font-bold text-[#202B36] dark:text-white">
               {selectedSchemes.length === 0
                 ? language === 'ta'
                   ? 'திட்டங்கள் எதுவும் சேர்க்கப்படவில்லை'
@@ -954,7 +954,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                 ? 'इस श्रेणी में कोई दस्तावेज़ नहीं'
                 : 'No documents in this view'}
             </h3>
-            <p className="text-xs text-slate-500 max-w-md mx-auto">
+            <p className="text-xs text-[#596775] dark:text-slate-400 max-w-md mx-auto">
               {selectedSchemes.length === 0
                 ? t.documentMapper.emptyState ||
                   'No schemes added yet. Explore schemes and click ‘Add to Mapper’ to compare document requirements.'
@@ -970,27 +970,27 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
 
       {/* You're Ready for the Next Step Transition Card */}
       <div
-        className={`p-6 sm:p-8 rounded-3xl border shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6 ${
+        className={`p-6 sm:p-8 rounded-xl border shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-6 ${
           readinessPercent >= 80
-            ? 'bg-gradient-to-r from-emerald-600 to-teal-700 text-white border-emerald-500/40'
-            : 'bg-white border-slate-200 text-slate-900'
+            ? 'bg-[#EDF6EF] dark:bg-[#17324D] text-[#202B36] dark:text-white border-[#16733B]/40'
+            : 'bg-white dark:bg-[#17324D] border-[#D7DEE5] dark:border-[#223B56] text-[#202B36] dark:text-white'
         }`}
       >
         <div className="space-y-1.5 flex-1">
           <div className="flex items-center space-x-2">
             <span
-              className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
-                readinessPercent >= 80 ? 'bg-white/20 text-white' : 'bg-civic-100 text-civic-800'
+              className={`px-2.5 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider ${
+                readinessPercent >= 80 ? 'bg-[#16733B] text-white' : 'bg-[#EDF6EF] text-[#16733B]'
               }`}
             >
               {language === 'ta' ? 'அடுத்த கட்ட நடவடிக்கை' : 'Next Step Guidance'}
             </span>
-            <span className={`text-xs font-bold ${readinessPercent >= 80 ? 'text-emerald-100' : 'text-slate-500'}`}>
+            <span className={`text-xs font-bold ${readinessPercent >= 80 ? 'text-[#16733B] dark:text-emerald-300' : 'text-[#596775] dark:text-slate-400'}`}>
               {readinessPercent}% {language === 'ta' ? 'தயார்நிலை' : 'Readiness'}
             </span>
           </div>
 
-          <h3 className={`text-lg sm:text-xl font-bold tracking-tight ${readinessPercent >= 80 ? 'text-white' : 'text-slate-900'}`}>
+          <h3 className="text-lg sm:text-xl font-bold tracking-tight text-[#202B36] dark:text-white">
             {readinessPercent >= 80
               ? language === 'ta'
                 ? 'நீங்கள் அடுத்த கட்டத்திற்கு தயாராக உள்ளீர்கள்!'
@@ -1000,7 +1000,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
               : 'Prepare Remaining Documents to Apply'}
           </h3>
 
-          <p className={`text-xs sm:text-sm leading-relaxed max-w-2xl ${readinessPercent >= 80 ? 'text-emerald-100' : 'text-slate-600'}`}>
+          <p className="text-xs sm:text-sm leading-relaxed max-w-2xl text-[#596775] dark:text-slate-300">
             {readinessPercent >= 80
               ? language === 'ta'
                 ? 'உங்கள் முக்கிய ஆவணங்கள் அனைத்தும் கையில் உள்ளன. அதிகாரப்பூர்வ அரசு போர்ட்டலில் விண்ணப்பிக்க படி 4-க்கு செல்லவும்.'
@@ -1015,11 +1015,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
           <button
             type="button"
             onClick={() => window.print()}
-            className={`px-4 py-2.5 rounded-xl font-semibold text-xs border transition-all flex items-center justify-center space-x-2 cursor-pointer ${
-              readinessPercent >= 80
-                ? 'bg-white/10 hover:bg-white/20 text-white border-white/20'
-                : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-300'
-            }`}
+            className="px-4 py-2.5 rounded-xl font-semibold text-xs border border-[#D7DEE5] dark:border-[#223B56] bg-white dark:bg-[#0F2133] hover:bg-[#F5F7F8] dark:hover:bg-[#17324D] text-[#202B36] dark:text-white transition-all flex items-center justify-center space-x-2 cursor-pointer"
           >
             <Printer className="w-4 h-4" />
             <span>{language === 'ta' ? 'பட்டியலை அச்சிடு' : 'Print Checklist'}</span>
@@ -1028,13 +1024,9 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
           <button
             type="button"
             onClick={() => onNavigate('application-tracker')}
-            className={`px-5 py-2.5 rounded-xl font-bold text-xs shadow-md transition-all flex items-center justify-center space-x-2 cursor-pointer ${
-              readinessPercent >= 80
-                ? 'bg-white text-emerald-900 hover:bg-emerald-50'
-                : 'bg-emerald-600 hover:bg-emerald-700 text-white'
-            }`}
+            className="px-5 py-2.5 rounded-xl font-bold text-xs shadow-xs transition-all flex items-center justify-center space-x-2 cursor-pointer bg-[#16733B] hover:bg-[#105C2E] text-white"
           >
-            <span>{language === 'ta' ? 'விண்ணப்ப நிலை (படி 4)' : 'Track Application (Stage 4)'}</span>
+            <span>{language === 'ta' ? 'அடுத்தது: விண்ணப்ப நிலை (படி 4)' : 'Next: Track Application (Stage 4)'}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>
@@ -1042,7 +1034,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
 
       {/* Official Source Attributions & Verification Citations */}
       {backendMapping?.official_source_references && backendMapping.official_source_references.length > 0 && (
-        <div className="p-6 bg-white rounded-3xl border border-slate-200 shadow-xs space-y-3">
+        <div className="p-6 bg-white dark:bg-[#17324D] rounded-xl border border-[#D7DEE5] dark:border-[#223B56] shadow-xs space-y-3">
           <div className="flex items-center space-x-2">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-800">
               {language === 'ta'

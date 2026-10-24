@@ -260,13 +260,13 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
 
       {/* Personalized Recommendations Banner */}
       {profile && (profile.age || profile.occupation) ? (
-        <div className="p-4 sm:p-5 bg-gradient-to-r from-emerald-50 via-teal-50/60 to-blue-50/40 rounded-3xl border border-emerald-200 text-emerald-950 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
+        <div className="p-4 sm:p-5 bg-[#EDF6EF] dark:bg-[#17324D] rounded-xl border border-[#D7DEE5] dark:border-[#223B56] text-[#202B36] dark:text-white flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
           <div className="flex items-start sm:items-center space-x-3">
-            <div className="w-10 h-10 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-2xs">
-              <Sparkles className="w-5 h-5 text-amber-200" />
+            <div className="w-9 h-9 rounded-lg bg-[#16733B] text-white flex items-center justify-center shrink-0">
+              <Sparkles className="w-4 h-4 text-amber-200" />
             </div>
             <div>
-              <h3 className="text-sm sm:text-base font-bold text-emerald-950 flex items-center gap-2">
+              <h3 className="text-sm sm:text-base font-bold text-[#17324D] dark:text-white flex items-center gap-2">
                 <span>
                   {language === 'ta'
                     ? 'உங்களுக்கு உதவக்கூடிய திட்டங்கள் (உங்கள் விவரங்களின்படி)'
@@ -275,12 +275,12 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                     : 'Schemes That May Help You (Based on Your Details)'}
                 </span>
                 {profile.occupation && (
-                  <span className="text-[10px] bg-emerald-200/80 text-emerald-900 font-bold px-2 py-0.5 rounded-full">
+                  <span className="text-[10px] bg-white dark:bg-[#0F2133] text-[#16733B] dark:text-emerald-300 border border-[#D7DEE5] dark:border-[#223B56] font-bold px-2 py-0.5 rounded-md">
                     {profile.occupation}
                   </span>
                 )}
               </h3>
-              <p className="text-xs text-emerald-800 mt-0.5">
+              <p className="text-xs text-[#596775] dark:text-slate-300 mt-0.5">
                 {language === 'ta'
                   ? 'கீழே உள்ள திட்ட அட்டை ஒவ்வொன்றிலும் உங்கள் தகுதி நிலை மற்றும் தேவையான ஆவணங்களை பார்க்கலாம்.'
                   : 'Review qualification badges below and jump straight to document preparation for any scheme.'}
@@ -291,16 +291,16 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
             <button
               type="button"
               onClick={onNavigateToEligibility}
-              className="px-3.5 py-1.5 bg-white text-emerald-800 hover:bg-emerald-100 border border-emerald-300 font-semibold rounded-xl text-xs transition-colors self-start sm:self-auto shrink-0 shadow-2xs cursor-pointer"
+              className="px-3.5 py-1.5 bg-white dark:bg-[#0F2133] text-[#16733B] dark:text-emerald-300 hover:bg-[#EDF6EF] border border-[#D7DEE5] dark:border-[#223B56] font-semibold rounded-lg text-xs transition-colors self-start sm:self-auto shrink-0 shadow-xs cursor-pointer"
             >
               {language === 'ta' ? 'விவரங்களை திருத்தவும்' : 'Edit Your Details (Stage 1)'}
             </button>
           )}
         </div>
       ) : onNavigateToEligibility ? (
-        <div className="p-4 bg-slate-50 border border-slate-200 rounded-3xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-700">
+        <div className="p-4 bg-white dark:bg-[#17324D] border border-[#D7DEE5] dark:border-[#223B56] rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-[#202B36] dark:text-slate-300">
           <div className="flex items-center space-x-3">
-            <Info className="w-4 h-4 text-civic-700 shrink-0" />
+            <Info className="w-4 h-4 text-[#16733B] shrink-0" />
             <span>
               {language === 'ta'
                 ? 'உங்கள் தகுதிக்கேற்ப துல்லியமான திட்டங்களை பரிந்துரைக்க, படி 1-ல் எளிய விவரங்களை நிரப்பவும்.'
@@ -310,7 +310,7 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
           <button
             type="button"
             onClick={onNavigateToEligibility}
-            className="px-3.5 py-1.5 bg-civic-700 hover:bg-civic-800 text-white font-semibold rounded-xl transition-colors self-start sm:self-auto shrink-0 cursor-pointer"
+            className="px-3.5 py-1.5 bg-[#16733B] hover:bg-[#105C2E] text-white font-semibold rounded-lg transition-colors self-start sm:self-auto shrink-0 cursor-pointer"
           >
             {language === 'ta' ? 'விவரங்களை நிரப்பவும் (படி 1)' : 'Fill Details (Stage 1)'}
           </button>
@@ -318,37 +318,37 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
       ) : null}
 
       {/* Backend Synchronization Notification */}
-      <div className="p-4 rounded-2xl bg-blue-50 border border-blue-200 text-blue-900 text-xs flex items-start space-x-3">
-        <Info className="w-4 h-4 text-civic-700 shrink-0 mt-0.5" />
+      <div className="p-3.5 rounded-xl bg-white dark:bg-[#17324D] border border-[#D7DEE5] dark:border-[#223B56] text-[#596775] dark:text-slate-300 text-xs flex items-start space-x-3">
+        <Info className="w-4 h-4 text-[#16733B] shrink-0 mt-0.5" />
         <div className="space-y-1">
-          <p className="font-semibold text-civic-900">
+          <p className="font-semibold text-[#17324D] dark:text-white">
             {language === 'ta'
               ? 'சரிபார்க்கப்பட்ட தரவு உத்தரவாதம் & பின்தள நிலை:'
               : language === 'hi'
               ? 'सत्यापित डेटा गारंटी एवं बैकएंड स्थिति:'
               : 'Verified Data Guarantee & Backend Status:'}
           </p>
-          <p className="text-slate-700 leading-relaxed">
+          <p className="text-[#596775] dark:text-slate-300 leading-relaxed">
             {backendSchemesCount === 0 ? (
               language === 'ta' ? (
                 <>
-                  FastAPI இறுதிப்புள்ளி <code className="bg-white/80 px-1 py-0.5 rounded font-mono text-slate-800">GET /api/schemes</code> தற்போது எதிர்பார்க்கப்பட்டபடி காலியாக உள்ளது.
+                  FastAPI இறுதிப்புள்ளி <code className="bg-[#F5F7F8] dark:bg-[#0F2133] px-1 py-0.5 rounded font-mono text-[#202B36] dark:text-white">GET /api/schemes</code> தற்போது எதிர்பார்க்கப்பட்டபடி காலியாக உள்ளது.
                   SevAIQ அதிகாரப்பூர்வ போர்ட்டல்களின் (எ.கா. <em>pmkisan.gov.in</em>, <em>pmjay.gov.in</em>) சரிபார்க்கப்பட்ட மாதிரிகளை காட்டுகிறது.
                 </>
               ) : language === 'hi' ? (
                 <>
-                  FastAPI एंडपॉइंट <code className="bg-white/80 px-1 py-0.5 rounded font-mono text-slate-800">GET /api/schemes</code> वर्तमान में खाली है।
+                  FastAPI एंडपॉइंट <code className="bg-[#F5F7F8] dark:bg-[#0F2133] px-1 py-0.5 rounded font-mono text-[#202B36] dark:text-white">GET /api/schemes</code> वर्तमान में खाली है।
                   SevAIQ आधिकारिक सरकारी पोर्टलों (उदा. <em>pmkisan.gov.in</em>, <em>pmjay.gov.in</em>) के सत्यापित मॉडल प्रदर्शित करता है।
                 </>
               ) : (
                 <>
-                  FastAPI endpoint <code className="bg-white/80 px-1 py-0.5 rounded font-mono text-slate-800">GET /api/schemes</code> currently returns <code className="bg-white/80 px-1 py-0.5 rounded font-mono text-slate-800">[]</code> as expected during initial setup.
+                  FastAPI endpoint <code className="bg-[#F5F7F8] dark:bg-[#0F2133] px-1 py-0.5 rounded font-mono text-[#202B36] dark:text-white">GET /api/schemes</code> currently returns <code className="bg-[#F5F7F8] dark:bg-[#0F2133] px-1 py-0.5 rounded font-mono text-[#202B36] dark:text-white">[]</code> as expected during initial setup.
                   SevAIQ displays official reference models from authentic portals (e.g. <em>pmkisan.gov.in</em>, <em>pmjay.gov.in</em>) so you can evaluate eligibility and document mapping.
                 </>
               )
             ) : (
               <>
-                FastAPI backend has returned {backendSchemesCount} verified schemes from <code className="bg-white/80 px-1 py-0.5 rounded font-mono text-slate-800">GET /api/schemes</code>.
+                FastAPI backend has returned {backendSchemesCount} verified schemes from <code className="bg-[#F5F7F8] dark:bg-[#0F2133] px-1 py-0.5 rounded font-mono text-[#202B36] dark:text-white">GET /api/schemes</code>.
               </>
             )}
           </p>
@@ -356,21 +356,21 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
       </div>
 
       {/* AI & Bilingual Search Card */}
-      <div className="bg-white rounded-3xl border border-slate-200 p-5 shadow-xs space-y-4">
+      <div className="bg-white dark:bg-[#17324D] rounded-xl border border-[#D7DEE5] dark:border-[#223B56] p-5 shadow-xs space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div className="flex items-center space-x-2">
-            <div className="p-1.5 rounded-lg bg-civic-50 text-civic-700">
-              <Sparkles className="w-4 h-4 text-civic-600" />
+            <div className="p-1.5 rounded-lg bg-[#EDF6EF] text-[#16733B]">
+              <Sparkles className="w-4 h-4 text-[#16733B]" />
             </div>
             <div>
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-[#17324D] dark:text-white">
                 {language === 'ta'
                   ? 'தமிழ் & ஆங்கில இருமொழி நலத்திட்ட தேடுபொறி'
                   : language === 'hi'
                   ? 'बहुभाषी कल्याणकारी योजना खोज इंजन'
                   : 'AI & Bilingual Natural Language Scheme Finder'}
               </h3>
-              <p className="text-[11px] text-slate-500">
+              <p className="text-[11px] text-[#596775] dark:text-slate-400">
                 {language === 'ta'
                   ? 'எளிய தமிழில் அல்லது ஆங்கிலத்தில் உங்கள் தேவையை தட்டச்சு செய்யுங்கள் (எ.கா. "விவசாயி உதவி", "மருத்துவ காப்பீடு", "வீடு கட்ட", "ஓய்வூதியம்")'
                   : language === 'hi'
@@ -379,7 +379,7 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
               </p>
             </div>
           </div>
-          <span className="text-[11px] font-semibold text-slate-600 bg-slate-100 px-2.5 py-1 rounded-full self-start sm:self-auto">
+          <span className="text-[11px] font-semibold text-[#596775] bg-[#F5F7F8] dark:bg-[#0F2133] border border-[#D7DEE5] dark:border-[#223B56] px-2.5 py-1 rounded-md self-start sm:self-auto">
             {language === 'ta'
               ? `காட்டப்படுவது: ${filteredSchemes.length} / ${schemes.length} திட்டங்கள்`
               : language === 'hi'
@@ -393,7 +393,7 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
           <label htmlFor="scheme-search-input" className="sr-only">
             {t.discover.searchPlaceholder}
           </label>
-          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#596775]">
             <Search className="w-5 h-5" />
           </div>
           <input
@@ -402,13 +402,13 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={t.discover.searchPlaceholder}
-            className="w-full pl-11 pr-10 py-3 bg-slate-50 hover:bg-white focus:bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-civic-500 focus:border-civic-500 shadow-xs transition-all"
+            className="w-full pl-11 pr-10 py-2.5 bg-[#F5F7F8] dark:bg-[#0F2133] hover:bg-white dark:hover:bg-[#0F2133] focus:bg-white dark:focus:bg-[#0F2133] border border-[#D7DEE5] dark:border-[#223B56] rounded-xl text-[#202B36] dark:text-white placeholder-[#596775] text-sm focus:outline-none focus:ring-2 focus:ring-[#16733B] focus:border-[#16733B] shadow-xs transition-all"
           />
           {searchQuery && (
             <button
               type="button"
               onClick={() => setSearchQuery('')}
-              className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none"
+              className="absolute inset-y-0 right-0 pr-3 flex items-center text-[#596775] hover:text-[#202B36] focus:outline-none"
               aria-label="Clear search query"
             >
               <X className="w-4 h-4" />
@@ -417,19 +417,19 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
         </div>
 
         {/* Sector Filter Pills */}
-        <div className="pt-1 border-t border-slate-100 flex flex-wrap items-center gap-2">
-          <span className="text-xs font-semibold text-slate-700 flex items-center space-x-1 pr-1 shrink-0">
-            <Filter className="w-3.5 h-3.5 text-slate-500" />
+        <div className="pt-2.5 border-t border-[#D7DEE5] dark:border-[#223B56] flex flex-wrap items-center gap-2">
+          <span className="text-xs font-semibold text-[#202B36] dark:text-white flex items-center space-x-1 pr-1 shrink-0">
+            <Filter className="w-3.5 h-3.5 text-[#596775]" />
             <span>{language === 'ta' ? 'துறைகள்:' : language === 'hi' ? 'क्षेत्र:' : 'Sectors:'}</span>
           </span>
           <button
             type="button"
             onClick={() => handleCategorySelect('all')}
             aria-pressed={selectedCategory === 'all'}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500 ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-[#16733B] ${
               selectedCategory === 'all'
-                ? 'bg-civic-800 text-white shadow-xs'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                ? 'bg-[#16733B] text-white shadow-xs'
+                : 'bg-[#F5F7F8] dark:bg-[#0F2133] text-[#202B36] dark:text-slate-300 border border-[#D7DEE5] dark:border-[#223B56] hover:bg-[#EDF6EF]'
             }`}
           >
             {t.discover.allCategories}
@@ -439,10 +439,10 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
               type="button"
               onClick={() => onToggleOnlyEligible(!onlyEligibleFilter)}
               aria-pressed={onlyEligibleFilter}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all focus:outline-none focus:ring-2 focus:ring-civic-500 flex items-center space-x-1.5 ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all focus:outline-none focus:ring-2 focus:ring-[#16733B] flex items-center space-x-1.5 ${
                 onlyEligibleFilter
-                  ? 'bg-emerald-600 text-white shadow-xs'
-                  : 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200'
+                  ? 'bg-[#16733B] text-white shadow-xs'
+                  : 'bg-[#EDF6EF] dark:bg-emerald-950/40 text-[#16733B] dark:text-emerald-300 hover:bg-[#d8eedd] border border-emerald-200 dark:border-emerald-800'
               }`}
             >
               <CheckCircle2 className="w-3.5 h-3.5" />
@@ -463,10 +463,10 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                     type="button"
                     onClick={() => handleCategorySelect(cat.category)}
                     aria-pressed={isSelected}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500 ${
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-[#16733B] ${
                       isSelected
-                        ? 'bg-civic-800 text-white shadow-xs'
-                        : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                        ? 'bg-[#16733B] text-white shadow-xs'
+                        : 'bg-[#F5F7F8] dark:bg-[#0F2133] text-[#202B36] dark:text-slate-300 border border-[#D7DEE5] dark:border-[#223B56] hover:bg-[#EDF6EF]'
                     }`}
                   >
                     {localizedCatName}
@@ -479,15 +479,28 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                   type="button"
                   onClick={() => handleCategorySelect(cat.id)}
                   aria-pressed={selectedCategory === cat.id}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500 ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-[#16733B] ${
                     selectedCategory === cat.id
-                      ? 'bg-civic-800 text-white shadow-xs'
-                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                      ? 'bg-[#16733B] text-white shadow-xs'
+                      : 'bg-[#F5F7F8] dark:bg-[#0F2133] text-[#202B36] dark:text-slate-300 border border-[#D7DEE5] dark:border-[#223B56] hover:bg-[#EDF6EF]'
                   }`}
                 >
                   {getLocalizedOption('categoryFilters', cat.id) || cat.label}
                 </button>
               ))}
+        </div>
+        {/* Honest AI & Bilingual Search Disclosure */}
+        <div className="pt-2 text-[11px] text-[#596775] dark:text-slate-400 flex items-center space-x-1.5 border-t border-[#D7DEE5] dark:border-[#223B56]">
+          <Info className="w-3.5 h-3.5 text-[#16733B] shrink-0" />
+          <span>
+            {language === 'ta' ? (
+              <><strong>வெளிப்படைத்தன்மை:</strong> இருமொழி தேடலானது குடிமக்களின் தேவைகளை நேரடியாக சரிபார்க்கப்பட்ட அரசு திட்டங்களுடன் இணைக்கிறது. உங்கள் தரவு எங்கும் கசியாமல் சாதனத்திலேயே பாதுகாப்பாக இயங்குகிறது.</>
+            ) : language === 'hi' ? (
+              <><strong>इंजन पारदर्शिता:</strong> बहुभाषी खोज नागरिक की आवश्यकता को सीधे सत्यापित सरकारी योजना रिकॉर्ड्स से जोड़ती है। आपका डेटा किसी बाहरी मॉडल को भेजे बिना उपकरण पर ही सुरक्षित रूप से संसाधित होता है।</>
+            ) : (
+              <><strong>Engine Transparency:</strong> Bilingual search maps citizen intent in simple Tamil, Hindi, and English directly to verified FastAPI backend scheme records (<code className="font-mono text-[10px] bg-[#F5F7F8] dark:bg-[#0F2133] px-1 py-0.5 rounded">GET /api/schemes</code>) using client-side semantic matching without transmitting personal queries to external LLMs.</>
+            )}
+          </span>
         </div>
       </div>
 
@@ -507,10 +520,10 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
       {/* Schemes Grid */}
       <div>
         {isLoading ? (
-          <div className="py-20 text-center bg-white rounded-3xl border border-slate-200">
-            <RefreshCw className="w-8 h-8 text-civic-600 animate-spin mx-auto mb-3" />
-            <p className="text-sm font-semibold text-slate-800">{language === 'ta' ? 'பின்தள சேவையகத்துடன் இணைகிறது...' : language === 'hi' ? 'बैकएंड एपीआई से जुड़ रहा है...' : 'Connecting to Backend API...'}</p>
-            <p className="text-xs text-slate-600 mt-1">Querying /api/schemes</p>
+          <div className="py-20 text-center bg-white dark:bg-[#17324D] rounded-xl border border-[#D7DEE5] dark:border-[#223B56]">
+            <RefreshCw className="w-8 h-8 text-[#16733B] animate-spin mx-auto mb-3" />
+            <p className="text-sm font-semibold text-[#202B36] dark:text-white">{language === 'ta' ? 'பின்தள சேவையகத்துடன் இணைகிறது...' : language === 'hi' ? 'बैकएंड एपीआई से जुड़ रहा है...' : 'Connecting to Backend API...'}</p>
+            <p className="text-xs text-[#596775] dark:text-slate-400 mt-1">Querying /api/schemes</p>
           </div>
         ) : filteredSchemes.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -525,18 +538,18 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
               return (
                 <div
                   key={scheme.id}
-                  className="p-5 sm:p-6 bg-white rounded-3xl border border-slate-200 shadow-xs hover:shadow-md hover:border-civic-300 transition-all flex flex-col justify-between"
+                  className="p-5 sm:p-6 bg-white dark:bg-[#17324D] rounded-xl border border-[#D7DEE5] dark:border-[#223B56] shadow-xs hover:border-[#16733B] dark:hover:border-[#16733B] transition-all flex flex-col justify-between"
                 >
                   <div>
                     {/* Top Row: Category + Verified + Eligibility Status Badge */}
                     <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
                       <div className="flex items-center gap-1.5 flex-wrap">
-                        <span className="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-civic-50 text-civic-800 border border-civic-200">
+                        <span className="px-2.5 py-1 rounded-md text-[11px] font-semibold bg-[#F5F7F8] dark:bg-[#0F2133] text-[#17324D] dark:text-slate-200 border border-[#D7DEE5] dark:border-[#223B56]">
                           {scheme.category}
                         </span>
                         {scheme.verified && (
-                          <span className="inline-flex items-center space-x-1 text-[10px] font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                            <FileCheck className="w-3 h-3 text-emerald-600" />
+                          <span className="inline-flex items-center space-x-1 text-[10px] font-semibold text-[#16733B] bg-[#EDF6EF] dark:bg-[#105C2E]/30 px-2 py-0.5 rounded-md border border-[#D7DEE5] dark:border-[#223B56]">
+                            <FileCheck className="w-3 h-3 text-[#16733B]" />
                             <span>{t.discover.verifiedOfficialSource}</span>
                           </span>
                         )}
@@ -544,18 +557,18 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
 
                       {evalResult && (
                         evalResult.overallStatus === 'met' ? (
-                          <span className="inline-flex items-center space-x-1 text-[11px] font-bold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-200">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                          <span className="inline-flex items-center space-x-1 text-[11px] font-bold text-[#16733B] bg-[#EDF6EF] px-2.5 py-0.5 rounded-md border border-[#D7DEE5]">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-[#16733B]" />
                             <span>{language === 'ta' ? 'தகுதி பெறலாம்' : language === 'hi' ? 'पात्र हो सकते हैं' : 'May qualify'}</span>
                           </span>
                         ) : evalResult.overallStatus === 'unknown' ? (
-                          <span className="inline-flex items-center space-x-1 text-[11px] font-bold text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded-full border border-amber-200">
-                            <HelpCircle className="w-3.5 h-3.5 text-amber-600" />
+                          <span className="inline-flex items-center space-x-1 text-[11px] font-bold text-[#92400E] bg-[#FEF3C7] px-2.5 py-0.5 rounded-md border border-[#FDE68A]">
+                            <HelpCircle className="w-3.5 h-3.5 text-[#92400E]" />
                             <span>{language === 'ta' ? 'கூடுதல் விவரம் தேவை' : language === 'hi' ? 'अधिक जानकारी आवश्यक' : 'More info needed'}</span>
                           </span>
                         ) : (
-                          <span className="inline-flex items-center space-x-1 text-[11px] font-bold text-slate-700 bg-slate-100 px-2.5 py-0.5 rounded-full border border-slate-200">
-                            <XCircle className="w-3.5 h-3.5 text-slate-500" />
+                          <span className="inline-flex items-center space-x-1 text-[11px] font-bold text-[#991B1B] bg-[#FEE2E2] px-2.5 py-0.5 rounded-md border border-[#FECACA]">
+                            <XCircle className="w-3.5 h-3.5 text-[#991B1B]" />
                             <span>{language === 'ta' ? 'பொருந்தவில்லை' : language === 'hi' ? 'शर्तें पूरी नहीं' : 'Does not match'}</span>
                           </span>
                         )
@@ -565,8 +578,8 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                     {eligibility && (
                       <div className="mb-2.5">
                         {eligibility.overallStatus === 'met' ? (
-                          <span className="inline-flex items-center space-x-1 text-[11px] font-bold text-emerald-800 bg-emerald-100/90 px-2.5 py-0.5 rounded-full border border-emerald-300">
-                            <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                          <span className="inline-flex items-center space-x-1 text-[11px] font-bold text-[#16733B] bg-[#EDF6EF] px-2.5 py-0.5 rounded-full border border-emerald-300">
+                            <CheckCircle2 className="w-3 h-3 text-[#16733B]" />
                             <span>
                               {language === 'ta'
                                 ? 'உங்கள் சுயவிவரத்திற்கு தகுதியுடையது ✓'
@@ -576,7 +589,7 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                             </span>
                           </span>
                         ) : eligibility.overallStatus === 'not_met' ? (
-                          <span className="inline-flex items-center space-x-1 text-[11px] font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200">
+                          <span className="inline-flex items-center space-x-1 text-[11px] font-medium text-[#596775] dark:text-slate-400 bg-[#F5F7F8] dark:bg-[#0F2133] px-2 py-0.5 rounded-full border border-[#D7DEE5] dark:border-[#223B56]">
                             <span>
                               {language === 'ta'
                                 ? 'தகுதி நிபந்தனை பொருந்தவில்லை'
@@ -586,7 +599,7 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                             </span>
                           </span>
                         ) : (
-                          <span className="inline-flex items-center space-x-1 text-[11px] font-medium text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200">
+                          <span className="inline-flex items-center space-x-1 text-[11px] font-medium text-[#17324D] dark:text-sky-300 bg-sky-50 dark:bg-sky-950/40 px-2 py-0.5 rounded-full border border-sky-200 dark:border-sky-800">
                             <span>
                               {language === 'ta'
                                 ? 'கூடுதல் விவரங்களை சரிபார்க்கவும்'
@@ -599,18 +612,18 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                       </div>
                     )}
 
-                    <h3 className="text-base font-bold text-slate-900 mb-1 leading-snug">
+                    <h3 className="text-base font-bold text-[#202B36] dark:text-white mb-1 leading-snug">
                       {scheme.title}
                     </h3>
-                    <p className="text-xs text-slate-500 mb-2.5 font-medium">{scheme.ministry}</p>
-                    <p className="text-xs text-slate-700 leading-relaxed mb-3">
+                    <p className="text-xs text-[#596775] dark:text-slate-400 mb-2.5 font-medium">{scheme.ministry}</p>
+                    <p className="text-xs text-[#202B36] dark:text-slate-300 leading-relaxed mb-3">
                       {scheme.short_description}
                     </p>
 
                     {/* Suitability Rationale */}
                     {suitability && (
-                      <div className="p-2.5 rounded-xl bg-blue-50/70 border border-blue-200/80 text-[11px] text-blue-950 mb-3 flex items-start space-x-2">
-                        <Sparkles className="w-3.5 h-3.5 text-civic-700 shrink-0 mt-0.5" />
+                      <div className="p-2.5 rounded-lg bg-[#EDF6EF] border border-[#D7DEE5] text-[11px] text-[#17324D] dark:text-emerald-200 mb-3 flex items-start space-x-2">
+                        <Sparkles className="w-3.5 h-3.5 text-[#16733B] shrink-0 mt-0.5" />
                         <span className="leading-snug">
                           <strong>{language === 'ta' ? 'ஏன் பொருந்தும்:' : 'Why this may suit you:'}</strong>{' '}
                           {suitability}
@@ -619,8 +632,8 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                     )}
 
                     {scheme.benefits_summary && (
-                      <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-800 mb-3 flex items-center space-x-2">
-                        <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <div className="p-2.5 rounded-lg bg-[#F5F7F8] dark:bg-[#0F2133] border border-[#D7DEE5] dark:border-[#223B56] text-xs text-[#202B36] dark:text-slate-200 mb-3 flex items-center space-x-2">
+                        <CheckCircle className="w-4 h-4 text-[#16733B] shrink-0" />
                         <span className="font-medium text-[11px]">{scheme.benefits_summary}</span>
                       </div>
                     )}
@@ -629,9 +642,9 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                     <button
                       type="button"
                       onClick={() => toggleCardExpanded(scheme.id)}
-                      className="inline-flex items-center space-x-1.5 text-xs font-bold text-civic-700 hover:text-civic-900 mb-3 cursor-pointer group"
+                      className="inline-flex items-center space-x-1.5 text-xs font-bold text-[#16733B] dark:text-emerald-400 hover:text-[#105C2E] mb-3 cursor-pointer group"
                     >
-                      <Sparkles className="w-3.5 h-3.5 text-amber-500 group-hover:scale-110 transition-transform" />
+                      <Sparkles className="w-3.5 h-3.5 text-[#16733B] group-hover:scale-110 transition-transform" />
                       <span>
                         {isCardExpanded
                           ? language === 'ta' ? 'விவரங்களை மறை (MatchProof)' : 'Hide MatchProof'
@@ -641,31 +654,31 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                     </button>
 
                     {isCardExpanded && (
-                      <div className="p-3.5 bg-slate-50 dark:bg-slate-900/80 rounded-2xl border border-slate-200 dark:border-slate-800 mb-3 text-xs space-y-3 animate-in fade-in">
+                      <div className="p-3.5 bg-[#F5F7F8] dark:bg-[#0F2133] rounded-xl border border-[#D7DEE5] dark:border-[#223B56] mb-3 text-xs space-y-3 animate-in fade-in">
                         {/* 1. Match Status Header */}
-                        <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-800">
-                          <span className="font-bold text-slate-800 dark:text-slate-200 text-[11px] uppercase tracking-wider">
+                        <div className="flex items-center justify-between pb-2 border-b border-[#D7DEE5] dark:border-[#223B56]">
+                          <span className="font-bold text-[#202B36] dark:text-slate-200 text-[11px] uppercase tracking-wider">
                             {language === 'ta' ? 'பொருத்த நிலை (Match Status):' : 'Match Status:'}
                           </span>
                           {evalResult ? (
                             evalResult.overallStatus === 'met' ? (
-                              <span className="inline-flex items-center space-x-1 text-[11px] font-bold text-emerald-800 bg-emerald-100 dark:bg-emerald-950 dark:text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-300">
-                                <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                              <span className="inline-flex items-center space-x-1 text-[11px] font-bold text-[#16733B] bg-[#EDF6EF] px-2 py-0.5 rounded-md border border-[#D7DEE5]">
+                                <CheckCircle2 className="w-3 h-3 text-[#16733B]" />
                                 <span>{language === 'ta' ? 'சாத்தியமான பொருத்தம் (Potential Match)' : 'Potential Match'}</span>
                               </span>
                             ) : evalResult.overallStatus === 'unknown' ? (
-                              <span className="inline-flex items-center space-x-1 text-[11px] font-bold text-amber-800 bg-amber-100 dark:bg-amber-950 dark:text-amber-300 px-2 py-0.5 rounded-full border border-amber-300">
-                                <HelpCircle className="w-3 h-3 text-amber-600" />
+                              <span className="inline-flex items-center space-x-1 text-[11px] font-bold text-[#92400E] bg-[#FEF3C7] px-2 py-0.5 rounded-md border border-[#FDE68A]">
+                                <HelpCircle className="w-3 h-3 text-[#92400E]" />
                                 <span>{language === 'ta' ? 'கூடுதல் விவரம் தேவை (More Info Needed)' : 'More Information Needed'}</span>
                               </span>
                             ) : (
-                              <span className="inline-flex items-center space-x-1 text-[11px] font-bold text-slate-700 bg-slate-200 dark:bg-slate-800 dark:text-slate-300 px-2 py-0.5 rounded-full border border-slate-300">
-                                <XCircle className="w-3 h-3 text-slate-500" />
+                              <span className="inline-flex items-center space-x-1 text-[11px] font-bold text-[#991B1B] bg-[#FEE2E2] px-2 py-0.5 rounded-md border border-[#FECACA]">
+                                <XCircle className="w-3 h-3 text-[#991B1B]" />
                                 <span>{language === 'ta' ? 'விதிகள் பொருந்தவில்லை (Criteria Not Met)' : 'Criteria Not Met'}</span>
                               </span>
                             )
                           ) : (
-                            <span className="text-[11px] font-semibold text-civic-700 dark:text-civic-300">
+                            <span className="text-[11px] font-semibold text-[#16733B] dark:text-emerald-400">
                               {language === 'ta' ? 'படி 1 விவரங்கள் தேவை' : 'Fill Stage 1 Details'}
                             </span>
                           )}
@@ -674,15 +687,15 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                         {/* 2. Why this scheme matches (Confirmed profile matches) */}
                         {evalResult && evalResult.criteriaResults.filter((c) => c.status === 'met').length > 0 && (
                           <div className="space-y-1">
-                            <span className="font-bold text-emerald-900 dark:text-emerald-300 block text-[11px]">
+                            <span className="font-bold text-[#16733B] dark:text-emerald-300 block text-[11px]">
                               {language === 'ta' ? '✓ உங்கள் விவரங்களுடன் பொருந்தும் காரணங்கள்:' : '✓ Why This Scheme Matches:'}
                             </span>
                             <ul className="space-y-1 pl-1">
                               {evalResult.criteriaResults
                                 .filter((c) => c.status === 'met')
                                 .map((c) => (
-                                  <li key={c.id} className="text-[11px] text-slate-700 dark:text-slate-300 flex items-start space-x-1.5 leading-snug">
-                                    <span className="text-emerald-600 font-bold shrink-0">•</span>
+                                  <li key={c.id} className="text-[11px] text-[#202B36] dark:text-slate-300 flex items-start space-x-1.5 leading-snug">
+                                    <span className="text-[#16733B] font-bold shrink-0">•</span>
                                     <span>{c.explanation}</span>
                                   </li>
                                 ))}
@@ -693,15 +706,15 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                         {/* 3. What is missing / To be verified */}
                         {evalResult && evalResult.criteriaResults.filter((c) => c.status === 'unknown').length > 0 && (
                           <div className="space-y-1">
-                            <span className="font-bold text-amber-900 dark:text-amber-300 block text-[11px]">
+                            <span className="font-bold text-[#92400E] dark:text-amber-300 block text-[11px]">
                               {language === 'ta' ? '? சரிபார்க்கப்பட வேண்டிய விடுபட்ட விவரங்கள்:' : '? What is Missing / To Be Checked:'}
                             </span>
                             <ul className="space-y-1 pl-1">
                               {evalResult.criteriaResults
                                 .filter((c) => c.status === 'unknown')
                                 .map((c) => (
-                                  <li key={c.id} className="text-[11px] text-slate-700 dark:text-slate-300 flex items-start space-x-1.5 leading-snug">
-                                    <span className="text-amber-600 font-bold shrink-0">•</span>
+                                  <li key={c.id} className="text-[11px] text-[#202B36] dark:text-slate-300 flex items-start space-x-1.5 leading-snug">
+                                    <span className="text-[#92400E] font-bold shrink-0">•</span>
                                     <span>{c.explanation}</span>
                                   </li>
                                 ))}
@@ -712,15 +725,15 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                         {/* 4. Criteria not met (if any) */}
                         {evalResult && evalResult.criteriaResults.filter((c) => c.status === 'not_met').length > 0 && (
                           <div className="space-y-1">
-                            <span className="font-bold text-rose-900 dark:text-rose-300 block text-[11px]">
+                            <span className="font-bold text-[#991B1B] dark:text-rose-300 block text-[11px]">
                               {language === 'ta' ? '✗ பொருந்தாத தகுதி விதிகள்:' : '✗ Criteria Not Met:'}
                             </span>
                             <ul className="space-y-1 pl-1">
                               {evalResult.criteriaResults
                                 .filter((c) => c.status === 'not_met')
                                 .map((c) => (
-                                  <li key={c.id} className="text-[11px] text-slate-700 dark:text-slate-300 flex items-start space-x-1.5 leading-snug">
-                                    <span className="text-rose-500 font-bold shrink-0">•</span>
+                                  <li key={c.id} className="text-[11px] text-[#202B36] dark:text-slate-300 flex items-start space-x-1.5 leading-snug">
+                                    <span className="text-[#991B1B] font-bold shrink-0">•</span>
                                     <span>{c.explanation}</span>
                                   </li>
                                 ))}
@@ -729,11 +742,11 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                         )}
 
                         {/* 5. Eligibility Requirements Summary */}
-                        <div className="space-y-1 pt-1 border-t border-slate-200/60 dark:border-slate-800">
-                          <span className="font-bold text-slate-800 dark:text-slate-200 block text-[11px]">
+                        <div className="space-y-1 pt-1 border-t border-[#D7DEE5] dark:border-[#223B56]">
+                          <span className="font-bold text-[#202B36] dark:text-slate-200 block text-[11px]">
                             {language === 'ta' ? 'முக்கிய தகுதி நிபந்தனைகள்:' : 'Eligibility Requirements:'}
                           </span>
-                          <div className="text-[11px] text-slate-600 dark:text-slate-400 space-y-0.5 leading-snug">
+                          <div className="text-[11px] text-[#596775] dark:text-slate-400 space-y-0.5 leading-snug">
                             {scheme.rules?.minAge !== undefined && (
                               <p>• {language === 'ta' ? `வயது வரம்பு: ${scheme.rules.minAge} முதல் ${scheme.rules.maxAge ?? 100} ஆண்டுகள் வரை` : `Age limit: ${scheme.rules.minAge} to ${scheme.rules.maxAge ?? 100} years`}</p>
                             )}
@@ -754,13 +767,13 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
 
                         {/* 6. Required Documents & Application Mode */}
                         {scheme.required_documents && scheme.required_documents.length > 0 && (
-                          <div className="pt-1 border-t border-slate-200/60 dark:border-slate-800">
-                            <span className="font-bold text-slate-800 dark:text-slate-200 block text-[11px] mb-1">
+                          <div className="pt-1 border-t border-[#D7DEE5] dark:border-[#223B56]">
+                            <span className="font-bold text-[#202B36] dark:text-slate-200 block text-[11px] mb-1">
                               {language === 'ta' ? 'தேவையான முக்கிய ஆவணங்கள்:' : 'Key Documents Needed:'}
                             </span>
                             <div className="flex flex-wrap gap-1">
                               {scheme.required_documents.map((doc, i) => (
-                                <span key={i} className="px-2 py-0.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md text-[10px] text-slate-700 dark:text-slate-300">
+                                <span key={i} className="px-2 py-0.5 bg-white dark:bg-[#0F2133] border border-[#D7DEE5] dark:border-[#223B56] rounded-md text-[10px] text-[#202B36] dark:text-slate-300">
                                   {doc}
                                 </span>
                               ))}
@@ -769,14 +782,14 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                         )}
 
                         {scheme.application_mode && (
-                          <div className="text-[11px] text-slate-600 dark:text-slate-400">
+                          <div className="text-[11px] text-[#596775] dark:text-slate-400">
                             <strong>{language === 'ta' ? 'விண்ணப்பிக்கும் முறை:' : 'Application Mode:'}</strong> {scheme.application_mode}
                           </div>
                         )}
 
                         {/* 7. Next Best Action */}
-                        <div className="p-2 rounded-xl bg-civic-50/80 dark:bg-civic-950/60 border border-civic-200/80 dark:border-civic-800 text-[11px] text-civic-950 dark:text-civic-200 flex items-start space-x-1.5">
-                          <ArrowRight className="w-3.5 h-3.5 text-civic-700 shrink-0 mt-0.5" />
+                        <div className="p-2 rounded-lg bg-[#EDF6EF] dark:bg-[#17324D] border border-[#D7DEE5] dark:border-[#223B56] text-[11px] text-[#202B36] dark:text-white flex items-start space-x-1.5">
+                          <ArrowRight className="w-3.5 h-3.5 text-[#16733B] shrink-0 mt-0.5" />
                           <span className="leading-snug">
                             <strong>{language === 'ta' ? 'அடுத்த படி:' : 'Next Step:'}</strong>{' '}
                             {evalResult?.overallStatus === 'met'
@@ -794,13 +807,13 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                         </div>
 
                         {/* 8. Source Verification & Accuracy Disclaimer */}
-                        <div className="text-[10px] text-slate-500 dark:text-slate-400 pt-1 border-t border-slate-200/50 dark:border-slate-800 space-y-0.5">
+                        <div className="text-[10px] text-[#596775] dark:text-slate-400 pt-1 border-t border-[#D7DEE5] dark:border-[#223B56] space-y-0.5">
                           <p>
                             <strong>{language === 'ta' ? 'சரிபார்க்கப்பட்ட மூலம்:' : 'Official Source:'}</strong>{' '}
                             {scheme.verification_source || 'Government Gazette / Portal'}
                             {scheme.verification_date && ` (Verified: ${scheme.verification_date})`}
                           </p>
-                          <p className="italic text-[9px] text-slate-400">
+                          <p className="italic text-[9px] text-[#596775]">
                             {language === 'ta'
                               ? 'வெளிப்படையான விதி மதிப்பீடு. இது வழிகாட்டல் மட்டுமே, இறுதி சட்டப்பூர்வ ஒதுக்கீட்டு உத்தரவாதம் அல்ல.'
                               : 'Deterministic rule evaluation based on official guidelines. Informational guide only; not a legal guarantee of benefit.'}
@@ -811,26 +824,26 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                   </div>
 
                   {/* Actions & Links */}
-                  <div className="pt-3 border-t border-slate-100 space-y-2.5">
+                  <div className="pt-3 border-t border-[#D7DEE5] dark:border-[#223B56] space-y-2.5">
                     <div className="flex items-center justify-between text-xs">
                       {scheme.official_portal_url ? (
                         <a
                           href={scheme.official_portal_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center space-x-1 text-civic-700 font-semibold hover:underline focus:outline-none focus:ring-1 focus:ring-civic-500 rounded"
+                          className="inline-flex items-center space-x-1 text-[#16733B] dark:text-emerald-400 font-semibold hover:underline focus:outline-none focus:ring-1 focus:ring-[#16733B] rounded"
                         >
                           <span>{t.discover.officialPortal}</span>
                           <ExternalLink className="w-3.5 h-3.5" />
                         </a>
                       ) : (
-                        <span className="text-slate-500">Portal verification pending</span>
+                        <span className="text-[#596775]">Portal verification pending</span>
                       )}
 
                       <button
                         type="button"
                         onClick={() => handleOpenSchemeDetail(rawScheme)}
-                        className="text-civic-700 hover:text-civic-900 font-semibold focus:outline-none focus:ring-1 focus:ring-civic-500 rounded px-1 flex items-center space-x-1 cursor-pointer"
+                        className="text-[#17324D] dark:text-slate-300 hover:text-[#16733B] font-semibold focus:outline-none focus:ring-1 focus:ring-[#16733B] rounded px-1 flex items-center space-x-1 cursor-pointer"
                       >
                         <FileText className="w-3.5 h-3.5" />
                         <span>{t.discover.viewFullDetails}</span>
@@ -859,7 +872,7 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                         <button
                           type="button"
                           onClick={() => onNavigateToDocuments(scheme.id)}
-                          className="w-full flex items-center justify-center space-x-2 py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xs transition-colors cursor-pointer"
+                          className="w-full flex items-center justify-center space-x-2 py-2.5 px-3 rounded-xl bg-[#16733B] hover:bg-[#105C2E] text-white font-bold text-xs shadow-xs transition-colors cursor-pointer"
                         >
                           <FileText className="w-3.5 h-3.5" />
                           <span>{language === 'ta' ? 'ஆவணங்களை சரிபார்க்கவும் (படி 3)' : 'Check Documents (Stage 3)'}</span>
@@ -872,16 +885,16 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                           <button
                             type="button"
                             onClick={() => onAskAiAboutScheme(scheme.title)}
-                            className="flex items-center justify-center space-x-1.5 py-2 px-2.5 rounded-xl bg-white hover:bg-civic-50 text-civic-800 border border-civic-300 font-semibold text-[11px] transition-colors cursor-pointer"
+                            className="flex items-center justify-center space-x-1.5 py-2 px-2.5 rounded-xl bg-white dark:bg-[#0F2133] hover:bg-[#EDF6EF] text-[#17324D] dark:text-slate-200 border border-[#D7DEE5] dark:border-[#223B56] font-semibold text-[11px] transition-colors cursor-pointer"
                           >
-                            <MessageSquare className="w-3 h-3 text-civic-600" />
+                            <MessageSquare className="w-3 h-3 text-[#16733B]" />
                             <span>{language === 'ta' ? 'AI-யிடம் கேள்' : 'Ask AI'}</span>
                           </button>
                         ) : onSelectForEligibility ? (
                           <button
                             type="button"
                             onClick={() => onSelectForEligibility(rawScheme)}
-                            className="flex items-center justify-center space-x-1.5 py-2 px-2.5 rounded-xl bg-white hover:bg-civic-50 text-civic-800 border border-civic-300 font-semibold text-[11px] transition-colors cursor-pointer"
+                            className="flex items-center justify-center space-x-1.5 py-2 px-2.5 rounded-xl bg-white dark:bg-[#0F2133] hover:bg-[#EDF6EF] text-[#17324D] dark:text-slate-200 border border-[#D7DEE5] dark:border-[#223B56] font-semibold text-[11px] transition-colors cursor-pointer"
                           >
                             <span>{t.discover.checkEligibility}</span>
                           </button>
@@ -891,9 +904,9 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                           <button
                             type="button"
                             onClick={() => onNavigateToTracker(scheme.id)}
-                            className="flex items-center justify-center space-x-1.5 py-2 px-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[11px] transition-colors cursor-pointer"
+                            className="flex items-center justify-center space-x-1.5 py-2 px-2.5 rounded-xl bg-[#F5F7F8] dark:bg-[#0F2133] hover:bg-[#EDF6EF] text-[#202B36] dark:text-slate-200 border border-[#D7DEE5] dark:border-[#223B56] font-semibold text-[11px] transition-colors cursor-pointer"
                           >
-                            <ListOrdered className="w-3 h-3 text-civic-700" />
+                            <ListOrdered className="w-3 h-3 text-[#16733B]" />
                             <span>{language === 'ta' ? 'வழிகாட்டல்' : 'Guide (Stage 4)'}</span>
                           </button>
                         )}
@@ -905,12 +918,12 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
             })}
           </div>
         ) : (
-          <div className="p-12 bg-white rounded-3xl border border-slate-200 text-center max-w-xl mx-auto space-y-3">
-            <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-500 flex items-center justify-center mx-auto">
+          <div className="p-12 bg-white dark:bg-[#17324D] rounded-xl border border-[#D7DEE5] dark:border-[#223B56] text-center max-w-xl mx-auto space-y-3">
+            <div className="w-12 h-12 rounded-xl bg-[#F5F7F8] dark:bg-[#0F2133] text-[#596775] flex items-center justify-center mx-auto">
               <Search className="w-6 h-6" />
             </div>
-            <h3 className="text-base font-bold text-slate-900">{t.discover.noSchemesFound}</h3>
-            <p className="text-xs text-slate-600">
+            <h3 className="text-base font-bold text-[#202B36] dark:text-white">{t.discover.noSchemesFound}</h3>
+            <p className="text-xs text-[#596775] dark:text-slate-400">
               {t.discover.noSchemesDesc}
             </p>
             <button
@@ -935,20 +948,20 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
           aria-labelledby="modal-scheme-title"
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs overflow-y-auto"
         >
-          <div className="bg-white rounded-3xl max-w-2xl w-full p-6 shadow-2xl space-y-5 border border-slate-200 my-8 max-h-[90vh] overflow-y-auto">
+          <div className="bg-white dark:bg-[#17324D] rounded-xl max-w-2xl w-full p-6 shadow-md space-y-5 border border-[#D7DEE5] dark:border-[#223B56] my-8 max-h-[90vh] overflow-y-auto">
             <div className="flex items-start justify-between">
               <div>
-                <span className="px-2.5 py-0.5 rounded text-[11px] font-semibold bg-civic-50 text-civic-800 border border-civic-200">
+                <span className="px-2.5 py-0.5 rounded text-[11px] font-semibold bg-[#F5F7F8] dark:bg-[#0F2133] text-[#17324D] dark:text-slate-200 border border-[#D7DEE5] dark:border-[#223B56]">
                   {modalScheme.category}
                 </span>
-                <h3 id="modal-scheme-title" className="text-xl font-bold text-slate-900 mt-1.5 leading-snug">
+                <h3 id="modal-scheme-title" className="text-xl font-bold text-[#202B36] dark:text-white mt-1.5 leading-snug">
                   {modalScheme.title}
                 </h3>
-                <p className="text-xs text-slate-600 font-medium flex items-center space-x-1.5 mt-0.5">
-                  <Building2 className="w-3.5 h-3.5 text-slate-400" />
+                <p className="text-xs text-[#596775] dark:text-slate-400 font-medium flex items-center space-x-1.5 mt-0.5">
+                  <Building2 className="w-3.5 h-3.5 text-[#596775]" />
                   <span>{modalScheme.ministry}</span>
                   {fullSchemeDetail?.nodal_agency && (
-                    <span className="text-slate-400">({fullSchemeDetail.nodal_agency})</span>
+                    <span className="text-[#596775]">({fullSchemeDetail.nodal_agency})</span>
                   )}
                 </p>
               </div>
@@ -960,7 +973,7 @@ export const SchemeDiscovery: React.FC<SchemeDiscoveryProps> = ({
                   setFullSchemeDetail(null);
                 }}
                 aria-label="Close dialog"
-                className="p-1.5 text-slate-500 hover:text-slate-800 rounded-lg hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-civic-500"
+                className="p-1.5 text-[#596775] hover:text-[#202B36] rounded-lg hover:bg-[#F5F7F8] dark:hover:bg-[#0F2133] focus:outline-none focus:ring-2 focus:ring-[#16733B]"
               >
                 ✕
               </button>

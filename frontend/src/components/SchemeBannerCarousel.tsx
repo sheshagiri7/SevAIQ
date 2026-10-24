@@ -992,20 +992,20 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
         <button
           type="button"
           onClick={prevSlide}
-          className="absolute left-0 sm:left-3 top-1/2 -translate-y-1/2 z-40 w-8 sm:w-10 h-16 sm:h-22 rounded-r-2xl bg-[#166534]/90 hover:bg-[#14532d] text-white shadow-2xl flex items-center justify-center transition-all hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-emerald-400 cursor-pointer backdrop-blur-xs"
+          className="absolute left-0 sm:left-2 top-1/2 -translate-y-1/2 z-40 w-7 sm:w-8.5 lg:w-9 h-14 sm:h-18 lg:h-20 rounded-r-xl bg-[#16733B] hover:bg-[#105C2E] text-white shadow-xs flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-[#16733B] cursor-pointer"
           aria-label={t.banner?.prevSlide || (isTamil ? 'முந்தைய திட்டம்' : isHindi ? 'पिछली योजना' : 'Previous Scheme Slide')}
         >
-          <ChevronLeft className="w-6 h-6 sm:w-7 sm:h-7 stroke-[3]" />
+          <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 stroke-[3]" />
         </button>
 
         {/* Right Navigation Arrow Button (Green rounded rectangle) */}
         <button
           type="button"
           onClick={nextSlide}
-          className="absolute right-0 sm:right-3 top-1/2 -translate-y-1/2 z-40 w-8 sm:w-10 h-16 sm:h-22 rounded-l-2xl bg-[#166534]/90 hover:bg-[#14532d] text-white shadow-2xl flex items-center justify-center transition-all hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-emerald-400 cursor-pointer backdrop-blur-xs"
+          className="absolute right-0 sm:right-2 top-1/2 -translate-y-1/2 z-40 w-7 sm:w-8.5 lg:w-9 h-14 sm:h-18 lg:h-20 rounded-l-xl bg-[#16733B] hover:bg-[#105C2E] text-white shadow-xs flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-[#16733B] cursor-pointer"
           aria-label={t.banner?.nextSlide || (isTamil ? 'அடுத்த திட்டம்' : isHindi ? 'अगली योजना' : 'Next Scheme Slide')}
         >
-          <ChevronRight className="w-6 h-6 sm:w-7 sm:h-7 stroke-[3]" />
+          <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 stroke-[3]" />
         </button>
 
         {/* Scrolling Horizontal Slide Track (Animated smoothly every 5s) */}
