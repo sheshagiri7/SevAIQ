@@ -7,7 +7,7 @@ patient government welfare information officer in ordinary language.
 
 import json
 from pathlib import Path
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
 DATA_FILE_PATH = Path(__file__).resolve().parent.parent.parent / "data" / "schemes.json"
 

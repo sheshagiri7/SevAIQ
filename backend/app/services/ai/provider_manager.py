@@ -8,7 +8,7 @@ plug-and-play extension for future model providers.
 import logging
 import os
 import time
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from app.services.ai.base import (
     AIErrorType,
