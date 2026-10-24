@@ -13,9 +13,9 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAbout, onReplayIntro }) =>
   return (
     <footer className="bg-white dark:bg-[#0F2133] border-t border-[#D7DEE5] dark:border-[#223B56] mt-16 py-8 transition-colors duration-150">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-4 text-center lg:text-left">
           {/* Main Footer Left: Identity + Action Links */}
-          <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 w-full sm:w-auto">
+          <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-4 w-full lg:w-auto">
             {/* Identity Badge */}
             <div className="flex items-center justify-center space-x-2 shrink-0">
               <div className="w-6 h-6 rounded bg-[#17324D] flex items-center justify-center text-white shrink-0">
@@ -73,7 +73,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAbout, onReplayIntro }) =>
             )}
           </div>
 
-          <p className="text-xs text-[#596775] dark:text-slate-400 text-center sm:text-right shrink-0">
+          <p className="text-xs text-[#596775] dark:text-slate-400 text-center lg:text-right max-w-md">
             {t.footer.disclaimer}
           </p>
         </div>

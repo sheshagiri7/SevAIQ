@@ -251,16 +251,16 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
         {/* Quick Launch Banner to Discover Features & Workflow via About Modal */}
         {onOpenAbout && (
-          <div className="p-4 sm:p-5 bg-[#EDF6EF] dark:bg-[#17324D] rounded-xl border border-[#D7DEE5] dark:border-[#223B56] flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xs">
-            <div className="flex items-center space-x-3.5 text-left min-w-0">
+          <div className="w-full max-w-full p-4 sm:p-5 bg-[#EDF6EF] dark:bg-[#17324D] rounded-xl border border-[#D7DEE5] dark:border-[#223B56] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs">
+            <div className="w-full sm:flex-1 flex items-center space-x-3.5 text-left min-w-0 max-w-full">
               <div className="w-10 h-10 rounded-lg bg-[#16733B] text-white flex items-center justify-center shrink-0">
                 <Sparkles className="w-5 h-5" />
               </div>
-              <div className="min-w-0">
-                <h4 className="text-sm font-bold text-[#202B36] dark:text-white">
+              <div className="min-w-0 flex-1 max-w-full">
+                <h4 className="text-sm font-bold text-[#202B36] dark:text-white break-words">
                   {t.dashboard?.workflowTitle || 'How SevAIQ Empowers Your Application'}
                 </h4>
-                <p className="text-xs text-[#596775] dark:text-slate-300 truncate mt-0.5">
+                <p className="text-xs text-[#596775] dark:text-slate-300 truncate mt-0.5 max-w-full">
                   {t.dashboard?.workflowSubtitle || 'Follow the 4-stage readiness pipeline designed to maximize scheme access.'}
                 </p>
               </div>

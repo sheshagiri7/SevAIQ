@@ -70,16 +70,16 @@ export const AboutModal: React.FC<AboutModalProps> = ({
     >
       <div className="bg-white dark:bg-[#17324D] rounded-xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-md border border-[#D7DEE5] dark:border-[#223B56] overflow-hidden my-auto">
         {/* Top Header */}
-        <div className="px-5 sm:px-8 py-5 border-b border-[#D7DEE5] dark:border-[#223B56] flex items-center justify-between bg-[#F5F7F8] dark:bg-[#0F2133] shrink-0">
-          <div className="flex items-center space-x-3 min-w-0">
-            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-lg bg-[#17324D] text-white flex items-center justify-center shadow-xs shrink-0">
+        <div className="px-4 sm:px-8 py-3.5 sm:py-5 border-b border-[#D7DEE5] dark:border-[#223B56] flex items-center justify-between bg-[#F5F7F8] dark:bg-[#0F2133] shrink-0">
+          <div className="flex items-center space-x-2.5 sm:space-x-3 min-w-0">
+            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg bg-[#17324D] text-white flex items-center justify-center shadow-xs shrink-0">
               <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.2]" />
             </div>
             <div className="min-w-0">
               <div className="flex items-center space-x-2">
                 <h2
                   id="about-modal-title"
-                  className="text-lg sm:text-xl font-bold text-[#202B36] dark:text-white tracking-tight leading-tight"
+                  className="text-base sm:text-xl font-bold text-[#202B36] dark:text-white tracking-tight leading-tight"
                 >
                   {isTamil
                     ? 'SevAIQ பற்றி: அம்சங்கள் & செயல்படும் முறை'
@@ -101,15 +101,15 @@ export const AboutModal: React.FC<AboutModalProps> = ({
             ref={closeButtonRef}
             type="button"
             onClick={onClose}
-            className="w-9 h-9 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500 shrink-0 ml-2"
+            className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500 shrink-0 ml-2 cursor-pointer"
             aria-label="Close dialog"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
         </div>
 
         {/* Scrollable Content Body */}
-        <div className="p-5 sm:p-8 overflow-y-auto space-y-8 text-slate-800 dark:text-slate-200 bg-white dark:bg-[#091226]">
+        <div className="p-4 sm:p-8 overflow-y-auto space-y-6 sm:space-y-8 text-slate-800 dark:text-slate-200 bg-white dark:bg-[#091226]">
           {/* Mission Intro */}
           <div className="p-5 rounded-2xl bg-civic-50/70 dark:bg-civic-950/70 border border-civic-100 dark:border-civic-900 flex items-start space-x-3.5">
             <Sparkles className="w-5 h-5 text-civic-700 dark:text-civic-400 shrink-0 mt-0.5" />

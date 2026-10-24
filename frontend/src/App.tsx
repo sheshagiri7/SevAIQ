@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { Info, Mic, Sparkles } from 'lucide-react';
 import { Header } from './components/Header';
+import { BottomNavigation } from './components/BottomNavigation';
 import { DemographicProfile } from './components/DemographicProfile';
 import { Dashboard } from './components/Dashboard';
 import { SchemeDiscovery } from './components/SchemeDiscovery';
@@ -640,6 +641,7 @@ export function App() {
         isKioskMode={isKioskMode}
         onToggleKioskMode={handleToggleKioskMode}
         onClearSession={handleClearSession}
+        onOpenAbout={() => setIsAboutOpen(true)}
       />
 
       {/* Public Kiosk Mode Privacy Alert Banner */}
@@ -694,7 +696,7 @@ export function App() {
       />
 
       {/* Main Screen Content */}
-      <main className="flex-1 flex flex-col">
+      <main className="flex-1 flex flex-col pb-20 md:pb-0">
         {/* Main Citizen Chat Workspace - Keep mounted so conversation history persists */}
         <div
           className={
@@ -874,7 +876,7 @@ export function App() {
       {/* Floating Bottom-Left Corner About Option Launcher */}
       <aside
         aria-label="About SevAIQ Features & Working"
-        className="fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-40 print:hidden"
+        className="fixed bottom-20 md:bottom-6 left-4 sm:left-6 z-30 print:hidden"
       >
         <button
           type="button"
@@ -932,7 +934,7 @@ export function App() {
                 ? 'SevAIQ वॉयस AI चैट पर जाएं (हिंदी, तमिल और अंग्रेजी)'
                 : 'Open SevAIQ Voice AI Chat (Tamil & English)'
             }
-            className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-40 group flex items-center gap-2.5 px-4 py-3 sm:px-4.5 sm:py-3.5 rounded-full shadow-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-civic-500/40 select-none bg-gradient-to-r from-blue-700 via-civic-700 to-indigo-800 text-white shadow-civic-800/40 hover:shadow-2xl hover:scale-[1.03] active:scale-[0.98] border border-white/25 ring-4 ring-civic-500/15 cursor-pointer"
+            className="fixed bottom-20 md:bottom-6 right-4 sm:right-6 z-30 group flex items-center gap-2.5 px-4 py-3 sm:px-4.5 sm:py-3.5 rounded-full shadow-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-civic-500/40 select-none bg-gradient-to-r from-blue-700 via-civic-700 to-indigo-800 text-white shadow-civic-800/40 hover:shadow-2xl hover:scale-[1.03] active:scale-[0.98] border border-white/25 ring-4 ring-civic-500/15 cursor-pointer"
           >
             {/* Animated Glowing Mic Icon Badge */}
             <div className="relative flex items-center justify-center w-8 h-8 rounded-full bg-white/15 backdrop-blur-xs text-white shrink-0 group-hover:scale-110 transition-transform">
@@ -974,6 +976,13 @@ export function App() {
 
       {/* ADHD Full-Screen Interactive Reading Focus Ruler */}
       <ADHDRuler />
+
+      {/* Dedicated Mobile Fixed Bottom Navigation (5 Primary Destinations) */}
+      <BottomNavigation
+        activeTab={activeTab}
+        onSelectTab={handleNavigate}
+        eligibleCount={eligibleCount}
+      />
 
       <Footer
         onOpenAbout={() => setIsAboutOpen(true)}

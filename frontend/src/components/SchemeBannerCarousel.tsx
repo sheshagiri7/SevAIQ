@@ -1039,7 +1039,7 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                 </div>
 
                 {/* Accessible Scheme Metadata & Screen Reader Attributes */}
-                <div className="sr-only" aria-hidden="false">
+                <div className="sr-only max-w-0 max-h-0 overflow-hidden" aria-hidden="false">
                   <h2>{locSlide.titlePrimary}</h2>
                   <p>{locSlide.ministryBadge}</p>
                   <p>{locSlide.ministrySub}</p>
@@ -1047,22 +1047,22 @@ export const SchemeBannerCarousel: React.FC<SchemeBannerCarouselProps> = ({
                   <p>{locSlide.benefitPill}</p>
                   <p>{locSlide.primaryCtaText}</p>
                   <p>{locSlide.secondaryCtaText}</p>
-                  <span className="animate-badge-float-1">{locSlide.phone.floatingBadge1.title}</span>
-                  <span className="animate-badge-float-2">{locSlide.phone.floatingBadge2.title}</span>
-                  <span>Official Portal Services</span>
-                  <span>{locSlide.phone.shortCode}</span>
-                  <span>{locSlide.phone.highlightCard.title}</span>
-                  <span>{locSlide.phone.service1}</span>
-                  <span>{locSlide.phone.service2}</span>
-                  <span>Apply For Scholarship</span>
-                  <span>My Applications</span>
-                  <span>Know Your Payment Status</span>
-                  <span>One Time Registration (OTR)</span>
-                  <span>My Profile &amp; Aadhaar Verification</span>
-                  <span>PM-KISAN Samman Nidhi</span>
-                  <span>Ayushman Bharat PM-JAY</span>
-                  <span>PM SVANidhi Micro-Credit</span>
-                  <span>Pradhan Mantri Awas Yojana</span>
+                  <p className="animate-badge-float-1">{locSlide.phone.floatingBadge1.title}</p>
+                  <p className="animate-badge-float-2">{locSlide.phone.floatingBadge2.title}</p>
+                  <p>Official Portal Services</p>
+                  <p>{locSlide.phone.shortCode}</p>
+                  <p>{locSlide.phone.highlightCard.title}</p>
+                  <p>{locSlide.phone.service1}</p>
+                  <p>{locSlide.phone.service2}</p>
+                  <p>Apply For Scholarship</p>
+                  <p>My Applications</p>
+                  <p>Know Your Payment Status</p>
+                  <p>One Time Registration (OTR)</p>
+                  <p>My Profile &amp; Aadhaar Verification</p>
+                  <p>PM-KISAN Samman Nidhi</p>
+                  <p>Ayushman Bharat PM-JAY</p>
+                  <p>PM SVANidhi Micro-Credit</p>
+                  <p>Pradhan Mantri Awas Yojana</p>
                 </div>
               </div>
             );

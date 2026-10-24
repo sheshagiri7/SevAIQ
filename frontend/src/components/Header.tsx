@@ -16,6 +16,7 @@ import {
   Moon,
   User,
   ChevronDown,
+  Info,
 } from 'lucide-react';
 import { ApiState, NavigationTab } from '../types';
 import { useLanguage } from '../context/LanguageContext';
@@ -32,6 +33,7 @@ interface HeaderProps {
   isKioskMode?: boolean;
   onToggleKioskMode?: () => void;
   onClearSession?: () => void;
+  onOpenAbout?: () => void;
 }
 
 interface NavItem {
@@ -50,6 +52,7 @@ export const Header: React.FC<HeaderProps> = ({
   isKioskMode = false,
   onToggleKioskMode = () => {},
   onClearSession = () => {},
+  onOpenAbout,
 }) => {
   const { language, t } = useLanguage();
   const { isDark, toggleTheme } = useTheme();
@@ -65,7 +68,7 @@ export const Header: React.FC<HeaderProps> = ({
   const moreMenuRef = useRef<HTMLDivElement | null>(null);
 
   const primaryJourneyItems: NavItem[] = [
-    { id: 'chat', label: t.header.chat, mobileLabel: t.header.chatMobile, description: t.header.chatDesc, icon: MessageSquare },
+    { id: 'chat', label: t.header.chat, mobileLabel: t.header.chat, description: t.header.chatDesc, icon: MessageSquare },
     { id: 'eligibility', label: t.header.details || '1. Your Details', mobileLabel: t.header.detailsMobile || '1. Details', description: t.header.detailsDesc, icon: User, badge: eligibleCount > 0 ? eligibleCount : undefined },
     { id: 'discover', label: t.header.findSchemes || '2. Find Schemes', mobileLabel: t.header.findSchemesMobile || '2. Schemes', description: t.header.findSchemesDesc, icon: Compass },
     { id: 'document-mapper', label: t.header.prepareDocs || '3. Prepare Documents', mobileLabel: t.header.prepareDocsMobile || '3. Documents', description: t.header.prepareDocsDesc, icon: Files },
@@ -125,7 +128,6 @@ export const Header: React.FC<HeaderProps> = ({
   // Keyboard navigation, Escape dismissal, and focus trap for the End Session dialog
   useEffect(() => {
     if (showClearConfirm) {
-      // Initial focus on Cancel button for safety
       setTimeout(() => {
         cancelButtonRef.current?.focus();
       }, 50);
@@ -137,20 +139,17 @@ export const Header: React.FC<HeaderProps> = ({
           return;
         }
 
-        // Two-button focus trap
         if (e.key === 'Tab') {
           const cancelBtn = cancelButtonRef.current;
           const confirmBtn = confirmButtonRef.current;
           if (!cancelBtn || !confirmBtn) return;
 
           if (e.shiftKey) {
-            // Shift + Tab: if on cancelBtn, wrap to confirmBtn
             if (document.activeElement === cancelBtn) {
               e.preventDefault();
               confirmBtn.focus();
             }
           } else {
-            // Tab: if on confirmBtn, wrap to cancelBtn
             if (document.activeElement === confirmBtn) {
               e.preventDefault();
               cancelBtn.focus();
@@ -167,7 +166,7 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header className="sticky top-0 z-50 bg-white dark:bg-[#0f2133] border-b border-[#D7DEE5] dark:border-[#223b56] shadow-xs w-full transition-colors duration-150">
       <div className="w-full px-2 sm:px-4 lg:px-5 xl:px-6 2xl:px-8">
-        <div className="flex items-center justify-between min-h-[3.75rem] sm:min-h-[4.25rem] py-1 sm:py-1.5 w-full gap-1.5 sm:gap-2 lg:gap-3">
+        <div className="flex items-center justify-between min-h-[3.5rem] sm:min-h-[4rem] xl:min-h-[4.25rem] py-1 sm:py-1.5 w-full gap-1 sm:gap-2 lg:gap-3">
           {/* Top Left: Official SevAIQ Logo */}
           <div className="flex items-center shrink-0 pr-1">
             <button
@@ -179,14 +178,14 @@ export const Header: React.FC<HeaderProps> = ({
               <img
                 src="/sevaiq-logo.png"
                 alt="SevAIQ"
-                className="h-8 sm:h-9 xl:h-10 w-auto max-w-[130px] sm:max-w-[150px] xl:max-w-[170px] object-contain shrink-0 sevaiq-header-logo transition-transform group-hover:scale-[1.02]"
+                className="h-7 sm:h-8.5 xl:h-10 w-auto max-w-[115px] sm:max-w-[140px] xl:max-w-[170px] object-contain shrink-0 sevaiq-header-logo transition-transform group-hover:scale-[1.02]"
               />
             </button>
           </div>
 
-          {/* Center: Primary Citizen Journey (4 Stages + Chat) & More Tools */}
+          {/* Center: Primary Citizen Journey (4 Stages + Chat) & More Tools (Tablet & Desktop: 768px+) */}
           <nav
-            className="hidden lg:flex items-center justify-center flex-1 min-w-0 mx-1 lg:mx-2 gap-0.5 xl:gap-1 2xl:gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden py-1"
+            className="hidden md:flex items-center justify-center flex-1 min-w-0 mx-1 lg:mx-2 gap-0.5 lg:gap-1 xl:gap-1.5 2xl:gap-2 py-1"
             aria-label="Main Navigation"
           >
             {primaryJourneyItems.map((item) => {
@@ -198,18 +197,20 @@ export const Header: React.FC<HeaderProps> = ({
                   type="button"
                   onClick={() => handleNavClick(item.id)}
                   aria-current={isActive ? 'page' : undefined}
-                  className={`relative flex items-center ${
+                  className={`relative flex items-center h-8 xl:h-8.5 ${
                     isIndic
                       ? 'gap-1 xl:gap-1.5 px-1.5 py-1 xl:px-2 xl:py-1.5 2xl:px-2.5 text-[11px] xl:text-xs font-semibold'
-                      : 'gap-1.5 px-2 py-1 xl:px-2.5 xl:py-1.5 text-xs font-semibold'
-                  } rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-[#16733B] whitespace-nowrap shrink-0 ${
+                      : 'gap-1 xl:gap-1.5 px-1.5 lg:px-2 py-1 xl:px-2.5 xl:py-1.5 text-xs font-semibold'
+                  } rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-[#16733B] whitespace-nowrap shrink-0 cursor-pointer ${
                     isActive
                       ? 'bg-civic-50 text-civic-800 dark:bg-emerald-950/40 dark:text-emerald-300 shadow-2xs font-bold border border-emerald-200/60 dark:border-emerald-800/40'
                       : 'text-[#596775] dark:text-slate-300 hover:text-[#17324D] dark:hover:text-white hover:bg-[#F5F7F8] dark:hover:bg-slate-800/60'
                   }`}
                 >
                   <Icon className={`${isIndic ? 'w-3 h-3 xl:w-3.5 xl:h-3.5' : 'w-3.5 h-3.5'} shrink-0 ${isActive ? 'text-[#16733B] dark:text-emerald-400' : 'text-[#596775] dark:text-slate-400'}`} />
-                  <span>{item.label}</span>
+                  {/* Full label on wide screens (1280px+), compact label on tablet & standard desktop */}
+                  <span className="hidden xl:inline">{item.label}</span>
+                  <span className="xl:hidden">{item.mobileLabel || item.label}</span>
                   {item.badge !== undefined && (
                     <span className="inline-flex items-center px-1.5 py-0.2 rounded-full text-[8px] xl:text-[9px] font-bold bg-[#EDF6EF] dark:bg-emerald-950/80 text-[#16733B] dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60">
                       {item.badge}
@@ -229,7 +230,7 @@ export const Header: React.FC<HeaderProps> = ({
                 onClick={() => setMoreMenuOpen((prev) => !prev)}
                 aria-expanded={moreMenuOpen}
                 aria-haspopup="true"
-                className={`relative flex items-center gap-1 px-2 py-1 xl:px-2.5 xl:py-1.5 text-xs font-semibold rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-[#16733B] whitespace-nowrap ${
+                className={`relative flex items-center h-8 xl:h-8.5 gap-1 px-1.5 lg:px-2 py-1 xl:px-2.5 xl:py-1.5 text-xs font-semibold rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-[#16733B] whitespace-nowrap cursor-pointer ${
                   isSecondaryActive
                     ? 'bg-civic-50 text-civic-800 dark:bg-emerald-950/40 dark:text-emerald-300 shadow-2xs font-bold border border-emerald-200/60 dark:border-emerald-800/40'
                     : 'text-[#596775] dark:text-slate-300 hover:text-[#17324D] dark:hover:text-white hover:bg-[#F5F7F8] dark:hover:bg-slate-800/60'
@@ -254,7 +255,7 @@ export const Header: React.FC<HeaderProps> = ({
                       key={tool.id}
                       type="button"
                       onClick={() => handleNavClick(tool.id)}
-                      className={`w-full flex items-center space-x-2 px-3 py-2 text-xs text-left font-medium transition-colors ${
+                      className={`w-full flex items-center space-x-2 px-3 py-2 text-xs text-left font-medium transition-colors cursor-pointer ${
                         isToolActive
                           ? 'bg-[#EDF6EF] dark:bg-[#0F2133] text-[#16733B] dark:text-emerald-300 font-bold'
                           : 'text-[#202B36] dark:text-slate-200 hover:bg-[#F5F7F8] dark:hover:bg-slate-800'
@@ -270,7 +271,7 @@ export const Header: React.FC<HeaderProps> = ({
           </nav>
 
           {/* Top Right: Language Switcher, Theme Mode, Kiosk Mode, End Session & Mobile Menu Toggle */}
-          <div className="flex items-center justify-end gap-1.5 sm:gap-2 shrink-0">
+          <div className="flex items-center justify-end gap-1 sm:gap-1.5 xl:gap-2 shrink-0">
             {/* Official Indian Governance / myScheme-Style Language Option */}
             <LanguageSelector variant="header" />
 
@@ -278,19 +279,19 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               type="button"
               onClick={toggleTheme}
-              className={`h-7 xl:h-8 px-2 xl:px-2.5 rounded-lg ${
+              className={`hidden sm:inline-flex h-8 xl:h-8.5 px-2 xl:px-2.5 rounded-lg ${
                 isIndic ? 'text-[11px] xl:text-xs' : 'text-xs'
-              } font-semibold inline-flex items-center gap-1 xl:gap-1.5 border transition-all focus:outline-none focus:ring-2 focus:ring-[#16733B] shrink-0 bg-white dark:bg-[#17324D] text-[#202B36] dark:text-slate-200 border-[#D7DEE5] dark:border-[#223b56] hover:bg-[#F5F7F8] dark:hover:bg-slate-800 shadow-2xs cursor-pointer`}
+              } font-semibold items-center gap-1 xl:gap-1.5 border transition-all focus:outline-none focus:ring-2 focus:ring-[#16733B] shrink-0 bg-white dark:bg-[#17324D] text-[#202B36] dark:text-slate-200 border-[#D7DEE5] dark:border-[#223b56] hover:bg-[#F5F7F8] dark:hover:bg-slate-800 shadow-2xs cursor-pointer`}
               title={isDark ? t.header.switchToLight : t.header.switchToDark}
               aria-label={isDark ? t.header.switchToLight : t.header.switchToDark}
               aria-pressed={isDark}
             >
               {isDark ? (
-                <Sun className="w-3 h-3 xl:w-3.5 xl:h-3.5 text-amber-400 shrink-0" />
+                <Sun className="w-3.5 h-3.5 text-amber-400 shrink-0" />
               ) : (
-                <Moon className="w-3 h-3 xl:w-3.5 xl:h-3.5 text-[#596775] dark:text-slate-300 shrink-0" />
+                <Moon className="w-3.5 h-3.5 text-[#596775] dark:text-slate-300 shrink-0" />
               )}
-              <span className={isIndic ? 'hidden 2xl:inline' : 'hidden xl:inline'}>
+              <span className="hidden xl:inline">
                 {isDark ? t.header.lightMode : t.header.darkMode}
               </span>
             </button>
@@ -299,9 +300,9 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               type="button"
               onClick={() => setShowKioskConfirm(true)}
-              className={`h-7 xl:h-8 px-2 xl:px-2.5 rounded-lg ${
+              className={`h-8 xl:h-8.5 px-2 xl:px-2.5 rounded-lg ${
                 isIndic ? 'text-[11px] xl:text-xs' : 'text-xs'
-              } font-semibold inline-flex items-center gap-1 xl:gap-1.5 border transition-all focus:outline-none focus:ring-2 focus:ring-[#16733B] shrink-0 cursor-pointer ${
+              } font-semibold ${isKioskMode ? 'inline-flex' : 'hidden sm:inline-flex'} items-center gap-1 xl:gap-1.5 border transition-all focus:outline-none focus:ring-2 focus:ring-[#16733B] shrink-0 cursor-pointer ${
                 isKioskMode
                   ? 'bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-200 border-amber-400 dark:border-amber-700 shadow-2xs hover:bg-amber-200 dark:hover:bg-amber-900'
                   : 'bg-white dark:bg-[#17324D] text-[#202B36] dark:text-slate-200 border-[#D7DEE5] dark:border-[#223b56] hover:bg-[#F5F7F8] dark:hover:bg-slate-800'
@@ -321,13 +322,15 @@ export const Header: React.FC<HeaderProps> = ({
               {isKioskMode ? (
                 <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse shrink-0" />
               ) : (
-                <Monitor className="w-3 h-3 xl:w-3.5 xl:h-3.5 shrink-0 text-[#596775] dark:text-slate-400" />
+                <Monitor className="w-3.5 h-3.5 shrink-0 text-[#596775] dark:text-slate-400" />
               )}
-              <span className={isIndic ? 'hidden 2xl:inline' : 'hidden xl:inline'}>
+              <span className="hidden xl:inline">
                 {t.header.publicKioskTitle || t.header.kioskMode}
               </span>
-              <span className={isKioskMode ? 'font-bold text-amber-900 dark:text-amber-300' : 'text-slate-500 dark:text-slate-400'}>
-                {isKioskMode ? t.header.active : t.header.off}
+              <span className="hidden sm:inline">
+                <span className={isKioskMode ? 'font-bold text-amber-900 dark:text-amber-300' : 'text-slate-500 dark:text-slate-400'}>
+                  {isKioskMode ? t.header.active : t.header.off}
+                </span>
               </span>
             </button>
 
@@ -336,22 +339,22 @@ export const Header: React.FC<HeaderProps> = ({
               ref={triggerButtonRef}
               type="button"
               onClick={() => setShowClearConfirm(true)}
-              className={`h-7 xl:h-8 px-2 xl:px-2.5 rounded-lg ${
+              className={`hidden md:inline-flex h-8 xl:h-8.5 px-2 xl:px-2.5 rounded-lg ${
                 isIndic ? 'text-[11px] xl:text-xs' : 'text-xs'
-              } font-semibold inline-flex items-center gap-1 xl:gap-1.5 border border-rose-200 dark:border-rose-900/70 text-rose-700 dark:text-rose-300 bg-white dark:bg-slate-900 hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:border-rose-300 dark:hover:border-rose-800 transition-all focus:outline-none focus:ring-2 focus:ring-rose-500 shadow-2xs shrink-0 cursor-pointer`}
+              } font-semibold items-center gap-1 xl:gap-1.5 border border-rose-200 dark:border-rose-900/70 text-rose-700 dark:text-rose-300 bg-white dark:bg-slate-900 hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:border-rose-300 dark:hover:border-rose-800 transition-all focus:outline-none focus:ring-2 focus:ring-rose-500 shadow-2xs shrink-0 cursor-pointer`}
               title={t.header.endSessionTooltip}
               aria-label={t.header.endSession}
             >
-              <Trash2 className="w-3 h-3 xl:w-3.5 xl:h-3.5 text-rose-600 dark:text-rose-400 shrink-0" />
+              <Trash2 className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400 shrink-0" />
               <span className="hidden sm:inline whitespace-nowrap">{t.header.endSession}</span>
             </button>
 
-            {/* Mobile Hamburger Button */}
+            {/* Mobile Hamburger / More Menu Button (Mobile only: < md) */}
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden h-8 w-8 inline-flex items-center justify-center p-1.5 text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-civic-500 shrink-0"
-              aria-label="Toggle navigation menu"
+              className="md:hidden h-8 w-8 inline-flex items-center justify-center p-1.5 text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-civic-500 shrink-0 cursor-pointer"
+              aria-label={mobileMenuOpen ? 'Close menu' : 'More menu and settings'}
               aria-expanded={mobileMenuOpen}
             >
               {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
@@ -359,9 +362,9 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
 
-        {/* Mobile Navigation Dropdown */}
+        {/* Mobile Navigation Dropdown (< md) */}
         {mobileMenuOpen && (
-          <div className="lg:hidden py-4 px-3 border-t border-slate-200 dark:border-slate-800 space-y-2 bg-white dark:bg-[#0b162f] shadow-xl max-h-[calc(100vh-5rem)] overflow-y-auto">
+          <div className="md:hidden py-4 px-3 border-t border-slate-200 dark:border-slate-800 space-y-3 bg-white dark:bg-[#0b162f] shadow-xl max-h-[calc(100vh-5rem)] overflow-y-auto">
             {/* Challenge badge on mobile drawer */}
             <div className="px-3 py-2 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800 flex items-center justify-between text-xs">
               <span className="font-bold text-amber-900 dark:text-amber-200">{t.header.challengeBadge}</span>
@@ -398,8 +401,55 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             </div>
 
+            {/* Secondary Services & Citizen Tools */}
             <div className="space-y-1">
-              <div className="px-3 pt-1 pb-0.5 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+              <div className="px-3 pt-2 pb-0.5 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+                {language === 'ta' ? 'கூடுதல் கருவிகள் & சேவைகள்' : language === 'hi' ? 'अतिरिक्त विकल्प व सेवाएं' : 'Secondary Tools & Services'}
+              </div>
+              {secondaryTools.map((item) => {
+                const Icon = item.icon;
+                const isActive = activeTab === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => handleNavClick(item.id)}
+                    aria-current={isActive ? 'page' : undefined}
+                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500 cursor-pointer ${
+                      isActive
+                        ? 'bg-civic-50 text-civic-800 dark:bg-civic-950/80 dark:text-civic-300 font-bold'
+                        : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white'
+                    }`}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <Icon className={`w-4 h-4 ${isActive ? 'text-civic-700 dark:text-civic-400' : 'text-slate-500 dark:text-slate-400'}`} />
+                      <span>{item.mobileLabel || item.label}</span>
+                    </div>
+                  </button>
+                );
+              })}
+
+              {/* About SevAIQ Option */}
+              {onOpenAbout && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    onOpenAbout();
+                  }}
+                  className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-colors text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white cursor-pointer"
+                >
+                  <div className="flex items-center space-x-3">
+                    <Info className="w-4 h-4 text-slate-500 dark:text-slate-400" />
+                    <span>{language === 'ta' ? 'SevAIQ பற்றி (அம்சங்கள்)' : language === 'hi' ? 'SevAIQ के बारे में' : 'About SevAIQ & Features'}</span>
+                  </div>
+                </button>
+              )}
+            </div>
+
+            {/* Citizen Journey Stages */}
+            <div className="space-y-1 pt-1 border-t border-slate-100 dark:border-slate-800">
+              <div className="px-3 pt-2 pb-0.5 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
                 {language === 'ta' ? 'குடிமக்கள் பயணம் (4 நிலைகள்)' : language === 'hi' ? 'नागरिक यात्रा (4 चरण)' : 'Citizen Journey (4 Stages)'}
               </div>
               {primaryJourneyItems.map((item) => {
@@ -411,7 +461,7 @@ export const Header: React.FC<HeaderProps> = ({
                     type="button"
                     onClick={() => handleNavClick(item.id)}
                     aria-current={isActive ? 'page' : undefined}
-                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500 ${
+                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500 cursor-pointer ${
                       isActive
                         ? 'bg-civic-50 text-civic-800 dark:bg-civic-950/80 dark:text-civic-300 font-bold'
                         : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white'
@@ -429,36 +479,10 @@ export const Header: React.FC<HeaderProps> = ({
                   </button>
                 );
               })}
-
-              <div className="px-3 pt-3 pb-0.5 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
-                {language === 'ta' ? 'கூடுதல் கருவிகள்' : language === 'hi' ? 'अन्य विकल्प' : 'More Tools'}
-              </div>
-              {secondaryTools.map((item) => {
-                const Icon = item.icon;
-                const isActive = activeTab === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => handleNavClick(item.id)}
-                    aria-current={isActive ? 'page' : undefined}
-                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-civic-500 ${
-                      isActive
-                        ? 'bg-civic-50 text-civic-800 dark:bg-civic-950/80 dark:text-civic-300 font-bold'
-                        : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white'
-                    }`}
-                  >
-                    <div className="flex items-center space-x-3">
-                      <Icon className={`w-4 h-4 ${isActive ? 'text-civic-700 dark:text-civic-400' : 'text-slate-500 dark:text-slate-400'}`} />
-                      <span>{item.mobileLabel || item.label}</span>
-                    </div>
-                  </button>
-                );
-              })}
             </div>
 
             {/* Mobile Session Controls */}
-            <div className="pt-3 mt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
+            <div className="pt-2 mt-2 border-t border-slate-100 dark:border-slate-800 space-y-2">
               <div className="flex items-center justify-between px-3 py-2 bg-slate-50 dark:bg-slate-900/60 rounded-xl text-xs border border-slate-100 dark:border-slate-800">
                 <div>
                   <span className="font-semibold text-slate-800 dark:text-slate-200 block">{t.header.publicKioskTitle || t.header.kioskMode}</span>
@@ -536,7 +560,7 @@ export const Header: React.FC<HeaderProps> = ({
                 ref={cancelButtonRef}
                 type="button"
                 onClick={handleCloseModal}
-                className="px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-civic-500"
+                className="px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-civic-500 cursor-pointer"
               >
                 {t.header.cancelKeepSession}
               </button>
@@ -544,7 +568,7 @@ export const Header: React.FC<HeaderProps> = ({
                 ref={confirmButtonRef}
                 type="button"
                 onClick={handleConfirmClear}
-                className="px-4 py-2 text-xs font-semibold text-white bg-rose-600 hover:bg-rose-700 rounded-xl shadow-xs focus:outline-none focus:ring-2 focus:ring-rose-500"
+                className="px-4 py-2 text-xs font-semibold text-white bg-rose-600 hover:bg-rose-700 rounded-xl shadow-xs focus:outline-none focus:ring-2 focus:ring-rose-500 cursor-pointer"
               >
                 {t.header.confirmEndSession}
               </button>

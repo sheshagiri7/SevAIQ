@@ -487,7 +487,7 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
         </div>
 
         {/* Scheme Selector Dropdown */}
-        <div className="flex items-center space-x-2 self-start sm:self-auto">
+        <div className="w-full sm:w-auto max-w-full flex items-center space-x-2 self-stretch sm:self-auto">
           <label htmlFor="tracker-scheme-select" className="sr-only">
             {t.tracker.selectScheme}
           </label>
@@ -495,7 +495,7 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
             id="tracker-scheme-select"
             value={selectedSchemeId}
             onChange={(e) => setSelectedSchemeId(e.target.value)}
-            className="px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-civic-500 shadow-xs max-w-xs"
+            className="w-full sm:w-auto flex-1 sm:flex-initial min-w-0 max-w-full sm:max-w-xs truncate px-3 py-2 bg-white dark:bg-[#17324D] border border-slate-300 dark:border-slate-700 rounded-xl text-xs font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-civic-500 shadow-xs"
           >
             {schemes.map((s) => {
               const loc = getLocalizedScheme(s);
@@ -510,7 +510,7 @@ export const ApplicationTracker: React.FC<ApplicationTrackerProps> = ({
           <button
             type="button"
             onClick={handleResetProgress}
-            className="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition-colors"
+            className="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition-colors shrink-0"
             title={
               language === 'ta'
                 ? 'இத்திட்டத்திற்கான வழிகாட்டலை மீட்டமை'

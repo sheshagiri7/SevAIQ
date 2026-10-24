@@ -64,7 +64,7 @@ export const KioskConfirmationDialog: React.FC<KioskConfirmationDialogProps> = (
         if (e.target === e.currentTarget) onCancel();
       }}
     >
-      <div className="bg-white dark:bg-[#17324D] rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-700 my-auto animate-in zoom-in-95 duration-150">
+      <div className="bg-white dark:bg-[#17324D] rounded-2xl max-w-lg w-full p-4 sm:p-6 shadow-2xl border border-slate-200 dark:border-slate-700 my-auto animate-in zoom-in-95 duration-150">
         <div className="flex items-start space-x-3.5">
           <div
             className={`p-3 rounded-xl shrink-0 ${
@@ -180,7 +180,7 @@ export const InactivityWarningDialog: React.FC<InactivityWarningDialogProps> = (
       aria-describedby="inactivity-warning-desc"
       className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/70 backdrop-blur-xs overflow-y-auto animate-in fade-in duration-150"
     >
-      <div className="bg-white dark:bg-[#17324D] rounded-2xl max-w-md w-full p-6 shadow-2xl border-2 border-amber-400 dark:border-amber-500 my-auto animate-in zoom-in-95 duration-150">
+      <div className="bg-white dark:bg-[#17324D] rounded-2xl max-w-md w-full p-4 sm:p-6 shadow-2xl border-2 border-amber-400 dark:border-amber-500 my-auto animate-in zoom-in-95 duration-150">
         <div className="flex flex-col items-center text-center">
           <div className="p-3.5 rounded-full bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 mb-3 animate-pulse">
             <Clock className="w-8 h-8 stroke-[2.2]" />

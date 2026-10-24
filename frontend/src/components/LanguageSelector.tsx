@@ -240,10 +240,10 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         aria-expanded={isOpen}
         aria-haspopup="listbox"
         aria-label={`Change language, current language is ${currentLangInfo.englishName}`}
-        className="group h-8 xl:h-8.5 px-2.5 rounded-lg border border-emerald-600/30 bg-white hover:bg-emerald-50/70 hover:border-emerald-500/50 shadow-2xs transition-all flex items-center gap-1.5 xl:gap-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500/60"
+        className="group h-7 sm:h-8 xl:h-8.5 px-2 sm:px-2.5 rounded-lg border border-emerald-600/30 bg-white hover:bg-emerald-50/70 hover:border-emerald-500/50 shadow-2xs transition-all flex items-center gap-1 sm:gap-1.5 xl:gap-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500/60 shrink-0"
       >
-        <IndicLanguageEmblem className="w-5 h-5 xl:w-5.5 xl:h-5.5" />
-        <span className="text-xs xl:text-sm font-semibold text-emerald-800 group-hover:text-emerald-900 tracking-tight whitespace-nowrap">
+        <IndicLanguageEmblem className="w-5 h-5 shrink-0" />
+        <span className="hidden xs:inline text-xs xl:text-sm font-semibold text-emerald-800 group-hover:text-emerald-900 tracking-tight whitespace-nowrap">
           {currentLangInfo.name}
         </span>
         <ChevronDown

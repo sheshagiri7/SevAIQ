@@ -68,10 +68,10 @@ export const AccessibilityDrawer: React.FC = () => {
       />
 
       {/* Slide-in drawer container */}
-      <div className="fixed inset-y-0 right-0 max-w-full flex pl-6 sm:pl-10">
+      <div className="fixed inset-y-0 right-0 max-w-full flex pl-0 sm:pl-10">
         <div
           ref={drawerRef}
-          className="w-screen sm:w-[420px] max-w-md bg-slate-100 shadow-2xl flex flex-col justify-between border-l border-slate-200 overflow-y-auto animate-in slide-in-from-right duration-250 select-none"
+          className="w-full sm:w-[420px] max-w-md bg-slate-100 dark:bg-[#17324D] shadow-2xl flex flex-col justify-between border-l border-slate-200 dark:border-slate-700 overflow-y-auto animate-in slide-in-from-right duration-250 select-none"
         >
           {/* Top Section: Header & 12 Options Grid */}
           <div>

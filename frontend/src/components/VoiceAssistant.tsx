@@ -1573,10 +1573,10 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
           return (
             <div
               key={msg.id}
-              className={`flex flex-col ${isBot ? 'items-start' : 'items-end'} space-y-1.5`}
+              className={`flex flex-col ${isBot ? 'items-start' : 'items-end'} space-y-1.5 w-full min-w-0`}
             >
               <div
-                className={`max-w-[94%] sm:max-w-[88%] p-4 sm:p-5 rounded-2xl text-base sm:text-lg leading-relaxed ${
+                className={`max-w-[94%] sm:max-w-[88%] p-3.5 sm:p-5 rounded-2xl text-sm sm:text-base leading-relaxed break-words [overflow-wrap:anywhere] min-w-0 ${
                   isBot
                     ? msg.isError
                       ? 'bg-[#FFFBEB] dark:bg-amber-950/70 text-[#92400E] dark:text-amber-200 border border-[#FDE68A] dark:border-amber-800 shadow-2xs'
@@ -2349,13 +2349,13 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
       </div>
 
       {/* Bottom Dock Input Bar: Tactile Mic & Text Box */}
-      <div className="p-3.5 sm:p-5 bg-white dark:bg-[#0F2133] border-t border-[#D7DEE5] dark:border-[#223b56] shrink-0">
-        <div className="flex items-center space-x-2 sm:space-x-3">
+      <div className="p-2.5 sm:p-4 md:p-5 bg-white dark:bg-[#0F2133] border-t border-[#D7DEE5] dark:border-[#223b56] shrink-0">
+        <div className="flex items-center space-x-1.5 sm:space-x-3">
           {/* Prominent High-Visibility Green Microphone Button */}
           <button
             type="button"
             onClick={toggleListening}
-            className={`w-14 h-14 min-w-[56px] min-h-[56px] rounded-xl transition-all flex items-center justify-center focus:outline-none focus:ring-4 focus:ring-[#16733B]/40 shrink-0 cursor-pointer ${
+            className={`w-12 h-12 sm:w-14 sm:h-14 min-w-[48px] min-h-[48px] sm:min-w-[56px] sm:min-h-[56px] rounded-xl transition-all flex items-center justify-center focus:outline-none focus:ring-4 focus:ring-[#16733B]/40 shrink-0 cursor-pointer ${
               speechState === 'listening'
                 ? 'bg-rose-600 text-white shadow-lg ring-4 ring-rose-400/50 animate-pulse'
                 : speechState === 'reviewing'
@@ -2385,14 +2385,14 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
             data-testid="microphone-toggle-button"
           >
             {speechState === 'listening' ? (
-              <MicOff className="w-6 h-6 text-white" />
+              <MicOff className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
             ) : (
-              <Mic className="w-6 h-6 text-white" />
+              <Mic className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
             )}
           </button>
 
-          {/* Large Visible Text Input Field (min-h-[56px]) */}
-          <div className="relative flex-1">
+          {/* Large Visible Text Input Field (min-h-[48px] sm:min-h-[56px]) */}
+          <div className="relative flex-1 min-w-0">
             <input
               ref={inputRef}
               type="text"
@@ -2418,7 +2418,7 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
                   ? 'தமிழில் கேட்கவும் அல்லது தட்டச்சு செய்யவும்...'
                   : 'Ask welfare questions in English or Tamil...'
               }
-              className={`w-full min-h-[56px] px-4 py-3 text-base sm:text-lg bg-white dark:bg-[#17324D] border border-[#D7DEE5] dark:border-[#223b56] focus:bg-white dark:focus:bg-[#17324D] focus:outline-none focus:border-[#16733B] focus:ring-2 focus:ring-[#16733B]/40 text-[#202B36] dark:text-white placeholder-[#596775] dark:placeholder-slate-400 rounded-xl transition-all ${
+              className={`w-full min-h-[48px] sm:min-h-[56px] px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base md:text-lg bg-white dark:bg-[#17324D] border border-[#D7DEE5] dark:border-[#223b56] focus:bg-white dark:focus:bg-[#17324D] focus:outline-none focus:border-[#16733B] focus:ring-2 focus:ring-[#16733B]/40 text-[#202B36] dark:text-white placeholder-[#596775] dark:placeholder-slate-400 rounded-xl transition-all ${
                 speechState === 'listening' ? 'border-rose-400 bg-rose-50/20' : ''
               } ${isAiLoading ? 'opacity-70 cursor-wait' : ''}`}
             />
@@ -2426,20 +2426,20 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
               <button
                 type="button"
                 onClick={() => setInputText('')}
-                className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+                className="absolute inset-y-0 right-0 pr-3 sm:pr-4 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
                 aria-label="Clear input"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
             )}
           </div>
 
-          {/* Send Button (min-h-[56px]) */}
+          {/* Send Button (min-h-[48px] sm:min-h-[56px]) */}
           <button
             type="button"
             onClick={() => handleSendQuery()}
             disabled={!inputText.trim() || isAiLoading}
-            className="w-14 h-14 min-w-[56px] min-h-[56px] rounded-xl bg-[#17324D] hover:bg-[#0F2133] disabled:bg-slate-200 dark:disabled:bg-slate-800 disabled:text-slate-400 text-white flex items-center justify-center transition-all focus:outline-none focus:ring-4 focus:ring-slate-400/40 shrink-0 shadow-md cursor-pointer disabled:cursor-not-allowed hover:scale-[1.02] active:scale-[0.98]"
+            className="w-12 h-12 sm:w-14 sm:h-14 min-w-[48px] min-h-[48px] sm:min-w-[56px] sm:min-h-[56px] rounded-xl bg-[#17324D] hover:bg-[#0F2133] disabled:bg-slate-200 dark:disabled:bg-slate-800 disabled:text-slate-400 text-white flex items-center justify-center transition-all focus:outline-none focus:ring-4 focus:ring-slate-400/40 shrink-0 shadow-md cursor-pointer disabled:cursor-not-allowed hover:scale-[1.02] active:scale-[0.98]"
             aria-label="Send query"
           >
             {isAiLoading ? (
@@ -2451,7 +2451,7 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
         </div>
 
         {/* Micro Caption */}
-        <div className="text-xs text-[#596775] dark:text-slate-400 text-center mt-2.5 flex items-center justify-center gap-2">
+        <div className="text-[11px] sm:text-xs text-[#596775] dark:text-slate-400 text-center mt-2 flex items-center justify-center gap-1.5 sm:gap-2 flex-wrap">
           <span>Press Enter to send</span>
           <span>•</span>
           <span>Speak in தமிழ் (ta-IN) or English (en-IN)</span>
@@ -2463,11 +2463,11 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
   // 1. Primary Full Main Screen Citizen Workspace Layout
   if (isMainScreen) {
     return (
-      <div className="w-full max-w-5xl xl:max-w-6xl mx-auto px-2 sm:px-4 md:px-6 py-3 sm:py-5 flex flex-col flex-1">
+      <div className="w-full max-w-5xl xl:max-w-6xl mx-auto px-2 sm:px-4 md:px-6 py-2 sm:py-5 flex flex-col flex-1 min-w-0">
         <section
           role="region"
           aria-label="SevAIQ Tamil & English Voice Assistant"
-          className="bg-white dark:bg-[#17324D] rounded-xl shadow-xs border border-[#D7DEE5] dark:border-[#223b56] flex flex-col flex-1 min-h-[580px] sm:min-h-[640px] h-[calc(100vh-8.5rem)] max-h-[920px] overflow-hidden"
+          className="bg-white dark:bg-[#17324D] rounded-xl shadow-xs border border-[#D7DEE5] dark:border-[#223b56] flex flex-col flex-1 min-h-[520px] sm:min-h-[640px] h-[calc(100dvh-8rem)] max-h-[920px] overflow-hidden"
         >
           {renderChatContent()}
         </section>
