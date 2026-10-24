@@ -162,6 +162,26 @@ class ChatMessage(BaseModel):
     content: str = Field(..., min_length=1, description="Message text content")
 
 
+class ChatActionResultSchema(BaseModel):
+    """Standardized structured response for chatbot actions."""
+    success: bool = Field(..., description="Whether action execution succeeded")
+    action: str = Field(..., description="Action identifier invoked")
+    summary: str = Field(..., description="Natural-language summary in requested language")
+    data: Dict[str, Any] = Field(default_factory=dict, description="Structured verified outcome payload")
+    sources: List[Dict[str, str]] = Field(default_factory=list, description="Verified official sources and citations")
+    requires_confirmation: bool = Field(default=False, description="Whether action requires user confirmation before execution")
+    next_question: Optional[str] = Field(None, description="Recommended next question or missing profile prompt")
+    error: Optional[Dict[str, Any]] = Field(None, description="Error details if action failed")
+
+
+class ChatActionRequest(BaseModel):
+    """Input payload for direct chatbot action execution."""
+    action: str = Field(..., min_length=1, description="Identifier of the action to execute")
+    payload: Optional[Dict[str, Any]] = Field(default_factory=dict, description="Action arguments and inputs")
+    language: Optional[str] = Field("en", description="Target response language ('en' or 'ta')")
+    citizen_context: Optional[Dict[str, Any]] = Field(None, description="Controlled citizen session context")
+
+
 class ChatRequest(BaseModel):
     """Payload for citizen AI chatbot conversations."""
     messages: List[ChatMessage] = Field(..., min_length=1, description="Conversation history turns")
@@ -171,6 +191,8 @@ class ChatRequest(BaseModel):
         None,
         description="Controlled, sanitized citizen context (profile, matches, documents, tracking)",
     )
+    action: Optional[str] = Field(None, description="Optional explicit action to invoke in conversation")
+    action_params: Optional[Dict[str, Any]] = Field(None, description="Optional parameters for explicit action")
 
 
 class ChatResponseSchema(BaseModel):
@@ -183,6 +205,7 @@ class ChatResponseSchema(BaseModel):
     error_type: Optional[str] = Field(None, description="Classified error type if failed")
     error_message: Optional[str] = Field(None, description="User-facing error message")
     suggested_schemes: Optional[List[str]] = Field(default_factory=list, description="IDs of relevant schemes mentioned")
+    action_result: Optional[ChatActionResultSchema] = Field(None, description="Structured action outcome if action was invoked")
 
 
 class ProviderStatusSchema(BaseModel):

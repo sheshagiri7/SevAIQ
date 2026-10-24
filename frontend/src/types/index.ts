@@ -286,6 +286,28 @@ export interface AssistantMessage {
   isError?: boolean;
   errorType?: string;
   retryable?: boolean;
+  actionResult?: {
+    actionType: string;
+    type?: string;
+    success: boolean;
+    messageEn: string;
+    messageTa: string;
+    data?: any;
+  };
+  pendingActionConfirmation?: {
+    type: string;
+    payload: any;
+    promptEn: string;
+    promptTa: string;
+  };
+  inlineQuestion?: {
+    field: keyof CitizenProfile;
+    questionEn: string;
+    questionTa: string;
+    reasonEn?: string;
+    reasonTa?: string;
+    options?: Array<{ id: string; labelEn: string; labelTa: string }>;
+  };
 }
 
 export interface ApplicationStepProgress {

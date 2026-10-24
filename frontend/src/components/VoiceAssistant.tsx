@@ -24,8 +24,11 @@ import {
   FileText,
   MessageSquare,
   Compass,
+  CheckCircle2,
+  HelpCircle,
+  ExternalLink,
 } from 'lucide-react';
-import { Scheme, AssistantLanguage, AssistantMessage, NavigationTab, ChatMessageWire } from '../types';
+import { Scheme, AssistantLanguage, AssistantMessage, NavigationTab, ChatMessageWire, DocumentPossessionStatus } from '../types';
 import {
   SAMPLE_PROMPTS,
   CONTEXTUAL_PROMPTS,
@@ -48,6 +51,16 @@ import { sendChatMessage } from '../services/api';
 import { CivicMarkdown } from './CivicMarkdown';
 import { buildCitizenChatContext } from '../utils/chatbotContextBuilder';
 import { CitizenProfile, DocumentRecord } from '../types';
+import { EMPTY_PROFILE } from '../utils/kioskStorage';
+import {
+  inferClientAction,
+  extractActionFromText,
+  validateChatbotAction,
+  executeChatbotAction,
+  ChatbotActionHandlers,
+  ActionValidationContext,
+  ActionResult,
+} from '../utils/actionRegistry';
 
 export interface VoiceAssistantProps {
   schemes: Scheme[];
@@ -64,6 +77,13 @@ export interface VoiceAssistantProps {
   profile?: CitizenProfile;
   documents?: DocumentRecord[];
   selectedSchemeIds?: string[];
+  onUpdateProfile?: (profile: Partial<CitizenProfile>) => void;
+  onUpdateDocumentStatus?: (docId: string, status: DocumentPossessionStatus) => void;
+  onToggleSchemeSelection?: (schemeId: string) => void;
+  onClearSession?: () => void;
+  onSelectTrackerScheme?: (schemeId: string) => void;
+  onSetTrackerStatus?: (schemeId: string, status: string, stepIndex?: number) => void;
+  onSetTrackerReminder?: (schemeId: string, reminderText: string, reminderDate?: string) => void;
 }
 
 export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
@@ -81,6 +101,13 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
   profile,
   documents = [],
   selectedSchemeIds = [],
+  onUpdateProfile,
+  onUpdateDocumentStatus,
+  onToggleSchemeSelection,
+  onClearSession,
+  onSelectTrackerScheme,
+  onSetTrackerStatus,
+  onSetTrackerReminder,
 }) => {
   const [internalIsOpen, setInternalIsOpen] = useState(false);
   const [isMaximized, setIsMaximized] = useState(false);
@@ -535,7 +562,160 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
   };
 
   // -------------------------------------------------------------
-  // SEND QUERY TO GENUINE GEMINI BACKEND API
+  // ACTION EXECUTION & PROFILE QUESTION BUILDERS
+  // -------------------------------------------------------------
+  const buildInlineQuestion = (field: keyof CitizenProfile, _lang?: AssistantLanguage) => {
+    const profileQuestions: Record<
+      string,
+      {
+        questionEn: string;
+        questionTa: string;
+        reasonEn: string;
+        reasonTa: string;
+        options: Array<{ id: string; labelEn: string; labelTa: string }>;
+      }
+    > = {
+      occupation: {
+        questionEn: 'What is your main occupation or livelihood?',
+        questionTa: 'உங்கள் முக்கிய தொழில் அல்லது வாழ்வாதாரம் என்ன?',
+        reasonEn: 'Why we ask this: Welfare schemes (like PM-KISAN or PM SVANidhi) are specifically tailored for farmers, street vendors, students, and seniors.',
+        reasonTa: 'ஏன் கேட்கிறோம்: அரசு நலத்திட்டங்கள் குறிப்பிட்ட தொழில் பிரிவினருக்காகவே பிரத்யேகமாக வடிவமைக்கப்பட்டுள்ளன.',
+        options: [
+          { id: 'farmer', labelEn: 'Farmer / Agriculture', labelTa: 'விவசாயி / வேளாண்மை' },
+          { id: 'street_vendor', labelEn: 'Street Vendor / Hawker', labelTa: 'சிறு வியாபாரி / நடைபாதை' },
+          { id: 'student', labelEn: 'Student / Youth', labelTa: 'மாணவர் / இளைஞர்' },
+          { id: 'senior', labelEn: 'Senior Citizen (60+)', labelTa: 'முதியவர் (60 வயதுக்கு மேல்)' },
+          { id: 'construction', labelEn: 'Construction / Daily Wage', labelTa: 'கட்டுமான / கூலி தொழிலாளி' },
+          { id: 'artisan', labelEn: 'Artisan / Small Business', labelTa: 'கைவினைஞர் / சிறு தொழில்' },
+        ],
+      },
+      age: {
+        questionEn: 'What is your age group?',
+        questionTa: 'உங்கள் வயது வரம்பு என்ன?',
+        reasonEn: 'Why we ask this: Age determines qualification for senior citizen pensions, youth scholarships, and student benefits.',
+        reasonTa: 'ஏன் கேட்கிறோம்: ஓய்வூதியம் மற்றும் கல்வி உதவித்தொகைகளுக்கு வயது முக்கிய தகுதியாகும்.',
+        options: [
+          { id: '20', labelEn: '18 - 25 years (Student / Youth)', labelTa: '18 - 25 வயது (மாணவர்)' },
+          { id: '35', labelEn: '26 - 45 years (Working Adult)', labelTa: '26 - 45 வயது (தொழிலாளி)' },
+          { id: '55', labelEn: '46 - 59 years', labelTa: '46 - 59 வயது' },
+          { id: '65', labelEn: '60+ years (Senior Citizen)', labelTa: '60+ வயது (முதியவர்)' },
+        ],
+      },
+      residenceType: {
+        questionEn: 'Where do you live?',
+        questionTa: 'நீங்கள் எங்கு வசிக்கிறீர்கள்?',
+        reasonEn: 'Why we ask this: Some housing and employment schemes differ between rural villages and urban municipalities.',
+        reasonTa: 'ஏன் கேட்கிறோம்: கிராமப்புற மற்றும் நகர்ப்புறங்களுக்கு தனித்தனி அரசு திட்டங்கள் உள்ளன.',
+        options: [
+          { id: 'rural', labelEn: 'Rural Village', labelTa: 'கிராமப்புறம்' },
+          { id: 'urban', labelEn: 'Urban City / Town', labelTa: 'நகர்ப்புறம் / நகரம்' },
+        ],
+      },
+      ownsPuccaHouse: {
+        questionEn: 'Do you or your family own a pucca (concrete) house anywhere in India?',
+        questionTa: 'உங்களுக்கு அல்லது உங்கள் குடும்பத்திற்கு இந்தியாவில் சொந்த கான்கிரீட் வீடு உள்ளதா?',
+        reasonEn: 'Why we ask this: PMAY-U 2.0 and PMAY-G subsidies are reserved for families who do not own a pucca house.',
+        reasonTa: 'ஏன் கேட்கிறோம்: சொந்த கான்கிரீட் வீடு இல்லாத குடும்பங்களுக்கு மட்டுமே PMAY வீட்டு மானியம் வழங்கப்படுகிறது.',
+        options: [
+          { id: 'no', labelEn: 'No (Kutcha / rented house)', labelTa: 'இல்லை (குடிசை / வாடகை)' },
+          { id: 'yes', labelEn: 'Yes (Own concrete house)', labelTa: 'ஆம் (சொந்த கான்கிரீட் வீடு)' },
+        ],
+      },
+      annualIncome: {
+        questionEn: 'What is your approximate family annual income?',
+        questionTa: 'உங்கள் குடும்பத்தின் தோராயமான ஆண்டு வருமானம் என்ன?',
+        reasonEn: 'Why we ask this: Income certificates and EWS thresholds determine subsidised interest and welfare eligibility.',
+        reasonTa: 'ஏன் கேட்கிறோம்: வருமான வரம்பு அரசு உதவித்தொகை மற்றும் மானியங்களுக்கு அவசியமாகும்.',
+        options: [
+          { id: '80000', labelEn: 'Below ₹1,00,000 / year (BPL)', labelTa: 'ஆண்டுக்கு ₹1 லட்சத்திற்கும் கீழ்' },
+          { id: '250000', labelEn: '₹1,00,000 to ₹3,00,000 (EWS)', labelTa: '₹1 லட்சம் முதல் ₹3 லட்சம் வரை' },
+          { id: '500000', labelEn: '₹3,00,000 to ₹6,00,000 (LIG)', labelTa: '₹3 லட்சம் முதல் ₹6 லட்சம் வரை' },
+          { id: '900000', labelEn: 'Above ₹6,00,000 / year', labelTa: 'ஆண்டுக்கு ₹6 லட்சத்திற்கு மேல்' },
+        ],
+      },
+    };
+
+    const targetKey = (field as string) in profileQuestions ? (field as string) : 'occupation';
+    const q = profileQuestions[targetKey];
+    return {
+      field,
+      questionEn: q.questionEn,
+      questionTa: q.questionTa,
+      reasonEn: q.reasonEn,
+      reasonTa: q.reasonTa,
+      options: q.options,
+    };
+  };
+
+  const buildActionHandlers = (): ChatbotActionHandlers => ({
+    onNavigate: (tab) => onNavigate(tab),
+    onSelectSchemeForEligibility: (scheme) => onSelectSchemeForEligibility?.(scheme),
+    onUpdateProfile: (p) => onUpdateProfile?.(p),
+    onUpdateDocumentStatus: (docId, status) => onUpdateDocumentStatus?.(docId, status),
+    onToggleSchemeSelection: (sId) => onToggleSchemeSelection?.(sId),
+    onClearSession: () => {
+      onClearSession?.();
+      handleResetChat();
+    },
+    onSelectTrackerScheme: (sId) => onSelectTrackerScheme?.(sId),
+    onSetTrackerStatus: (sId, status, step) => onSetTrackerStatus?.(sId, status, step),
+    onSetTrackerReminder: (sId, text, date) => onSetTrackerReminder?.(sId, text, date),
+    onChangeLanguage: (newLang) => handleLanguageChange(newLang as AssistantLanguage),
+    onReadLastResponse: (mId) => {
+      const target = mId
+        ? messages.find((m) => m.id === mId)
+        : [...messages].reverse().find((m) => m.sender === 'assistant' && !m.isError);
+      if (target) {
+        startSpeaking(target.id, target.text);
+      }
+    },
+  });
+
+  const handleAnswerInlineQuestion = (
+    field: keyof CitizenProfile,
+    value: any,
+    labelEn: string,
+    labelTa: string
+  ) => {
+    let parsed: any = value;
+    if (field === 'age' || field === 'annualIncome') {
+      parsed = Number(value);
+    } else if (field === 'ownsPuccaHouse') {
+      parsed = value === 'yes';
+    }
+    if (onUpdateProfile) {
+      onUpdateProfile({ [field]: parsed });
+    }
+    const citizenReply = language === 'ta' ? labelTa : labelEn;
+    handleSendQuery(citizenReply);
+  };
+
+  const handleSkipInlineQuestion = () => {
+    const skipReply = language === 'ta' ? 'இப்போதைக்கு தவிர்க்கவும்' : 'Skip for now';
+    handleSendQuery(skipReply);
+  };
+
+  const handleConfirmAction = async (msgId: string, actionType: string, _payload: any) => {
+    setMessages((prev) =>
+      prev.map((m) => (m.id === msgId ? { ...m, pendingActionConfirmation: undefined } : m))
+    );
+
+    if (actionType === 'CLEAR_SESSION') {
+      if (onClearSession) {
+        onClearSession();
+      }
+      handleResetChat();
+    }
+  };
+
+  const handleCancelAction = (msgId: string) => {
+    setMessages((prev) =>
+      prev.map((m) => (m.id === msgId ? { ...m, pendingActionConfirmation: undefined } : m))
+    );
+  };
+
+  // -------------------------------------------------------------
+  // SEND QUERY TO GENUINE GEMINI BACKEND API & PROCESS ACTIONS
   // -------------------------------------------------------------
   const handleSendQuery = async (textToSend?: string) => {
     const query = (textToSend ?? inputText).trim();
@@ -554,10 +734,63 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
 
     setMessages((prev) => [...prev, userMsg]);
     setInputText('');
+
+    const validationContext: ActionValidationContext = {
+      profile: profile || EMPTY_PROFILE,
+      schemes,
+      documents,
+      selectedSchemeIds,
+      isKioskMode,
+    };
+    const actionHandlers = buildActionHandlers();
+
+    // Check client inferred action first (zero latency)
+    const clientProposed = inferClientAction(query, language, validationContext);
+    if (clientProposed) {
+      const validated = validateChatbotAction(clientProposed, validationContext);
+      if (validated.valid && validated.action) {
+        if (validated.requiresConfirmation) {
+          const confirmMsg: AssistantMessage = {
+            id: `confirm-${Date.now()}`,
+            sender: 'assistant',
+            text:
+              language === 'ta'
+                ? 'உங்கள் அமர்வை முழுமையாக மீட்டமைக்க (அனைத்து விவரங்களையும் அழிக்க) விரும்புகிறீர்களா?'
+                : 'Are you sure you want to reset your session and clear all saved citizen details?',
+            timestamp: new Date(),
+            pendingActionConfirmation: {
+              type: validated.action.type,
+              payload: validated.action.payload,
+              promptEn: 'Are you sure you want to clear all your details and reset your session?',
+              promptTa: 'உங்கள் விவரங்களை அழித்து புதிய அமர்வைத் தொடங்க விரும்புகிறீர்களா?',
+            },
+          };
+          setMessages((prev) => [...prev, confirmMsg]);
+          return;
+        }
+
+        // Direct local actions
+        if (
+          validated.action.type === 'CHANGE_LANGUAGE' ||
+          validated.action.type === 'NAVIGATE_TO_SECTION'
+        ) {
+          const result = await executeChatbotAction(validated.action, actionHandlers);
+          const botMsg: AssistantMessage = {
+            id: `bot-act-${Date.now()}`,
+            sender: 'assistant',
+            text: language === 'ta' ? result.messageTa : result.messageEn,
+            timestamp: new Date(),
+            actionResult: result,
+          };
+          setMessages((prev) => [...prev, botMsg]);
+          return;
+        }
+      }
+    }
+
     setIsAiLoading(true);
 
     // 2. Format multi-turn conversational context for the AI provider
-    // Skip static UI greetings and language switch banners so Gemini receives pure citizen-assistant dialogue
     const chatHistory: ChatMessageWire[] = messages
       .filter(
         (m) =>
@@ -573,7 +806,6 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
       }));
     chatHistory.push({ role: 'user', content: query });
 
-    // Build controlled citizen context from current session state
     let applicationTracking: Record<string, string> | undefined;
     try {
       const savedStatuses = localStorage.getItem('SEVAIQ_APPLICATION_STATUS');
@@ -602,10 +834,36 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
       setIsAiLoading(false);
 
       if (res.success && res.data) {
-        const replyText = res.data.reply;
+        const rawReply = res.data.reply;
+        const { cleanText, proposedAction } = extractActionFromText(rawReply);
+        let executedResult: ActionResult | undefined;
+        let actionConfirmation: any;
+        let inlineQ: any;
 
-        // Associate verified scheme recommendation cards if mentioned by genuine AI response
-        const lowerReply = replyText.toLowerCase();
+        // Process action proposal
+        const actionCandidate = proposedAction || clientProposed;
+        if (actionCandidate) {
+          const validated = validateChatbotAction(actionCandidate, validationContext);
+          if (validated.valid && validated.action) {
+            if (validated.requiresConfirmation) {
+              actionConfirmation = {
+                type: validated.action.type,
+                payload: validated.action.payload,
+                promptEn: 'Are you sure you want to reset your session and clear your data?',
+                promptTa: 'உங்கள் விவரங்களை அழித்து புதிய அமர்வைத் தொடங்க விரும்புகிறீர்களா?',
+              };
+            } else {
+              executedResult = await executeChatbotAction(validated.action, actionHandlers);
+              if (validated.action.type === 'ASK_PROFILE_QUESTION') {
+                const f = validated.action.payload.field as keyof CitizenProfile;
+                inlineQ = buildInlineQuestion(f, language);
+              }
+            }
+          }
+        }
+
+        // Associate verified scheme recommendation cards if mentioned
+        const lowerReply = cleanText.toLowerCase();
         const matchedSchemes = schemes.filter(
           (s) =>
             lowerReply.includes(s.id.toLowerCase()) ||
@@ -615,12 +873,15 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
         const botMsg: AssistantMessage = {
           id: `bot-${Date.now()}`,
           sender: 'assistant',
-          text: replyText,
+          text: cleanText,
           timestamp: new Date(),
           provider: res.data.provider,
           model: res.data.model,
           latencyMs: res.data.latency_ms,
           suggestedSchemes: matchedSchemes.length > 0 ? matchedSchemes : undefined,
+          actionResult: executedResult,
+          pendingActionConfirmation: actionConfirmation,
+          inlineQuestion: inlineQ,
         };
 
         setMessages((prev) => [...prev, botMsg]);
@@ -747,14 +1008,14 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
         <div className="flex items-center space-x-1.5 shrink-0">
           {/* Distinct BCP 47 Language Selector */}
           <div
-            className="flex items-center bg-[#F5F7F8] dark:bg-[#0F2133] p-0.5 rounded-lg border border-[#D7DEE5] dark:border-[#223b56] text-[10px] font-bold"
+            className="flex items-center bg-[#F5F7F8] dark:bg-[#0F2133] p-0.5 rounded-lg border border-[#D7DEE5] dark:border-[#223b56] text-xs font-bold"
             role="group"
             aria-label="Speech and language selector"
           >
             <button
               type="button"
               onClick={() => handleLanguageChange('ta')}
-              className={`px-2 py-1 rounded-md transition-all flex items-center space-x-1 cursor-pointer ${
+              className={`min-h-[44px] sm:min-h-[48px] px-3 py-1.5 rounded-md transition-all flex items-center space-x-1.5 cursor-pointer ${
                 language === 'ta'
                   ? 'bg-[#16733B] text-white shadow-2xs font-bold'
                   : 'text-[#596775] dark:text-slate-300 hover:text-[#17324D] dark:hover:text-white'
@@ -763,13 +1024,13 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
               aria-pressed={language === 'ta'}
               data-testid="lang-select-ta"
             >
-              <Globe className="w-3 h-3" />
+              <Globe className="w-4 h-4" />
               <span>தமிழ் (ta-IN)</span>
             </button>
             <button
               type="button"
               onClick={() => handleLanguageChange('en')}
-              className={`px-2 py-1 rounded-md transition-all flex items-center space-x-1 cursor-pointer ${
+              className={`min-h-[44px] sm:min-h-[48px] px-3 py-1.5 rounded-md transition-all flex items-center space-x-1.5 cursor-pointer ${
                 language === 'en'
                   ? 'bg-[#16733B] text-white shadow-2xs font-bold'
                   : 'text-[#596775] dark:text-slate-300 hover:text-[#17324D] dark:hover:text-white'
@@ -786,11 +1047,11 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
           <button
             type="button"
             onClick={handleResetChat}
-            className="w-7 h-7 inline-flex items-center justify-center text-[#596775] dark:text-slate-400 hover:text-[#17324D] dark:hover:text-white hover:bg-[#F5F7F8] dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+            className="w-10 h-10 sm:w-11 sm:h-11 min-h-[44px] min-w-[44px] inline-flex items-center justify-center text-[#596775] dark:text-slate-400 hover:text-[#17324D] dark:hover:text-white hover:bg-[#F5F7F8] dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
             title="Reset conversation"
             aria-label="Reset conversation"
           >
-            <RotateCcw className="w-3.5 h-3.5" />
+            <RotateCcw className="w-4 h-4" />
           </button>
 
           {/* About SevAIQ Shortcut button (shown on main screen if onOpenAbout provided) */}
@@ -798,11 +1059,11 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
             <button
               type="button"
               onClick={onOpenAbout}
-              className="w-7 h-7 inline-flex items-center justify-center text-[#596775] dark:text-slate-400 hover:text-[#17324D] dark:hover:text-white hover:bg-[#F5F7F8] dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+              className="w-10 h-10 sm:w-11 sm:h-11 min-h-[44px] min-w-[44px] inline-flex items-center justify-center text-[#596775] dark:text-slate-400 hover:text-[#17324D] dark:hover:text-white hover:bg-[#F5F7F8] dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
               title="About SevAIQ"
               aria-label="About SevAIQ"
             >
-              <Info className="w-3.5 h-3.5" />
+              <Info className="w-4 h-4" />
             </button>
           )}
 
@@ -811,14 +1072,14 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
             <button
               type="button"
               onClick={() => setIsMaximized(!isMaximized)}
-              className="hidden sm:inline-flex w-7 h-7 items-center justify-center text-[#596775] dark:text-slate-400 hover:text-[#17324D] dark:hover:text-white hover:bg-[#F5F7F8] dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+              className="hidden sm:inline-flex w-10 h-10 min-h-[44px] min-w-[44px] items-center justify-center text-[#596775] dark:text-slate-400 hover:text-[#17324D] dark:hover:text-white hover:bg-[#F5F7F8] dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
               title={isMaximized ? 'Restore compact widget' : 'Maximize window'}
               aria-label={isMaximized ? 'Restore compact widget' : 'Maximize window'}
             >
               {isMaximized ? (
-                <Minimize2 className="w-3.5 h-3.5" />
+                <Minimize2 className="w-4 h-4" />
               ) : (
-                <Maximize2 className="w-3.5 h-3.5" />
+                <Maximize2 className="w-4 h-4" />
               )}
             </button>
           )}
@@ -828,7 +1089,7 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
             <button
               type="button"
               onClick={handleClose}
-              className="w-7 h-7 inline-flex items-center justify-center text-[#596775] dark:text-slate-400 hover:text-[#17324D] dark:hover:text-white hover:bg-[#F5F7F8] dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+              className="w-10 h-10 min-h-[44px] min-w-[44px] inline-flex items-center justify-center text-[#596775] dark:text-slate-400 hover:text-[#17324D] dark:hover:text-white hover:bg-[#F5F7F8] dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
               title="Close Voice Assistant (Esc)"
               aria-label="Close Voice Assistant"
             >
@@ -936,29 +1197,71 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
           <div className="p-4 sm:p-6 bg-white dark:bg-[#17324D] rounded-xl border border-[#D7DEE5] dark:border-[#223b56] shadow-xs space-y-5 my-1 animate-in fade-in">
             {/* Greeting Header */}
             <div className="flex items-start space-x-3.5">
-              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#16733B] text-white flex items-center justify-center shadow-xs shrink-0 mt-0.5">
-                <ShieldCheck className="w-5 h-5 text-white" />
+              <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-[#16733B] text-white flex items-center justify-center shadow-xs shrink-0 mt-0.5">
+                <ShieldCheck className="w-6 h-6 text-white" />
               </div>
               <div className="flex-1">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <h3 className="text-base sm:text-lg font-bold text-[#17324D] dark:text-white tracking-tight">
-                    {language === 'ta'
-                      ? 'இன்று SevAIQ உங்களுக்கு எவ்வாறு உதவ முடியும்?'
-                      : language === 'hi'
-                      ? 'आज SevAIQ आपकी क्या मदद कर सकता है?'
-                      : 'How can SevAIQ help you today?'}
-                  </h3>
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#EDF6EF] text-[#16733B] dark:bg-emerald-950/80 dark:text-emerald-300 border border-emerald-200">
-                    {language === 'ta' ? 'அதிகாரப்பூர்வ அரசு வழிகாட்டுதல்' : language === 'hi' ? 'आधिकारिक सरकारी मार्गदर्शन' : 'Verified Official Guidance'}
+                <div className="flex items-center gap-2 flex-wrap mb-1">
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#EDF6EF] text-[#16733B] dark:bg-emerald-950/80 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                    {language === 'ta' ? 'அதிகாரப்பூர்வ அரசு வழிகாட்டுதல்' : 'Verified Official Guidance'}
                   </span>
                 </div>
-                <p className="text-xs sm:text-[13px] text-[#596775] dark:text-slate-300 mt-1 leading-relaxed">
+                <h2 className="text-xl sm:text-2xl font-extrabold text-[#17324D] dark:text-white tracking-tight leading-tight">
                   {language === 'ta'
-                    ? 'விவசாயி நிதி உதவி, மருத்துவ காப்பீடு, வீடு கட்ட மானியம், ஓய்வூதியம், மற்றும் கல்வி உதவித்தொகை குறித்த உங்கள் உரிமைகளை எளிதாக அறியலாம்.'
-                    : language === 'hi'
-                    ? 'किसान सहायता, स्वास्थ्य बीमा, आवास सब्सिडी, पेंशन और छात्रवृत्ति से संबंधित अपने अधिकारों को सरलता से जानें।'
-                    : 'Discover central and state welfare benefits, check if you qualify, prepare required documents, and track applications in simple language.'}
+                    ? 'SevAIQ-க்கு நல்வரவு. இன்று உங்களுக்கு என்ன உதவி தேவை?'
+                    : 'Welcome to SevAIQ. What help do you need today?'}
+                </h2>
+                <p className="text-sm sm:text-base font-semibold text-[#16733B] dark:text-emerald-300 mt-1">
+                  {language === 'ta'
+                    ? 'எளிய ஆங்கிலம் அல்லது தமிழில் கேளுங்கள். நீங்கள் தட்டச்சு செய்யலாம் அல்லது பேசலாம்.'
+                    : 'Ask in simple English or Tamil. You can type or speak.'}
                 </p>
+                <p className="text-xs sm:text-sm text-[#596775] dark:text-slate-300 mt-0.5 leading-relaxed">
+                  {language === 'ta'
+                    ? 'இன்று SevAIQ உங்களுக்கு எவ்வாறு உதவ முடியும்? விவசாயி நிதி உதவி, மருத்துவ காப்பீடு, வீடு கட்ட மானியம், ஓய்வூதியம், மற்றும் கல்வி உதவித்தொகை குறித்த உங்கள் உரிமைகளை எளிதாக அறியலாம்.'
+                    : 'How can SevAIQ help you today? Discover central and state welfare benefits, check if you qualify, prepare required documents, and track applications in simple language.'}
+                </p>
+              </div>
+            </div>
+
+            {/* 4 Simple Starter Actions (Accessible 48px touch targets) */}
+            <div className="pt-1">
+              <div className="text-xs font-bold text-[#596775] dark:text-slate-300 uppercase tracking-wider mb-2">
+                {language === 'ta' ? 'விரைவு தொடக்க வழிகள்:' : 'Quick Starter Actions:'}
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => handleSendQuery(language === 'ta' ? 'எனக்கான அரசு திட்டங்களை கண்டுபிடி' : 'Find schemes for me')}
+                  disabled={isAiLoading}
+                  className="min-h-[48px] p-3 rounded-xl bg-[#EDF6EF] dark:bg-emerald-950/60 hover:bg-[#16733B] hover:text-white text-[#16733B] dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-bold text-xs sm:text-sm flex items-center justify-center text-center transition-colors shadow-2xs cursor-pointer group"
+                >
+                  <span>{language === 'ta' ? 'எனக்கான திட்டங்கள்' : 'Find schemes for me'}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleSendQuery(language === 'ta' ? 'என் திட்டங்களுக்கு என்ன ஆவணங்கள் தேவை?' : 'What documents do I need?')}
+                  disabled={isAiLoading}
+                  className="min-h-[48px] p-3 rounded-xl bg-[#EDF6EF] dark:bg-emerald-950/60 hover:bg-[#16733B] hover:text-white text-[#16733B] dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-bold text-xs sm:text-sm flex items-center justify-center text-center transition-colors shadow-2xs cursor-pointer group"
+                >
+                  <span>{language === 'ta' ? 'என் ஆவணங்கள்' : 'My documents'}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleSendQuery(language === 'ta' ? 'என் விண்ணப்ப நிலை என்ன?' : 'Track my application')}
+                  disabled={isAiLoading}
+                  className="min-h-[48px] p-3 rounded-xl bg-[#EDF6EF] dark:bg-emerald-950/60 hover:bg-[#16733B] hover:text-white text-[#16733B] dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-bold text-xs sm:text-sm flex items-center justify-center text-center transition-colors shadow-2xs cursor-pointer group"
+                >
+                  <span>{language === 'ta' ? 'என் விண்ணப்ப நிலை' : 'Track my application'}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleSendQuery(language === 'ta' ? 'அடுத்து நான் என்ன செய்ய வேண்டும்?' : 'What should I do next?')}
+                  disabled={isAiLoading}
+                  className="min-h-[48px] p-3 rounded-xl bg-[#EDF6EF] dark:bg-emerald-950/60 hover:bg-[#16733B] hover:text-white text-[#16733B] dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-bold text-xs sm:text-sm flex items-center justify-center text-center transition-colors shadow-2xs cursor-pointer group"
+                >
+                  <span>{language === 'ta' ? 'அடுத்து என்ன செய்வது?' : 'What should I do next?'}</span>
+                </button>
               </div>
             </div>
 
@@ -1205,15 +1508,15 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
           return (
             <div
               key={msg.id}
-              className={`flex flex-col ${isBot ? 'items-start' : 'items-end'} space-y-1`}
+              className={`flex flex-col ${isBot ? 'items-start' : 'items-end'} space-y-1.5`}
             >
               <div
-                className={`max-w-[92%] sm:max-w-[85%] p-3.5 sm:p-4 rounded-xl text-xs sm:text-[13px] leading-relaxed ${
+                className={`max-w-[94%] sm:max-w-[88%] p-4 sm:p-5 rounded-2xl text-base sm:text-lg leading-relaxed ${
                   isBot
                     ? msg.isError
                       ? 'bg-[#FFFBEB] dark:bg-amber-950/70 text-[#92400E] dark:text-amber-200 border border-[#FDE68A] dark:border-amber-800 shadow-2xs'
                       : 'bg-white dark:bg-[#17324D] text-[#202B36] dark:text-slate-100 border border-[#D7DEE5] dark:border-[#223b56] shadow-xs'
-                    : 'bg-[#16733B] text-white rounded-xl shadow-xs font-medium'
+                    : 'bg-[#16733B] text-white rounded-2xl shadow-xs font-medium'
                 }`}
               >
                 {isBot ? (
@@ -1226,19 +1529,184 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
                   <p className="whitespace-pre-wrap font-medium">{msg.text}</p>
                 )}
 
+                {/* Single-Question Profile Completion Interactive Flow */}
+                {isBot && msg.inlineQuestion && (
+                  <div
+                    className="mt-3.5 p-4 bg-[#EDF6EF] dark:bg-[#102d1d] border-2 border-[#16733B] dark:border-emerald-600 rounded-2xl space-y-3 text-sm sm:text-base animate-in fade-in"
+                    data-testid="inline-profile-question"
+                  >
+                    <div className="space-y-1">
+                      <div className="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#16733B] text-white">
+                        <HelpCircle className="w-3.5 h-3.5" />
+                        <span>{language === 'ta' ? 'ஒரு கேள்வி மட்டும்' : 'One Quick Question'}</span>
+                      </div>
+                      <h4 className="text-base sm:text-lg font-bold text-[#17324D] dark:text-white">
+                        {language === 'ta' ? msg.inlineQuestion.questionTa : msg.inlineQuestion.questionEn}
+                      </h4>
+                      <p className="text-xs sm:text-sm text-[#596775] dark:text-emerald-200/90 leading-relaxed">
+                        {language === 'ta' ? msg.inlineQuestion.reasonTa : msg.inlineQuestion.reasonEn}
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                      {msg.inlineQuestion.options?.map((opt) => (
+                        <button
+                          key={opt.id}
+                          type="button"
+                          onClick={() =>
+                            handleAnswerInlineQuestion(
+                              msg.inlineQuestion!.field,
+                              opt.id,
+                              opt.labelEn,
+                              opt.labelTa
+                            )
+                          }
+                          className="min-h-[48px] p-3 bg-white dark:bg-[#17324D] hover:bg-[#16733B] hover:text-white dark:hover:bg-emerald-700 text-[#17324D] dark:text-white border border-[#D7DEE5] dark:border-emerald-800 rounded-xl font-bold text-left transition-colors shadow-2xs cursor-pointer flex items-center justify-between group"
+                        >
+                          <span>{language === 'ta' ? opt.labelTa : opt.labelEn}</span>
+                          <ArrowRight className="w-4 h-4 opacity-70 group-hover:opacity-100 group-hover:translate-x-1 transition-transform" />
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="pt-1 flex items-center justify-between">
+                      <button
+                        type="button"
+                        onClick={handleSkipInlineQuestion}
+                        className="min-h-[48px] px-4 py-2 text-xs sm:text-sm font-semibold text-[#596775] dark:text-slate-400 hover:text-[#17324D] dark:hover:text-white underline cursor-pointer"
+                      >
+                        {language === 'ta' ? 'இப்போதைக்கு தவிர்க்கவும் (Skip)' : 'Skip this question for now'}
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Action Confirmation Dialog (e.g. CLEAR_SESSION) */}
+                {isBot && msg.pendingActionConfirmation && (
+                  <div
+                    className="mt-3.5 p-4 bg-amber-50 dark:bg-amber-950/70 border-2 border-amber-400 dark:border-amber-600 rounded-xl space-y-3 text-sm sm:text-base animate-in fade-in"
+                    data-testid="action-confirmation-dialog"
+                  >
+                    <div className="flex items-center space-x-2 text-amber-900 dark:text-amber-200 font-bold">
+                      <AlertTriangle className="w-5 h-5 text-amber-700 dark:text-amber-400 shrink-0" />
+                      <span>
+                        {language === 'ta' ? 'உறுதிப்படுத்தல் தேவை' : 'Confirmation Required'}
+                      </span>
+                    </div>
+                    <p className="text-amber-950 dark:text-amber-100 font-medium">
+                      {language === 'ta'
+                        ? msg.pendingActionConfirmation.promptTa
+                        : msg.pendingActionConfirmation.promptEn}
+                    </p>
+                    <div className="flex items-center gap-3 pt-1 flex-wrap">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleConfirmAction(
+                            msg.id,
+                            msg.pendingActionConfirmation!.type,
+                            msg.pendingActionConfirmation!.payload
+                          )
+                        }
+                        className="min-h-[48px] px-5 py-2.5 bg-rose-700 hover:bg-rose-800 text-white font-bold rounded-xl shadow-xs transition-colors cursor-pointer"
+                        data-testid="confirm-action-button"
+                      >
+                        {language === 'ta' ? 'ஆம், அழிக்கவும் (Confirm)' : 'Yes, Clear Session'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleCancelAction(msg.id)}
+                        className="min-h-[48px] px-5 py-2.5 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-600 font-semibold rounded-xl shadow-xs transition-colors cursor-pointer"
+                        data-testid="cancel-action-button"
+                      >
+                        {language === 'ta' ? 'ரத்துசெய் (Cancel)' : 'Cancel'}
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Action Result Notification Card */}
+                {isBot && msg.actionResult && (
+                  <div
+                    className="mt-3.5 p-3.5 bg-[#EDF6EF] dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-800 rounded-xl space-y-2 text-sm sm:text-base animate-in fade-in"
+                    data-testid="action-result-card"
+                  >
+                    <div className="flex items-center space-x-2 text-[#16733B] dark:text-emerald-300 font-bold">
+                      <CheckCircle2 className="w-5 h-5 text-[#16733B] dark:text-emerald-400 shrink-0" />
+                      <span>
+                        {language === 'ta' ? 'நடவடிக்கை மேற்கொள்ளப்பட்டது' : 'Action Performed'}
+                      </span>
+                    </div>
+                    <p className="text-slate-800 dark:text-slate-200 font-medium">
+                      {language === 'ta' ? msg.actionResult.messageTa : msg.actionResult.messageEn}
+                    </p>
+                    {msg.actionResult.actionType === 'SHOW_REQUIRED_DOCUMENTS' && (
+                      <button
+                        type="button"
+                        onClick={() => onNavigate('document-mapper')}
+                        className="min-h-[48px] px-4 py-2 bg-[#16733B] hover:bg-[#105C2E] text-white rounded-xl font-bold flex items-center space-x-2 transition-colors cursor-pointer"
+                      >
+                        <FileText className="w-4 h-4" />
+                        <span>{language === 'ta' ? 'ஆவணங்கள் திட்டமிடலை பார்க்க' : 'View Document Planner'}</span>
+                      </button>
+                    )}
+                    {msg.actionResult.actionType === 'CHECK_ELIGIBILITY' && (
+                      <button
+                        type="button"
+                        onClick={() => onNavigate('eligibility')}
+                        className="min-h-[48px] px-4 py-2 bg-[#16733B] hover:bg-[#105C2E] text-white rounded-xl font-bold flex items-center space-x-2 transition-colors cursor-pointer"
+                      >
+                        <CheckSquare className="w-4 h-4" />
+                        <span>{language === 'ta' ? 'தகுதி சரிபார்ப்பை பார்க்க' : 'View Eligibility Checker'}</span>
+                      </button>
+                    )}
+                    {msg.actionResult.actionType === 'SHOW_APPLICATION_PROGRESS' && (
+                      <button
+                        type="button"
+                        onClick={() => onNavigate('application-tracker')}
+                        className="min-h-[48px] px-4 py-2 bg-[#16733B] hover:bg-[#105C2E] text-white rounded-xl font-bold flex items-center space-x-2 transition-colors cursor-pointer"
+                      >
+                        <ListOrdered className="w-4 h-4" />
+                        <span>{language === 'ta' ? 'விண்ணப்ப வழிகாட்டலை பார்க்க' : 'View Application Tracker'}</span>
+                      </button>
+                    )}
+                    {msg.actionResult.actionType === 'GENERATE_READINESS_PASSPORT' && (
+                      <button
+                        type="button"
+                        onClick={() => onNavigate('readiness-passport')}
+                        className="min-h-[48px] px-4 py-2 bg-[#16733B] hover:bg-[#105C2E] text-white rounded-xl font-bold flex items-center space-x-2 transition-colors cursor-pointer"
+                      >
+                        <ShieldCheck className="w-4 h-4" />
+                        <span>{language === 'ta' ? 'தயார் பாஸ்போர்ட்டை பார்க்க' : 'View Readiness Passport'}</span>
+                      </button>
+                    )}
+                    {msg.actionResult.actionType === 'OPEN_OFFICIAL_APPLICATION_LINK' && msg.actionResult.data?.portalUrl && (
+                      <a
+                        href={msg.actionResult.data.portalUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="min-h-[48px] inline-flex items-center space-x-2 px-4 py-2 bg-[#17324D] hover:bg-[#0F2133] text-white rounded-xl font-bold transition-colors"
+                      >
+                        <span>{language === 'ta' ? 'அதிகாரப்பூர்வ போர்ட்டலை திறக்க' : 'Open Official Portal'}</span>
+                        <ExternalLink className="w-4 h-4" />
+                      </a>
+                    )}
+                  </div>
+                )}
+
                 {/* Retry button for retryable provider errors */}
                 {isBot && msg.isError && msg.retryable && (
                   <div className="mt-2.5 pt-2 border-t border-[#FDE68A] dark:border-amber-800 flex items-center justify-between">
-                    <span className="text-[10px] text-amber-800 font-medium">
+                    <span className="text-xs text-amber-800 font-medium">
                       {language === 'ta' ? 'மீண்டும் முயற்சிக்கலாம்' : 'Retry available'}
                     </span>
                     <button
                       type="button"
                       onClick={handleRetryLastQuery}
                       disabled={isAiLoading}
-                      className="inline-flex items-center space-x-1 px-2.5 py-1 bg-amber-700 hover:bg-amber-800 text-white font-semibold rounded-lg text-[10px] shadow-2xs transition-colors cursor-pointer"
+                      className="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-amber-700 hover:bg-amber-800 text-white font-semibold rounded-lg text-xs shadow-2xs transition-colors cursor-pointer"
                     >
-                      <RefreshCw className="w-2.5 h-2.5" />
+                      <RefreshCw className="w-3 h-3" />
                       <span>{language === 'ta' ? 'மீண்டும் முயற்சி' : 'Retry Query'}</span>
                     </button>
                   </div>
@@ -1246,43 +1714,43 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
 
                 {/* Card Footer: Attribution & Audio Speaker Controls */}
                 {isBot && !msg.isError && (
-                  <div className="mt-2.5 pt-2 border-t border-[#D7DEE5] dark:border-[#223b56] flex items-center justify-between text-[10px] text-[#596775] dark:text-slate-400">
+                  <div className="mt-3 pt-2.5 border-t border-[#D7DEE5] dark:border-[#223b56] flex items-center justify-between text-xs text-[#596775] dark:text-slate-400">
                     <div className="flex items-center space-x-1.5">
-                      <span className="inline-flex items-center space-x-1 font-semibold text-[#16733B] dark:text-emerald-300 bg-[#EDF6EF] dark:bg-emerald-950/70 px-1.5 py-0.5 rounded border border-emerald-200 dark:border-emerald-800/60">
-                        <ShieldCheck className="w-2.5 h-2.5 text-[#16733B] dark:text-emerald-400" />
+                      <span className="inline-flex items-center space-x-1 font-semibold text-[#16733B] dark:text-emerald-300 bg-[#EDF6EF] dark:bg-emerald-950/70 px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-800/60 text-xs">
+                        <ShieldCheck className="w-3 h-3 text-[#16733B] dark:text-emerald-400" />
                         <span>
                           {msg.provider ? `AI • ${msg.provider.toUpperCase()}` : 'AI • GEMINI'}
                         </span>
                       </span>
                       {msg.latencyMs && (
-                        <span className="text-[#596775] dark:text-slate-400 font-mono text-[9px] hidden sm:inline">
+                        <span className="text-[#596775] dark:text-slate-400 font-mono text-xs hidden sm:inline">
                           {msg.latencyMs}ms
                         </span>
                       )}
                     </div>
 
                     {/* TTS Audio Controls: Listen, Pause, Resume, Stop, Replay */}
-                    <div className="flex items-center space-x-1">
+                    <div className="flex items-center space-x-1.5">
                       {ttsState.messageId === msg.id && ttsState.status === 'playing' ? (
                         <>
                           <button
                             type="button"
                             onClick={pauseSpeaking}
-                            className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-md font-semibold bg-amber-100 text-amber-900 border border-amber-300 transition-colors cursor-pointer"
+                            className="min-h-[40px] inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg font-bold bg-amber-100 text-amber-900 border border-amber-300 transition-colors cursor-pointer text-xs sm:text-sm"
                             title="Pause audio"
                             aria-label="Pause audio"
                           >
-                            <Pause className="w-3 h-3 text-amber-800" />
+                            <Pause className="w-4 h-4 text-amber-800" />
                             <span>{language === 'ta' ? 'இடைநிறுத்து' : 'Pause'}</span>
                           </button>
                           <button
                             type="button"
                             onClick={stopSpeaking}
-                            className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-md font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 transition-colors cursor-pointer"
+                            className="min-h-[40px] inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 transition-colors cursor-pointer text-xs sm:text-sm"
                             title="Stop audio"
                             aria-label="Stop audio"
                           >
-                            <Square className="w-2.5 h-2.5 text-slate-700 fill-current" />
+                            <Square className="w-3.5 h-3.5 text-slate-700 fill-current" />
                             <span>{language === 'ta' ? 'நிறுத்து' : 'Stop'}</span>
                           </button>
                         </>
@@ -1291,21 +1759,21 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
                           <button
                             type="button"
                             onClick={resumeSpeaking}
-                            className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-md font-semibold bg-emerald-100 text-emerald-900 border border-emerald-300 transition-colors cursor-pointer"
+                            className="min-h-[40px] inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg font-bold bg-emerald-100 text-emerald-900 border border-emerald-300 transition-colors cursor-pointer text-xs sm:text-sm"
                             title="Resume audio"
                             aria-label="Resume audio"
                           >
-                            <Play className="w-3 h-3 text-emerald-800 fill-current" />
+                            <Play className="w-4 h-4 text-emerald-800 fill-current" />
                             <span>{language === 'ta' ? 'தொடர' : 'Resume'}</span>
                           </button>
                           <button
                             type="button"
                             onClick={stopSpeaking}
-                            className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-md font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 transition-colors cursor-pointer"
+                            className="min-h-[40px] inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 transition-colors cursor-pointer text-xs sm:text-sm"
                             title="Stop audio"
                             aria-label="Stop audio"
                           >
-                            <Square className="w-2.5 h-2.5 text-slate-700 fill-current" />
+                            <Square className="w-3.5 h-3.5 text-slate-700 fill-current" />
                             <span>{language === 'ta' ? 'நிறுத்து' : 'Stop'}</span>
                           </button>
                         </>
@@ -1314,21 +1782,21 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
                           <button
                             type="button"
                             onClick={() => startSpeaking(msg.id, msg.text)}
-                            className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-md font-semibold bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 transition-colors cursor-pointer"
+                            className="min-h-[40px] inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg font-bold bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 transition-colors cursor-pointer text-xs sm:text-sm"
                             aria-label="Listen to response"
                           >
-                            <Volume2 className="w-3 h-3 text-civic-600" />
+                            <Volume2 className="w-4 h-4 text-[#16733B]" />
                             <span>{language === 'ta' ? 'கேளுங்கள்' : 'Listen'}</span>
                           </button>
                           {lastSpokenMessageId === msg.id && (
                             <button
                               type="button"
                               onClick={() => replaySpeaking(msg.id, msg.text)}
-                              className="inline-flex items-center p-1 rounded-md text-slate-500 hover:text-slate-800 hover:bg-slate-100 border border-slate-200 transition-colors cursor-pointer"
+                              className="min-h-[40px] min-w-[40px] inline-flex items-center justify-center p-2 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 border border-slate-200 transition-colors cursor-pointer"
                               title="Replay audio"
                               aria-label="Replay audio"
                             >
-                              <RotateCcw className="w-3 h-3" />
+                              <RotateCcw className="w-4 h-4" />
                             </button>
                           )}
                         </>
@@ -1590,19 +2058,19 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
       </div>
 
       {/* Bottom Dock Input Bar: Tactile Mic & Text Box */}
-      <div className="p-3 sm:p-4 bg-white dark:bg-[#0F2133] border-t border-[#D7DEE5] dark:border-[#223b56] shrink-0">
-        <div className="flex items-center space-x-2 sm:space-x-2.5">
-          {/* Large Tactile Microphone Button */}
+      <div className="p-3.5 sm:p-5 bg-white dark:bg-[#0F2133] border-t border-[#D7DEE5] dark:border-[#223b56] shrink-0">
+        <div className="flex items-center space-x-2 sm:space-x-3">
+          {/* Prominent High-Visibility Green Microphone Button */}
           <button
             type="button"
             onClick={toggleListening}
-            className={`w-11 h-11 sm:w-12 sm:h-12 rounded-xl transition-colors flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-[#16733B] shrink-0 cursor-pointer ${
+            className={`w-14 h-14 min-w-[56px] min-h-[56px] rounded-xl transition-all flex items-center justify-center focus:outline-none focus:ring-4 focus:ring-[#16733B]/40 shrink-0 cursor-pointer ${
               speechState === 'listening'
-                ? 'bg-rose-600 text-white shadow-xs ring-2 ring-rose-400'
+                ? 'bg-rose-600 text-white shadow-lg ring-4 ring-rose-400/50 animate-pulse'
                 : speechState === 'reviewing'
-                ? 'bg-[#17324D] text-white shadow-xs ring-2 ring-slate-400'
+                ? 'bg-[#17324D] text-white shadow-md ring-2 ring-slate-400'
                 : speechSupported
-                ? 'bg-[#16733B] hover:bg-[#105C2E] text-white shadow-xs'
+                ? 'bg-[#16733B] hover:bg-[#105C2E] text-white shadow-md hover:scale-[1.02] active:scale-[0.98]'
                 : 'bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed border border-[#D7DEE5] dark:border-[#223b56]'
             }`}
             title={
@@ -1626,13 +2094,13 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
             data-testid="microphone-toggle-button"
           >
             {speechState === 'listening' ? (
-              <MicOff className="w-5 h-5 text-white" />
+              <MicOff className="w-6 h-6 text-white" />
             ) : (
-              <Mic className="w-5 h-5 text-white" />
+              <Mic className="w-6 h-6 text-white" />
             )}
           </button>
 
-          {/* Text Input Field */}
+          {/* Large Visible Text Input Field (min-h-[56px]) */}
           <div className="relative flex-1">
             <input
               ref={inputRef}
@@ -1659,7 +2127,7 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
                   ? 'தமிழில் கேட்கவும் அல்லது தட்டச்சு செய்யவும்...'
                   : 'Ask welfare questions in English or Tamil...'
               }
-              className={`w-full px-4 py-2.5 sm:py-3 text-xs sm:text-sm bg-white dark:bg-[#17324D] border border-[#D7DEE5] dark:border-[#223b56] focus:bg-white dark:focus:bg-[#17324D] focus:outline-none focus:border-[#16733B] focus:ring-1 focus:ring-[#16733B] text-[#202B36] dark:text-white placeholder-[#596775] dark:placeholder-slate-400 rounded-xl transition-colors ${
+              className={`w-full min-h-[56px] px-4 py-3 text-base sm:text-lg bg-white dark:bg-[#17324D] border border-[#D7DEE5] dark:border-[#223b56] focus:bg-white dark:focus:bg-[#17324D] focus:outline-none focus:border-[#16733B] focus:ring-2 focus:ring-[#16733B]/40 text-[#202B36] dark:text-white placeholder-[#596775] dark:placeholder-slate-400 rounded-xl transition-all ${
                 speechState === 'listening' ? 'border-rose-400 bg-rose-50/20' : ''
               } ${isAiLoading ? 'opacity-70 cursor-wait' : ''}`}
             />
@@ -1667,32 +2135,32 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
               <button
                 type="button"
                 onClick={() => setInputText('')}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+                className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
                 aria-label="Clear input"
               >
-                <X className="w-3.5 h-3.5" />
+                <X className="w-5 h-5" />
               </button>
             )}
           </div>
 
-          {/* Send Button */}
+          {/* Send Button (min-h-[56px]) */}
           <button
             type="button"
             onClick={() => handleSendQuery()}
             disabled={!inputText.trim() || isAiLoading}
-            className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-[#16733B] hover:bg-[#105C2E] disabled:bg-slate-200 dark:disabled:bg-slate-800 disabled:text-slate-400 text-white flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-[#16733B] shrink-0 shadow-xs cursor-pointer disabled:cursor-not-allowed"
+            className="w-14 h-14 min-w-[56px] min-h-[56px] rounded-xl bg-[#17324D] hover:bg-[#0F2133] disabled:bg-slate-200 dark:disabled:bg-slate-800 disabled:text-slate-400 text-white flex items-center justify-center transition-all focus:outline-none focus:ring-4 focus:ring-slate-400/40 shrink-0 shadow-md cursor-pointer disabled:cursor-not-allowed hover:scale-[1.02] active:scale-[0.98]"
             aria-label="Send query"
           >
             {isAiLoading ? (
-              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+              <Sparkles className="w-5 h-5 text-white animate-spin" />
             ) : (
-              <Send className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+              <Send className="w-5 h-5 text-white" />
             )}
           </button>
         </div>
 
         {/* Micro Caption */}
-        <div className="text-[10px] text-[#596775] dark:text-slate-400 text-center mt-2 flex items-center justify-center gap-1.5">
+        <div className="text-xs text-[#596775] dark:text-slate-400 text-center mt-2.5 flex items-center justify-center gap-2">
           <span>Press Enter to send</span>
           <span>•</span>
           <span>Speak in தமிழ் (ta-IN) or English (en-IN)</span>

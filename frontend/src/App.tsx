@@ -416,6 +416,31 @@ export function App() {
             profile={profile}
             documents={documents}
             selectedSchemeIds={selectedSchemeIds}
+            onUpdateProfile={handleUpdateProfile}
+            onUpdateDocumentStatus={handleUpdateDocumentStatus}
+            onToggleSchemeSelection={handleToggleSchemeSelection}
+            onClearSession={handleClearSession}
+            onSelectTrackerScheme={(schemeId) => setSelectedTrackerSchemeId(schemeId)}
+            onSetTrackerStatus={(schemeId, status) => {
+              try {
+                const saved = localStorage.getItem('SEVAIQ_APPLICATION_STATUS');
+                const map = saved ? JSON.parse(saved) : {};
+                map[schemeId] = status;
+                localStorage.setItem('SEVAIQ_APPLICATION_STATUS', JSON.stringify(map));
+              } catch {
+                // ignore
+              }
+            }}
+            onSetTrackerReminder={(schemeId, reminderText, reminderDate) => {
+              try {
+                const saved = localStorage.getItem('SEVAIQ_APPLICATION_REMINDERS');
+                const map = saved ? JSON.parse(saved) : {};
+                map[schemeId] = { text: reminderText, date: reminderDate || new Date().toISOString() };
+                localStorage.setItem('SEVAIQ_APPLICATION_REMINDERS', JSON.stringify(map));
+              } catch {
+                // ignore
+              }
+            }}
           />
         </div>
 

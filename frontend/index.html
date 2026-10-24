@@ -11,8 +11,7 @@
       (function() {
         try {
           var saved = localStorage.getItem('SEVAIQ_THEME');
-          var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-          if (saved === 'dark' || (!saved && prefersDark)) {
+          if (saved === 'dark') {
             document.documentElement.classList.add('dark');
             document.documentElement.setAttribute('data-theme', 'dark');
             if (document.documentElement.style) document.documentElement.style.colorScheme = 'dark';

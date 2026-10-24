@@ -391,47 +391,47 @@ export const CivicMarkdown: React.FC<CivicMarkdownProps> = ({ content, className
   const blocks = parseBlocks(content);
 
   return (
-    <div className={`space-y-2 text-xs sm:text-[13px] leading-relaxed break-words ${className}`} data-testid="civic-markdown-root">
+    <div className={`space-y-3 text-base sm:text-lg leading-relaxed break-words ${className}`} data-testid="civic-markdown-root">
       {blocks.map((block, idx) => {
         switch (block.type) {
           case 'heading': {
             if (block.level === 1) {
               return (
-                <h1 key={idx} className="text-sm sm:text-base font-extrabold text-slate-900 mt-2 mb-1 tracking-tight">
+                <h1 key={idx} className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white mt-3 mb-1.5 tracking-tight">
                   {renderInlineContent(block.text)}
                 </h1>
               );
             }
             if (block.level === 2) {
               return (
-                <h2 key={idx} className="text-xs sm:text-sm font-bold text-slate-900 mt-2 mb-1 tracking-tight">
+                <h2 key={idx} className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mt-2.5 mb-1 tracking-tight">
                   {renderInlineContent(block.text)}
                 </h2>
               );
             }
             if (block.level === 3) {
               return (
-                <h3 key={idx} className="text-xs sm:text-[13px] font-bold text-slate-800 mt-1.5 mb-0.5">
+                <h3 key={idx} className="text-base sm:text-lg font-bold text-slate-800 dark:text-slate-100 mt-2 mb-0.5">
                   {renderInlineContent(block.text)}
                 </h3>
               );
             }
             return (
-              <h4 key={idx} className="text-xs font-semibold text-slate-700 mt-1 mb-0.5">
+              <h4 key={idx} className="text-base font-semibold text-slate-700 dark:text-slate-200 mt-1 mb-0.5">
                 {renderInlineContent(block.text)}
               </h4>
             );
           }
 
           case 'divider':
-            return <hr key={idx} className="my-2 border-slate-200/80" />;
+            return <hr key={idx} className="my-2.5 border-slate-200/80 dark:border-slate-700" />;
 
           case 'ul':
             return (
-              <ul key={idx} className="space-y-1.5 my-1.5 pl-1">
+              <ul key={idx} className="space-y-2 my-2 pl-1">
                 {block.items.map((item, itemIdx) => (
-                  <li key={itemIdx} className="flex items-start space-x-2 text-slate-800 leading-normal">
-                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-civic-600 mt-1.5 shrink-0" aria-hidden="true" />
+                  <li key={itemIdx} className="flex items-start space-x-2.5 text-slate-800 dark:text-slate-200 leading-relaxed text-base sm:text-lg">
+                    <span className="inline-block w-2 h-2 rounded-full bg-civic-600 dark:bg-emerald-400 mt-2 shrink-0" aria-hidden="true" />
                     <span className="flex-1 min-w-0">{renderInlineContent(item)}</span>
                   </li>
                 ))}
@@ -440,10 +440,10 @@ export const CivicMarkdown: React.FC<CivicMarkdownProps> = ({ content, className
 
           case 'ol':
             return (
-              <ol key={idx} className="space-y-2 my-2 pl-0.5">
+              <ol key={idx} className="space-y-2.5 my-2.5 pl-0.5">
                 {block.items.map((item, itemIdx) => (
-                  <li key={itemIdx} className="flex items-start space-x-2.5 text-slate-800 leading-normal">
-                    <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-civic-100 text-civic-800 font-bold text-[10px] shrink-0 mt-0.5 select-none">
+                  <li key={itemIdx} className="flex items-start space-x-3 text-slate-800 dark:text-slate-200 leading-relaxed text-base sm:text-lg">
+                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-civic-100 dark:bg-emerald-950 text-civic-800 dark:text-emerald-300 font-bold text-xs shrink-0 mt-0.5 select-none">
                       {itemIdx + 1}
                     </span>
                     <span className="flex-1 min-w-0 pt-0.5">{renderInlineContent(item)}</span>
@@ -456,17 +456,17 @@ export const CivicMarkdown: React.FC<CivicMarkdownProps> = ({ content, className
             return (
               <aside
                 key={idx}
-                className={`my-2 p-2.5 rounded-xl border flex items-start space-x-2 text-[11px] leading-relaxed ${
+                className={`my-2.5 p-3.5 rounded-xl border flex items-start space-x-3 text-sm sm:text-base leading-relaxed ${
                   block.variant === 'privacy'
-                    ? 'bg-blue-50/90 border-blue-200 text-blue-950'
-                    : 'bg-amber-50/90 border-amber-200 text-amber-950'
+                    ? 'bg-blue-50/90 dark:bg-blue-950/40 border-blue-200 dark:border-blue-900/60 text-blue-950 dark:text-blue-100'
+                    : 'bg-amber-50/90 dark:bg-amber-950/40 border-amber-200 dark:border-amber-900/60 text-amber-950 dark:text-amber-100'
                 }`}
                 aria-label={block.variant === 'privacy' ? 'Privacy notice' : 'Important note'}
               >
                 {block.variant === 'privacy' ? (
-                  <ShieldCheck className="w-3.5 h-3.5 text-civic-700 shrink-0 mt-0.5" />
+                  <ShieldCheck className="w-4 h-4 text-civic-700 dark:text-blue-400 shrink-0 mt-0.5" />
                 ) : (
-                  <Info className="w-3.5 h-3.5 text-amber-700 shrink-0 mt-0.5" />
+                  <Info className="w-4 h-4 text-amber-700 dark:text-amber-400 shrink-0 mt-0.5" />
                 )}
                 <div className="flex-1 min-w-0">{renderInlineContent(block.text)}</div>
               </aside>
@@ -475,7 +475,7 @@ export const CivicMarkdown: React.FC<CivicMarkdownProps> = ({ content, className
           case 'paragraph':
           default:
             return (
-              <p key={idx} className="text-slate-800 my-1 leading-relaxed">
+              <p key={idx} className="text-slate-800 dark:text-slate-100 my-1.5 leading-relaxed text-base sm:text-lg">
                 {renderInlineContent(block.text)}
               </p>
             );

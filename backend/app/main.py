@@ -32,6 +32,8 @@ from app.schemas import (
     ChatMessage as SchemaChatMessage,
     ChatRequest,
     ChatResponseSchema,
+    ChatActionRequest,
+    ChatActionResultSchema,
     CitizenProfile,
     DocumentMapperRequest,
     DocumentMappingResponse,
@@ -43,6 +45,11 @@ from app.schemas import (
     SchemeDetail,
 )
 from app.services.ai import AIProviderError, ChatMessage, get_ai_manager
+from app.services.chat_actions import (
+    detect_action_intent,
+    execute_chat_action,
+    get_registered_actions_metadata,
+)
 from app.services.document_mapper import map_scheme_documents
 from app.services.eligibility_engine import evaluate_all_schemes, evaluate_single_scheme
 from app.services.passport_generator import generate_scheme_passport_pdf
@@ -113,6 +120,8 @@ def root():
         "document_mapper": "/api/documents/mapper",
         "passport_pdf": "/api/passport/pdf",
         "chat": "/api/chat",
+        "chat_actions": "/api/chat/actions",
+        "chat_action": "/api/chat/action",
         "chat_providers": "/api/chat/providers",
     }
 
@@ -338,6 +347,33 @@ def get_ai_providers() -> List[ProviderStatusSchema]:
     ]
 
 
+@app.get(
+    "/api/chat/actions",
+    response_model=List[dict],
+    tags=["AI Chatbot"],
+    summary="List registered chatbot actions and schemas",
+)
+def list_chat_actions() -> List[dict]:
+    """Retrieve catalog of typed chatbot actions supported by SevAIQ."""
+    return get_registered_actions_metadata()
+
+
+@app.post(
+    "/api/chat/action",
+    response_model=ChatActionResultSchema,
+    tags=["AI Chatbot"],
+    summary="Execute a typed chatbot action directly",
+)
+def run_chat_action(request: ChatActionRequest) -> ChatActionResultSchema:
+    """Execute a registered civic action deterministically with explainable validation."""
+    return execute_chat_action(
+        action=request.action,
+        payload=request.payload,
+        language=request.language or "en",
+        citizen_context=request.citizen_context,
+    )
+
+
 @app.post(
     "/api/chat",
     response_model=ChatResponseSchema,
@@ -348,8 +384,57 @@ def chat_with_ai(request: ChatRequest) -> ChatResponseSchema:
     """Civic-grounded AI chatbot for welfare scheme discovery and guidance.
     
     Routes to the configured AI provider (Google Gemini) and grounds answers
-    in SevAIQ's verified scheme records.
+    in SevAIQ's verified scheme records. Deterministically executes supported
+    actions when requested or detected from citizen messages.
     """
+    # 1. Identify explicit action or natural-language intent
+    action_to_run = request.action
+    action_params = dict(request.action_params or {})
+
+    if not action_to_run and request.messages:
+        latest_user_msg = next((m.content for m in reversed(request.messages) if m.role == "user"), "")
+        if latest_user_msg:
+            detected = detect_action_intent(
+                latest_user_msg,
+                focused_scheme_id=request.context_scheme_id,
+                citizen_context=request.citizen_context,
+            )
+            if detected:
+                action_to_run, detected_params = detected
+                action_params = {**detected_params, **action_params}
+
+    # 2. Execute action if present
+    action_result: Optional[ChatActionResultSchema] = None
+    suggested_schemes: List[str] = []
+
+    if action_to_run:
+        action_result = execute_chat_action(
+            action=action_to_run,
+            payload=action_params,
+            language=request.language or "en",
+            citizen_context=request.citizen_context,
+        )
+        if action_result.success and action_result.data:
+            if "schemes" in action_result.data and isinstance(action_result.data["schemes"], list):
+                for s in action_result.data["schemes"]:
+                    if isinstance(s, dict) and s.get("id"):
+                        suggested_schemes.append(s["id"])
+            elif "scheme_id" in action_result.data and action_result.data["scheme_id"]:
+                suggested_schemes.append(action_result.data["scheme_id"])
+            elif "selected_scheme_ids" in action_result.data and isinstance(action_result.data["selected_scheme_ids"], list):
+                suggested_schemes.extend(action_result.data["selected_scheme_ids"])
+
+    # 3. Augment citizen_context with action summary for Gemini grounding
+    augmented_context = dict(request.citizen_context or {})
+    if action_result and action_result.summary:
+        augmented_context["latest_action_result"] = {
+            "action": action_result.action,
+            "success": action_result.success,
+            "summary": action_result.summary,
+            "next_question": action_result.next_question,
+        }
+
+    # 4. Generate grounded conversational response with AI manager
     manager = get_ai_manager()
     try:
         response = manager.generate_chat_response(
@@ -359,7 +444,7 @@ def chat_with_ai(request: ChatRequest) -> ChatResponseSchema:
             ],
             language=request.language or "en",
             focused_scheme_id=request.context_scheme_id,
-            citizen_context=request.citizen_context,
+            citizen_context=augmented_context if augmented_context else request.citizen_context,
         )
         return ChatResponseSchema(
             reply=response.content,
@@ -367,8 +452,23 @@ def chat_with_ai(request: ChatRequest) -> ChatResponseSchema:
             model=response.model_id,
             status="success",
             latency_ms=response.latency_ms,
+            suggested_schemes=suggested_schemes or None,
+            action_result=action_result,
         )
     except AIProviderError as e:
+        # If an action was successfully executed, fall back gracefully to the deterministic action summary
+        # instead of failing the request for the citizen
+        if action_result and action_result.success:
+            logger.info("AI provider error; falling back to deterministic action summary: %s", e.message)
+            return ChatResponseSchema(
+                reply=action_result.summary,
+                provider="deterministic-action-layer",
+                model="rule-engine-v1",
+                status="success",
+                suggested_schemes=suggested_schemes or None,
+                action_result=action_result,
+            )
+
         logger.error(
             "AI Chatbot error [%s]: %s (provider=%s, retryable=%s)",
             e.error_type.value,
