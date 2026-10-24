@@ -385,6 +385,9 @@ export function App() {
             onOpenAbout={() => setIsAboutOpen(true)}
             pendingQuery={pendingChatQuery}
             onClearPendingQuery={() => setPendingChatQuery(null)}
+            profile={profile}
+            documents={documents}
+            selectedSchemeIds={selectedSchemeIds}
           />
         </div>
 

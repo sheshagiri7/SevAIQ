@@ -112,6 +112,7 @@ class BaseAIProvider(ABC):
         context: Optional[str] = None,
         language: str = "en",
         timeout_seconds: float = 15.0,
+        citizen_context: Optional[Dict[str, Any]] = None,
     ) -> ChatResponse:
         """Generate a grounded, genuine AI response for the conversation.
         

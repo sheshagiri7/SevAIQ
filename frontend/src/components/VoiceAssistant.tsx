@@ -27,6 +27,7 @@ import {
 import { Scheme, AssistantLanguage, AssistantMessage, NavigationTab, ChatMessageWire } from '../types';
 import {
   SAMPLE_PROMPTS,
+  CONTEXTUAL_PROMPTS,
   prepareSpeechText,
   getBestVoice,
 } from '../utils/voiceAssistantEngine';
@@ -44,6 +45,8 @@ import {
 import { useLanguage } from '../context/LanguageContext';
 import { sendChatMessage } from '../services/api';
 import { CivicMarkdown } from './CivicMarkdown';
+import { buildCitizenChatContext } from '../utils/chatbotContextBuilder';
+import { CitizenProfile, DocumentRecord } from '../types';
 
 export interface VoiceAssistantProps {
   schemes: Scheme[];
@@ -57,6 +60,9 @@ export interface VoiceAssistantProps {
   onOpenAbout?: () => void;
   pendingQuery?: string | null;
   onClearPendingQuery?: () => void;
+  profile?: CitizenProfile;
+  documents?: DocumentRecord[];
+  selectedSchemeIds?: string[];
 }
 
 export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
@@ -71,6 +77,9 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
   onOpenAbout,
   pendingQuery,
   onClearPendingQuery,
+  profile,
+  documents = [],
+  selectedSchemeIds = [],
 }) => {
   const [internalIsOpen, setInternalIsOpen] = useState(false);
   const [isMaximized, setIsMaximized] = useState(false);
@@ -563,10 +572,30 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
       }));
     chatHistory.push({ role: 'user', content: query });
 
+    // Build controlled citizen context from current session state
+    let applicationTracking: Record<string, string> | undefined;
+    try {
+      const savedStatuses = localStorage.getItem('SEVAIQ_APPLICATION_STATUS');
+      if (savedStatuses) {
+        applicationTracking = JSON.parse(savedStatuses);
+      }
+    } catch {
+      // ignore
+    }
+
+    const citizenContext = buildCitizenChatContext(
+      profile,
+      schemes,
+      documents,
+      selectedSchemeIds,
+      applicationTracking
+    );
+
     try {
       const res = await sendChatMessage({
         messages: chatHistory,
         language,
+        citizen_context: citizenContext,
       });
 
       setIsAiLoading(false);
@@ -1093,6 +1122,37 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
                 </button>
               </div>
             </div>
+
+            {/* Context-Aware Smart Suggestions (When profile or schemes are active) */}
+            {Boolean(profile?.occupation || profile?.age || selectedSchemeIds.length > 0) && (
+              <div className="p-3 bg-civic-50/70 dark:bg-civic-950/50 rounded-2xl border border-civic-200/70 dark:border-civic-800/70">
+                <div className="text-[11px] font-bold text-civic-800 dark:text-civic-300 uppercase tracking-wider mb-2 flex items-center space-x-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                  <span>
+                    {language === 'ta'
+                      ? 'உங்கள் அமர்வுக்கான சிறப்பு கேள்விகள் (Context-Aware):'
+                      : 'Personalized Questions For Your Session:'}
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {CONTEXTUAL_PROMPTS[language].map((prompt, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => {
+                        setInputText(prompt.query);
+                        handleSendQuery(prompt.query);
+                      }}
+                      disabled={isAiLoading}
+                      className="px-3 py-1.5 bg-white dark:bg-[#0c1834] hover:bg-civic-100 dark:hover:bg-civic-900 text-civic-900 dark:text-civic-200 border border-civic-200 dark:border-civic-700 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition-all shadow-2xs cursor-pointer disabled:opacity-50"
+                    >
+                      <span>{prompt.icon}</span>
+                      <span>{prompt.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Suggested 1-Click Questions */}
             <div>

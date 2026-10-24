@@ -152,6 +152,7 @@ class GeminiProvider(BaseAIProvider):
         context: Optional[str] = None,
         language: str = "en",
         timeout_seconds: float = 15.0,
+        citizen_context: Optional[Dict[str, Any]] = None,
     ) -> ChatResponse:
         """Generate a grounded, genuine AI response using Google Gemini."""
         if not messages:
@@ -164,7 +165,10 @@ class GeminiProvider(BaseAIProvider):
             )
 
         client = self._get_client()
-        system_instruction = build_system_instruction(language=language)
+        system_instruction = build_system_instruction(
+            language=language,
+            citizen_context=citizen_context,
+        )
         if context:
             system_instruction += f"\n\nADDITIONAL VERIFIED CONTEXT:\n{context}"
 

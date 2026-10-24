@@ -52,6 +52,7 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
 }) => {
   const { t, getLocalizedScheme, getLocalizedDocument, language } = useLanguage();
   const [filterTab, setFilterTab] = useState<'all' | 'shared' | 'single' | 'missing' | 'have'>('all');
+  const [schemeFilter, setSchemeFilter] = useState<string>('all');
 
   // Backend Mapping API state
   const [backendMapping, setBackendMapping] = useState<BackendDocumentMappingResponse | null>(null);
@@ -157,23 +158,53 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
           doc.applicableSchemeIds.filter((sId) => activeSchemeIds.includes(sId)).length === 1
       ).length;
 
+  const isConditionalDoc = useCallback((doc: DocumentRecord) => {
+    const text = (doc.id + ' ' + doc.name + ' ' + doc.description).toLowerCase();
+    return (
+      text.includes('caste') ||
+      text.includes('community') ||
+      text.includes('disability') ||
+      text.includes('divyangjan') ||
+      text.includes('vending') ||
+      text.includes('vendor') ||
+      text.includes('marksheet') ||
+      text.includes('education') ||
+      text.includes('udyam')
+    );
+  }, []);
+
+  const filteredByScheme = useMemo(() => {
+    if (schemeFilter === 'all') return relevantDocuments;
+    return relevantDocuments.filter((doc) => doc.applicableSchemeIds.includes(schemeFilter));
+  }, [relevantDocuments, schemeFilter]);
+
   const displayedDocs = useMemo(() => {
+    let docs = filteredByScheme;
     if (filterTab === 'shared') {
-      return relevantDocuments.filter(
+      docs = docs.filter(
         (doc) =>
           doc.applicableSchemeIds.filter((sId) => activeSchemeIds.includes(sId)).length > 1
       );
-    }
-    if (filterTab === 'single') {
-      return relevantDocuments.filter(
+    } else if (filterTab === 'single') {
+      docs = docs.filter(
         (doc) =>
           doc.applicableSchemeIds.filter((sId) => activeSchemeIds.includes(sId)).length === 1
       );
+    } else if (filterTab === 'missing') {
+      docs = docs.filter((doc) => doc.status === 'missing');
+    } else if (filterTab === 'have') {
+      docs = docs.filter((doc) => doc.status === 'have');
     }
-    if (filterTab === 'missing') return relevantDocuments.filter((doc) => doc.status === 'missing');
-    if (filterTab === 'have') return relevantDocuments.filter((doc) => doc.status === 'have');
-    return relevantDocuments;
-  }, [relevantDocuments, filterTab, activeSchemeIds]);
+    return docs;
+  }, [filteredByScheme, filterTab, activeSchemeIds]);
+
+  const mandatoryDocs = useMemo(() => {
+    return displayedDocs.filter((d) => !isConditionalDoc(d));
+  }, [displayedDocs, isConditionalDoc]);
+
+  const conditionalDocs = useMemo(() => {
+    return displayedDocs.filter((d) => isConditionalDoc(d));
+  }, [displayedDocs, isConditionalDoc]);
 
   const getProcurementGuidance = (docName: string) => {
     const name = docName.toLowerCase();
@@ -527,6 +558,45 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
         </div>
       </div>
 
+      {/* Scheme-Specific Filter Selector */}
+      {activeSchemeIds.length > 1 && (
+        <div className="flex flex-wrap items-center gap-2 p-3 bg-slate-50 dark:bg-slate-900/60 rounded-2xl border border-slate-200 dark:border-slate-800">
+          <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
+            {language === 'ta' ? 'திட்டம் வாரியாக வடிகட்டுக:' : 'Filter by Selected Scheme:'}
+          </span>
+          <button
+            type="button"
+            onClick={() => setSchemeFilter('all')}
+            className={`px-3 py-1 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${
+              schemeFilter === 'all'
+                ? 'bg-civic-700 text-white shadow-xs'
+                : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100'
+            }`}
+          >
+            {language === 'ta' ? `அனைத்து திட்டங்கள் (${relevantDocuments.length})` : `All Selected Schemes (${relevantDocuments.length})`}
+          </button>
+          {activeSchemeIds.map((sId) => {
+            const s = schemes.find((x) => x.id === sId);
+            const title = s ? s.title.split('(')[0].trim() : sId;
+            const docCountForScheme = relevantDocuments.filter((d) => d.applicableSchemeIds.includes(sId)).length;
+            return (
+              <button
+                key={sId}
+                type="button"
+                onClick={() => setSchemeFilter(sId)}
+                className={`px-3 py-1 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${
+                  schemeFilter === sId
+                    ? 'bg-civic-700 text-white shadow-xs'
+                    : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100'
+                }`}
+              >
+                {title} ({docCountForScheme})
+              </button>
+            );
+          })}
+        </div>
+      )}
+
       {/* Filter Tabs */}
       <div className="flex flex-wrap items-center gap-2">
         <button
@@ -605,6 +675,23 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
         </button>
       </div>
 
+      {/* Category Breakdown Bar */}
+      <div className="flex flex-wrap items-center gap-2 text-xs text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700">
+        <span className="font-medium text-slate-700 dark:text-slate-300">
+          {language === 'ta' ? 'ஆவண வகைப்பாடு:' : 'Document Classification:'}
+        </span>
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300">
+          {language === 'ta'
+            ? `அடிப்படை கட்டாய ஆவணங்கள் (${mandatoryDocs.length})`
+            : `Mandatory Core (${mandatoryDocs.length})`}
+        </span>
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-300">
+          {language === 'ta'
+            ? `நிபந்தனை / தகுதி சார்ந்த ஆவணங்கள் (${conditionalDocs.length})`
+            : `Conditional / Category-Specific (${conditionalDocs.length})`}
+        </span>
+      </div>
+
       {/* Document Items List with Explicit Distinction */}
       <div className="space-y-4">
         {displayedDocs.length > 0 ? (
@@ -648,6 +735,16 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                         </span>
                       )}
 
+                      {isConditionalDoc(doc) ? (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-purple-50 text-purple-700 border border-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:border-purple-800">
+                          {language === 'ta' ? 'நிபந்தனை ஆவணம்' : 'Conditional / Category'}
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800">
+                          {language === 'ta' ? 'அடிப்படை ஆவணம்' : 'Core Mandatory'}
+                        </span>
+                      )}
+
                       {/* Possession Status Indicator Badge */}
                       {doc.status === 'have' ? (
                         <span className="inline-flex items-center space-x-1 text-[11px] font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
@@ -684,7 +781,22 @@ export const DocumentMapper: React.FC<DocumentMapperProps> = ({
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-slate-600">{locDoc.description}</p>
+                    <p className="text-xs text-slate-600 dark:text-slate-400">{locDoc.description}</p>
+                    {applicableInSelection.length > 0 && (
+                      <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                        <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                          {language === 'ta' ? 'தேவைப்படும் திட்டங்கள்:' : 'Required by:'}
+                        </span>
+                        {applicableInSelection.map((s) => (
+                          <span
+                            key={s.id}
+                            className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700"
+                          >
+                            {s.title.split('(')[0].trim()}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
                   {/* Interactive 3-Way Status Selector */}

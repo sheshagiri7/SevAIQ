@@ -114,6 +114,7 @@ class AIProviderManager:
         language: str = "en",
         focused_scheme_id: Optional[str] = None,
         timeout_seconds: Optional[float] = None,
+        citizen_context: Optional[Dict[str, Any]] = None,
     ) -> ChatResponse:
         """Execute chat generation using the configured provider policy.
         
@@ -167,12 +168,18 @@ class AIProviderManager:
             while attempts < max_attempts:
                 attempts += 1
                 try:
-                    response = provider.generate_chat_response(
-                        messages=messages,
-                        context=context,
-                        language=language,
-                        timeout_seconds=timeout,
-                    )
+                    kwargs = {
+                        "messages": messages,
+                        "context": context,
+                        "language": language,
+                        "timeout_seconds": timeout,
+                    }
+                    import inspect
+                    sig = inspect.signature(provider.generate_chat_response)
+                    if "citizen_context" in sig.parameters:
+                        kwargs["citizen_context"] = citizen_context
+
+                    response = provider.generate_chat_response(**kwargs)
                     return response
 
                 except AIProviderError as e:

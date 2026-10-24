@@ -92,6 +92,46 @@ def test_system_instruction_tamil_and_english():
     assert "விவசாயி" in ta_prompt
 
 
+def test_system_instruction_with_citizen_context():
+    """Verify that citizen session context is safely incorporated into grounding prompt."""
+    sample_context = {
+        "profile": {
+            "state": "Tamil Nadu",
+            "area": "Rural",
+            "age": 42,
+            "occupation": "Farmer / Cultivator",
+            "income_bracket": "< 1 Lakh",
+        },
+        "scheme_matches": [
+            {
+                "id": "pm-kisan",
+                "title": "PM-KISAN",
+                "status": "Potential match",
+                "reasons": ["Farmer occupation matches", "Rural area matches"],
+                "missing": [],
+            }
+        ],
+        "documents": {
+            "selected_schemes": ["PM-KISAN"],
+            "have_documents": ["Aadhaar Card"],
+            "missing_documents": ["Land Record (Patta/Chitta)"],
+        },
+        "tracking": {
+            "PM-KISAN": "Gathering documents",
+        },
+        "next_best_action": "Procure Land Record from Taluk office",
+    }
+    prompt = build_system_instruction(language="en", citizen_context=sample_context)
+    assert "ACTIVE CITIZEN CONTEXT" in prompt
+    assert "State: Tamil Nadu" in prompt
+    assert "Farmer / Cultivator" in prompt
+    assert "PM-KISAN" in prompt
+    assert "Land Record" in prompt
+    assert "Gathering documents" in prompt
+    assert "Procure Land Record" in prompt
+    assert "CONTEXT-AWARE BENEFITS ASSISTANCE" in prompt
+
+
 # =====================================================================
 # 2. Gemini Provider Unit Tests
 # =====================================================================

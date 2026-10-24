@@ -167,6 +167,10 @@ class ChatRequest(BaseModel):
     messages: List[ChatMessage] = Field(..., min_length=1, description="Conversation history turns")
     language: Optional[str] = Field("en", description="Target response language ('en' or 'ta')")
     context_scheme_id: Optional[str] = Field(None, description="Optional scheme ID for focused context")
+    citizen_context: Optional[Dict[str, Any]] = Field(
+        None,
+        description="Controlled, sanitized citizen context (profile, matches, documents, tracking)",
+    )
 
 
 class ChatResponseSchema(BaseModel):

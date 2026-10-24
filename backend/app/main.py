@@ -359,6 +359,7 @@ def chat_with_ai(request: ChatRequest) -> ChatResponseSchema:
             ],
             language=request.language or "en",
             focused_scheme_id=request.context_scheme_id,
+            citizen_context=request.citizen_context,
         )
         return ChatResponseSchema(
             reply=response.content,

@@ -73,13 +73,93 @@ def build_scheme_catalog_context(schemes: Optional[List[dict]] = None) -> str:
     return "\n".join(entries)
 
 
+def format_citizen_context(citizen_context: Optional[dict]) -> str:
+    """Format controlled, sanitized citizen session context for grounding."""
+    if not citizen_context or not isinstance(citizen_context, dict):
+        return ""
+
+    lines = ["ACTIVE CITIZEN CONTEXT (From current citizen session):"]
+
+    # 1. Profile
+    profile = citizen_context.get("profile")
+    if profile and isinstance(profile, dict):
+        prof_parts = []
+        if profile.get("state"):
+            prof_parts.append(f"State: {profile['state']}")
+        if profile.get("area"):
+            prof_parts.append(f"Area: {profile['area']}")
+        if profile.get("age") is not None:
+            prof_parts.append(f"Age: {profile['age']} years")
+        if profile.get("occupation"):
+            prof_parts.append(f"Occupation: {profile['occupation']}")
+        if profile.get("income_bracket"):
+            prof_parts.append(f"Annual Income: {profile['income_bracket']}")
+        if profile.get("category"):
+            prof_parts.append(f"Social Category: {profile['category']}")
+        if profile.get("landholding"):
+            prof_parts.append(f"Landholding: {profile['landholding']}")
+        if profile.get("is_student"):
+            prof_parts.append("Student: Enrolled")
+        if profile.get("has_disability"):
+            prof_parts.append("Divyangjan / PwD: Yes")
+
+        if prof_parts:
+            lines.append("Citizen Profile: " + ", ".join(prof_parts))
+
+    # 2. Scheme matches & MatchProof
+    matches = citizen_context.get("scheme_matches")
+    if matches and isinstance(matches, list):
+        lines.append("Scheme Matches & MatchProof:")
+        for m in matches[:6]:
+            s_name = m.get("title") or m.get("id") or "Scheme"
+            status = m.get("status", "unknown")
+            reasons = m.get("reasons", [])
+            missing = m.get("missing", [])
+            r_str = "; ".join(reasons) if reasons else "Based on general eligibility"
+            m_str = f" [Missing info to verify: {', '.join(missing)}]" if missing else ""
+            lines.append(f"- {s_name} ({status}): {r_str}{m_str}")
+
+    # 3. Consolidated document checklist
+    docs = citizen_context.get("documents")
+    if docs and isinstance(docs, dict):
+        sel_schemes = docs.get("selected_schemes", [])
+        have_docs = docs.get("have_documents", [])
+        missing_docs = docs.get("missing_documents", [])
+        unconfirmed = docs.get("unconfirmed_documents", [])
+        lines.append("Document Planner Checklist:")
+        if sel_schemes:
+            lines.append(f"- Selected schemes: {', '.join(sel_schemes)}")
+        if have_docs:
+            lines.append(f"- Available in hand: {', '.join(have_docs)}")
+        if missing_docs:
+            lines.append(f"- Missing / Need to procure: {', '.join(missing_docs)}")
+        if unconfirmed:
+            lines.append(f"- Uncertain / Not checked: {', '.join(unconfirmed)}")
+
+    # 4. User-recorded application tracking
+    tracking = citizen_context.get("tracking")
+    if tracking and isinstance(tracking, dict):
+        lines.append("Citizen Recorded Application Statuses:")
+        for sid, status_text in tracking.items():
+            lines.append(f"- {sid}: {status_text}")
+
+    # 5. Next Best Action
+    next_action = citizen_context.get("next_best_action")
+    if next_action:
+        lines.append(f"Recommended Next Action: {next_action}")
+
+    return "\n".join(lines)
+
+
 def build_system_instruction(
     language: str = "en",
     schemes: Optional[List[dict]] = None,
     focused_scheme_id: Optional[str] = None,
+    citizen_context: Optional[dict] = None,
 ) -> str:
     """Construct the grounding system prompt for the AI model with public-service officer persona."""
     catalog_text = build_scheme_catalog_context(schemes)
+    context_text = format_citizen_context(citizen_context)
 
     language_rule = (
         """TAMIL (தமிழ்) LANGUAGE AND PUBLIC-SERVICE TONE:
@@ -155,6 +235,15 @@ CORE PUBLIC-SERVICE & CIVIC-TECH PRINCIPLES:
 8. LANGUAGE SPECIFICS:
 {language_rule}
 {focus_rule}
+
+9. CONTEXT-AWARE BENEFITS ASSISTANCE:
+When ACTIVE CITIZEN CONTEXT is provided below, act as a personalized civic benefits guide:
+- Answer questions like "Why was this scheme recommended?", "Am I eligible?", "What is missing?", "Which schemes match?", "What documents do I need?", "Which documents am I missing?", "What should I do next?", and "What status did I record?" using the session details directly.
+- Separate confirmed profile matches from unverified requirements. Never make the citizen repeat details already provided.
+- Reassure citizens that eligibility assessments are transparent guides based on official criteria, not final legal sanctions.
+
+{context_text}
+
 VERIFIED OFFICIAL SCHEME CATALOG:
 {catalog_text}
 """

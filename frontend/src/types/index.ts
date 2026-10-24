@@ -247,6 +247,7 @@ export interface ChatRequestPayload {
   messages: ChatMessageWire[];
   language?: string;
   context_scheme_id?: string;
+  citizen_context?: Record<string, any>;
 }
 
 export interface ChatResponsePayload {

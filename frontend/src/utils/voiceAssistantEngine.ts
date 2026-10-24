@@ -50,6 +50,24 @@ export const SAMPLE_PROMPTS: Record<AssistantLanguage, SamplePrompt[]> = {
   ],
 };
 
+export const CONTEXTUAL_PROMPTS: Record<AssistantLanguage, SamplePrompt[]> = {
+  ta: [
+    { label: '🎯 எனக்கு பொருந்தும் திட்டங்கள்', category: 'match', description: 'எனது விவரங்களின்படி என்ன திட்டங்கள் உள்ளன? (MatchProof)', query: 'எனது விவரங்களின் அடிப்படையில் எனக்கு என்னென்ன அரசு திட்டங்கள் பொருந்தும்?', text: 'எனது விவரங்களின் அடிப்படையில் எனக்கு என்னென்ன அரசு திட்டங்கள் பொருந்தும்?', icon: '🎯' },
+    { label: '📋 தேவையான ஆவணங்கள் பட்டியல்', category: 'docs', description: 'நான் தேர்ந்தெடுத்த திட்டங்களுக்கு என்னென்ன ஆவணங்கள் தேவை?', query: 'எனது திட்டங்களுக்கு என்னென்ன ஆவணங்கள் தேவை? என்னிடம் என்ன விடுபட்டுள்ளது?', text: 'எனது திட்டங்களுக்கு என்னென்ன ஆவணங்கள் தேவை? என்னிடம் என்ன விடுபட்டுள்ளது?', icon: '📋' },
+    { label: '🚀 அடுத்து என்ன செய்ய வேண்டும்?', category: 'next', description: 'விண்ணப்ப செயல்முறையில் எனது அடுத்த சிறந்த படி என்ன?', query: 'எனது தற்போதைய நிலையில் நான் அடுத்து என்ன செய்ய வேண்டும்?', text: 'எனது தற்போதைய நிலையில் நான் அடுத்து என்ன செய்ய வேண்டும்?', icon: '🚀' },
+  ],
+  en: [
+    { label: '🎯 Schemes Matching My Profile', category: 'match', description: 'Which schemes suit my answers? (MatchProof)', query: 'Which government schemes match my profile details?', text: 'Which government schemes match my profile details?', icon: '🎯' },
+    { label: '📋 My Required Documents Checklist', category: 'docs', description: 'What documents do I need and what is missing?', query: 'What documents do I need for my selected schemes, and which ones am I missing?', text: 'What documents do I need for my selected schemes, and which ones am I missing?', icon: '📋' },
+    { label: '🚀 What Should I Do Next?', category: 'next', description: 'Next-best-action guidance for your situation', query: 'What is the best next step I should take right now?', text: 'What is the best next step I should take right now?', icon: '🚀' },
+  ],
+  hi: [
+    { label: '🎯 मेरी प्रोफ़ाइल से मेल खाती योजनाएं', category: 'match', description: 'मेरे विवरण के अनुसार कौन सी योजनाएं उपयुक्त हैं?', query: 'मेरी प्रोफ़ाइल के अनुसार मुझे कौन सी सरकारी योजनाएं मिल सकती हैं?', text: 'मेरी प्रोफ़ाइल के अनुसार मुझे कौन सी सरकारी योजनाएं मिल सकती हैं?', icon: '🎯' },
+    { label: '📋 आवश्यक दस्तावेज़ चेकलिस्ट', category: 'docs', description: 'मेरी चयनित योजनाओं के लिए कौन से दस्तावेज़ आवश्यक हैं?', query: 'मेरी योजनाओं के लिए क्या दस्तावेज़ चाहिए और क्या शेष है?', text: 'मेरी योजनाओं के लिए क्या दस्तावेज़ चाहिए और क्या शेष है?', icon: '📋' },
+    { label: '🚀 आगे क्या कदम उठाएं?', category: 'next', description: 'वर्तमान स्थिति के अनुसार अगला सबसे अच्छा कदम', query: 'मुझे अपनी वर्तमान स्थिति में आगे क्या करना चाहिए?', text: 'मुझे अपनी वर्तमान स्थिति में आगे क्या करना चाहिए?', icon: '🚀' },
+  ],
+};
+
 export function processCitizenQuery(
   rawQuery: string,
   language: AssistantLanguage,
