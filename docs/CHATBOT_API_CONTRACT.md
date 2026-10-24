@@ -49,13 +49,19 @@ Every action execution returns the standard schema:
   "success": true,
   "action": "check_eligibility",
   "summary": "You meet the known criteria for PM-KISAN, but landholding status is missing.",
-  "data": { ... },
+  "data": {
+    "scheme_id": "pm-kisan",
+    "outcome": "needs_verification",
+    "missing_information": [
+      "Cultivable agricultural landholding status is required for this scheme."
+    ]
+  },
   "sources": [
     {
-      "title": "PM-KISAN Official Guidelines",
+      "title": "Pradhan Mantri Kisan Samman Nidhi (PM-KISAN)",
       "url": "https://pmkisan.gov.in",
-      "verification_source": "Ministry of Agriculture & Farmers Welfare",
-      "verification_date": "2026-01-15"
+      "verification_source": "Official Operational Guidelines, Ministry of Agriculture & Farmers Welfare (pmkisan.gov.in)",
+      "verification_date": "2024-02-28"
     }
   ],
   "requires_confirmation": false,
@@ -204,7 +210,10 @@ interface ChatActionRequest {
   - `schemes_included`: List of scheme IDs included.
   - `readiness_percentage`: Computed document preparedness score.
   - `generation_timestamp`: ISO timestamp.
-  - `pdf_base64`: Optional base64 encoded string of generated PDF for direct client preview.
+  - `pdf_base64`: Base64 encoded string of generated PDF for direct client preview / download.
+- **Frontend Download Integration**:
+  - The frontend MUST render a clickable download mechanism (e.g. "Download Passport (PDF)") linking to `download_endpoint` or saving the `pdf_base64` blob.
+  - The frontend MUST NEVER render the raw base64 string as chat text or message content.
 
 #### 6. `get_application_guidance`
 - **Purpose**: Provides official application channels, step-by-step guidance, and portal links. Incorporates citizen-recorded progress without claiming live government portal integration.
@@ -290,10 +299,10 @@ Content-Type: application/json
   },
   "sources": [
     {
-      "title": "PM-KISAN Official Guidelines",
+      "title": "Pradhan Mantri Kisan Samman Nidhi (PM-KISAN)",
       "url": "https://pmkisan.gov.in",
-      "verification_source": "pmkisan.gov.in official operational guidelines",
-      "verification_date": "2026-01-15"
+      "verification_source": "Official Operational Guidelines, Ministry of Agriculture & Farmers Welfare (pmkisan.gov.in)",
+      "verification_date": "2024-02-28"
     }
   ],
   "requires_confirmation": false,
@@ -349,10 +358,10 @@ Content-Type: application/json
   },
   "sources": [
     {
-      "title": "PM-KISAN Official Guidelines",
+      "title": "Pradhan Mantri Kisan Samman Nidhi (PM-KISAN)",
       "url": "https://pmkisan.gov.in",
-      "verification_source": "pmkisan.gov.in official operational guidelines",
-      "verification_date": "2026-01-15"
+      "verification_source": "Official Operational Guidelines, Ministry of Agriculture & Farmers Welfare (pmkisan.gov.in)",
+      "verification_date": "2024-02-28"
     }
   ],
   "requires_confirmation": false,
@@ -414,14 +423,16 @@ Content-Type: application/json
   },
   "sources": [
     {
-      "title": "PM-KISAN Guidelines",
+      "title": "Pradhan Mantri Kisan Samman Nidhi (PM-KISAN)",
       "url": "https://pmkisan.gov.in",
-      "verification_source": "pmkisan.gov.in official operational guidelines"
+      "verification_source": "Official Operational Guidelines, Ministry of Agriculture & Farmers Welfare (pmkisan.gov.in)",
+      "verification_date": "2024-02-28"
     },
     {
-      "title": "Ayushman Bharat PM-JAY Guidelines",
-      "url": "https://nha.gov.in",
-      "verification_source": "National Health Authority official guidelines"
+      "title": "Ayushman Bharat - Pradhan Mantri Jan Arogya Yojana (AB-PMJAY)",
+      "url": "https://pmjay.gov.in",
+      "verification_source": "National Health Authority (NHA) Scheme Guidelines & Ayushman Bharat Senior Citizen (70+) Expansion (pmjay.gov.in)",
+      "verification_date": "2024-09-11"
     }
   ],
   "requires_confirmation": false,
@@ -484,15 +495,72 @@ Content-Type: application/json
     },
     "sources": [
       {
-        "title": "PM-KISAN Guidelines",
+        "title": "Pradhan Mantri Kisan Samman Nidhi (PM-KISAN)",
         "url": "https://pmkisan.gov.in",
-        "verification_source": "Ministry of Agriculture and Farmers Welfare"
+        "verification_source": "Official Operational Guidelines, Ministry of Agriculture & Farmers Welfare (pmkisan.gov.in)",
+        "verification_date": "2024-02-28"
       }
     ],
     "requires_confirmation": false,
     "next_question": "Are you or anyone in your household an income tax payer or government employee?",
     "error": null
   }
+}
+```
+
+---
+
+### Example 5: `generate_passport`
+**Request**:
+```http
+POST /api/chat/action
+Content-Type: application/json
+
+{
+  "action": "generate_passport",
+  "payload": {
+    "scheme_ids": ["pm-kisan"],
+    "profile": {
+      "age": 42,
+      "occupation": "farmer",
+      "annual_income": 120000,
+      "owns_cultivable_land": true
+    },
+    "citizen_documents": ["Aadhaar Card", "Bank Account Passbook"],
+    "notes": "Verified at local CSC."
+  },
+  "language": "en"
+}
+```
+
+**Response**:
+```json
+{
+  "success": true,
+  "action": "generate_passport",
+  "summary": "SevAIQ Scheme Passport PDF successfully generated for 1 scheme(s). You can download your official passport using the download button below.",
+  "data": {
+    "filename": "SevAIQ_Scheme_Passport.pdf",
+    "download_endpoint": "/api/passport/pdf",
+    "schemes_included": [
+      "pm-kisan"
+    ],
+    "readiness_percentage": 67,
+    "generation_timestamp": "2024-10-24T16:55:00Z",
+    "pdf_base64": "JVBERi0xLjQKJ0xJTkUtQ0hFQ0tTCg==",
+    "file_size_bytes": 14520
+  },
+  "sources": [
+    {
+      "title": "Pradhan Mantri Kisan Samman Nidhi (PM-KISAN)",
+      "url": "https://pmkisan.gov.in",
+      "verification_source": "Official Operational Guidelines, Ministry of Agriculture & Farmers Welfare (pmkisan.gov.in)",
+      "verification_date": "2024-02-28"
+    }
+  ],
+  "requires_confirmation": false,
+  "next_question": null,
+  "error": null
 }
 ```
 
@@ -546,3 +614,15 @@ When an action fails or parameters are invalid, the endpoint responds with `HTTP
    - If `action_result.requires_confirmation === true`, display a confirmation dialog before executing the client-side state change (e.g. clearing Kiosk session storage).
 4. **Handling `next_question`**:
    - If `action_result.next_question` is present, display it as a suggested quick-reply chip to guide the citizen.
+5. **Handling Passport Downloads**:
+   - When `generate_passport` succeeds, render a primary "Download Passport (PDF)" button pointing to `data.download_endpoint` or triggering a file download using `data:application/pdf;base64,...`.
+   - Never render `data.pdf_base64` as message text or markdown content.
+
+---
+
+## 8. Deployment & Vercel Serverless Architecture
+
+- **Serverless Entrypoint**: Vercel executes `backend/index.py`, which exposes `app` imported from `app.main`.
+- **Registered Routes**: All chat and action endpoints (`/api/chat`, `/api/chat/action`, `/api/chat/actions`) are registered directly on `app.main.app`.
+- **Stateless & Ephemeral**: PDF generation and document mapping execute strictly in-memory using `io.BytesIO`. No temporary files or citizen PII are written to the filesystem, adhering to Vercel's read-only serverless architecture.
+

@@ -660,12 +660,24 @@ def handle_map_documents(
             f"Current document readiness score: {score}%."
         )
 
+    sources = [
+        {
+            "title": s.get("title", ""),
+            "url": s.get("official_portal_url", ""),
+            "verification_source": s.get("verification_source", "Official Guidelines"),
+            "verification_date": s.get("verification_date", "Official Record"),
+        }
+        for sid in scheme_ids
+        for s in [scheme_map.get(sid.strip().lower())]
+        if s and s.get("official_portal_url")
+    ]
+
     return ChatActionResultSchema(
         success=True,
         action="map_documents",
         summary=summary,
         data=mapping_res.model_dump(),
-        sources=mapping_res.official_source_references,
+        sources=sources,
         requires_confirmation=False,
         next_question=None,
     )
@@ -791,9 +803,9 @@ def handle_generate_passport(
     now_iso = datetime.datetime.now(datetime.timezone.utc).isoformat()
 
     if language == "ta":
-        summary = f"{len(scheme_ids)} திட்டங்களுக்கான SevAIQ திட்ட பாஸ்போர்ட் PDF வெற்றிகரமாக உருவாக்கப்பட்டது."
+        summary = f"{len(scheme_ids)} திட்டங்களுக்கான SevAIQ திட்ட பாஸ்போர்ட் PDF வெற்றிகரமாக உருவாக்கப்பட்டது. கீழே உள்ள பதிவிறக்க பொத்தானைப் பயன்படுத்தி உங்கள் பாஸ்போர்ட்டைப் பதிவிறக்கம் செய்யலாம்."
     else:
-        summary = f"SevAIQ Scheme Passport PDF successfully generated for {len(scheme_ids)} scheme(s)."
+        summary = f"SevAIQ Scheme Passport PDF successfully generated for {len(scheme_ids)} scheme(s). You can download your official passport using the download button below."
 
     sources = [
         {
