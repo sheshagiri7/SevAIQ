@@ -954,38 +954,35 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
 
         setMessages((prev) => [...prev, botMsg]);
       } else {
-        // Distinguish AI provider error categories
-        let errorNotice =
-          res.error ||
-          (language === 'ta'
-            ? 'AI மாதிரியிலிருந்து பதிலை உருவாக்க முடியவில்லை.'
-            : 'Failed to generate response from AI model.');
+        // Developer diagnostic logging: keep detailed provider-specific diagnostics in developer console
+        console.warn('[SevAIQ AI Diagnostic]', {
+          error: res.error,
+          errorType: res.errorType,
+          retryable: res.retryable,
+        });
 
-        if (res.errorType === 'quota_exhausted' || res.errorType === 'rate_limited') {
+        // Public-facing error feedback: citizen-friendly messages without technical or provider leaks
+        let errorNotice =
+          language === 'ta'
+            ? 'AI சேவை தற்காலிகமாக கிடைக்கவில்லை. தயவுசெய்து மீண்டும் முயற்சிக்கவும்.'
+            : language === 'hi'
+            ? 'एआई सेवा अस्थायी रूप से अनुपलब्ध है। कृपया पुन: प्रयास करें।'
+            : 'The AI service is temporarily unavailable. Please try again.';
+
+        if (res.errorType === 'safety_blocked') {
           errorNotice =
             language === 'ta'
-              ? 'Google Gemini சேவை வரம்பு (Quota/Rate Limit) எட்டப்பட்டுள்ளது. தயவுசெய்து சிறிது நேரம் கழித்து மீண்டும் முயற்சிக்கவும்.'
-              : 'Google Gemini project quota or rate limit has been reached. Please wait a few moments and retry.';
-        } else if (res.errorType === 'configuration_error') {
-          errorNotice =
-            language === 'ta'
-              ? 'சேவையகத்தில் Gemini API விசை கட்டமைக்கப்படவில்லை (GEMINI_API_KEY). தயவுசெய்து backend/.env கோப்பில் விதியைச் சேர்க்கவும்.'
-              : 'Gemini API key is not configured on the backend server (GEMINI_API_KEY). Please set it in backend/.env.';
+              ? 'பாதுகாப்புக் கொள்கையின் காரணமாக இந்த கேள்விக்கான பதில் தடுக்கப்பட்டுள்ளது.'
+              : language === 'hi'
+              ? 'सुरक्षा नीतियों के कारण इस प्रतिक्रिया को अवरुद्ध कर दिया गया है।'
+              : 'This response was blocked by content safety filters.';
         } else if (res.errorType === 'timeout') {
           errorNotice =
             language === 'ta'
-              ? 'AI பதில் நேரம் முடிந்தது (Timeout). தயவுசெய்து மீண்டும் முயற்சிக்கவும்.'
-              : 'Gemini request timed out. Please retry your question.';
-        } else if (res.errorType === 'auth_error') {
-          errorNotice =
-            language === 'ta'
-              ? 'Gemini API அங்கீகார பிழை (Invalid Key). சேவையக அமைப்புகளை சரிபார்க்கவும்.'
-              : 'Invalid or unauthorized Gemini API credentials. Please verify backend configuration.';
-        } else if (res.errorType === 'safety_blocked') {
-          errorNotice =
-            language === 'ta'
-              ? 'பாதுகாப்புக் கொள்கையின் காரணமாக இந்த கேள்விக்கு பதில் தடுக்கப்பட்டுள்ளது.'
-              : 'This response was blocked by content safety filters.';
+              ? 'கோரிக்கை நேரம் முடிந்தது. தயவுசெய்து மீண்டும் முயற்சிக்கவும்.'
+              : language === 'hi'
+              ? 'अनुरोध का समय समाप्त हो गया। कृपया पुन: प्रयास करें।'
+              : 'The request timed out. Please try again.';
         }
 
         const errorMsg: AssistantMessage = {
@@ -2008,9 +2005,7 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
                     <div className="flex items-center space-x-1.5">
                       <span className="inline-flex items-center space-x-1 font-semibold text-[#16733B] dark:text-emerald-300 bg-[#EDF6EF] dark:bg-emerald-950/70 px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-800/60 text-xs">
                         <ShieldCheck className="w-3 h-3 text-[#16733B] dark:text-emerald-400" />
-                        <span>
-                          {msg.provider ? `AI • ${msg.provider.toUpperCase()}` : 'AI • GEMINI'}
-                        </span>
+                        <span>SEVAIQ AI</span>
                       </span>
                       {msg.latencyMs && (
                         <span className="text-[#596775] dark:text-slate-400 font-mono text-xs hidden sm:inline">
@@ -2166,8 +2161,10 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
               <Sparkles className="w-4 h-4 text-civic-600 animate-spin" />
               <span className="font-semibold text-slate-700">
                 {language === 'ta'
-                  ? 'Gemini AI திட்டங்களை ஆராய்கிறது...'
-                  : 'Gemini AI is analyzing schemes...'}
+                  ? 'SevAIQ உங்கள் கேள்வியை ஆராய்கிறது...'
+                  : language === 'hi'
+                  ? 'SevAIQ आपकी क्वेरी का विश्लेषण कर रहा है...'
+                  : 'SevAIQ is analyzing your query...'}
               </span>
               <span className="flex space-x-1">
                 <span className="w-1.5 h-1.5 bg-civic-600 rounded-full animate-bounce" />
@@ -2302,22 +2299,26 @@ export const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
               onClick={handleConfirmSpeech}
               disabled={!isValidTranscript(speechTranscript) || isAiLoading}
               className="px-3.5 py-1.5 text-xs font-bold text-white bg-civic-700 hover:bg-civic-800 disabled:bg-slate-200 disabled:text-slate-400 rounded-xl flex items-center space-x-1.5 shadow-2xs transition-all active:scale-95 cursor-pointer"
-              aria-label="Confirm and send transcript to Gemini"
+              aria-label="Confirm and send transcript"
               data-testid="speech-confirm-send-button"
             >
               <Send className="w-3 h-3" />
               <span>
                 {language === 'ta'
-                  ? 'உறுதிசெய்து Gemini-க்கு அனுப்பு'
-                  : 'Confirm & Send to Gemini'}
+                  ? 'உறுதிசெய்து அனுப்பு'
+                  : language === 'hi'
+                  ? 'पुष्टि करें और भेजें'
+                  : 'Confirm & Send'}
               </span>
             </button>
           </div>
 
-          <p className="text-[9px] text-slate-500 leading-tight">
+          <p className="text-[9px] text-slate-500 dark:text-slate-400 leading-tight">
             {language === 'ta'
-              ? 'தனியுரிமை: உறுதிசெய்த உரை மட்டுமே Gemini AI-க்கு அனுப்பப்படும். ஆடியோ பதிவு செய்யப்படாது.'
-              : 'Privacy: Only this confirmed text is sent to Gemini AI. No voice audio is stored by SevAIQ.'}
+              ? 'தனியுரிமை: நீங்கள் உறுதிசெய்த உரை மட்டுமே Google Gemini (தற்போதைய மூன்றாம் தரப்பு AI வழங்குநர்)-க்கு செயலாக்கத்திற்காக அனுப்பப்படும். ஆடியோ பதிவு எதுவும் SevAIQ-ல் சேமிக்கப்படுவதில்லை.'
+              : language === 'hi'
+              ? 'गोपनीयता: केवल आपके द्वारा सत्यापित टेक्स्ट प्रोसेसिंग के लिए Google Gemini (वर्तमान तृतीय-पक्ष AI प्रदाता) को भेजा जाता है। SevAIQ द्वारा कोई ऑडियो रिकॉर्ड या संग्रहीत नहीं किया जाता है।'
+              : 'Privacy: Only your confirmed text is sent to Google Gemini, the currently configured third-party AI provider, for processing. No voice audio is recorded or stored by SevAIQ.'}
           </p>
         </div>
       )}
